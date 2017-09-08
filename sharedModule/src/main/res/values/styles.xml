@@ -37,7 +37,6 @@
     </style>
 
     <style name="SetupWizard.QTPComplexity">
-        <item name="android:padding">@dimen/base_semi_gap</item>
     </style>
 
     <style name="ToolContainer">
