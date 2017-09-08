@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextStyle">
+        <attr name="fontFamily" />
+        <attr name="textWeight" />
+        <attr name="textStyle" />
+    </declare-styleable>
+
+    <attr name="animationDuration" format="integer" />
+    <attr name="dimAmount" format="float" />
+
+    <declare-styleable name="PaddingStyle">
+        <attr name="android:padding" />
+    </declare-styleable>
+
+    <declare-styleable name="LockScreenWindowStyle">
+        <attr name="dimAmount" />
+        <attr name="animationDuration" />
+    </declare-styleable>
+
+    <declare-styleable name="QuestStyle">
+        <attr name="answerButtonVisible" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="QuestWindowContentStyle">
+        <attr name="relativeWidth" format="float" />
+        <attr name="relativeHeight" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="QuestWindowStyle">
+        <attr name="openPosition" format="string" />
+        <attr name="closePosition" format="string" />
+        <attr name="backgroundColorStart" format="color" />
+        <attr name="backgroundColorEnd" format="color" />
+        <attr name="dimAmount" />
+        <attr name="animationDuration" />
+    </declare-styleable>
+
+</resources>

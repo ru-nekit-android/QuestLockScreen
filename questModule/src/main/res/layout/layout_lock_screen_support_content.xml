@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><!--Container-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Title-->
+
+    <RelativeLayout
+        android:id="@+id/container_title"
+        style="@style/LockScreen.QuestContent.TitleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_title"
+            style="@style/LockScreen.SupportContent.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+    </RelativeLayout>
+
+    <!--Content-->
+    <RelativeLayout
+        android:id="@+id/container_content"
+        style="@style/LockScreen.SupportContent.ContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content"
+            style="@style/LockScreen.SupportContent.Content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/container_tool" />
+
+        <RelativeLayout
+            android:id="@+id/container_tool"
+            style="@style/ToolContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <com.devspark.robototextview.widget.RobotoCheckBox
+                android:id="@+id/check_show_no_more"
+                style="@style/ShowNoMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/label_show_no_more" />
+
+            <com.devspark.robototextview.widget.RobotoButton
+                android:id="@+id/btn_ok"
+                style="@style/NextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/label_next" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

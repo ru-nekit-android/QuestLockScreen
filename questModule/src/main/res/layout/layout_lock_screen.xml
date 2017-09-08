@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.codetail.widget.RevealFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_root"
+    style="@style/LockScreen.ContainerRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/container"
+        style="@style/LockScreen.Container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            layout="@layout/layout_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ViewFlipper
+                android:id="@+id/container_title"
+                style="@style/LockScreen.TitleContainer"
+                android:layout_width="match_parent" />
+
+            <ViewFlipper
+                android:id="@+id/container_content"
+                style="@style/LockScreen.ContentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</io.codetail.widget.RevealFrameLayout>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+
+    <RelativeLayout
+        android:id="@+id/container_content"
+        style="@style/Quest.ContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/container_answer"
+        android:layout_below="@+id/container_title" />
+
+    <FrameLayout
+        android:id="@+id/container_title"
+        style="@style/Quest.TitleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <FrameLayout
+        android:id="@+id/container_answer"
+        style="@style/Quest.AnswerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/container_alternative_answer_buttons"
+            style="@style/Quest.AlternativeAnswerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/container_answer_input"
+            style="@style/Quest.AnswerInputContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.devspark.robototextview.widget.RobotoEditText
+                android:id="@+id/input_answer"
+                style="@style/Quest.AnswerInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:imeOptions="actionDone"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.AppCompatImageButton
+                android:id="@+id/btn_answer"
+                style="@style/Quest.AnswerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</RelativeLayout>

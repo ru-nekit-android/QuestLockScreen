@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/SetupWizard.PupilName"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ru.nekit.android.qls.setupWizard.view.SetupPupilNameFragment">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/tv_title"
+        style="@style/SetupWizard.Title"
+        android:layout_height="wrap_content"
+        android:text="@string/title_pupil_set_name" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_title"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/input_pupil_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/input_pupil_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/pupil_name_hint"
+                android:inputType="textPersonName" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

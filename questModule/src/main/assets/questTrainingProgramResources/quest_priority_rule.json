@@ -1,0 +1,18 @@
+[
+  {
+    "questType": "TRAFFIC_LIGHT",
+    "questionTypes": [
+      "ALL"
+    ],
+    "startPriority": 1,
+    "wrongAnswerPriority": 3
+  },
+  {
+    "questType": "TEXT_CAMOUFLAGE",
+    "questionTypes": [
+      "ALL"
+    ],
+    "startPriority": 1,
+    "wrongAnswerPriority": 3
+  }
+]

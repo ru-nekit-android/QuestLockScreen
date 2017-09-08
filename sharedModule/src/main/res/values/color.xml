@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lock_screen_background_color">#ffffffff</color>
+    <color name="white">#ffffff</color>
+    <color name="green">#07a44e</color>
+    <color name="green_light">#ff55d67c</color>
+    <color name="green_dark">#ff007422</color>
+    <color name="red">#ed1c27</color>
+    <color name="red_light">#ffff5f51</color>
+    <color name="red_dark">#ffb20000</color>
+    <color name="black">#ff000000</color>
+    <color name="semi_black">#88333333</color>
+    <color name="coin_shadow">#88333333</color>
+    <color name="friut_shadow">#88333333</color>
+    <color name="transparent">#00000000</color>
+    <color name="gold">#ffca9731</color>
+
+</resources>

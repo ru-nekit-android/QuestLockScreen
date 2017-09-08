@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <TableRow>
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/field_figure_side_a"
+            style="@style/Quest.Perimeter.A_Side"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1" />
+    </TableRow>
+
+    <TableRow>
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/field_figure_side_b"
+            style="@style/Quest.Perimeter.B_Side"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+        <View
+            android:id="@+id/view_figure"
+            style="@style/Quest.Perimeter.Figure" />
+    </TableRow>
+
+</TableLayout>

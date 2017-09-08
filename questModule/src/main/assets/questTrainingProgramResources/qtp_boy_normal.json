@@ -1,0 +1,121 @@
+{
+  "version": 1.23,
+  "name": "example",
+  "description": "example",
+  "sex": "BOY",
+  "complexity": "NORMAL",
+  "levels": [
+    {
+      "delayedStart": true,
+      "name": "name_level_0",
+      "description": "Прокачай пиздюка",
+      "pointsWeight": 10000,
+      "pointsMultiplier": 1.0,
+      "quests": [
+        //МОНЕТЫ
+        {
+          "questType": "монеты",
+          "memberCount": 4,
+          "questionTypes": [
+            "unknown_member",
+            "solution"
+          ],
+          "enabled": false,
+          "reward": 10,
+          "delayedStart": false
+        },
+        //СВЕТОФОР
+        {
+          "questType": "светофор",
+          "enabled": false,
+          "delayedStart": true
+        },
+        //ВРЕМЯ
+        {
+          "questType": "время",
+          "reward": 10,
+          "questionTypes": [
+            "unknown_member"
+          ],
+          "enabled": false,
+          "memberCount": 4,
+          "accuracy": 10
+        },
+        //ВРЕМЯ
+        {
+          "questType": "время",
+          "reward": 10,
+          "questionTypes": [
+            "comparison"
+          ],
+          "enabled": false,
+          "memberCount": 6,
+          "accuracy": 10
+        },
+        //ТЕКУЩЕЕ_ВРЕМЯ
+        {
+          "questType": "текущее_время",
+          "reward": 10,
+          "enabled": false,
+          "memberCount": 4
+        },
+        //ВЫБОР
+        {
+          "questType": "выбор",
+          "reward": 10,
+          "types": [
+            "seasons",
+            "berry",
+            "pomum"
+          ],
+          "delayedStart": false,
+          "enabled": false
+        },
+        //ЛИШНИЙ
+        {
+          "questType": "лишний",
+          "reward": 10,
+          "types": [
+            "seasons",
+            "berry",
+            "pomum"
+          ],
+          "delayedStart": false,
+          "enabled": false
+        },
+        //ФРУКТЫ
+        {
+          "questType": "фрукты",
+          "questionTypes": [
+            "solution"
+          ],
+          "memberCount": 2,
+          "answerVariants": 6,
+          "memberMinAndMaxValues": [
+            [
+              1,
+              1
+            ],
+            [
+              5,
+              5
+            ]
+          ],
+          "delayedStart": true,
+          "enabled": false
+        },
+        //ФРУКТЫ
+        {
+          "questType": "фрукты",
+          "questionTypes": [
+            "comparison"
+          ],
+          "answerVariants": 20,
+          "memberCount": 40,
+          "delayedStart": true,
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}

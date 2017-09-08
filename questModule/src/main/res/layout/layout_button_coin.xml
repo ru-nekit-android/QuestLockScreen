@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Quest.Coin.Button.Background"
+    android:layout_width="0dp"
+    android:layout_height="0dp">
+
+    <RelativeLayout
+        android:id="@+id/container_icon_button"
+        style="@style/Quest.Coin.Button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

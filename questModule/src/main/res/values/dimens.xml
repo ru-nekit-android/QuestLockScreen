@@ -1,0 +1,39 @@
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="line_weight">1dp</dimen>
+    <dimen name="title_container_height">58dp</dimen>
+    <dimen name="card_view_elevation">4dp</dimen>
+    <dimen name="book_title_avatar_width">51dp</dimen>
+    <dimen name="book_title_avatar_height">57dp</dimen>
+    <dimen name="book_title_avatar_x">96.5dp</dimen>
+    <dimen name="book_title_avatar_y">74dp</dimen>
+    <dimen name="book_title_title_x">154dp</dimen>
+    <dimen name="book_title_title_y">74dp</dimen>
+    <dimen name="book_title_title_width">132dp</dimen>
+    <dimen name="book_title_title_height">57dp</dimen>
+    <dimen name="book_title_name_x">88dp</dimen>
+    <dimen name="book_title_name_y">195dp</dimen>
+    <dimen name="book_title_name_width">206dp</dimen>
+    <dimen name="book_content_height">418dp</dimen>
+    <dimen name="book_content_width">348dp</dimen>
+    <dimen name="book_content_left">82dp</dimen>
+    <dimen name="book_content_right">53dp</dimen>
+    <dimen name="book_content_top">55dp</dimen>
+    <dimen name="book_content_bottom">60dp</dimen>
+    <dimen name="quest_series_size">6sp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
+    <dimen name="qr_code_size">250dp</dimen>
+    <dimen name="qvri_base_size">25dp</dimen>
+
+    <dimen name="traffic_light_quest_width">367dp</dimen>
+    <dimen name="traffic_light_background_height">553dp</dimen>
+    <dimen name="traffic_light_avatar_pupil_width">75dp</dimen>
+    <dimen name="traffic_light_quest_pupil_avatar_y">400dp</dimen>
+    <dimen name="book_title_height">418dp</dimen>
+    <dimen name="book_title_width">348dp</dimen>
+    <dimen name="fruit_shadow_height">3dp</dimen>
+    <dimen name="fruit_shadow_width">3dp</dimen>
+    <dimen name="coin_shadow_height">6dp</dimen>
+    <dimen name="coin_shadow_width">6dp</dimen>
+</resources>

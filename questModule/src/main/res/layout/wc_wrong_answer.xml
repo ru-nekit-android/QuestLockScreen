@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/LockScreen.SupportContent.WrongAnswer.Container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/view_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/container_tool"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tv_title"
+        android:padding="@dimen/base_gap"
+        app:srcCompat="@drawable/wrong_answer" />
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/tv_title"
+        style="@style/LockScreen.SupportContent.WrongAnswer.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/message_error_in_raster" />
+
+    <RelativeLayout
+        android:id="@+id/container_tool"
+        style="@style/LockScreen.SupportContent.WrongAnswer.ToolContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <com.devspark.robototextview.widget.RobotoButton
+            android:id="@+id/btn_ok"
+            style="@style/NextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/label_ok" />
+    </RelativeLayout>
+
+</RelativeLayout>
