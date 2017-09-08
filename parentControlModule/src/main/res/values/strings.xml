@@ -15,4 +15,5 @@
     <string name="title_selection_pupil_is_waiting_for_binding">Ждущий добавления</string>
     <string name="title_pupil_information">Информация о ученике</string>
     <string name="back">Назад</string>
+    <string name="label_pupil_unbind">Отвязать ученика</string>
 </resources>

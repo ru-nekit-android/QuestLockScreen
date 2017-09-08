@@ -11,4 +11,14 @@
         android:layout_height="wrap_content"
         android:text="@string/title_pupil_information" />
 
+    <com.devspark.robototextview.widget.RobotoButton
+        android:id="@+id/btn_pupil_unbind"
+        style="@style/Button.Red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/tv_title"
+        android:text="@string/label_pupil_unbind" />
+
 </RelativeLayout>

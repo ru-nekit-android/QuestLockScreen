@@ -118,6 +118,10 @@ public class ParentControlSetupWizard extends BaseSetupWizard {
         return pupilIsExist;
     }
 
+    public void unbindPupil(String pupilUuid) {
+        mPupilManager.remove(pupilUuid);
+    }
+
     public enum Step implements ISetupStep {
 
         START,

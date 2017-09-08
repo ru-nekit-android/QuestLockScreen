@@ -30,4 +30,9 @@
     <string name="complexity_normal">Нормально</string>
     <string name="quest_current_time_synonym">текущее_время</string>
     <string name="quest_current_time_title">Текущее время</string>
+    <string name="label_ok">Ok</string>
+    <string name="label_create">Создать</string>
+    <string name="label_yes">Да</string>
+    <string name="label_no">Нет</string>
+    <string name="title_do_you_really_want_to_delete">Вы действительно хотетите удалить?</string>
 </resources>
