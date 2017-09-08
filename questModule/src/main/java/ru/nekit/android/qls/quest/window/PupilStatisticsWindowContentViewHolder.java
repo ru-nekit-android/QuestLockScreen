@@ -1,0 +1,25 @@
+package ru.nekit.android.qls.quest.window;
+
+import android.content.Context;
+import android.support.annotation.NonNull;
+import android.view.View;
+import android.widget.ViewSwitcher;
+
+import ru.nekit.android.qls.R;
+import ru.nekit.android.qls.lockScreen.window.WindowContentViewHolder;
+
+class PupilStatisticsWindowContentViewHolder extends WindowContentViewHolder {
+
+    @NonNull
+    final View bookTitle, bookContent;
+    @NonNull
+    final ViewSwitcher contentContainer;
+
+    PupilStatisticsWindowContentViewHolder(@NonNull Context context) {
+        super(context, R.layout.wc_pupil_statistics);
+        contentContainer = (ViewSwitcher) mView.findViewById(R.id.container_content);
+        bookTitle = mView.findViewById(R.id.btn_book_title);
+        bookContent = mView.findViewById(R.id.btn_book_content);
+    }
+
+}

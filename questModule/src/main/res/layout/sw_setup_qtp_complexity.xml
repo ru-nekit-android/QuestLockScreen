@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/SetupWizard.QTPComplexity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ru.nekit.android.qls.setupWizard.view.SetupQTPComplexityFragment">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/tv_title"
+        style="@style/SetupWizard.Title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/title_pupil_set_qtp_complexity" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tv_title"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <RadioGroup
+            android:id="@+id/complexity_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.devspark.robototextview.widget.RobotoRadioButton
+                android:id="@+id/complexity_easy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/complexity_easy" />
+
+            <com.devspark.robototextview.widget.RobotoRadioButton
+                android:id="@+id/complexity_normal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/complexity_normal" />
+
+            <com.devspark.robototextview.widget.RobotoRadioButton
+                android:id="@+id/complexity_hard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/complexity_hard" />
+        </RadioGroup>
+
+    </LinearLayout>
+
+</RelativeLayout>

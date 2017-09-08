@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <integer name="long_animation_duration">800</integer>
+    <integer name="short_animation_duration">300</integer>
+    <integer name="quest_delayed_start_animation_duration">300</integer>
+    <integer name="hide_keyboard_delay">100</integer>
+    <integer name="show_keyboard_delay">100</integer>
+</resources>

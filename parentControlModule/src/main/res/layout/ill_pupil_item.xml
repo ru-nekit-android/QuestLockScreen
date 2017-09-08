@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/PupilList.Item.Container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_item">
+
+        <com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout
+            android:id="@+id/container_pupil_avatar_mask"
+            style="@style/PupilList.Item.AvatarMask">
+
+            <FrameLayout
+                android:id="@+id/container_pupil_avatar"
+                style="@style/PupilList.Item.AvatarContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout>
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_item_title"
+            style="@style/PupilList.Item.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/container_pupil_avatar_mask" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

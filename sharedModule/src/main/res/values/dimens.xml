@@ -1,0 +1,30 @@
+<resources>
+    <dimen name="base_gap">16dp</dimen>
+    <dimen name="base_corner_radius">8dp</dimen>
+    <dimen name="big_corner_radius">24dp</dimen>
+    <dimen name="base_semi_gap">8dp</dimen>
+
+    <!--boy-->
+    <dimen name="boy_boots_top">312dp</dimen>
+    <dimen name="boy_pants_top">242dp</dimen>
+    <dimen name="boy_tshirt_top">148dp</dimen>
+    <dimen name="boy_avatar_height">337dp</dimen>
+    <dimen name="boy_avatar_width">177dp</dimen>
+    <dimen name="boy_mouth_top">108dp</dimen>
+    <dimen name="boy_nose_top">80dp</dimen>
+    <dimen name="boy_eye_top">60dp</dimen>
+    <dimen name="boy_eyebrow_top">44dp</dimen>
+    <dimen name="boy_hair_top">10dp</dimen>
+
+    <!--girl-->
+    <dimen name="girl_avatar_height">358dp</dimen>
+    <dimen name="girl_avatar_width">199dp</dimen>
+    <dimen name="girl_body_top">1dp</dimen>
+    <dimen name="girl_boots_top">329dp</dimen>
+    <dimen name="girl_dress_top">157dp</dimen>
+    <dimen name="girl_hair_top">30dp</dimen>
+    <dimen name="girl_eyebrow_top">55dp</dimen>
+    <dimen name="girl_eye_top">75dp</dimen>
+    <dimen name="girl_mouth_top">121dp</dimen>
+    <dimen name="girl_nose_top">100dp</dimen>
+</resources>

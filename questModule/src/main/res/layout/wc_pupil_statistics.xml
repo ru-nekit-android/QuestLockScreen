@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Window.PupilStatistics.ContentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="ru.nekit.android.qls.quest.window.PupilStatisticsWindowContentViewHolder">
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btn_close"
+        style="@style/CloseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true" />
+
+    <LinearLayout
+        android:id="@+id/container_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btn_close"
+        android:layout_alignTop="@+id/btn_close"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/base_semi_gap"
+        android:paddingTop="@dimen/base_semi_gap">
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_book_title"
+            style="@style/NavigationPrevButton"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content" />
+
+        <android.support.v4.widget.Space
+            android:layout_width="1dp"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_book_content"
+            style="@style/NavigationNextButton"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <ViewSwitcher
+        android:id="@+id/container_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/btn_close" />
+
+</RelativeLayout>

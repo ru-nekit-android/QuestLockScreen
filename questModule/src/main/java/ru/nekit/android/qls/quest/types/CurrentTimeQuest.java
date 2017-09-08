@@ -1,0 +1,46 @@
+package ru.nekit.android.qls.quest.types;
+
+import android.support.annotation.NonNull;
+
+import java.util.Calendar;
+
+import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.QuestType;
+import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.utils.MathUtils;
+import ru.nekit.android.qls.utils.TimeUtils;
+
+public class CurrentTimeQuest extends TimeQuest {
+
+    private long timeStamp;
+
+    public CurrentTimeQuest(@NonNull IQuest quest) {
+        super(quest);
+        setQuestType(QuestType.CURRENT_TIME);
+        setQuestionType(QuestionType.UNKNOWN_MEMBER);
+        NumberSummandQuest inQuest = (NumberSummandQuest) quest;
+        leftNode = inQuest.leftNode;
+        int length = leftNode.length;
+        unknownMemberIndex = MathUtils.randUnsignedInt(length - 1);
+        timeStamp = TimeUtils.getCurrentTime();
+        Calendar calendar = Calendar.getInstance();
+        int currentMinutes = calendar.get(Calendar.MINUTE);
+        int currentHours = calendar.get(Calendar.HOUR);
+        for (int i = 0; i < length; i++) {
+            if (i == unknownMemberIndex) {
+                leftNode[i] = currentHours * 60 + currentMinutes;
+            } else {
+                leftNode[i] = leftNode[i] / 60 * 60 + currentMinutes;
+            }
+        }
+    }
+
+    public long getTimeStamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public Object getAnswer() {
+        return unknownMemberIndex;
+    }
+}
