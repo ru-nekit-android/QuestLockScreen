@@ -1,34 +1,36 @@
 package ru.nekit.android.qls.quest.answer.shared;
 
 import android.support.annotation.NonNull;
-import android.util.SparseIntArray;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.types.IGroupWeightComparisonQuest;
 
-//TODO: SparseIntArray -> HashMap
-public abstract class AbstractGroupWeightComparisonQuestAnswerChecker
-        implements IAnswerChecker<Integer> {
+public abstract class AbstractGroupWeightComparisonQuestAnswerChecker<T>
+        implements IAnswerChecker<T> {
 
-    protected abstract List<Integer> getGroupList(@NonNull IQuest quest);
+    protected abstract List<T> getGroupList(@NonNull IQuest quest);
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull Integer answer) {
+    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull T answer) {
         IGroupWeightComparisonQuest inQuest = (IGroupWeightComparisonQuest) quest;
-        SparseIntArray map = new SparseIntArray();
-        List<Integer> groupList = getGroupList(quest);
+        HashMap<T, Integer> map = new HashMap<>();
+        List<T> groupList = getGroupList(quest);
         final int length = groupList.size();
         int i = 0;
         for (; i < length; i++) {
-            int key = groupList.get(i);
-            map.append(key, map.get(key, 0) + 1);
+            T key = groupList.get(i);
+            Integer value = map.get(key);
+            value = value == null ? 0 : value;
+            map.put(key, value + 1);
         }
         boolean isMax = inQuest.getGroupComparisonType() == IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
         int value = isMax ? 0 : Integer.MAX_VALUE;
-        for (i = 0; i < map.size(); i++) {
-            int item = map.valueAt(i);
+        for (Map.Entry<T, Integer> entryItem : map.entrySet()) {
+            int item = entryItem.getValue();
             value = isMax ? Math.max(value, item) : Math.min(value, item);
         }
         return map.get(answer) == value;

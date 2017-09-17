@@ -9,7 +9,7 @@ import ru.nekit.android.qls.quest.answer.shared.AbstractGroupWeightComparisonQue
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class GroupWeightComparisonQuestAnswerChecker
-        extends AbstractGroupWeightComparisonQuestAnswerChecker {
+        extends AbstractGroupWeightComparisonQuestAnswerChecker<Integer> {
 
     @Override
     protected List<Integer> getGroupList(@NonNull IQuest quest) {
