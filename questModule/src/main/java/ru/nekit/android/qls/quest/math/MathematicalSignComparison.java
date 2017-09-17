@@ -1,9 +1,5 @@
 package ru.nekit.android.qls.quest.math;
 
-/**
- * Created by nekit on 07.01.17.
- */
-
 public enum MathematicalSignComparison {
 
 

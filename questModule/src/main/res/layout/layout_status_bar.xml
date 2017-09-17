@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.devspark.robototextview.widget.RobotoTextClock
+    <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/tv_clock"
         style="@style/LockScreen.StatusBar.ClockView"
         android:layout_width="wrap_content"

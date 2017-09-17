@@ -9,29 +9,36 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
+import ru.nekit.android.qls.quest.mediator.shared.adapter.IContentContainerViewHolder;
+import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
 import ru.nekit.android.qls.quest.types.TimeQuest;
 
-class TimeAdapter extends RecyclerView.Adapter<TimeViewHolder> {
+class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
 
     @NonNull
     private final View.OnClickListener mClickListener;
     @NonNull
-    private final List<Integer> mDataList;
+    private final List<Integer> mTimeListData;
 
-    @SuppressWarnings("unchecked")
-    TimeAdapter(@NonNull List timeList, @NonNull View.OnClickListener clickListener) {
-        mDataList = timeList;
+    TimeAdapter(@NonNull List<Integer> timeListData, @NonNull View.OnClickListener clickListener) {
+        mTimeListData = timeListData;
         mClickListener = clickListener;
     }
 
     @Override
     public TimeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new TimeViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.ql_time_item, parent, false));
+                .inflate(R.layout.ill_time, parent, false));
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(TimeViewHolder holder) {
+        holder.getContentContainer().setOnClickListener(null);
     }
 
     @Override
     public void onBindViewHolder(final TimeViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
         int time = getTime(position);
         int hour = TimeQuest.getTimeHours(time);
         int minute = TimeQuest.getTimeMinutes(time);
@@ -42,12 +49,47 @@ class TimeAdapter extends RecyclerView.Adapter<TimeViewHolder> {
     }
 
     protected int getTime(int position) {
-        return mDataList.get(position);
+        return mTimeListData.get(position);
     }
 
     @Override
     public int getItemCount() {
-        return mDataList.size();
+        return mTimeListData.size();
     }
 
+    static class TimeViewHolder extends RecyclerView.ViewHolder implements IContentContainerViewHolder {
+
+        @NonNull
+        private final View mView, mContentContainer, hourHand, minuteHand;
+
+        TimeViewHolder(@NonNull View view) {
+            super(view);
+            mView = view;
+            mContentContainer = view.findViewById(R.id.container_content);
+            hourHand = view.findViewById(R.id.hour_hand);
+            minuteHand = view.findViewById(R.id.minute_hand);
+        }
+
+        @NonNull
+        @Override
+        public View getView() {
+            return mView;
+        }
+
+        @NonNull
+        @Override
+        public View getContentContainer() {
+            return mContentContainer;
+        }
+
+        @NonNull
+        public View getHourHand() {
+            return hourHand;
+        }
+
+        @NonNull
+        public View getMinuteHand() {
+            return minuteHand;
+        }
+    }
 }

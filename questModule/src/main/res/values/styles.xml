@@ -148,7 +148,7 @@
     <style name="LockScreen.QuestContent.TitleContainer">
         <item name="android:paddingLeft">@dimen/base_gap</item>
         <item name="android:paddingTop">@dimen/base_semi_gap</item>
-        <item name="android:paddingRight">@dimen/base_gap</item>
+        <item name="android:paddingRight">0dp</item>
         <item name="android:paddingBottom">@dimen/base_semi_gap</item>
         <item name="android:background">@color/green</item>
         <item name="android:layout_height">@dimen/title_container_height</item>
@@ -239,8 +239,6 @@
 
     <style name="Quest.ContentContainer">
         <item name="android:layout_margin">@dimen/base_gap</item>
-        <item name="android:gravity">center_vertical</item>
-        <item name="android:orientation">horizontal</item>
     </style>
 
     <style name="Quest.AnswerInputContainer">
@@ -423,7 +421,7 @@
     <style name="Quest.Title.ContentContainer">
         <item name="cardBackgroundColor">@color/green</item>
         <item name="cardCornerRadius">@dimen/base_corner_radius</item>
-        <item name="cardElevation">@dimen/base_gap</item>
+        <item name="cardElevation">0dp</item>
         <item name="cardUseCompatPadding">false</item>
     </style>
 

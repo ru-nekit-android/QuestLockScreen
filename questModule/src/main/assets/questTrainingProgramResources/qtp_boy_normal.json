@@ -1,12 +1,12 @@
 {
-  "version": 1.23,
+  "version": 1.251,
   "name": "example",
   "description": "example",
   "sex": "BOY",
   "complexity": "NORMAL",
   "levels": [
     {
-      "delayedStart": true,
+      "delayedStart": false,
       "name": "name_level_0",
       "description": "Прокачай пиздюка",
       "pointsWeight": 10000,
@@ -48,8 +48,8 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": false,
-          "memberCount": 6,
+          "enabled": true,
+          "memberCount": 8,
           "accuracy": 10
         },
         //ТЕКУЩЕЕ_ВРЕМЯ
@@ -58,6 +58,12 @@
           "reward": 10,
           "enabled": false,
           "memberCount": 4
+        },
+        //ТЕКУЩЕЕ_СЕЗОН
+        {
+          "questType": "текущий_сезон",
+          "reward": 10,
+          "enabled": false
         },
         //ВЫБОР
         {
@@ -101,7 +107,7 @@
               5
             ]
           ],
-          "delayedStart": true,
+          "delayedStart": false,
           "enabled": false
         },
         //ФРУКТЫ
@@ -113,7 +119,7 @@
           "answerVariants": 20,
           "memberCount": 40,
           "delayedStart": true,
-          "enabled": true
+          "enabled": false
         }
       ]
     }

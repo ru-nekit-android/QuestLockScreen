@@ -124,7 +124,7 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
                     new Callable<QuestVisualResourceItem, Integer>() {
                         @Override
                         public Integer call(QuestVisualResourceItem value) {
-                            return value.ordinal();
+                            return value.getId();
                         }
                     });
         }

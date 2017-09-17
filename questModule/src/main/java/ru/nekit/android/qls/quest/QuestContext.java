@@ -20,7 +20,7 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.pupil.PupilManager;
-import ru.nekit.android.qls.quest.answer.IAnswerCallback;
+import ru.nekit.android.qls.quest.answer.shared.IAnswerCallback;
 import ru.nekit.android.qls.quest.history.QuestHistoryItem;
 import ru.nekit.android.qls.quest.persistance.QuestSaver;
 import ru.nekit.android.qls.quest.persistance.QuestStatisticsSaver;
@@ -48,7 +48,7 @@ import static ru.nekit.android.qls.quest.QuestContext.QuestState.INITED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.PAUSED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.RESTORED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.WAS_STARTED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.STOPPED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_LEVEL_UP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_INIT;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
@@ -68,13 +68,13 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     @NonNull
     private final EventBus mEventBus;
     private Pupil mPupil;
-    private PupilManager mPupilManager;
     private IQuest mQuest;
     private QuestSaver mQuestSaver;
     private QuestTrainingProgram mQuestTrainingProgram;
     private QuestStatisticsSaver mQuestStatisticsSaver;
     @NonNull
     private PupilStatistics mPupilStatistics;
+    private int mQuestState;
 
     private long mStartSessionTime;
     private Handler mTicTacHandler;
@@ -95,8 +95,8 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mSettingsStorage = new SettingsStorage();
         mQuestResourceLibrary = new QuestResourceLibrary(context);
         mQuestStatisticsSaver = new QuestStatisticsSaver(context);
-        mPupilManager = new PupilManager(context);
-        mPupil = mPupilManager.getCurrentPupil();
+        PupilManager pupilManager = new PupilManager(context);
+        mPupil = pupilManager.getCurrentPupil();
         if (mQuestStatisticsSaver.hasSavedState()) {
             mPupilStatistics = mQuestStatisticsSaver.restore();
         } else {
@@ -110,19 +110,26 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     //Quest state functional
     public int getQuestState() {
-        return PreferencesUtil.getBitSet(NAME_QUEST_STATE);
+        if (mQuestState == 0) {
+            mQuestState = PreferencesUtil.getInt(NAME_QUEST_STATE);
+        }
+        return mQuestState;
     }
 
-    public boolean hasQuestState(int state) {
-        return PreferencesUtil.hasBitSetValue(NAME_QUEST_STATE, state);
+    private void setQuestState(int state) {
+        PreferencesUtil.setInt(NAME_QUEST_STATE, state);
+    }
+
+    public boolean questHasState(int state) {
+        return (mQuestState & state) != 0;
     }
 
     private void addQuestState(int state) {
-        PreferencesUtil.addToBitSet(NAME_QUEST_STATE, state);
+        setQuestState(mQuestState |= state);
     }
 
     private void removeQuestState(int state) {
-        PreferencesUtil.removeFromBitSet(NAME_QUEST_STATE, state);
+        setQuestState(mQuestState &= ~state);
     }
 
     private void replaceQuestState(int stateForRemove, int stateForAdd) {
@@ -131,7 +138,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     private void clearQuesState() {
-        PreferencesUtil.clearBitSet(NAME_QUEST_STATE);
+        setQuestState(mQuestState = 0);
     }
     //End quest state functional
 
@@ -142,15 +149,18 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public IQuest getQuest() {
         //try to restore if mQuest == null
         if (mQuest == null && mQuestSaver.hasSavedState()) {
-            //restore
+            //restore - @Nullable mQuest
             mQuest = mQuestSaver.restore();
-            //if quest training program rule is exist set quest state as restored
-            if (getQTPRule() != null) {
-                addQuestState(mQuest == null ? 0 : RESTORED);
-                removeQuestState(STARTED);
-                removeQuestState(WAS_STARTED);
-            } else {
-                mQuest = null;
+            //if quest can be restored -> quest is not null
+            if (mQuest != null) {
+                //if quest training program rule is exist set quest state as restored
+                if (getQTPRule() == null) {
+                    mQuest = null;
+                } else {
+                    addQuestState(RESTORED);
+                    removeQuestState(STARTED);
+                    removeQuestState(STOPPED);
+                }
             }
         }
         if (mQuest == null) {
@@ -163,7 +173,6 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         }
         return mQuest;
     }
-
 
     public Pupil getPupil() {
         return mPupil;
@@ -222,7 +231,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     @Override
     public void rightAnswer() {
-        if (mQuest != null && !hasQuestState(ANSWERED)) {
+        if (mQuest != null && !questHasState(ANSWERED)) {
             replaceQuestState(STARTED, ANSWERED);
             long sessionTime = getSessionTime();
             QuestTrainingProgramLevel levelBeforeReward = getQTPLevel();
@@ -245,7 +254,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             }
             mEventBus.sendEvent(EVENT_RIGHT_ANSWER, QuestHistoryItem.Pair.NAME,
                     new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem));
-            //destroy
+            //detachView
             destroyTicTac();
             mQuestSaver.reset();
             clearQuesState();
@@ -264,7 +273,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     @Override
     public void wrongAnswer() {
-        if (!hasQuestState(ANSWERED)) {
+        if (!questHasState(ANSWERED)) {
             long sessionTime = getSessionTime();
             QuestHistoryItem questHistoryItem = createQuestHistoryItem(false, sessionTime);
             QuestHistoryItem globalQuestHistoryItem = createQuestHistoryItem(false, sessionTime);
@@ -313,10 +322,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     public boolean startQuestIfAble() {
-        boolean isStarted = hasQuestState(STARTED);
+        boolean isStarted = questHasState(STARTED);
         if (!isStarted) {
             replaceQuestState(INITED, STARTED);
-            if (!hasQuestState(WAS_STARTED)) {
+            if (!questHasState(STOPPED)) {
                 mEventBus.sendEvent(EVENT_QUEST_START);
             }
             destroyTicTac();
@@ -330,8 +339,8 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     public void stopQuest() {
         destroyTicTac();
-        if (hasQuestState(STARTED)) {
-            replaceQuestState(STARTED, WAS_STARTED);
+        if (questHasState(STARTED)) {
+            replaceQuestState(STARTED, STOPPED);
             sendTicTacEvent(0);
         }
     }
@@ -512,7 +521,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     @Override
     public void onEvent(@NonNull Intent intent) {
         if (mQuest != null) {
-            if (!questHasDelayedStart() || hasQuestState(QuestState.WAS_STARTED)) {
+            if (!questHasDelayedStart() || questHasState(STOPPED)) {
                 startQuestIfAble();
             }
         }
@@ -536,13 +545,13 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus.sendEvent(EVENT_QUEST_RESUME);
     }
 
-    //init -> start / pause -> answered
+    //onInitQuest -> onStartQuest / pause -> answered
     public static class QuestState {
         public static int RESTORED = 1;
         public static int DELAYED_START = 2;
         public static int INITED = 4;
         public static int STARTED = 8;
-        public static int WAS_STARTED = 16;
+        public static int STOPPED = 16;
         public static int PAUSED = 32;
         public static int ANSWERED = 64;
     }

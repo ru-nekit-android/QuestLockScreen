@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.answer;
+package ru.nekit.android.qls.quest.answer.shared;
 
 public interface IAnswerCallback {
 

@@ -69,36 +69,6 @@ public class PreferencesUtil {
     public static boolean getBoolean(@NonNull String key, boolean defaultValue) {
         return mPref.getBoolean(key, defaultValue);
     }
-
-    public static void setBitSet(@NonNull String key, int value) {
-        setInt(key, value);
-    }
-
-    public static void clearBitSet(@NonNull String key) {
-        setInt(key, 0);
-    }
-
-    public static int getBitSet(@NonNull String key) {
-        return getInt(key);
-    }
-
-    public static boolean hasBitSetValue(@NonNull String key, int checkValue) {
-        return (getBitSet(key) & checkValue) != 0;
-    }
-
-    public static int addToBitSet(@NonNull String key, int addValue) {
-        int value = getBitSet(key);
-        value |= addValue;
-        setBitSet(key, value);
-        return value;
-    }
-
-    public static int removeFromBitSet(@NonNull String key, int removeValue) {
-        int value = getBitSet(key);
-        value &= ~removeValue;
-        setBitSet(key, value);
-        return value;
-    }
 }
 
 class LockScreenPreferenceModule extends TrayPreferences {

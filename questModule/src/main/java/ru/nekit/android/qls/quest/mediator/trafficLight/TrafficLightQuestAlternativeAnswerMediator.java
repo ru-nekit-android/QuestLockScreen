@@ -3,6 +3,7 @@ package ru.nekit.android.qls.quest.mediator.trafficLight;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.TrafficLightAlternativeAnswerVariantAdapter;
-import ru.nekit.android.qls.quest.mediator.QuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.types.TrafficLightType;
 
 public class TrafficLightQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMediator {
@@ -20,8 +21,8 @@ public class TrafficLightQuestAlternativeAnswerMediator extends QuestAlternative
     }
 
     @Override
-    public void init(@NonNull QuestContext context) {
-        super.init(context);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
         switch (mQuest.getQuestionType()) {
 
             case SOLUTION:
@@ -33,6 +34,7 @@ public class TrafficLightQuestAlternativeAnswerMediator extends QuestAlternative
         }
     }
 
+    @NonNull
     @Override
     protected View createButton(Object answerVariant,
                                 @NonNull LinearLayout.LayoutParams layoutParams) {

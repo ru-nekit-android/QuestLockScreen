@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator;
+package ru.nekit.android.qls.quest.mediator.shared.answer;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -14,34 +14,55 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.answer.IAlternativeAnswerVariantAdapter;
-import ru.nekit.android.qls.quest.answer.IAnswerCallback;
-import ru.nekit.android.qls.quest.answer.IAnswerChecker;
+import ru.nekit.android.qls.quest.answer.shared.IAlternativeAnswerVariantAdapter;
+import ru.nekit.android.qls.quest.answer.shared.IAnswerCallback;
+import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
 
 public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         IQuestAlternativeAnswerMediator {
 
     protected QuestContext mQuestContext;
-    protected List<View> mButtonList;
     protected IQuest mQuest;
+    protected ViewGroup mRootContentContainer;
+    protected List<View> mButtonList;
     private IAnswerChecker mAnswerChecker;
     private IAnswerCallback mAnswerCallback;
     @Nullable
-    private IAlternativeAnswerVariantAdapter mAdapter;
-    private boolean mIsDestroyed;
+    private IAlternativeAnswerVariantAdapter mButtonListAdapter;
 
     public QuestAlternativeAnswerMediator() {
     }
 
-    public QuestAlternativeAnswerMediator(@Nullable IAlternativeAnswerVariantAdapter adapter) {
-        mAdapter = adapter;
+    public QuestAlternativeAnswerMediator(@Nullable IAlternativeAnswerVariantAdapter buttonListAdapter) {
+        mButtonListAdapter = buttonListAdapter;
+    }
+
+    @CallSuper
+    @Override
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        mQuestContext = questContext;
+        mRootContentContainer = rootContentContainer;
+        mQuest = questContext.getQuest();
+        mButtonList = new ArrayList<>();
+    }
+
+    @CallSuper
+    @Override
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+        if (playAnimationOnDelayedStart) {
+            View view = mRootContentContainer;
+            if (getView() != null) {
+                view = getView();
+            }
+            view.setScaleX(0.1f);
+            view.setScaleY(0.1f);
+            view.animate().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+        }
     }
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        mQuestContext = questContext;
-        mQuest = questContext.getQuest();
-        mButtonList = new ArrayList<>();
+    public void detachView() {
+
     }
 
     @Override
@@ -67,6 +88,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         return button;
     }
 
+    @NonNull
     protected View createButton(Object tag, @NonNull LinearLayout.LayoutParams layoutParams) {
         return mQuestContext.createButton();
     }
@@ -75,8 +97,8 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         Object[] availableVariants = mQuest.getAvailableAnswerVariants();
         if (availableVariants != null) {
             for (Object variant : availableVariants) {
-                String label = mAdapter == null ? variant.toString() :
-                        mAdapter.adapt(mQuestContext, variant);
+                String label = mButtonListAdapter == null ? variant.toString() :
+                        mButtonListAdapter.adapt(mQuestContext, variant);
                 if (label != null) {
                     mButtonList.add(createSimpleButton(label, variant));
                 }
@@ -91,6 +113,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onClick(@NonNull View view) {
         if (mAnswerChecker.checkAlternativeInput(mQuest, view.getTag())) {
             mAnswerCallback.rightAnswer();
@@ -100,32 +123,16 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
     }
 
     @Override
-    public void updateSize(int width, int height) {
-    }
-
-    @CallSuper
-    @Override
-    public void destroy() {
-        mIsDestroyed = true;
+    public void updateSize() {
     }
 
     @Override
-    public boolean isDestroyed() {
-        return mIsDestroyed;
+    public void deactivate() {
+
     }
 
     @Override
     public View getView() {
         return null;
-    }
-
-    @Override
-    public void playAnimationOnDelayedStart(int duration, @Nullable View view) {
-        if (getView() != null) {
-            view = getView();
-        }
-        view.setScaleX(0.1f);
-        view.setScaleY(0.1f);
-        view.animate().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).setDuration(duration);
     }
 }

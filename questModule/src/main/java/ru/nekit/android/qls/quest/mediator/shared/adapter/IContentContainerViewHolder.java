@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator.adapter;
+package ru.nekit.android.qls.quest.mediator.shared.adapter;
 
 import android.support.annotation.NonNull;
 import android.view.View;

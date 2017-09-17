@@ -1,8 +1,6 @@
-package ru.nekit.android.qls.quest.mediator;
+package ru.nekit.android.qls.quest;
 
-/**
- * Created by nekit on 18.01.17.
- */
+import ru.nekit.android.qls.quest.mediator.IQuestMediator;
 
 public interface IQuestMediatorFacade extends IQuestMediator {
 

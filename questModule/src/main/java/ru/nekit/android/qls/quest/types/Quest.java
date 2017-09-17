@@ -7,7 +7,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 
-abstract class BaseQuest implements IQuest {
+abstract class Quest implements IQuest {
 
     @Nullable
     transient Object[] mAvailableAnswerVariants;

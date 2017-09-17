@@ -14,9 +14,9 @@ class CurrentTimeAdapter extends TimeAdapter {
     private final CurrentTimeQuest mQuest;
 
     CurrentTimeAdapter(@NonNull CurrentTimeQuest quest,
-                       @NonNull List data,
+                       @NonNull List<Integer> listData,
                        @NonNull View.OnClickListener clickListener) {
-        super(data, clickListener);
+        super(listData, clickListener);
         mQuest = quest;
     }
 

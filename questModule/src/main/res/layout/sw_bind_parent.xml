@@ -17,8 +17,8 @@
         android:layout_below="@+id/tv_title">
 
         <TextView
-            style="@style/GenerateQRCode"
             android:id="@+id/tv_generate_qr_code"
+            style="@style/GenerateQRCode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

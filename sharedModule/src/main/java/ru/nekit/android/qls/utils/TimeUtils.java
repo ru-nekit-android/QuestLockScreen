@@ -6,4 +6,11 @@ public class TimeUtils {
         return System.currentTimeMillis();
     }
 
+    public static boolean isNewMinute() {
+        return getCurrentTime() % 60000 == 0;
+    }
+
+    public static boolean isNewSecond() {
+        return getCurrentTime() % 1000 == 0;
+    }
 }

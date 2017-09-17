@@ -4,7 +4,7 @@ import android.text.InputType;
 
 import ru.nekit.android.qls.quest.QuestionType;
 
-public class TextQuest extends BaseQuest {
+public class TextQuest extends Quest {
 
     public String[] questionStringArray;
     private String[] answerStringArray;

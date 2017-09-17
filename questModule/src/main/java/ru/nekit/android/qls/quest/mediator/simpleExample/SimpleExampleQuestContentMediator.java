@@ -2,13 +2,13 @@ package ru.nekit.android.qls.quest.mediator.simpleExample;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.formatter.IQuestTextContentFormatter;
 import ru.nekit.android.qls.quest.formatter.TextQuestContentFormatter;
-import ru.nekit.android.qls.quest.mediator.AbstractQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 
 import static android.view.View.GONE;
 
@@ -22,12 +22,12 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        IQuest quest = questContext.getQuest();
-        mViewHolder = new SimpleExampleQuestViewHolder(questContext);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
+        mViewHolder = new SimpleExampleQuestViewHolder(mQuestContext);
         IQuestTextContentFormatter formatter = createFormatter();
-        String[] questStringList = formatter.format(questContext, quest);
-        switch (quest.getQuestionType()) {
+        String[] questStringList = formatter.format(mQuestContext, mQuest);
+        switch (mQuest.getQuestionType()) {
 
             case SOLUTION:
 
@@ -65,6 +65,11 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+
+    }
+
+    @Override
     public View getView() {
         return mViewHolder.getView();
     }
@@ -80,7 +85,7 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void updateSize(int width, int height) {
+    public void updateSize() {
 
     }
 

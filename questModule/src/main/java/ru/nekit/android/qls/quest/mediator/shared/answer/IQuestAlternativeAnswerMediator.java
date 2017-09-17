@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator;
+package ru.nekit.android.qls.quest.mediator.shared.answer;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -6,10 +6,11 @@ import android.view.View;
 
 import java.util.List;
 
-import ru.nekit.android.qls.quest.answer.IAnswerCallback;
-import ru.nekit.android.qls.quest.answer.IAnswerChecker;
+import ru.nekit.android.qls.quest.answer.shared.IAnswerCallback;
+import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
+import ru.nekit.android.qls.quest.mediator.IQuestMediator;
 
-interface IQuestAlternativeAnswerMediator extends IQuestMediator {
+public interface IQuestAlternativeAnswerMediator extends IQuestMediator {
 
     @Nullable
     List<View> getAnswerButtonList();

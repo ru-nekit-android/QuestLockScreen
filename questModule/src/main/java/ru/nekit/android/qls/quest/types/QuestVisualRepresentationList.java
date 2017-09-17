@@ -22,7 +22,7 @@ public class QuestVisualRepresentationList {
     }
 
     public void add(QuestVisualResourceItem questVisualResourceItem) {
-        add(questVisualResourceItem.ordinal());
+        add(questVisualResourceItem.getId());
     }
 
     public void add(int id) {

@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest.mediator.coin;
 
-
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.NonNull;

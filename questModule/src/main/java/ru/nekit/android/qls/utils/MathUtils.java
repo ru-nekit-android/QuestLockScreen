@@ -37,8 +37,11 @@ public class MathUtils {
     }
 
     public static <T> T randItem(List<T> list) {
-        int size = list.size();
-        return list.get(randUnsignedInt(size - 1));
+        return list.get(randListLength(list));
+    }
+
+    public static <T> int randListLength(List<T> list) {
+        return randUnsignedInt(list.size() - 1);
     }
 
     public static int randItem(int[] array) {

@@ -2,6 +2,7 @@ package ru.nekit.android.qls.quest.mediator.coin;
 
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -12,13 +13,13 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.mediator.AbstractQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 import ru.nekit.android.qls.quest.types.CoinModel;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class CoinQuestContentMediator extends AbstractQuestContentMediator {
 
-    private FrameLayout mContent;
+    private FrameLayout mContentContainer;
     private List<CoinViewHolder> mCoinViewHolderList;
 
     private static int getXPositionShiftByWidth(int width, int coinCount) {
@@ -27,14 +28,15 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        NumberSummandQuest numberSummandQuest = (NumberSummandQuest) questContext.getQuest();
-        mContent = new FrameLayout(questContext);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
+        NumberSummandQuest numberSummandQuest = (NumberSummandQuest) mQuest;
+        mContentContainer = new FrameLayout(questContext);
         mCoinViewHolderList = new ArrayList<>();
         CoinViewHolder coinViewHolder;
         //sort for beauty
         Arrays.sort(numberSummandQuest.leftNode);
-        QuestionType questionType = numberSummandQuest.getQuestionType();
+        QuestionType questionType = mQuest.getQuestionType();
         switch (questionType) {
 
             case SOLUTION:
@@ -50,7 +52,7 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
                                 CoinModel.getByNomination(numberSummandQuest.leftNode[i]);
                         if (coinModel != null) {
                             coinViewHolder = CoinViewBuilder.createView(questContext, coinModel);
-                            mContent.addView(coinViewHolder.getView());
+                            mContentContainer.addView(coinViewHolder.getView());
                             mCoinViewHolderList.add(coinViewHolder);
                         }
                     }
@@ -62,15 +64,19 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void detachView() {
+        mContentContainer.removeAllViews();
+    }
+
+    @Override
+    public void deactivate() {
         mCoinViewHolderList.clear();
         mCoinViewHolderList = null;
     }
 
     @Override
     public View getView() {
-        return mContent;
+        return mContentContainer;
     }
 
     @Override
@@ -84,7 +90,9 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void updateSize(int width, int height) {
+    public void updateSize() {
+        int width = mContentContainer.getWidth();
+        int height = mContentContainer.getHeight();
         final int coinCount = mCoinViewHolderList.size();
         int coinContainerWidth = 0, coinXPosition = 0, coinSize = 0, maxCoinHeight = 0, i = 0;
         for (; i < coinCount; i++) {
@@ -113,9 +121,10 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
             coinXPosition += getXPositionShiftByWidth(coinSize, coinCount);
             coinView.requestLayout();
         }
-        LayoutParams contentLayoutParams = mContent.getLayoutParams();
+        LayoutParams contentLayoutParams = mContentContainer.getLayoutParams();
         contentLayoutParams.width = coinContainerWidth;
         contentLayoutParams.height = maxCoinHeight;
-        mContent.requestLayout();
+        mContentContainer.setY((height - maxCoinHeight) / 2);
+        mContentContainer.requestLayout();
     }
 }

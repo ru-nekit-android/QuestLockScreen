@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.R;
+import ru.nekit.android.qls.quest.answer.shared.IAlternativeAnswerVariantAdapter;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 
 public class MetricsAlternativeAnswerVariantAdapter implements IAlternativeAnswerVariantAdapter {

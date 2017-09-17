@@ -1,26 +1,23 @@
 package ru.nekit.android.qls.quest.mediator.coin;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.mediator.QuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.types.CoinModel;
-
-/**
- * Created by nekit on 18.01.17.
- */
 
 public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMediator {
 
     private List<CoinButtonHolder> mCoinButtonHostList;
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        super.init(questContext);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
         mCoinButtonHostList = new ArrayList<>();
         switch (mQuest.getQuestionType()) {
 
@@ -32,7 +29,7 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
                         CoinModel coinModel = CoinModel.getByNomination((int) variant);
                         if (coinModel != null) {
                             CoinButtonHolder coinButtonHost =
-                                    CoinViewBuilder.createButton(questContext, coinModel, this);
+                                    CoinViewBuilder.createButton(mQuestContext, coinModel, this);
                             mCoinButtonHostList.add(coinButtonHost);
                             mButtonList.add(coinButtonHost.getView());
                         }
@@ -44,14 +41,15 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void detachView() {
+        super.detachView();
         mCoinButtonHostList.clear();
         mCoinButtonHostList = null;
     }
 
     @Override
-    public void updateSize(int width, /*Not use*/int height) {
+    public void updateSize() {
+        int width = mRootContentContainer.getWidth();
         switch (mQuest.getQuestionType()) {
 
             case UNKNOWN_MEMBER:
@@ -72,6 +70,7 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
                     coinButtonLayoutParams.width = coinButtonHost.coinViewHolder.getAdaptiveWidth(width)
                             + spaceBetweenCoins * 2;
                     coinButtonLayoutParams.height = coinButtonHost.coinViewHolder.getAdaptiveHeight(width);
+                    coinButtonHost.getView().requestLayout();
                 }
 
 

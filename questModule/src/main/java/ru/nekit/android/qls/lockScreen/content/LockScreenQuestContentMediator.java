@@ -27,7 +27,7 @@ import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.quest.IQuestViewHolder;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestContextEvent;
-import ru.nekit.android.qls.quest.QuestViewBuilder;
+import ru.nekit.android.qls.quest.QuestVisualBuilder;
 import ru.nekit.android.qls.quest.history.QuestHistoryItem;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgramLevel;
@@ -46,13 +46,12 @@ import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
 import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD;
 import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD;
 
-public class QuestContentMediator extends AbstractLockScreenContentMediator
+public class LockScreenQuestContentMediator extends AbstractLockScreenContentMediator
         implements View.OnClickListener, EventBus.IEventHandler {
 
     @NonNull
     private final QuestContext mQuestContext;
-    @NonNull
-    private final QuestViewBuilder mQuestViewBuilder;
+    private QuestVisualBuilder mCurrentQuestVisualBuilder, mPreviousQuestVisualBuilder;
     private Window mRightAnswerWindow;
     private final Window.WindowListener mWindowListener = new Window.WindowListener() {
 
@@ -82,39 +81,44 @@ public class QuestContentMediator extends AbstractLockScreenContentMediator
                 }
             }
         }
-
-
     };
     private QuestContentViewHolder mViewHolder;
+    private Animation.AnimationListener mAnimationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
 
-    public QuestContentMediator(@NonNull final QuestContext questContext) {
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (animation == mViewHolder.inAnimation) {
+                updateQuestTitle();
+                mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
+            } else if (animation == mViewHolder.outAnimation) {
+                mPreviousQuestVisualBuilder.getQuestMediatorFacade().detachView();
+                mPreviousQuestVisualBuilder = null;
+            }
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+    };
+
+    public LockScreenQuestContentMediator(@NonNull final QuestContext questContext) {
         mQuestContext = questContext;
         mViewHolder = new QuestContentViewHolder(questContext);
         mViewHolder.menuButton.setOnClickListener(this);
         mViewHolder.statisticsContainer.setOnClickListener(this);
         mViewHolder.delayedStartContainer.setOnClickListener(this);
-        mViewHolder.inAnimation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                updateQuestTitle();
-                mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-            }
-        });
+        mViewHolder.inAnimation.setAnimationListener(mAnimationListener);
+        mViewHolder.outAnimation.setAnimationListener(mAnimationListener);
         questContext.getEventBus().handleEvents(this,
                 TransitionChoreograph.EVENT_TRANSITION_CHANGED,
                 QuestContextEvent.EVENT_RIGHT_ANSWER,
                 QuestContextEvent.EVENT_WRONG_ANSWER
         );
-        mQuestViewBuilder = new QuestViewBuilder(questContext);
-        mQuestViewBuilder.build();
+        mCurrentQuestVisualBuilder = new QuestVisualBuilder(questContext);
+        mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
         updatePupilStatisticsView();
     }
 
@@ -172,7 +176,12 @@ public class QuestContentMediator extends AbstractLockScreenContentMediator
         mViewHolder.menuButton.setOnClickListener(null);
         mViewHolder.statisticsContainer.setOnClickListener(null);
         mViewHolder.inAnimation.setAnimationListener(null);
-        mQuestViewBuilder.destroy();
+        if (mPreviousQuestVisualBuilder != null) {
+            mPreviousQuestVisualBuilder.getQuestMediatorFacade().deactivate();
+            mPreviousQuestVisualBuilder.getQuestMediatorFacade().detachView();
+        }
+        mCurrentQuestVisualBuilder.getQuestMediatorFacade().deactivate();
+        mCurrentQuestVisualBuilder.getQuestMediatorFacade().detachView();
     }
 
     @Override
@@ -183,12 +192,12 @@ public class QuestContentMediator extends AbstractLockScreenContentMediator
     @Override
     public void attachView() {
         updateQuestTitle();
-        showQuest();
+        attachQuestView();
         mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
     }
 
-    private void showQuest() {
-        mViewHolder.attachQuestContent(mQuestViewBuilder.getView());
+    private void attachQuestView() {
+        mViewHolder.attachQuestContent(mCurrentQuestVisualBuilder.getQuestMediatorFacade().getView());
         mQuestContext.initAndStartQuestIfAble();
     }
 
@@ -271,8 +280,11 @@ public class QuestContentMediator extends AbstractLockScreenContentMediator
 
                 Transition transition = mTransitionChoreograph.getCurrentTransition();
                 if (transition == QUEST) {
-                    mQuestViewBuilder.rebuild();
-                    showQuest();
+                    mPreviousQuestVisualBuilder = mCurrentQuestVisualBuilder;
+                    mCurrentQuestVisualBuilder.getQuestMediatorFacade().deactivate();
+                    mCurrentQuestVisualBuilder = new QuestVisualBuilder(mQuestContext);
+                    mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
+                    attachQuestView();
                 }
 
                 break;

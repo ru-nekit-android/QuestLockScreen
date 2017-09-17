@@ -1,13 +1,13 @@
-package ru.nekit.android.qls.quest.answer;
+package ru.nekit.android.qls.quest.answer.shared;
 
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
 
-public class QuestAnswerChecker implements IAnswerChecker {
+public class QuestAnswerChecker<T> implements IAnswerChecker<T> {
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull Object answer) {
+    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull T answer) {
         return quest.getAnswer().equals(answer);
     }
 

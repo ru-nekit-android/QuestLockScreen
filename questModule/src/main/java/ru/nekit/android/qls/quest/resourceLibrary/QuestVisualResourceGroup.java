@@ -30,6 +30,10 @@ public enum QuestVisualResourceGroup implements ITitleable {
         mParents = parents;
     }
 
+    public int getId() {
+        return ordinal();
+    }
+
     @Override
     public String getTitle(@NonNull Context context) {
         return context.getString(mTitleResourceId);

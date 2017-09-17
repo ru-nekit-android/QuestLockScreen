@@ -2,11 +2,14 @@ package ru.nekit.android.qls.quest.types;
 
 import android.text.InputType;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.utils.MathUtils;
 
-public class NumberSummandQuest extends BaseQuest {
+public class NumberSummandQuest extends Quest {
 
     /*
                      /(<,=,>)\
@@ -61,6 +64,14 @@ public class NumberSummandQuest extends BaseQuest {
                 break;
         }
         return solution;
+    }
+
+    public List<Integer> getLeftNodeAsList() {
+        List<Integer> list = new ArrayList<>();
+        for (int item : leftNode) {
+            list.add(item);
+        }
+        return list;
     }
 
     public int getTypedAnswer() {

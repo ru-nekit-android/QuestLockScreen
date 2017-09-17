@@ -73,7 +73,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             int length = questVisualResourceGroupList.size();
             types = new int[length];
             for (int i = 0; i < length; i++) {
-                types[i] = questVisualResourceGroupList.get(i).ordinal();
+                types[i] = questVisualResourceGroupList.get(i).getId();
             }
         }
     }
@@ -87,7 +87,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             if (questVisualResourceItem.getGroups() != null) {
                 for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(currentGroup)) {
-                        questVisualResourceItemIdList.add(questVisualResourceItem.ordinal());
+                        questVisualResourceItemIdList.add(questVisualResourceItem.getId());
                     }
                 }
             }
@@ -99,8 +99,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     IQuestGenerator makeChoiceQuestGenerator(@NonNull final List<Integer> questVisualResourceItems,
                                              @NonNull final QuestType questType,
                                              @NonNull final QuestionType questionType,
-                                             final int unknownMemberIndex
-    ) {
+                                             final int unknownMemberIndex) {
         return new IQuestGenerator() {
             @Override
             public IQuest generate() {
@@ -123,6 +122,6 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
                                               @NonNull QuestionType questionType) {
         List<Integer> questVisualResourceItemList = getVisualResourceItemIdList(questContext);
         return makeChoiceQuestGenerator(questVisualResourceItemList, QuestType.CHOICE, questionType,
-                MathUtils.randUnsignedInt(questVisualResourceItemList.size() - 1));
+                MathUtils.randListLength(questVisualResourceItemList));
     }
 }

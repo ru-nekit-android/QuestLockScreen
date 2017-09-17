@@ -1,26 +1,25 @@
 package ru.nekit.android.qls.quest;
 
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.widget.ViewSwitcher;
 
 import ru.nekit.android.qls.quest.answer.CoinQuestAnswerChecker;
+import ru.nekit.android.qls.quest.answer.GroupWeightComparisonQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.MetricsQuestAnswerChecker;
-import ru.nekit.android.qls.quest.answer.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.SimpleExampleAnswerChecker;
 import ru.nekit.android.qls.quest.answer.TrafficLightQuestAnswerChecker;
-import ru.nekit.android.qls.quest.mediator.QuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.QuestMediatorFacade;
-import ru.nekit.android.qls.quest.mediator.QuestTitleMediator;
+import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.mediator.choice.ChoiceAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.coin.CoinQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.coin.CoinQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitArithmeticQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitArithmeticQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitComparisionAnswerChecker;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitComparisonAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.metrics.MetricsQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.metrics.MetricsQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.perimeter.PerimeterQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.shared.title.QuestTitleMediator;
 import ru.nekit.android.qls.quest.mediator.simpleExample.SimpleExampleQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.simpleExample.SimpleExampleQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.textCamouflage.TextCamouflageContentMediator;
@@ -29,23 +28,24 @@ import ru.nekit.android.qls.quest.mediator.time.TimeQuestAlternativeAnswerMediat
 import ru.nekit.android.qls.quest.mediator.trafficLight.TrafficLightQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.trafficLight.TrafficLightQuestContentMediator;
 
-public class QuestViewBuilder {
+public class QuestVisualBuilder {
 
     @NonNull
     private final QuestContext mQuestContext;
-    private QuestMediatorFacade mQuestMediatorFacade;
+    private IQuestMediatorFacade mQuestMediatorFacade;
 
-    public QuestViewBuilder(@NonNull QuestContext questContext) {
+    public QuestVisualBuilder(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
     }
 
-    public void build() {
+    public void create(@NonNull ViewSwitcher contentContainer) {
         IQuest quest = mQuestContext.getQuest();
         switch (quest.getQuestType()) {
 
             case COINS:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new CoinQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new CoinQuestContentMediator(),
@@ -57,6 +57,7 @@ public class QuestViewBuilder {
             case SIMPLE_EXAMPLE:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new SimpleExampleAnswerChecker(),
                         new QuestTitleMediator(),
                         new SimpleExampleQuestContentMediator(),
@@ -68,6 +69,7 @@ public class QuestViewBuilder {
             case METRICS:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new MetricsQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new MetricsQuestContentMediator(),
@@ -79,6 +81,7 @@ public class QuestViewBuilder {
             case PERIMETER:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new PerimeterQuestContentMediator(),
@@ -90,6 +93,7 @@ public class QuestViewBuilder {
             case TRAFFIC_LIGHT:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new TrafficLightQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new TrafficLightQuestContentMediator(),
@@ -101,6 +105,7 @@ public class QuestViewBuilder {
             case TEXT_CAMOUFLAGE:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new TextCamouflageContentMediator(),
@@ -112,9 +117,10 @@ public class QuestViewBuilder {
             case FRUIT_ARITHMETIC:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         quest.getQuestionType() == QuestionType.SOLUTION ?
                                 new QuestAnswerChecker() :
-                                new FruitComparisionAnswerChecker(),
+                                new GroupWeightComparisonQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new FruitArithmeticQuestContentMediator(),
                         quest.getQuestionType() == QuestionType.SOLUTION ?
@@ -127,6 +133,7 @@ public class QuestViewBuilder {
             case TIME:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
@@ -138,6 +145,7 @@ public class QuestViewBuilder {
             case CURRENT_TIME:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
@@ -150,6 +158,7 @@ public class QuestViewBuilder {
             case MISMATCH:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
@@ -159,20 +168,10 @@ public class QuestViewBuilder {
                 break;
 
         }
-        mQuestMediatorFacade.init(mQuestContext);
+        mQuestMediatorFacade.onCreateQuest(mQuestContext, contentContainer);
     }
 
-    public void destroy() {
-        mQuestMediatorFacade.destroy();
-        mQuestMediatorFacade = null;
-    }
-
-    public View getView() {
-        return mQuestMediatorFacade.getView();
-    }
-
-    public void rebuild() {
-        destroy();
-        build();
+    public IQuestMediatorFacade getQuestMediatorFacade() {
+        return mQuestMediatorFacade;
     }
 }

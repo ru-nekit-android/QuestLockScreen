@@ -86,11 +86,18 @@ public enum QuestVisualResourceItem implements ITitleable {
         return values()[ordinal];
     }
 
+    public static QuestVisualResourceItem getByItemId(int itemId) {
+        return getByOrdinal(itemId);
+    }
+
+    public int getId() {
+        return ordinal();
+    }
+
     @Override
     public String getTitle(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
-
 
     @Nullable
     public QuestVisualResourceGroup[] getGroups() {

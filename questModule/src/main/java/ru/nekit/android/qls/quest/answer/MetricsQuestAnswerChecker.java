@@ -3,20 +3,21 @@ package ru.nekit.android.qls.quest.answer;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
-public class MetricsQuestAnswerChecker extends QuestAnswerChecker {
+public class MetricsQuestAnswerChecker extends QuestAnswerChecker<MathematicalSignComparison> {
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull Object answer) {
+    public boolean checkAlternativeInput(@NonNull IQuest quest,
+                                         @NonNull MathematicalSignComparison answer) {
         NumberSummandQuest numberSummandQuest = (NumberSummandQuest) quest;
         switch (quest.getQuestionType()) {
 
             case COMPARISON:
 
-                MathematicalSignComparison answerSign = (MathematicalSignComparison) answer;
                 int leftMetricsSum = getMetricsSum(numberSummandQuest.leftNode);
                 int rightMetricsSum = getMetricsSum(numberSummandQuest.rightNode);
                 MathematicalSignComparison metricsSign = MathematicalSignComparison.EQUAL;
@@ -25,7 +26,7 @@ public class MetricsQuestAnswerChecker extends QuestAnswerChecker {
                 } else if (leftMetricsSum < rightMetricsSum) {
                     metricsSign = MathematicalSignComparison.LESS;
                 }
-                return metricsSign == answerSign;
+                return metricsSign == answer;
 
             default:
 

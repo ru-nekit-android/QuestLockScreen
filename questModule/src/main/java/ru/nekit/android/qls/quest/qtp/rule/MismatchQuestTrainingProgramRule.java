@@ -31,7 +31,6 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     };
 
     public MismatchQuestTrainingProgramRule() {
-
     }
 
     private MismatchQuestTrainingProgramRule(Parcel in) {
@@ -42,7 +41,7 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
                                               @NonNull QuestionType questionType) {
         QuestVisualResourceGroup mismatchGroup = null;
-        List<Integer> questVisualResourceItemIdList = getVisualResourceItemIdList(questContext);
+        List<Integer> qVRItemIdList = getVisualResourceItemIdList(questContext);
         List<QuestVisualResourceGroup> questVisualResourceGroups =
                 Arrays.asList(QuestVisualResourceGroup.values());
         Collections.shuffle(questVisualResourceGroups);
@@ -52,15 +51,12 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
                 break;
             }
         }
-        List<QuestVisualResourceItem> mismatchQuestVisualResourceItemIdList =
-                mismatchGroup.getQuestVisualItems();
-        int unknownMemberIndex = MathUtils.randUnsignedInt(questVisualResourceItemIdList.size() - 1);
-        questVisualResourceItemIdList.add(unknownMemberIndex,
-                mismatchQuestVisualResourceItemIdList.get(
-                        MathUtils.randUnsignedInt(mismatchQuestVisualResourceItemIdList.size() - 1)
-                ).ordinal());
-        questVisualResourceItemIdList.remove(unknownMemberIndex + 1);
-        return makeChoiceQuestGenerator(questVisualResourceItemIdList, QuestType.MISMATCH, questionType,
+        List<QuestVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
+        int unknownMemberIndex = MathUtils.randListLength(qVRItemIdList);
+        qVRItemIdList.add(unknownMemberIndex,
+                mismatchQVRItemIdList.get(MathUtils.randListLength(mismatchQVRItemIdList)).getId());
+        qVRItemIdList.remove(unknownMemberIndex + 1);
+        return makeChoiceQuestGenerator(qVRItemIdList, QuestType.MISMATCH, questionType,
                 unknownMemberIndex);
     }
 }

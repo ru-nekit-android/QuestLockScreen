@@ -1,19 +1,16 @@
 package ru.nekit.android.qls.quest.mediator.simpleExample;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.mediator.QuestAlternativeAnswerMediator;
-
-/**
- * Created by nekit on 18.01.17.
- */
+import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
 
 public class SimpleExampleQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMediator {
 
     @Override
-    public void init(@NonNull QuestContext context) {
-        super.init(context);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
         switch (mQuest.getQuestionType()) {
 
             case UNKNOWN_OPERATION:

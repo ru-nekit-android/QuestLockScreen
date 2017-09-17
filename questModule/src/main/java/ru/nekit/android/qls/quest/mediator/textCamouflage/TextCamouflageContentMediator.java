@@ -25,7 +25,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.mediator.AbstractQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 import ru.nekit.android.qls.quest.types.TextQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -33,7 +33,6 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
 
     private static final Position START_POSITION = Position.TL;
 
-    private QuestContext mQuestContext;
     private List<String> dataForGrid;
     private List<TextView> mTextViews;
 
@@ -50,18 +49,18 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
     }
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        mQuestContext = questContext;
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
         //mViewHolder = new TextCamouflageQuestViewHolder(questContext);
-        TextQuest quest = (TextQuest) questContext.getQuest();
+        TextQuest quest = (TextQuest) mQuest;
         // mViewHolder.textViewGrid.setHasFixedSize(true);
-        mTextCamouflageContainer = new TextCamouflageContainer(questContext);
+        mTextCamouflageContainer = new TextCamouflageContainer(mQuestContext);
         // ((ViewGroup) mViewHolder.getView()).addView(mTextCamouflageContainer);
         int additionSize = 0;
         while (additionSize == 0) {
             additionSize = MathUtils.randInt(-1, quest.questionStringArray[0].length());
         }
-        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(questContext,
+        RecyclerView.LayoutManager gridLayoutManager = new GridLayoutManager(mQuestContext,
                 quest.questionStringArray[0].length() + additionSize,
                 LinearLayoutManager.VERTICAL, false);
         // mViewHolder.textViewGrid.setLayoutManager(gridLayoutManager);
@@ -71,10 +70,10 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
             final char[] charArray = questStringArrayItem.toCharArray();
             for (char aChar : charArray) {
                 dataForGrid.add(String.valueOf(aChar).toUpperCase());
-                RobotoTextView textView = new RobotoTextView(questContext);
+                RobotoTextView textView = new RobotoTextView(mQuestContext);
                 textView.setText(String.valueOf(aChar).toUpperCase());
-                textView.setBackground(questContext.getResources().getDrawable(R.drawable.background_text_camouflage_label));
-                textView.setTextColor(questContext.getResources().getColor(R.color.black));
+                textView.setBackground(mQuestContext.getResources().getDrawable(R.drawable.background_text_camouflage_label));
+                textView.setTextColor(mQuestContext.getResources().getColor(R.color.black));
                 textView.setGravity(Gravity.CENTER);
                 mTextViews.add(textView);
                 mTextCamouflageContainer.addView(textView);
@@ -84,8 +83,8 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
     }
 
     @Override
-    public void destroy() {
-        super.destroy();
+    public void detachView() {
+        super.detachView();
         //  mViewHolder.textViewGrid.setLayoutManager(null);
         //  mViewHolder.textViewGrid.setAdapter(null);
     }
@@ -96,7 +95,9 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
     }
 
     @Override
-    public void updateSize(int width, int height) {
+    public void updateSize() {
+        int width = mRootContentContainer.getWidth();
+        int height = mRootContentContainer.getHeight();
         int savedHeight = height;
         int savedWidth = width;
         height = Math.min(width, height);

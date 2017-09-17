@@ -24,7 +24,7 @@ import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem
 import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem.PLUS;
 
 public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVisualRepresentation,
-        IComparisionTypeQuest {
+        IGroupWeightComparisonQuest {
 
     @Nullable
     private QuestVisualRepresentationList mVisualRepresentationList;
@@ -82,7 +82,7 @@ public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVi
             Collections.shuffle(availableVariantList);
             mAvailableAnswerVariants = availableVariantList.toArray();
         } else if (questionType == QuestionType.COMPARISON) {
-            comparisonType = MathUtils.randInt(COMPARISON_TYPE_MIN, COMPARISON_TYPE_MAX);
+            comparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
             for (; i < length; i++) {
                 mVisualRepresentationList.add(questResourceLibrary.getVisualResourceItem(leftNode[i]));
             }
@@ -101,7 +101,7 @@ public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVi
     }
 
     @Override
-    public int getComparisonType() {
+    public int getGroupComparisonType() {
         return getQuestionType() == QuestionType.COMPARISON ? comparisonType : -1;
     }
 }

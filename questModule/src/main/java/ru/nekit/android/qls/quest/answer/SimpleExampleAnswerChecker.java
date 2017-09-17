@@ -3,6 +3,7 @@ package ru.nekit.android.qls.quest.answer;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
@@ -10,7 +11,7 @@ import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import static ru.nekit.android.qls.quest.math.MathematicalOperation.ADDITION;
 import static ru.nekit.android.qls.quest.math.MathematicalOperation.SUBTRACTION;
 
-public class SimpleExampleAnswerChecker extends QuestAnswerChecker {
+public class SimpleExampleAnswerChecker extends QuestAnswerChecker<Object> {
 
     @Override
     public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull Object answer) {

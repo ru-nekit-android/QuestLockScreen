@@ -39,7 +39,6 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
 
     public QuestSaver(@NonNull Context context) {
         super(context);
-        PreferencesUtil.init(context);
         GsonBuilder gsonBuilder = new GsonBuilder();
         mGsonAvailableVariants = new GsonBuilder().create();
         final RuntimeTypeAdapterFactory<IQuest> typeFactory = RuntimeTypeAdapterFactory
@@ -62,7 +61,8 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
         return PreferencesUtil.getString(Pupil.NAME_CURRENT);
     }
 
-    Class<? extends IQuest>[] getSupportsClasses() {
+    @SuppressWarnings("unchecked")
+    private Class<? extends IQuest>[] getSupportsClasses() {
         return new Class[]{
                 PerimeterQuest.class,
                 MetricsQuest.class,

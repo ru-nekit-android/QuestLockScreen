@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.answer;
+package ru.nekit.android.qls.quest.answer.shared;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

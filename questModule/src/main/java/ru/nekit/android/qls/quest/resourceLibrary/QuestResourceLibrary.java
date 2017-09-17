@@ -64,8 +64,8 @@ public class QuestResourceLibrary {
         return questVisualResourceItems;
     }
 
-    public QuestVisualResourceItem getVisualResourceItem(int item) {
-        return QuestVisualResourceItem.getByOrdinal(item);
+    public QuestVisualResourceItem getVisualResourceItem(int itemId) {
+        return QuestVisualResourceItem.getByItemId(itemId);
     }
 
     public QuestVisualResourceItem[] getVisualResourceItemList() {

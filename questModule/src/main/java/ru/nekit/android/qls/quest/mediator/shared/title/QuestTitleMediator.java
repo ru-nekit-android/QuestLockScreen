@@ -1,9 +1,11 @@
-package ru.nekit.android.qls.quest.mediator;
+package ru.nekit.android.qls.quest.mediator.shared.title;
 
+import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.IQuest;
@@ -15,20 +17,22 @@ import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 import ru.nekit.android.qls.quest.types.TextQuest;
 import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.utils.ViewHolder;
 
-import static ru.nekit.android.qls.quest.types.IComparisionTypeQuest.COMPARISON_TYPE_MAX;
+import static ru.nekit.android.qls.quest.types.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
 
 public class QuestTitleMediator implements IQuestTitleMediator {
 
-    private QuestContext mQuestContext;
-    private IQuest mQuest;
+    protected QuestContext mQuestContext;
+    protected ViewGroup mRootContentContainer;
+    protected IQuest mQuest;
     private QuestTitleViewHolder mViewHolder;
     private String mTitleText;
-    private boolean mIsDestroyed;
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
+        mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();
         QuestionType questionType = mQuest.getQuestionType();
         mViewHolder = new QuestTitleViewHolder(questContext);
@@ -117,13 +121,13 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                         case SOLUTION:
 
 
-                            mTitleText = String.format("Найдите периметр %sа!", perimeterQuest.getFigureName(mQuestContext));
+                            mTitleText = String.format("Найдите периметр %sа!", perimeterQuest.getFigureName(questContext));
 
                             break;
 
                         case UNKNOWN_MEMBER:
 
-                            mTitleText = String.format("Найдите сторону %s, если периметр равен %s см.", questContext.getString(R.string.unknown_side), perimeterQuest.getPerimeter());
+                            mTitleText = String.format("Найдите сторону %s, если периметр равен %s см.", mQuestContext.getString(R.string.unknown_side), perimeterQuest.getPerimeter());
 
                             break;
 
@@ -137,7 +141,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                         case SOLUTION:
 
-                            mTitleText = String.format("%s или %s", questContext.getString(R.string.wait), questContext.getString(R.string.go));
+                            mTitleText = String.format("%s или %s", mQuestContext.getString(R.string.wait), mQuestContext.getString(R.string.go));
 
                             break;
 
@@ -160,7 +164,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                         case COMPARISON:
 
                             mTitleText = String.format("Фруктовая арифметика: каких фруктов  %s?",
-                                    fruitArithmeticQuest.getComparisonType() == COMPARISON_TYPE_MAX ? "больше" : "меньше");
+                                    fruitArithmeticQuest.getGroupComparisonType() == MAX_GROUP_WEIGHT ? "больше" : "меньше");
 
 
                             break;
@@ -185,7 +189,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                         case COMPARISON:
 
                             mTitleText = String.format("Выберите циферблат, на которых изображено %s время",
-                                    timeQuest.getComparisonType() == COMPARISON_TYPE_MAX ? "максимальное" : "минимальное");
+                                    timeQuest.getGroupComparisonType() == MAX_GROUP_WEIGHT ? "максимальное" : "минимальное");
 
                             break;
 
@@ -208,7 +212,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                             mTitleText = String.format("Выберите %s",
                                     questResourceLibrary.getVisualResourceItem(
                                             numberSummandQuest.getUnknownMember()).
-                                            getTitle(questContext));
+                                            getTitle(mQuestContext));
 
                             break;
 
@@ -231,14 +235,13 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    @CallSuper
-    public void destroy() {
-        mIsDestroyed = true;
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+
     }
 
     @Override
-    public boolean isDestroyed() {
-        return mIsDestroyed;
+    @CallSuper
+    public void detachView() {
     }
 
     @Override
@@ -247,16 +250,28 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void updateSize(int width, int height) {
+    public void updateSize() {
     }
 
     @Override
-    public void playAnimationOnDelayedStart(int duration, @Nullable View view) {
-        //do nothing - title always show
+    public void deactivate() {
+
     }
 
     @Override
     public String getTitle() {
         return mTitleText;
+    }
+
+    static class QuestTitleViewHolder extends ViewHolder {
+
+        @NonNull
+        final TextView titleView;
+
+        QuestTitleViewHolder(@NonNull Context context) {
+            super(context, R.layout.layout_quest_title);
+            titleView = (TextView) mView.findViewById(R.id.tv_title);
+        }
+
     }
 }

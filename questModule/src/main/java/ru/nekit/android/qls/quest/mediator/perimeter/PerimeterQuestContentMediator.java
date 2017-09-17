@@ -8,7 +8,7 @@ import android.widget.EditText;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.mediator.AbstractQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 
 import static android.view.View.GONE;
@@ -18,9 +18,10 @@ public class PerimeterQuestContentMediator extends AbstractQuestContentMediator 
     private PerimeterQuestViewHolder mViewHolder;
 
     @Override
-    public void init(@NonNull QuestContext questContext) {
-        PerimeterQuest quest = (PerimeterQuest) questContext.getQuest();
-        mViewHolder = new PerimeterQuestViewHolder(questContext);
+    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreateQuest(questContext, rootContentContainer);
+        PerimeterQuest quest = (PerimeterQuest) mQuest;
+        mViewHolder = new PerimeterQuestViewHolder(mQuestContext);
         ViewGroup.LayoutParams figureViewLayoutParams = mViewHolder.figureView.getLayoutParams();
         if (quest.isSquare()) {
             figureViewLayoutParams.width = 100;
@@ -41,7 +42,7 @@ public class PerimeterQuestContentMediator extends AbstractQuestContentMediator 
             mViewHolder.aFigureSideLabel.setText(String.valueOf(quest.getASideSize()));
             mViewHolder.bFigureSideLabel.setText(String.valueOf(quest.getBSideSize()));
         } else if (quest.getQuestionType() == QuestionType.UNKNOWN_MEMBER) {
-            String unknownSideString = questContext.getString(R.string.unknown_side);
+            String unknownSideString = mQuestContext.getString(R.string.unknown_side);
             if (quest.isSquare()) {
                 mViewHolder.aFigureSideLabel.setText(unknownSideString);
             } else {
@@ -72,6 +73,6 @@ public class PerimeterQuestContentMediator extends AbstractQuestContentMediator 
     }
 
     @Override
-    public void updateSize(int width, int height) {
+    public void updateSize() {
     }
 }

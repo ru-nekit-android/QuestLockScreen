@@ -27,7 +27,7 @@ import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.lockScreen.content.AbstractLockScreenContentMediator;
 import ru.nekit.android.qls.lockScreen.content.ILockScreenContentContainerViewHolder;
-import ru.nekit.android.qls.lockScreen.content.QuestContentMediator;
+import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
 import ru.nekit.android.qls.lockScreen.content.SupportContentMediator;
 import ru.nekit.android.qls.lockScreen.service.LockScreenService;
 import ru.nekit.android.qls.lockScreen.window.Window;
@@ -37,8 +37,10 @@ import ru.nekit.android.qls.utils.KeyboardHost;
 import ru.nekit.android.qls.utils.RevealAnimator;
 import ru.nekit.android.qls.utils.RevealPoint;
 import ru.nekit.android.qls.utils.ScreenHost;
+import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.ViewHolder;
 
+import static android.content.Intent.ACTION_TIME_TICK;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -132,7 +134,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 EVENT_TIC_TAC,
                 EVENT_QUEST_INIT,
                 EVENT_QUEST_PAUSE,
-                EVENT_QUEST_RESUME
+                EVENT_QUEST_RESUME,
+                ACTION_TIME_TICK
         );
     }
 
@@ -200,6 +203,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                             | LayoutParams.FLAG_HARDWARE_ACCELERATED
                     ,
                     PixelFormat.TRANSLUCENT);
+            mLockScreenLayoutParams.screenBrightness = 1;
+            //mLockScreenLayoutParams.height = 0;
             mLockScreenLayoutParams.gravity = (isLandscape ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
             mLockScreenLayoutParams.screenOrientation = isLandscape ?
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
@@ -232,6 +237,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
             statusBarLayoutParams.height = getStatusBarHeight();
             mStatusBarViewHolder.timerContainer.setVisibility(INVISIBLE);
             mWindowManager.addView(mStatusBarViewHolder.getView(), statusBarLayoutParams);
+            updateTimeClockText();
         }
     }
 
@@ -347,7 +353,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                                 currentTransition == QUEST;
                         mPreviousContentMediator = mCurrentContentMediator;
                         if (currentTransition == QUEST) {
-                            mCurrentContentMediator = new QuestContentMediator(mQuestContext);
+                            mCurrentContentMediator = new LockScreenQuestContentMediator(mQuestContext);
                         } else {
                             mCurrentContentMediator = new SupportContentMediator(mQuestContext);
                         }
@@ -368,7 +374,18 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
                 break;
 
+            case ACTION_TIME_TICK:
+
+                updateTimeClockText();
+
+                break;
+
         }
+    }
+
+    private void updateTimeClockText() {
+        mStatusBarViewHolder.clockView.setText(new SimpleDateFormat("HH:mm",
+                Locale.getDefault()).format(TimeUtils.getCurrentTime()));
     }
 
     private void updateTimerProgress(long sessionTime) {
@@ -482,12 +499,13 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
     private static class StatusBarViewHolder extends ViewHolder {
 
-        TextView sessionTimeTextView;
+        TextView sessionTimeTextView, clockView;
         View sessionTime, bestTime, worstTime, timerContainer;
 
         StatusBarViewHolder(@NonNull Context context) {
             super(context, R.layout.layout_status_bar);
             sessionTimeTextView = (TextView) getView().findViewById(R.id.tv_session_time);
+            clockView = (TextView) getView().findViewById(R.id.tv_clock);
             sessionTime = getView().findViewById(R.id.progress_session_time);
             bestTime = getView().findViewById(R.id.progress_best_time);
             worstTime = getView().findViewById(R.id.progress_worst_time);

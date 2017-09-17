@@ -7,7 +7,7 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.utils.MathUtils;
 
-public class TimeQuest extends NumberSummandQuest implements IComparisionTypeQuest {
+public class TimeQuest extends NumberSummandQuest implements IGroupWeightComparisonQuest {
 
     private int comparisonType;
 
@@ -21,7 +21,7 @@ public class TimeQuest extends NumberSummandQuest implements IComparisionTypeQue
             unknownMemberIndex = MathUtils.randUnsignedInt(length - 1);
         }
         if (quest.getQuestionType() == QuestionType.COMPARISON) {
-            comparisonType = MathUtils.randInt(COMPARISON_TYPE_MIN, COMPARISON_TYPE_MAX);
+            comparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
         }
     }
 
@@ -66,14 +66,14 @@ public class TimeQuest extends NumberSummandQuest implements IComparisionTypeQue
     }
 
     @Override
-    public int getComparisonType() {
+    public int getGroupComparisonType() {
         return getQuestionType() == QuestionType.COMPARISON ? comparisonType : -1;
     }
 
     @Override
     public Object getAnswer() {
         if (getQuestionType() == QuestionType.COMPARISON) {
-            boolean isMax = getComparisonType() == COMPARISON_TYPE_MAX;
+            boolean isMax = getGroupComparisonType() == MAX_GROUP_WEIGHT;
             int answer = isMax ? 0 : Integer.MAX_VALUE;
             for (int item : leftNode) {
                 answer = isMax ? Math.max(answer, item) : Math.min(answer, item);
