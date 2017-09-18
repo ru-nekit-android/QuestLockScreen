@@ -28,6 +28,8 @@ import ru.nekit.android.qls.quest.mediator.time.TimeQuestAlternativeAnswerMediat
 import ru.nekit.android.qls.quest.mediator.trafficLight.TrafficLightQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.trafficLight.TrafficLightQuestContentMediator;
 
+import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
+
 public class QuestVisualBuilder {
 
     @NonNull
@@ -116,14 +118,14 @@ public class QuestVisualBuilder {
 
             case FRUIT_ARITHMETIC:
 
+                boolean isSolution = quest.getQuestionType() == SOLUTION;
                 mQuestMediatorFacade = new QuestMediatorFacade(
                         mQuestContext,
-                        quest.getQuestionType() == QuestionType.SOLUTION ?
-                                new QuestAnswerChecker() :
+                        isSolution ? new QuestAnswerChecker() :
                                 new GroupWeightComparisonQuestAnswerChecker(),
                         new QuestTitleMediator(),
-                        new FruitArithmeticQuestContentMediator(),
-                        quest.getQuestionType() == QuestionType.SOLUTION ?
+                        isSolution ? new FruitArithmeticQuestContentMediator() : null,
+                        isSolution ?
                                 new FruitArithmeticQuestAlternativeAnswerMediator() :
                                 new FruitComparisonAlternativeAnswerMediator()
                 );
