@@ -14,13 +14,21 @@ public class FruitComparisonAlternativeAnswerMediator extends
 
     @Override
     protected int getColumnCount() {
-        return 7;
+        int i = 1;
+        while (i * i < getQuest().leftNode.length) {
+            i++;
+        }
+        return i;
     }
 
     @NonNull
     @Override
     protected List<Integer> getListData() {
-        return ((NumberSummandQuest) mQuest).getLeftNodeAsList();
+        return getQuest().getLeftNodeAsList();
+    }
+
+    private NumberSummandQuest getQuest() {
+        return ((NumberSummandQuest) mQuest);
     }
 
     @LayoutRes
