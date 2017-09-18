@@ -37,7 +37,7 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
                 }
             };
 
-    public static final int VALUE_DEFAULT_ANSWER_VARIANTS = 2;
+    public static final int VALUE_DEFAULT_ANSWER_VARIANTS = 4;
     public static final int VALUE_DEFAULT_MEMBER_COUNT = 2;
 
     public static final int VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON = 2;
