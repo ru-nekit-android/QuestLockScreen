@@ -198,7 +198,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
 
     private void attachQuestView() {
         mViewHolder.attachQuestContent(mCurrentQuestVisualBuilder.getQuestMediatorFacade().getView());
-        mQuestContext.initAndStartQuestIfAble();
+        mQuestContext.createAndStartQuestIfAble();
     }
 
     @Override

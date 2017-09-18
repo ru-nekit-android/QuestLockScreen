@@ -49,7 +49,7 @@ import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.EVENT_TRANSI
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.Transition.QUEST;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_OPEN;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_INIT;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_TIC_TAC;
@@ -132,7 +132,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 EVENT_WINDOW_CLOSED,
                 EVENT_TRANSITION_CHANGED,
                 EVENT_TIC_TAC,
-                EVENT_QUEST_INIT,
+                EVENT_QUEST_CREATE,
                 EVENT_QUEST_PAUSE,
                 EVENT_QUEST_RESUME,
                 ACTION_TIME_TICK
@@ -322,7 +322,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
                 break;
 
-            case EVENT_QUEST_INIT:
+            case EVENT_QUEST_CREATE:
 
                 mCurrentQuestStatistics = mQuestContext.getQuestStatistics();
                 updateTimerProgress(0);
