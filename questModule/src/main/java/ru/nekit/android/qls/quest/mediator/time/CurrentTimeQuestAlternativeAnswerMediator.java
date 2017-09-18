@@ -2,12 +2,10 @@ package ru.nekit.android.qls.quest.mediator.time;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 
 import java.util.List;
 
 import ru.nekit.android.qls.EventBus;
-import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestContextEvent;
 import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
 
@@ -15,15 +13,15 @@ public class CurrentTimeQuestAlternativeAnswerMediator extends TimeQuestAlternat
         implements EventBus.IEventHandler {
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreateQuest(questContext, rootContentContainer);
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+        super.onStartQuest(playAnimationOnDelayedStart);
         mQuestContext.getEventBus().handleEvents(this, QuestContextEvent.EVENT_TIC_TAC);
     }
 
     @Override
-    public void detachView() {
-        mQuestContext.getEventBus().stopHandleEvents(this);
-        super.detachView();
+    public void onRestartQuest() {
+        super.onRestartQuest();
+        mQuestContext.getEventBus().handleEvents(this, QuestContextEvent.EVENT_TIC_TAC);
     }
 
     @Override
@@ -47,5 +45,27 @@ public class CurrentTimeQuestAlternativeAnswerMediator extends TimeQuestAlternat
     @Override
     protected CurrentTimeAdapter getListAdapter(List<Integer> listData) {
         return new CurrentTimeAdapter(getQuest(), listData, this);
+    }
+
+    @Override
+    public void onPauseQuest() {
+
+    }
+
+    @Override
+    public void onResumeQuest() {
+
+    }
+
+    @Override
+    public void deactivate() {
+        mQuestContext.getEventBus().stopHandleEvents(this);
+        super.deactivate();
+    }
+
+    @Override
+    public void onStopQuest() {
+        mQuestContext.getEventBus().stopHandleEvents(this);
+        super.onStopQuest();
     }
 }

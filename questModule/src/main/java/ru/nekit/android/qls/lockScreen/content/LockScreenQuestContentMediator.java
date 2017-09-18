@@ -76,7 +76,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                     mTransitionChoreograph.goCurrentTransition();
                 }
             } else {
-                if (allowToDestroy()) {
+                if (allowToClose()) {
                     mQuestContext.getEventBus().sendEvent(LockScreenMediator.ACTION_CLOSE);
                 }
             }
@@ -92,9 +92,9 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         public void onAnimationEnd(Animation animation) {
             if (animation == mViewHolder.inAnimation) {
                 updateQuestTitle();
-                mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
+                mViewHolder.updateViewVisibility(mQuestContext);
             } else if (animation == mViewHolder.outAnimation) {
-                mPreviousQuestVisualBuilder.getQuestMediatorFacade().detachView();
+                mPreviousQuestVisualBuilder.detachView();
                 mPreviousQuestVisualBuilder = null;
             }
         }
@@ -165,39 +165,42 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         return mViewHolder;
     }
 
-    private boolean allowToDestroy() {
+    private boolean allowToClose() {
         return Window.getWindowStack().isEmpty();
     }
 
     @Override
-    public void destroy() {
-        Window.closeAllWindows();
+    public void deactivate() {
         mQuestContext.getEventBus().stopHandleEvents(this);
         mViewHolder.menuButton.setOnClickListener(null);
         mViewHolder.statisticsContainer.setOnClickListener(null);
         mViewHolder.inAnimation.setAnimationListener(null);
+        mViewHolder.outAnimation.setAnimationListener(null);
         if (mPreviousQuestVisualBuilder != null) {
-            mPreviousQuestVisualBuilder.getQuestMediatorFacade().deactivate();
-            mPreviousQuestVisualBuilder.getQuestMediatorFacade().detachView();
+            mPreviousQuestVisualBuilder.deactivate();
         }
-        mCurrentQuestVisualBuilder.getQuestMediatorFacade().deactivate();
-        mCurrentQuestVisualBuilder.getQuestMediatorFacade().detachView();
+        mCurrentQuestVisualBuilder.deactivate();
     }
 
     @Override
     public void detachView() {
+        Window.closeAllWindows();
+        if (mPreviousQuestVisualBuilder != null) {
+            mPreviousQuestVisualBuilder.detachView();
+        }
+        mCurrentQuestVisualBuilder.detachView();
         mViewHolder.detachQuestView();
     }
 
     @Override
     public void attachView() {
         updateQuestTitle();
+        mViewHolder.updateViewVisibility(mQuestContext);
         attachQuestView();
-        mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
     }
 
     private void attachQuestView() {
-        mViewHolder.attachQuestContent(mCurrentQuestVisualBuilder.getQuestMediatorFacade().getView());
+        mViewHolder.attachQuestContent(mCurrentQuestVisualBuilder.getView());
         mQuestContext.createAndStartQuestIfAble();
     }
 
@@ -219,7 +222,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
             });
         } else if (view == mViewHolder.delayedStartContainer) {
             if (mQuestContext.startQuestIfAble()) {
-                mViewHolder.updateViewVisibility(mQuestContext.getQuestState());
+                mViewHolder.updateViewVisibility(mQuestContext);
             }
         }
     }
@@ -280,8 +283,9 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
 
                 Transition transition = mTransitionChoreograph.getCurrentTransition();
                 if (transition == QUEST) {
+                    //remember current as previous
                     mPreviousQuestVisualBuilder = mCurrentQuestVisualBuilder;
-                    mCurrentQuestVisualBuilder.getQuestMediatorFacade().deactivate();
+                    mCurrentQuestVisualBuilder.deactivate();
                     mCurrentQuestVisualBuilder = new QuestVisualBuilder(mQuestContext);
                     mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
                     attachQuestView();
@@ -356,8 +360,8 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
             questContentContainer.removeAllViews();
         }
 
-        void updateViewVisibility(int flags) {
-            boolean showDelayStartView = (flags & DELAYED_START) != 0 && (flags & STARTED) == 0;
+        void updateViewVisibility(@NonNull QuestContext questContext) {
+            boolean showDelayStartView = questContext.questHasState(DELAYED_START) && !questContext.questHasState(STARTED);
             delayedStartContainer.setVisibility(showDelayStartView ? VISIBLE : INVISIBLE);
             if (showDelayStartView) {
                 delayedStartContainer.setAlpha(0);

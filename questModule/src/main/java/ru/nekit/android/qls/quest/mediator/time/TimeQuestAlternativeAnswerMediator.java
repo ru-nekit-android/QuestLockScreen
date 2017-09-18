@@ -31,10 +31,6 @@ public class TimeQuestAlternativeAnswerMediator
         return ((NumberSummandQuest) mQuest).getLeftNodeAsList();
     }
 
-    @Override
-    public void deactivate() {
-    }
-
     @NonNull
     @Override
     protected TimeAdapter getListAdapter(List<Integer> listData) {

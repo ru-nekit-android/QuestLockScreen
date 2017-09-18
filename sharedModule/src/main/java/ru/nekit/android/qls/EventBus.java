@@ -76,8 +76,9 @@ public class EventBus {
     }
 
     public void stopHandleEvents(@NonNull final IEventHandler eventHandler) {
-
-        mContext.unregisterReceiver(mReceiverMap.remove(eventHandler.getEventBusName()));
+        if (mReceiverMap.containsKey(eventHandler.getEventBusName())) {
+            mContext.unregisterReceiver(mReceiverMap.remove(eventHandler.getEventBusName()));
+        }
     }
 
     public interface IEventHandler {

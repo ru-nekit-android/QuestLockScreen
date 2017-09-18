@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.quest;
 
 import android.support.annotation.NonNull;
+import android.view.View;
 import android.widget.ViewSwitcher;
 
 import ru.nekit.android.qls.quest.answer.CoinQuestAnswerChecker;
@@ -173,7 +174,15 @@ public class QuestVisualBuilder {
         mQuestMediatorFacade.onCreateQuest(mQuestContext, contentContainer);
     }
 
-    public IQuestMediatorFacade getQuestMediatorFacade() {
-        return mQuestMediatorFacade;
+    public View getView() {
+        return mQuestMediatorFacade.getView();
+    }
+
+    public void detachView() {
+        mQuestMediatorFacade.detachView();
+    }
+
+    public void deactivate() {
+        mQuestMediatorFacade.deactivate();
     }
 }

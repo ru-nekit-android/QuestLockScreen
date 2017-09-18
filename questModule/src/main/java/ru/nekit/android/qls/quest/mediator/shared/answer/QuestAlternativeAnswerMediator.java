@@ -61,6 +61,28 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
     }
 
     @Override
+    public void onPauseQuest() {
+
+    }
+
+    @Override
+    public void onResumeQuest() {
+
+    }
+
+    @CallSuper
+    @Override
+    public void onRestartQuest() {
+
+    }
+
+    @CallSuper
+    @Override
+    public void onStopQuest() {
+
+    }
+
+    @Override
     public void detachView() {
 
     }

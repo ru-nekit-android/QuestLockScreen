@@ -15,7 +15,7 @@ public abstract class AbstractLockScreenContentMediator {
     @NonNull
     public abstract ILockScreenContentContainerViewHolder getViewHolder();
 
-    public abstract void destroy();
+    public abstract void deactivate();
 
     public abstract void detachView();
 

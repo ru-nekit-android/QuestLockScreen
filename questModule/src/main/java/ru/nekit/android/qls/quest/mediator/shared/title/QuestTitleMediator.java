@@ -240,6 +240,26 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
+    public void onPauseQuest() {
+
+    }
+
+    @Override
+    public void onResumeQuest() {
+
+    }
+
+    @Override
+    public void onStopQuest() {
+
+    }
+
+    @Override
+    public void onRestartQuest() {
+
+    }
+
+    @Override
     @CallSuper
     public void detachView() {
     }

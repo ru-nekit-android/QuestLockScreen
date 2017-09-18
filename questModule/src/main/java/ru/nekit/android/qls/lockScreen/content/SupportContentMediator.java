@@ -41,7 +41,7 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
     }
 
     @Override
-    public void destroy() {
+    public void deactivate() {
         mViewHolder.okButton.setOnClickListener(null);
     }
 

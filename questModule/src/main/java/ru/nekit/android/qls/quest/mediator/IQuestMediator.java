@@ -13,6 +13,14 @@ public interface IQuestMediator {
 
     void onStartQuest(boolean playAnimationOnDelayedStart);
 
+    void onRestartQuest();
+
+    void onPauseQuest();
+
+    void onResumeQuest();
+
+    void onStopQuest();
+
     void detachView();
 
     @Nullable

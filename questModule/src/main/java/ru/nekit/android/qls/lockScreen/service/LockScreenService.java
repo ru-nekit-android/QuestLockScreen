@@ -312,8 +312,8 @@ public class LockScreenService extends Service implements MessageGateway.Message
     private void destroyLockScreenView() {
         destroyWorkHandler();
         if (mLockScreenMediator != null) {
+            mLockScreenMediator.deactivate();
             mLockScreenMediator.detachView();
-            mLockScreenMediator.destroy();
             mLockScreenMediator = null;
         }
         mQuestContext.destroy();
@@ -449,9 +449,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
                     if (getBoolean(NAME_RESTORE_AFTER_INCOMING_CALL_ENDED)) {
                         setBoolean(NAME_RESTORE_AFTER_INCOMING_CALL_ENDED, false);
-                        //if (mLockScreenMediator == null) {
                         createLockScreenView(ON_INCOME_CALL_COMPLETE);
-                        //}
                     }
 
                     break;

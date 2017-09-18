@@ -52,8 +52,10 @@ import static ru.nekit.android.qls.quest.QuestContext.QuestState.STOPPED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_LEVEL_UP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESTART;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_STOP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_TIC_TAC;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_UPDATE_STATISTICS;
@@ -109,13 +111,6 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     //Quest state functional
-    public int getQuestState() {
-        if (mQuestState == 0) {
-            mQuestState = PreferencesUtil.getInt(NAME_QUEST_STATE);
-        }
-        return mQuestState;
-    }
-
     private void setQuestState(int state) {
         PreferencesUtil.setInt(NAME_QUEST_STATE, state);
     }
@@ -325,7 +320,9 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         boolean isStarted = questHasState(STARTED);
         if (!isStarted) {
             replaceQuestState(CREATED, STARTED);
-            if (!questHasState(STOPPED)) {
+            if (questHasState(STOPPED)) {
+                mEventBus.sendEvent(EVENT_QUEST_RESTART);
+            } else {
                 mEventBus.sendEvent(EVENT_QUEST_START);
             }
             destroyTicTac();
@@ -341,12 +338,15 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         destroyTicTac();
         if (questHasState(STARTED)) {
             replaceQuestState(STARTED, STOPPED);
+            mEventBus.sendEvent(EVENT_QUEST_STOP);
             sendTicTacEvent(0);
         }
     }
 
     private void sendTicTacEvent(long value) {
-        mEventBus.sendEvent(EVENT_TIC_TAC, NAME_SESSION_TIME, value);
+        if (!questHasState(PAUSED)) {
+            mEventBus.sendEvent(EVENT_TIC_TAC, NAME_SESSION_TIME, value);
+        }
     }
 
     private void destroyTicTac() {
@@ -404,9 +404,9 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public void createAndStartQuestIfAble() {
         if (mQuest != null) {
             addQuestState(CREATED);
-            mEventBus.sendEvent(EVENT_QUEST_CREATE, NAME_QUEST_STATE, getQuestState());
-            if (ScreenHost.isScreenOn(this)) {
-                if (!questHasDelayedStart()) {
+            mEventBus.sendEvent(EVENT_QUEST_CREATE);
+            if (!questHasDelayedStart()) {
+                if (ScreenHost.isScreenOn(this)) {
                     startQuestIfAble();
                 }
             }

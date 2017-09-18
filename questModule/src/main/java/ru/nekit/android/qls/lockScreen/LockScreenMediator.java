@@ -30,7 +30,6 @@ import ru.nekit.android.qls.lockScreen.content.ILockScreenContentContainerViewHo
 import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
 import ru.nekit.android.qls.lockScreen.content.SupportContentMediator;
 import ru.nekit.android.qls.lockScreen.service.LockScreenService;
-import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.statistics.QuestStatistics;
 import ru.nekit.android.qls.utils.KeyboardHost;
@@ -74,6 +73,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
     private StatusBarViewHolder mStatusBarViewHolder;
     private AbstractLockScreenContentMediator mCurrentContentMediator, mPreviousContentMediator;
     private QuestStatistics mCurrentQuestStatistics;
+    private LayoutParams mLockScreenLayoutParams;
     private Animator.AnimatorListener mAnimatorListenerOnClose = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -83,8 +83,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         @Override
         public void onAnimationEnd(Animator animation) {
             animation.removeAllListeners();
-            detachView();
             mQuestContext.getEventBus().sendEvent(LockScreenService.ACTION_HIDE_LOCK_SCREEN_VIEW);
+            detachView();
         }
 
         @Override
@@ -96,8 +96,6 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         public void onAnimationRepeat(Animator animation) {
         }
     };
-
-    private LayoutParams mLockScreenLayoutParams;
 
     public LockScreenMediator(@NonNull final QuestContext questContext) {
         mQuestContext = questContext;
@@ -115,8 +113,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
             public void onAnimationEnd(Animation animation) {
                 mViewHolder.setInAnimation(AnimationUtils.loadAnimation(mQuestContext,
                         R.anim.slide_in));
+                mPreviousContentMediator.deactivate();
                 mPreviousContentMediator.detachView();
-                mPreviousContentMediator.destroy();
             }
 
             @Override
@@ -181,7 +179,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
     }
 
     public void attachView() {
-        if (!isAttached()) {
+        if (!isViewAttached()) {
             boolean isLandscape = isLandscape();
             Point screenSize = ScreenHost.getScreenSize(mQuestContext);
             int statusBaHeight = isLandscape ? 0 : getStatusBarHeight();
@@ -241,7 +239,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         }
     }
 
-    private boolean isAttached() {
+    private boolean isViewAttached() {
         return mViewHolder.getView().getParent() != null;
     }
 
@@ -256,8 +254,17 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         animator.start();
     }
 
+    public void deactivate() {
+        mTransitionChoreograph.destroy();
+        if (mCurrentContentMediator != null) {
+            mCurrentContentMediator.deactivate();
+        }
+        mViewHolder.outAnimation.setAnimationListener(null);
+        mQuestContext.getEventBus().stopHandleEvents(this);
+    }
+
     public void detachView() {
-        if (isAttached()) {
+        if (isViewAttached()) {
             mViewHolder.titleContainer.removeAllViews();
             mViewHolder.contentContainer.removeAllViews();
             mWindowManager.removeView(mViewHolder.getView());
@@ -268,15 +275,6 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 mWindowManager.removeView(mStatusBarViewHolder.getView());
             }
         }
-    }
-
-    public void destroy() {
-        mTransitionChoreograph.destroy();
-        if (mCurrentContentMediator != null) {
-            mCurrentContentMediator.destroy();
-        }
-        mViewHolder.outAnimation.setAnimationListener(null);
-        mQuestContext.getEventBus().stopHandleEvents(this);
     }
 
     @Override
@@ -331,10 +329,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
             case EVENT_TIC_TAC:
 
-                if (Window.getWindowStack().size() == 0) {
-                    long sessionTime = intent.getLongExtra(QuestContext.NAME_SESSION_TIME, 0);
-                    updateTimerProgress(sessionTime);
-                }
+                long sessionTime = intent.getLongExtra(QuestContext.NAME_SESSION_TIME, 0);
+                updateTimerProgress(sessionTime);
 
                 break;
 

@@ -148,7 +148,7 @@
     <style name="LockScreen.QuestContent.TitleContainer">
         <item name="android:paddingLeft">@dimen/base_gap</item>
         <item name="android:paddingTop">@dimen/base_semi_gap</item>
-        <item name="android:paddingRight">0dp</item>
+        <item name="android:paddingRight">@dimen/base_gap</item>
         <item name="android:paddingBottom">@dimen/base_semi_gap</item>
         <item name="android:background">@color/green</item>
         <item name="android:layout_height">@dimen/title_container_height</item>
