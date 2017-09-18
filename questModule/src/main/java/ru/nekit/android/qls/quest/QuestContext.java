@@ -43,14 +43,14 @@ import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.Vibrate;
 
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.ANSWERED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.CREATED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.INITED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.PAUSED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.RESTORED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STOPPED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_LEVEL_UP;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_INIT;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
@@ -324,7 +324,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public boolean startQuestIfAble() {
         boolean isStarted = questHasState(STARTED);
         if (!isStarted) {
-            replaceQuestState(INITED, STARTED);
+            replaceQuestState(CREATED, STARTED);
             if (!questHasState(STOPPED)) {
                 mEventBus.sendEvent(EVENT_QUEST_START);
             }
@@ -401,10 +401,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         return quest;
     }
 
-    public void initAndStartQuestIfAble() {
+    public void createAndStartQuestIfAble() {
         if (mQuest != null) {
-            addQuestState(INITED);
-            mEventBus.sendEvent(EVENT_QUEST_INIT, NAME_QUEST_STATE, getQuestState());
+            addQuestState(CREATED);
+            mEventBus.sendEvent(EVENT_QUEST_CREATE, NAME_QUEST_STATE, getQuestState());
             if (ScreenHost.isScreenOn(this)) {
                 if (!questHasDelayedStart()) {
                     startQuestIfAble();
@@ -549,7 +549,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public static class QuestState {
         public static int RESTORED = 1;
         public static int DELAYED_START = 2;
-        public static int INITED = 4;
+        public static int CREATED = 4;
         public static int STARTED = 8;
         public static int STOPPED = 16;
         public static int PAUSED = 32;
