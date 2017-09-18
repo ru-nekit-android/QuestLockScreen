@@ -91,8 +91,8 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
 
     @Override
     public void updateSize() {
-        int width = mContentContainer.getWidth();
-        int height = mContentContainer.getHeight();
+        int width = mRootContentContainer.getWidth();
+        int height = mRootContentContainer.getHeight();
         final int coinCount = mCoinViewHolderList.size();
         int coinContainerWidth = 0, coinXPosition = 0, coinSize = 0, maxCoinHeight = 0, i = 0;
         for (; i < coinCount; i++) {
