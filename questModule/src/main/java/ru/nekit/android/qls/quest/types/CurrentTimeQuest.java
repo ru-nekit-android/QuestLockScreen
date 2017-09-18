@@ -30,7 +30,11 @@ public class CurrentTimeQuest extends TimeQuest {
             if (i == unknownMemberIndex) {
                 leftNode[i] = currentHours * 60 + currentMinutes;
             } else {
-                leftNode[i] = leftNode[i] / 60 * 60 + currentMinutes;
+                int currentHoursLocal = (leftNode[i] - leftNode[i] % 60) / 60;
+                while (currentHoursLocal == currentHours) {
+                    currentHoursLocal = MathUtils.randUnsignedInt(12);
+                }
+                leftNode[i] = currentHoursLocal * 60 + currentMinutes;
             }
         }
     }
