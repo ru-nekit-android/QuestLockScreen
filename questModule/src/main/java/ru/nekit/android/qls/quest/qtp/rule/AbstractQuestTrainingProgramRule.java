@@ -2,6 +2,7 @@ package ru.nekit.android.qls.quest.qtp.rule;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 
 import com.google.gson.Gson;
@@ -87,6 +88,7 @@ public abstract class AbstractQuestTrainingProgramRule implements Parcelable {
         dest.writeInt(mEnabled ? 1 : 0);
     }
 
+    @CallSuper
     public void parse(Gson gson, JsonObject object) {
         QuestionType[] localQuestionTypes;
         if (object.has(QuestTrainingProgram.Dictionary.QUESTION_TYPES)) {

@@ -82,7 +82,7 @@ public enum QuestVisualResourceItem implements ITitleable {
 
     }
 
-    public static QuestVisualResourceItem getByOrdinal(int ordinal) {
+    private static QuestVisualResourceItem getByOrdinal(int ordinal) {
         return values()[ordinal];
     }
 

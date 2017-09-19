@@ -9,10 +9,9 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
+import ru.nekit.android.qls.quest.types.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
@@ -30,6 +29,8 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
         }
     };
 
+    private int unknownMemberIndex;
+
     public MismatchQuestTrainingProgramRule() {
     }
 
@@ -38,25 +39,35 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    QuestVisualRepresentationList getQuestVisualRepresentationList(
+            @NonNull QuestContext questContext) {
         QuestVisualResourceGroup mismatchGroup = null;
-        List<Integer> qVRItemIdList = getVisualResourceItemIdList(questContext);
+        QuestVisualRepresentationList questVisualRepresentationList =
+                super.getQuestVisualRepresentationList(questContext);
         List<QuestVisualResourceGroup> questVisualResourceGroups =
                 Arrays.asList(QuestVisualResourceGroup.values());
         Collections.shuffle(questVisualResourceGroups);
         for (QuestVisualResourceGroup group : questVisualResourceGroups) {
-            if (!group.hasParent(currentGroup) && !currentGroup.hasParent(group)) {
+            if (!group.hasParent(actualGroup) && !actualGroup.hasParent(group)) {
                 mismatchGroup = group;
                 break;
             }
         }
         List<QuestVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
-        int unknownMemberIndex = MathUtils.randListLength(qVRItemIdList);
-        qVRItemIdList.add(unknownMemberIndex,
+        unknownMemberIndex = MathUtils.randListLength(questVisualRepresentationList.getIdsList());
+        questVisualRepresentationList.getIdsList().add(unknownMemberIndex,
                 mismatchQVRItemIdList.get(MathUtils.randListLength(mismatchQVRItemIdList)).getId());
-        qVRItemIdList.remove(unknownMemberIndex + 1);
-        return makeChoiceQuestGenerator(qVRItemIdList, QuestType.MISMATCH, questionType,
-                unknownMemberIndex);
+        questVisualRepresentationList.getIdsList().remove(unknownMemberIndex + 1);
+        return questVisualRepresentationList;
+    }
+
+
+    QuestType getActualQuestType() {
+        return QuestType.MISMATCH;
+    }
+
+    @Override
+    int getUnknownIndex(QuestVisualRepresentationList questVisualRepresentationList) {
+        return unknownMemberIndex;
     }
 }

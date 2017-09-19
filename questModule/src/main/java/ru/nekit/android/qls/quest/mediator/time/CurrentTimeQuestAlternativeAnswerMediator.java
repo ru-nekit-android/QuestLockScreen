@@ -58,12 +58,6 @@ public class CurrentTimeQuestAlternativeAnswerMediator extends TimeQuestAlternat
     }
 
     @Override
-    public void deactivate() {
-        mQuestContext.getEventBus().stopHandleEvents(this);
-        super.deactivate();
-    }
-
-    @Override
     public void onStopQuest() {
         mQuestContext.getEventBus().stopHandleEvents(this);
         super.onStopQuest();

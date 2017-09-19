@@ -12,14 +12,8 @@ import ru.nekit.android.qls.quest.QuestContext;
 public abstract class AbstractQuestContentMediator implements IQuestContentMediator {
 
     protected QuestContext mQuestContext;
-    @NonNull
     protected ViewGroup mRootContentContainer;
     protected IQuest mQuest;
-
-    @Override
-    public void deactivate() {
-
-    }
 
     @Override
     public void detachView() {
@@ -69,4 +63,9 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     }
 
+    @CallSuper
+    @Override
+    public void deactivate() {
+
+    }
 }

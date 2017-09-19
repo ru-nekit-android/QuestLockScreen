@@ -159,6 +159,7 @@ public class QuestVisualBuilder {
 
             case CHOICE:
             case MISMATCH:
+            case CURRENT_SEASON:
 
                 mQuestMediatorFacade = new QuestMediatorFacade(
                         mQuestContext,

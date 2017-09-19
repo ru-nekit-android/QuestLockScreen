@@ -225,6 +225,12 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                     mTitleText = "Найди лишнее";
 
                     break;
+
+                case CURRENT_SEASON:
+
+                    mTitleText = "Выберите текущее время года";
+
+                    break;
             }
         } else if (mQuest instanceof TextQuest) {
             TextQuest textQuest = (TextQuest) mQuest;
@@ -255,6 +261,11 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
+    public final void deactivate() {
+
+    }
+
+    @Override
     public void onRestartQuest() {
 
     }
@@ -271,11 +282,6 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
     @Override
     public void updateSize() {
-    }
-
-    @Override
-    public void deactivate() {
-
     }
 
     @Override

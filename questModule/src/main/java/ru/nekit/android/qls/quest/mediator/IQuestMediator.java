@@ -21,13 +21,13 @@ public interface IQuestMediator {
 
     void onStopQuest();
 
+    void deactivate();
+
     void detachView();
 
     @Nullable
     View getView();
 
     void updateSize();
-
-    void deactivate();
 
 }

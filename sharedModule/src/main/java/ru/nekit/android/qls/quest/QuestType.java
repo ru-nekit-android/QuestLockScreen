@@ -49,6 +49,11 @@ public enum QuestType implements ITitleable {
             R.string.quest_current_time_title,
             UNKNOWN_MEMBER),
 
+    CURRENT_SEASON(R.string.quest_current_season_synonym,
+            new QuestionType[]{UNKNOWN_MEMBER},
+            R.string.quest_current_season_title,
+            UNKNOWN_MEMBER),
+
     CHOICE(R.string.quest_choice_synonym,
             new QuestionType[]{UNKNOWN_MEMBER},
             R.string.quest_choice_title,

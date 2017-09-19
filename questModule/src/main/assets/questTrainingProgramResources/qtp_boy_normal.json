@@ -1,5 +1,5 @@
 {
-  "version": 1.251,
+  "version": 1.26,
   "name": "example",
   "description": "example",
   "sex": "BOY",
@@ -28,7 +28,7 @@
         {
           "questType": "светофор",
           "enabled": false,
-          "delayedStart": true
+          "delayedStart": false
         },
         //ВРЕМЯ
         {
@@ -48,22 +48,24 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": true,
-          "memberCount": 8,
-          "accuracy": 10
+          "enabled": false,
+          "memberCount": 4,
+          "accuracy": 10,
+          "delayedStart": false
         },
         //ТЕКУЩЕЕ_ВРЕМЯ
         {
           "questType": "текущее_время",
           "reward": 10,
           "enabled": false,
+          "delayedStart": true,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": false
+          "enabled": true
         },
         //ВЫБОР
         {
@@ -75,7 +77,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": false
+          "enabled": true
         },
         //ЛИШНИЙ
         {
@@ -87,7 +89,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": false
+          "enabled": true
         },
         //ФРУКТЫ
         {
@@ -116,9 +118,9 @@
           "questionTypes": [
             "comparison"
           ],
-          "answerVariants": 20,
-          "memberCount": 40,
-          "delayedStart": true,
+          "answerVariants": 2,
+          "memberCount": 20,
+          "delayedStart": false,
           "enabled": false
         }
       ]

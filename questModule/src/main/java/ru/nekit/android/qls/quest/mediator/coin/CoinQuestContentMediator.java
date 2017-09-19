@@ -72,6 +72,7 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     public void deactivate() {
         mCoinViewHolderList.clear();
         mCoinViewHolderList = null;
+        super.deactivate();
     }
 
     @Override

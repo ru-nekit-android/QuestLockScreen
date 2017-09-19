@@ -82,6 +82,12 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     }
 
+    @CallSuper
+    @Override
+    public void deactivate() {
+
+    }
+
     @Override
     public void detachView() {
 
@@ -146,11 +152,6 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     @Override
     public void updateSize() {
-    }
-
-    @Override
-    public void deactivate() {
-
     }
 
     @Override

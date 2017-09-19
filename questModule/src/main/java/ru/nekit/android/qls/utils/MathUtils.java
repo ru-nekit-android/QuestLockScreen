@@ -44,6 +44,11 @@ public class MathUtils {
         return randUnsignedInt(list.size() - 1);
     }
 
+    public static <T> T randItem(T[] array) {
+        int length = array.length;
+        return array[randUnsignedInt(length - 1)];
+    }
+
     public static int randItem(int[] array) {
         int length = array.length;
         return array[randUnsignedInt(length - 1)];

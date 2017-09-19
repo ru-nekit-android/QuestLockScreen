@@ -55,6 +55,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     public void deactivate() {
         mFruitImageDrawableCache.clear();
         mFruitShadowImageDrawableCache.clear();
+        super.deactivate();
     }
 
     @Override
@@ -135,7 +136,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                 }
                 marginTop = Math.min(2, index) * baseSize / 4;
                 QuestVisualResourceItem questVisualResourceItem =
-                        QuestVisualResourceItem.getByOrdinal(visualRepresentationId);
+                        QuestVisualResourceItem.getByItemId(visualRepresentationId);
                 switch (questVisualResourceItem) {
                     case MINUS:
                     case PLUS:

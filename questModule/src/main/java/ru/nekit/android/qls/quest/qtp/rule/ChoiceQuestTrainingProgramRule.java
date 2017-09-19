@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.TYPES;
@@ -38,7 +38,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     };
 
     protected int[] types;
-    QuestVisualResourceGroup currentGroup;
+    QuestVisualResourceGroup actualGroup;
 
     public ChoiceQuestTrainingProgramRule() {
 
@@ -60,17 +60,15 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         super.parse(gson, object);
         if (object.has(TYPES)) {
             String[] stringTypes = gson.fromJson(object.get(TYPES), String[].class);
+            final int length = stringTypes.length;
             types = new int[stringTypes.length];
-            int index = 0;
-            for (String type : stringTypes) {
-                type = type.toUpperCase();
-                QuestVisualResourceGroup group = QuestVisualResourceGroup.valueOf(type);
-                types[index++] = group.ordinal();
+            for (int i = 0; i < length; i++) {
+                types[i] = QuestVisualResourceGroup.valueOf(stringTypes[i].toUpperCase()).getId();
             }
         } else {
             List<QuestVisualResourceGroup> questVisualResourceGroupList =
                     QuestVisualResourceGroup.CHOICE.getChildren();
-            int length = questVisualResourceGroupList.size();
+            final int length = questVisualResourceGroupList.size();
             types = new int[length];
             for (int i = 0; i < length; i++) {
                 types[i] = questVisualResourceGroupList.get(i).getId();
@@ -78,38 +76,41 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         }
     }
 
-    List<Integer> getVisualResourceItemIdList(@NonNull QuestContext questContext) {
-        currentGroup = QuestVisualResourceGroup.values()[MathUtils.randItem(types)];
-        List<Integer> questVisualResourceItemIdList = new ArrayList<>();
+    QuestVisualRepresentationList getQuestVisualRepresentationList(
+            @NonNull QuestContext questContext) {
+        actualGroup = getActualGroup();
+        QuestVisualRepresentationList questVisualRepresentationList =
+                new QuestVisualRepresentationList();
         QuestVisualResourceItem[] questVisualResourceItems =
                 questContext.getQuestResourceLibrary().getVisualResourceItemList();
         for (QuestVisualResourceItem questVisualResourceItem : questVisualResourceItems) {
             if (questVisualResourceItem.getGroups() != null) {
                 for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
-                    if (groupItem.hasParent(currentGroup)) {
-                        questVisualResourceItemIdList.add(questVisualResourceItem.getId());
+                    if (groupItem.hasParent(actualGroup)) {
+                        questVisualRepresentationList.add(questVisualResourceItem);
                     }
                 }
             }
         }
-        Collections.shuffle(questVisualResourceItemIdList);
-        return questVisualResourceItemIdList;
+        Collections.shuffle(questVisualRepresentationList.getIdsList());
+        return questVisualRepresentationList;
     }
 
-    IQuestGenerator makeChoiceQuestGenerator(@NonNull final List<Integer> questVisualResourceItems,
-                                             @NonNull final QuestType questType,
-                                             @NonNull final QuestionType questionType,
-                                             final int unknownMemberIndex) {
+    private IQuestGenerator makeChoiceQuestGenerator(
+            @NonNull final QuestVisualRepresentationList questVisualRepresentationList,
+            @NonNull final QuestType questType,
+            @NonNull final QuestionType questionType,
+            final int unknownMemberIndex) {
         return new IQuestGenerator() {
             @Override
             public IQuest generate() {
                 NumberSummandQuest quest = new NumberSummandQuest();
                 quest.setQuestType(questType);
                 quest.setQuestionType(questionType);
-                final int length = questVisualResourceItems.size();
+                final int length = questVisualRepresentationList.size();
                 quest.leftNode = new int[length];
                 for (int i = 0; i < length; i++) {
-                    quest.leftNode[i] = questVisualResourceItems.get(i);
+                    quest.leftNode[i] = questVisualRepresentationList.get(i);
                 }
                 quest.unknownMemberIndex = unknownMemberIndex;
                 return quest;
@@ -120,8 +121,21 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     @Override
     public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
                                               @NonNull QuestionType questionType) {
-        List<Integer> questVisualResourceItemList = getVisualResourceItemIdList(questContext);
-        return makeChoiceQuestGenerator(questVisualResourceItemList, QuestType.CHOICE, questionType,
-                MathUtils.randListLength(questVisualResourceItemList));
+        QuestVisualRepresentationList questVisualRepresentationList =
+                getQuestVisualRepresentationList(questContext);
+        return makeChoiceQuestGenerator(questVisualRepresentationList, getActualQuestType(),
+                questionType, getUnknownIndex(questVisualRepresentationList));
+    }
+
+    QuestVisualResourceGroup getActualGroup() {
+        return QuestVisualResourceGroup.getGroup(MathUtils.randItem(types));
+    }
+
+    int getUnknownIndex(QuestVisualRepresentationList questVisualRepresentationList) {
+        return MathUtils.randListLength(questVisualRepresentationList.getIdsList());
+    }
+
+    QuestType getActualQuestType() {
+        return QuestType.CHOICE;
     }
 }

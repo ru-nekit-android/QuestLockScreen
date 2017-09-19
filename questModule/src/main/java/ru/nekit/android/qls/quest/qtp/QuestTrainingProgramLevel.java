@@ -17,6 +17,7 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.ChoiceQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.CoinsQuestTrainingProgramRule;
+import ru.nekit.android.qls.quest.qtp.rule.CurrentSeasonQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.CurrentTimeQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.MetricsQuestTrainingProgramRule;
@@ -201,6 +202,12 @@ public class QuestTrainingProgramLevel implements Parcelable {
                         case CURRENT_TIME:
 
                             rule = new CurrentTimeQuestTrainingProgramRule();
+
+                            break;
+
+                        case CURRENT_SEASON:
+
+                            rule = new CurrentSeasonQuestTrainingProgramRule();
 
                             break;
 

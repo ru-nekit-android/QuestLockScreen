@@ -30,6 +30,10 @@ public enum QuestVisualResourceGroup implements ITitleable {
         mParents = parents;
     }
 
+    public static QuestVisualResourceGroup getGroup(int id) {
+        return values()[id];
+    }
+
     public int getId() {
         return ordinal();
     }
