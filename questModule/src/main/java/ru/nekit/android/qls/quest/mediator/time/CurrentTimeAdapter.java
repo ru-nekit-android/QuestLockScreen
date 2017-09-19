@@ -29,6 +29,6 @@ class CurrentTimeAdapter extends TimeAdapter {
     @Override
     public void onBindViewHolder(final TimeViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
-        holder.getContentContainer().setTag(position);
+        holder.getView().setTag(position);
     }
 }

@@ -302,6 +302,9 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
         mQuestContext.getEventBus().stopHandleEvents(this);
         KeyboardHost.hideKeyboard(mQuestContext, getView());
         onStopQuest();
+        mTitleMediator.deactivate();
+        mContentMediator.deactivate();
+        mTitleMediator.deactivate();
     }
 
     @Override

@@ -19,6 +19,7 @@ public interface IQuestMediator {
 
     void onResumeQuest();
 
+    //call when screen is getting off
     void onStopQuest();
 
     void deactivate();

@@ -13,8 +13,8 @@ android {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 4
-        versionName "1.231"
+        versionCode 5
+        versionName "1.26"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //renderscriptTargetApi 20
         //renderscriptSupportModeEnabled true

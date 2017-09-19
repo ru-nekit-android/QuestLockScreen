@@ -23,7 +23,7 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     private List<CoinViewHolder> mCoinViewHolderList;
 
     private static int getXPositionShiftByWidth(int width, int coinCount) {
-        float sizeMultiplier = coinCount > 4 ? 0.5f : 0.7f;
+        float sizeMultiplier = coinCount > 4 ? 0.6f : 0.7f;
         return (int) (width * sizeMultiplier);
     }
 
@@ -127,5 +127,11 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
         contentLayoutParams.height = maxCoinHeight;
         mContentContainer.setY((height - maxCoinHeight) / 2);
         mContentContainer.requestLayout();
+    }
+
+    @Override
+    public void onPauseQuest() {
+        super.onPauseQuest();
+        updateSize();
     }
 }

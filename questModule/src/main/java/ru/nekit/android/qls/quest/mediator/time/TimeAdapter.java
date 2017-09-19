@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.mediator.shared.adapter.IContentContainerViewHolder;
 import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
 import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.utils.IViewHolder;
 
 class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
 
@@ -33,7 +33,7 @@ class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
 
     @Override
     public void onViewDetachedFromWindow(TimeViewHolder holder) {
-        holder.getContentContainer().setOnClickListener(null);
+        holder.getView().setOnClickListener(null);
     }
 
     @Override
@@ -44,8 +44,8 @@ class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
         int minute = TimeQuest.getTimeMinutes(time);
         holder.getHourHand().setRotation(30 * hour + minute / 2);
         holder.getMinuteHand().setRotation(6 * minute);
-        holder.getContentContainer().setOnClickListener(mClickListener);
-        holder.getContentContainer().setTag(time);
+        holder.getView().setOnClickListener(mClickListener);
+        holder.getView().setTag(time);
     }
 
     protected int getTime(int position) {
@@ -57,7 +57,7 @@ class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
         return mTimeListData.size();
     }
 
-    static class TimeViewHolder extends RecyclerView.ViewHolder implements IContentContainerViewHolder {
+    static class TimeViewHolder extends RecyclerView.ViewHolder implements IViewHolder {
 
         @NonNull
         private final View mView, mContentContainer, hourHand, minuteHand;
@@ -77,18 +77,12 @@ class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
         }
 
         @NonNull
-        @Override
-        public View getContentContainer() {
-            return mContentContainer;
-        }
-
-        @NonNull
-        public View getHourHand() {
+        View getHourHand() {
             return hourHand;
         }
 
         @NonNull
-        public View getMinuteHand() {
+        View getMinuteHand() {
             return minuteHand;
         }
     }

@@ -68,7 +68,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
     public static final String EVENT_OUTGOING_CALL = "eventOutgoingCall";
 
     public static final String ACTION_HIDE_LOCK_SCREEN_VIEW = "action_hide_lock_screen_view";
-    public static final String ACTION_SHOW_LOCK_SCREEN_VIEW = "action_show_lock_screen_view";
 
     private static final String NAME_RESTORE_AFTER_INCOMING_CALL_ENDED = "restore_after_incoming_call_end";
     private static final String NAME_RESTORE_AFTER_OUTGOING_CALL_ENDED = "restore_after_outgoing_call_end";
@@ -150,7 +149,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         mStartId = startId;
-        mStartType = LockScreenStartType.fromOrdinal(intent.getFlags());
+        mStartType = LockScreenStartType.fromOrdinal(intent.getIntExtra(LockScreenStartType.NAME, 0));
         Context context = getApplicationContext();
         if (mNotificationManager == null) {
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
@@ -165,7 +164,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
                     ACTION_SCREEN_ON,
                     EVENT_SET_CURRENT_PUPIL,
                     ACTION_HIDE_LOCK_SCREEN_VIEW,
-                    ACTION_SHOW_LOCK_SCREEN_VIEW,
                     INCOMING_CALL_RECEIVED,
                     INCOMING_CALL_ENDED,
                     OUTGOING_CALL_ENDED,
@@ -268,13 +266,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
         }
     }
 
-    @NonNull
-    private Intent getShowLockScreenViewIntent(@NonNull LockScreenStartType startType) {
-        Intent showLockScreenIntent = new Intent(ACTION_SHOW_LOCK_SCREEN_VIEW);
-        showLockScreenIntent.putExtra(LockScreenStartType.NAME, startType.ordinal());
-        return showLockScreenIntent;
-    }
-
     //exclude SILENCE START LOCK SCREEN MODE
     private void createLockScreenView(@NonNull LockScreenStartType startType) {
         final Context context = getApplicationContext();
@@ -338,14 +329,16 @@ public class LockScreenService extends Service implements MessageGateway.Message
     }
 
     private PendingIntent getContentIntentForPupil() {
-        return PendingIntent.getBroadcast(getApplicationContext(), 0,
-                getShowLockScreenViewIntent(ON_NOTIFICATION_CLICK),
+        Context context = getApplicationContext();
+        return PendingIntent.getService(context, 0,
+                LockScreen.getActivationIntent(context, ON_NOTIFICATION_CLICK),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getContentIntentForSetupWizard() {
-        return PendingIntent.getActivity(getApplicationContext(), 0,
-                QuestSetupWizard.getStartIntent(getApplicationContext(), false),
+        Context context = getApplicationContext();
+        return PendingIntent.getActivity(context, 0,
+                QuestSetupWizard.getStartIntent(context, false),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
@@ -432,9 +425,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
                 case EVENT_SET_CURRENT_PUPIL:
 
-                    if (mMessageGateway == null) {
-                        initMessageChannel();
-                    }
+                    initMessageChannel();
 
                     break;
 
@@ -471,11 +462,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
                     break;
 
-                case ACTION_SHOW_LOCK_SCREEN_VIEW:
-
-                    createLockScreenView(ON_NOTIFICATION_CLICK);
-
-                    break;
             }
         }
     }

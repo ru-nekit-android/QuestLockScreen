@@ -42,7 +42,7 @@ public class LockScreen {
     public static Intent getActivationIntent(@NonNull Context context,
                                              @NonNull LockScreenStartType startType) {
         Intent intentService = new Intent(context, LockScreenService.class);
-        intentService.setFlags(startType.ordinal());
+        intentService.putExtra(LockScreenStartType.NAME, startType.ordinal());
         return intentService;
     }
 
