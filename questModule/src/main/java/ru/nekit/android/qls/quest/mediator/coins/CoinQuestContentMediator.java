@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator.coin;
+package ru.nekit.android.qls.quest.mediator.coins;
 
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -14,8 +14,10 @@ import java.util.List;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.types.CoinModel;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.model.CoinModel;
+import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
+
+import static ru.nekit.android.qls.quest.QuestionType.UNKNOWN_MEMBER;
 
 public class CoinQuestContentMediator extends AbstractQuestContentMediator {
 
@@ -27,31 +29,33 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
         return (int) (width * sizeMultiplier);
     }
 
+    private FruitArithmeticQuest getQuest() {
+        return (FruitArithmeticQuest) mQuest;
+    }
+
     @Override
     public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         super.onCreateQuest(questContext, rootContentContainer);
-        NumberSummandQuest numberSummandQuest = (NumberSummandQuest) mQuest;
+        FruitArithmeticQuest quest = getQuest();
         mContentContainer = new FrameLayout(questContext);
         mCoinViewHolderList = new ArrayList<>();
-        CoinViewHolder coinViewHolder;
         //sort for beauty
-        Arrays.sort(numberSummandQuest.leftNode);
+        Arrays.sort(quest.leftNode);
         QuestionType questionType = mQuest.getQuestionType();
         switch (questionType) {
 
             case SOLUTION:
             case UNKNOWN_MEMBER:
 
-                if (numberSummandQuest.leftNode != null) {
-                    for (int i = numberSummandQuest.leftNode.length - 1; i >= 0; i--) {
-                        if (questionType == QuestionType.UNKNOWN_MEMBER &&
-                                i == numberSummandQuest.unknownMemberIndex) {
+                if (quest.leftNode != null) {
+                    for (int i = quest.leftNode.length - 1; i >= 0; i--) {
+                        if (questionType == UNKNOWN_MEMBER && i == quest.unknownMemberIndex) {
                             continue;
                         }
-                        CoinModel coinModel =
-                                CoinModel.getByNomination(numberSummandQuest.leftNode[i]);
+                        CoinModel coinModel = CoinModel.getByNomination(quest.leftNode[i]);
                         if (coinModel != null) {
-                            coinViewHolder = CoinViewBuilder.createView(questContext, coinModel);
+                            CoinViewHolder coinViewHolder = CoinViewBuilder.createView(questContext,
+                                    coinModel);
                             mContentContainer.addView(coinViewHolder.getView());
                             mCoinViewHolderList.add(coinViewHolder);
                         }
@@ -61,11 +65,19 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
                 break;
 
         }
+        updateSize();
     }
 
     @Override
-    public void detachView() {
-        mContentContainer.removeAllViews();
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+        super.onStartQuest(playAnimationOnDelayedStart);
+        updateSize();
+    }
+
+    @Override
+    public void onRestartQuest() {
+        super.onRestartQuest();
+        updateSize();
     }
 
     @Override
@@ -73,6 +85,11 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
         mCoinViewHolderList.clear();
         mCoinViewHolderList = null;
         super.deactivate();
+    }
+
+    @Override
+    public void detachView() {
+        mContentContainer.removeAllViews();
     }
 
     @Override
@@ -108,8 +125,6 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
         coinContainerWidth += coinSize;
         //scale
         float scale = 1 / (coinCount > 2 ? 1 : 1.3f) * width / coinContainerWidth;
-        coinContainerWidth *= scale;
-        maxCoinHeight *= scale;
         coinXPosition = 0;
         for (i = 0; i < coinCount; i++) {
             CoinViewHolder coinViewHolder = mCoinViewHolderList.get(i);
@@ -117,16 +132,10 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
             LayoutParams coinLayoutParams = coinView.getLayoutParams();
             coinSize = (int) (coinViewHolder.getAdaptiveWidth(width) * scale);
             coinLayoutParams.width = coinLayoutParams.height = coinSize;
-            coinView.setY((maxCoinHeight - coinSize) / 2);
+            coinView.setY((height - coinSize) / 2);
             coinView.setX(coinXPosition);
             coinXPosition += getXPositionShiftByWidth(coinSize, coinCount);
-            coinView.requestLayout();
         }
-        LayoutParams contentLayoutParams = mContentContainer.getLayoutParams();
-        contentLayoutParams.width = coinContainerWidth;
-        contentLayoutParams.height = maxCoinHeight;
-        mContentContainer.setY((height - maxCoinHeight) / 2);
-        mContentContainer.requestLayout();
     }
 
     @Override

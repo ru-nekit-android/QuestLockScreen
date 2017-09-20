@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.nekit.android.qls.quest.IQuest;
-import ru.nekit.android.qls.quest.types.IGroupWeightComparisonQuest;
+import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
 
 public abstract class AbstractGroupWeightComparisonQuestAnswerChecker<T>
         implements IAnswerChecker<T> {

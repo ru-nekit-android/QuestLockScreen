@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types;
+package ru.nekit.android.qls.quest.types.quest;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +15,9 @@ import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
+import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
+import ru.nekit.android.qls.quest.types.shared.IQuestVisualRepresentation;
+import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
 import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.BERRY;

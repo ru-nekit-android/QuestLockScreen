@@ -16,8 +16,8 @@ import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
-import ru.nekit.android.qls.quest.types.QuestVisualRepresentationList;
+import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.TYPES;

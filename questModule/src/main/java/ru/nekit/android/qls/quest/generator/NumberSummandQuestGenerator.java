@@ -9,7 +9,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
 import ru.nekit.android.qls.utils.Callable;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -20,7 +20,7 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
     private static final int RIGHT_NODE_INDEX = 1;
 
     private NumberSummandQuest mQuest;
-    private int[] mMemberMaxValue, mMemberMinValue, mZeroChance, mAvailableValueArray;
+    private int[] mMemberMaxValue, mMemberMinValue, mZeroChance, mAvailableValueArray, mPresetValues;
     private int[][] mEachMemberMinMaxValue;
     private int mFlags;
     private Callable<Integer, Integer> mLeftNodeEachItemTransformFunction;
@@ -226,10 +226,22 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
         }
     }
 
+    public void setPresetValues(@NonNull Enum[] values) {
+        final int length = values.length;
+        mPresetValues = new int[length];
+        for (int i = 0; i < length; i++) {
+            mPresetValues[i] = values[i].ordinal();
+        }
+    }
+
     @Override
     public IQuest generate() {
         if (mAvailableValueArray == null) {
-            generateArrayRandomValuesInRange(mQuest, LEFT_NODE_INDEX);
+            if (mPresetValues == null) {
+                generateArrayRandomValuesInRange(mQuest, LEFT_NODE_INDEX);
+            } else {
+                mQuest.leftNode = mPresetValues;
+            }
             switch (mQuest.getQuestionType()) {
 
                 case COMPARISON:

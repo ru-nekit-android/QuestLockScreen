@@ -11,7 +11,7 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
-import ru.nekit.android.qls.quest.types.QuestVisualRepresentationList;
+import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {

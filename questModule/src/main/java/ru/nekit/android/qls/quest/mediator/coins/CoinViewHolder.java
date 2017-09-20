@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator.coin;
+package ru.nekit.android.qls.quest.mediator.coins;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.types.CoinModel;
+import ru.nekit.android.qls.quest.types.model.CoinModel;
 import ru.nekit.android.qls.utils.ViewHolder;
 
 class CoinViewHolder extends ViewHolder {

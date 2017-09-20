@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types;
+package ru.nekit.android.qls.quest.types.shared;
 
 import ru.nekit.android.qls.quest.IQuest;
 

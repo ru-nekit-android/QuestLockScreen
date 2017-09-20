@@ -59,6 +59,23 @@ public class MathUtils {
         return rand.nextInt(max) + 1;
     }
 
+    public static <T> T[] shuffleArray(T[] array) {
+        int length = array.length;
+        Random random = new Random();
+        random.nextInt();
+        for (int i = 0; i < length; i++) {
+            int change = i + random.nextInt(length - i);
+            swap(array, i, change);
+        }
+        return array;
+    }
+
+    private static <T> void swap(T[] a, int i, int change) {
+        T helper = a[i];
+        a[i] = a[change];
+        a[change] = helper;
+    }
+
     public static boolean randBoolean() {
         return randUnsignedInt(1) != 0;
     }

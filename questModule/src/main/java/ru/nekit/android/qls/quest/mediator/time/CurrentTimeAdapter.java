@@ -5,7 +5,7 @@ import android.view.View;
 
 import java.util.List;
 
-import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
+import ru.nekit.android.qls.quest.types.quest.CurrentTimeQuest;
 import ru.nekit.android.qls.utils.TimeUtils;
 
 class CurrentTimeAdapter extends TimeAdapter {

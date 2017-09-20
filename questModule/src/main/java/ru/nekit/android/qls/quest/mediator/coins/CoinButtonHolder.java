@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator.coin;
+package ru.nekit.android.qls.quest.mediator.coins;
 
 
 import android.content.Context;
@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.types.CoinModel;
+import ru.nekit.android.qls.quest.types.model.CoinModel;
 import ru.nekit.android.qls.utils.ViewHolder;
 
 class CoinButtonHolder extends ViewHolder {

@@ -11,7 +11,7 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.pupil.avatar.PupilAvatarViewBuilder;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.types.TrafficLightType;
+import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -24,10 +24,10 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         super.onCreateQuest(questContext, rootContentContainer);
         mViewHolder = new TrafficLightQuestViewHolder(questContext);
-        TrafficLightType answer = TrafficLightType.fromOrdinal((int) mQuest.getAnswer());
+        TrafficLightModel answer = TrafficLightModel.fromOrdinal((int) mQuest.getAnswer());
         mViewHolder.trafficRedLight.setVisibility(INVISIBLE);
         mViewHolder.trafficGreenLight.setVisibility(INVISIBLE);
-        if (answer == TrafficLightType.GREEN) {
+        if (answer == TrafficLightModel.GREEN) {
             mViewHolder.trafficGreenLight.setVisibility(VISIBLE);
         } else {
             mViewHolder.trafficRedLight.setVisibility(VISIBLE);

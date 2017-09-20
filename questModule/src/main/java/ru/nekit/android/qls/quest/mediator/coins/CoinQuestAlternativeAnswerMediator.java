@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.mediator.coin;
+package ru.nekit.android.qls.quest.mediator.coins;
 
 import android.support.annotation.NonNull;
 import android.view.ViewGroup;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.types.CoinModel;
+import ru.nekit.android.qls.quest.types.model.CoinModel;
 
 public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMediator {
 

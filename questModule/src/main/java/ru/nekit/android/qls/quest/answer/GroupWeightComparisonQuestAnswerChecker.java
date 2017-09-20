@@ -6,7 +6,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.AbstractGroupWeightComparisonQuestAnswerChecker;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
 
 public class GroupWeightComparisonQuestAnswerChecker
         extends AbstractGroupWeightComparisonQuestAnswerChecker<Integer> {

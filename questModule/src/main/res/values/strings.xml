@@ -118,5 +118,9 @@
     <string name="notification_setup_wizard">Настройка приложения</string>
     <string name="title_notification_setup_wizard">Мастер настройки</string>
     <string name="title_delayed_start">Нажмите для начала решения задачи</string>
+    <string name="color_white">Белый</string>
+    <string name="color_black">Черный</string>
+    <string name="color_red">Красный</string>
+    <string name="color_green">Зеленый</string>
 
 </resources>

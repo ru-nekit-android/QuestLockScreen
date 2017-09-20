@@ -12,14 +12,15 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
-import ru.nekit.android.qls.quest.types.PerimeterQuest;
-import ru.nekit.android.qls.quest.types.TextQuest;
-import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.quest.types.model.ColorModel;
+import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.quest.PerimeterQuest;
+import ru.nekit.android.qls.quest.types.quest.TextQuest;
+import ru.nekit.android.qls.quest.types.quest.TimeQuest;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-import static ru.nekit.android.qls.quest.types.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
+import static ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
 
 public class QuestTitleMediator implements IQuestTitleMediator {
 
@@ -229,6 +230,15 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                 case CURRENT_SEASON:
 
                     mTitleText = "Выберите текущее время года";
+
+                    break;
+
+
+                case COLORS:
+
+                    mTitleText = String.format("Выберите %s цвет",
+                            ColorModel.getById(numberSummandQuest.getUnknownMember()).getTitle(questContext)
+                    );
 
                     break;
             }

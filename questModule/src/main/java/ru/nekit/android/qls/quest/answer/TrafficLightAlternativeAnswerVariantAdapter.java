@@ -7,14 +7,14 @@ import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.answer.shared.IAlternativeAnswerVariantAdapter;
-import ru.nekit.android.qls.quest.types.TrafficLightType;
+import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
 
 public class TrafficLightAlternativeAnswerVariantAdapter implements IAlternativeAnswerVariantAdapter {
 
     @Override
     @Nullable
     public String adapt(@NonNull Context context, @NonNull Object answerVariant) {
-        TrafficLightType value = TrafficLightType.fromOrdinal((int) answerVariant);
+        TrafficLightModel value = TrafficLightModel.fromOrdinal((int) answerVariant);
         Resources resources = context.getResources();
         switch (value) {
             case RED:

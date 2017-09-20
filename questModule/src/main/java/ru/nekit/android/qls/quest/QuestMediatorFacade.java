@@ -236,7 +236,6 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
     @Override
     public void onResumeQuest() {
         requestFocus();
-        updateSize();
         mTitleMediator.onResumeQuest();
         mContentMediator.onResumeQuest();
         mAlternativeAnswerMediator.onResumeQuest();

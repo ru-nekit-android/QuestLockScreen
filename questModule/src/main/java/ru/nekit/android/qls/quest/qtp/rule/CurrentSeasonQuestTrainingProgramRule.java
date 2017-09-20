@@ -8,7 +8,7 @@ import java.util.Calendar;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
-import ru.nekit.android.qls.quest.types.QuestVisualRepresentationList;
+import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
 

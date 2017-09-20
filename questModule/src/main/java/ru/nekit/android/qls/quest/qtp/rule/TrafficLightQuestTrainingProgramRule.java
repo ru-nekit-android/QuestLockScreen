@@ -7,7 +7,7 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
-import ru.nekit.android.qls.quest.types.TrafficLightType;
+import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
 
 public class TrafficLightQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
 
@@ -36,7 +36,7 @@ public class TrafficLightQuestTrainingProgramRule extends AbstractQuestTrainingP
                                               @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(1, 0);
-        generator.setAvailableMemberValues(TrafficLightType.values());
+        generator.setAvailableMemberValues(TrafficLightModel.values());
         return generator;
     }
 }

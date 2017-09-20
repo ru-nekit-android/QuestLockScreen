@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
-import ru.nekit.android.qls.quest.types.CoinModel;
+import ru.nekit.android.qls.quest.types.model.CoinModel;
 
 public class CoinQuestAnswerChecker extends QuestAnswerChecker<CoinModel> {
 

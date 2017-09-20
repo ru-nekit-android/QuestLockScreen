@@ -13,41 +13,42 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
-import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 
-    private LinearLayout mContainer;
+    private LinearLayout mContentContainer;
     private FruitArithmeticQuest mFruitArithmeticQuest;
     private SparseArray<Drawable> mFruitImageDrawableCache;
     private SparseArray<Drawable> mFruitShadowImageDrawableCache;
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void onCreateQuest(@NonNull QuestContext questContext,
+                              @NonNull ViewGroup rootContentContainer) {
         super.onCreateQuest(questContext, rootContentContainer);
         mFruitImageDrawableCache = new SparseArray<>();
         mFruitShadowImageDrawableCache = new SparseArray<>();
         mFruitArithmeticQuest = (FruitArithmeticQuest) mQuest;
         if (mFruitArithmeticQuest.getQuestionType() == QuestionType.SOLUTION) {
-            mContainer = new LinearLayout(questContext);
+            mContentContainer = new LinearLayout(questContext);
             final int length = mFruitArithmeticQuest.getVisualRepresentationList().size();
             for (int i = 0; i < length; i++) {
-                mContainer.addView(createFruitView(questContext,
+                mContentContainer.addView(createFruitView(questContext,
                         mFruitArithmeticQuest.getVisualRepresentationList().get(i)));
             }
-            LinearLayout.LayoutParams contentLayoutParams =
-                    new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT);
-            mContainer.setOrientation(LinearLayout.HORIZONTAL);
-            mContainer.setLayoutParams(contentLayoutParams);
+            LayoutParams contentLayoutParams = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+            mContentContainer.setOrientation(LinearLayout.HORIZONTAL);
+            mContentContainer.setLayoutParams(contentLayoutParams);
         }
     }
 
@@ -60,7 +61,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
 
     @Override
     public void detachView() {
-        mContainer.removeAllViews();
+        mContentContainer.removeAllViews();
     }
 
     private Drawable getFruitImageDrawable(@NonNull QuestContext questContext,
@@ -100,7 +101,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
 
     @Override
     public View getView() {
-        return mContainer;
+        return mContentContainer;
     }
 
     @Override
@@ -116,7 +117,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
             final int length = mFruitArithmeticQuest.getVisualRepresentationList().size();
             int index = 0;
             for (int i = 0; i < length; i++) {
-                View visualRepresentationItemView = mContainer.getChildAt(i);
+                View visualRepresentationItemView = mContentContainer.getChildAt(i);
                 int baseSize = getView().getWidth() / length;
                 int visualRepresentationId = mFruitArithmeticQuest.getVisualRepresentationList().get(i);
                 int visualRepresentationIdNext = visualRepresentationId;
@@ -124,8 +125,8 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                     visualRepresentationIdNext =
                             mFruitArithmeticQuest.getVisualRepresentationList().get(i + 1);
                 }
-                LinearLayout.LayoutParams visualRepresentationItemLayoutParams =
-                        new LinearLayout.LayoutParams(0, MATCH_PARENT, 1);
+                LayoutParams visualRepresentationItemLayoutParams =
+                        new LayoutParams(0, MATCH_PARENT, 1);
                 float marginRight = -baseSize / 2,
                         marginLeft = 0,
                         marginTop;
@@ -159,7 +160,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                 visualRepresentationItemView.setLayoutParams(visualRepresentationItemLayoutParams);
                 visualRepresentationItemView.requestLayout();
             }
-            mContainer.setY((height - mContainer.getHeight()) / 2);
+            mContentContainer.setY((height - mContentContainer.getHeight()) / 2);
         }
     }
 

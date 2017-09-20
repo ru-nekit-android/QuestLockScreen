@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types;
+package ru.nekit.android.qls.quest.types.shared;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,10 +7,10 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 
-abstract class Quest implements IQuest {
+public abstract class Quest implements IQuest {
 
     @Nullable
-    transient Object[] mAvailableAnswerVariants;
+    protected transient Object[] mAvailableAnswerVariants;
     private QuestionType mQuestionType;
     private QuestType mQuestType;
 

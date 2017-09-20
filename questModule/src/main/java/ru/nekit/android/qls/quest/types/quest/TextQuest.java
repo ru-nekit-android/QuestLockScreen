@@ -1,8 +1,9 @@
-package ru.nekit.android.qls.quest.types;
+package ru.nekit.android.qls.quest.types.quest;
 
 import android.text.InputType;
 
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.types.shared.Quest;
 
 public class TextQuest extends Quest {
 

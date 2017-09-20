@@ -7,7 +7,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.mediator.shared.answer.AbstractSquareImageQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
 
 public class ChoiceAlternativeAnswerMediator
         extends AbstractSquareImageQuestAlternativeAnswerMediator {

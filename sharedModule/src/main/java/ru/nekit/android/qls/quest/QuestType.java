@@ -62,6 +62,11 @@ public enum QuestType implements ITitleable {
     MISMATCH(R.string.quest_mismatch_synonym,
             new QuestionType[]{UNKNOWN_MEMBER},
             R.string.quest_mismatch_title,
+            UNKNOWN_MEMBER),
+
+    COLORS(R.string.quest_colors_synonym,
+            new QuestionType[]{UNKNOWN_MEMBER},
+            R.string.quest_colors_title,
             UNKNOWN_MEMBER);
 
     private QuestionType[] mSupportQuestionTypes;

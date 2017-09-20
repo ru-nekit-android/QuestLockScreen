@@ -10,7 +10,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
-import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.quest.types.quest.TimeQuest;
 import ru.nekit.android.qls.utils.IViewHolder;
 
 class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
@@ -60,12 +60,11 @@ class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {
     static class TimeViewHolder extends RecyclerView.ViewHolder implements IViewHolder {
 
         @NonNull
-        private final View mView, mContentContainer, hourHand, minuteHand;
+        private final View mView, hourHand, minuteHand;
 
         TimeViewHolder(@NonNull View view) {
             super(view);
             mView = view;
-            mContentContainer = view.findViewById(R.id.container_content);
             hourHand = view.findViewById(R.id.hour_hand);
             minuteHand = view.findViewById(R.id.minute_hand);
         }
