@@ -13,18 +13,14 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
+import ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.quest.types.shared.IQuestVisualRepresentation;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
-
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.BERRY;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.POMUM;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem.EQUAL;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem.MINUS;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem.PLUS;
 
 public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVisualRepresentation,
         IGroupWeightComparisonQuest {
@@ -47,11 +43,11 @@ public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVi
         leftNode = outQuest.leftNode;
         rightNode = outQuest.rightNode;
         QuestResourceLibrary questResourceLibrary = questContext.getQuestResourceLibrary();
-        mVisualRepresentationList = new QuestVisualRepresentationList();
+        mVisualRepresentationList = new QuestVisualRepresentationList(questResourceLibrary);
         if (questionType == QuestionType.SOLUTION) {
-            List<QuestVisualResourceItem> visualResourceSourceList =
-                    questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? POMUM : BERRY);
-            QuestVisualResourceItem[] questVisualResourceItems = new QuestVisualResourceItem[length];
+            List<IQuestVisualResourceItem> visualResourceSourceList =
+                    questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? QuestVisualResourceGroup.POMUM : QuestVisualResourceGroup.BERRY);
+            IQuestVisualResourceItem[] questVisualResourceItems = new BaseQuestVisualResourceItem[length];
             for (; i < length; i++) {
                 questVisualResourceItems[i] = visualResourceSourceList.get(
                         MathUtils.randUnsignedInt(visualResourceSourceList.size() - 1));
@@ -63,10 +59,10 @@ public class FruitArithmeticQuest extends NumberSummandQuest implements IQuestVi
                     mVisualRepresentationList.add(questVisualResourceItems[i]);
                 }
                 if (i < length - 1) {
-                    mVisualRepresentationList.add(leftNode[i + 1] > 0 ? PLUS : MINUS);
+                    mVisualRepresentationList.add(leftNode[i + 1] > 0 ? BaseQuestVisualResourceItem.PLUS : BaseQuestVisualResourceItem.MINUS);
                 }
             }
-            mVisualRepresentationList.add(EQUAL);
+            mVisualRepresentationList.add(BaseQuestVisualResourceItem.EQUAL);
             int answer = outQuest.getTypedAnswer();
             List<Integer> availableVariantList = new ArrayList<>();
             int leftShift = MathUtils.randUnsignedInt(Math.min(

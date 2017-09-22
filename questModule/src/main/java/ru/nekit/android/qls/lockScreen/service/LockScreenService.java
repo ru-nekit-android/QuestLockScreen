@@ -414,11 +414,8 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
                 case EVENT_QUEST_CREATE:
 
-                    int questFlags =
-                            intent.getIntExtra(QuestContext.NAME_QUEST_STATE, 0);
-                    if ((questFlags & QuestContext.QuestState.RESTORED) == 0) {
-                        mMessageGateway.send(InternalCommand.NAME,
-                                new InternalCommand(action));
+                    if (!mQuestContext.questHasState(QuestContext.QuestState.RESTORED)) {
+                        mMessageGateway.send(InternalCommand.NAME, new InternalCommand(action));
                     }
 
                     break;

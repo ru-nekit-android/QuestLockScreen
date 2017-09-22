@@ -66,7 +66,7 @@ import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_S
 public class QuestContext extends ContextThemeWrapper implements IAnswerCallback, EventBus.IEventHandler {
 
     public static final String NAME_SESSION_TIME = "sessionTime";
-    public static final String NAME_QUEST_STATE = "quest.quest_state";
+    public static final String NAME_QUEST_STATE = "quest.quest_state_0";
     @NonNull
     private final EventBus mEventBus;
     private Pupil mPupil;
@@ -93,9 +93,9 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public QuestContext(@NonNull Context context, @NonNull EventBus eventBus, @StyleRes int themeResourceId) {
         super(context, themeResourceId);
         mEventBus = eventBus;
-        mQuestSaver = new QuestSaver(context);
+        mQuestSaver = new QuestSaver(this);
         mSettingsStorage = new SettingsStorage();
-        mQuestResourceLibrary = new QuestResourceLibrary(context);
+        mQuestResourceLibrary = new QuestResourceLibrary(this);
         mQuestStatisticsSaver = new QuestStatisticsSaver(context);
         PupilManager pupilManager = new PupilManager(context);
         mPupil = pupilManager.getCurrentPupil();
@@ -111,23 +111,27 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     //Quest state functional
-    private void setQuestState(int state) {
-        PreferencesUtil.setInt(NAME_QUEST_STATE, state);
+    private void setQuestState(QuestState state) {
+        setQuestState(state.value());
     }
 
-    public boolean questHasState(int state) {
-        return (mQuestState & state) != 0;
+    private void setQuestState(int stateValue) {
+        PreferencesUtil.setInt(NAME_QUEST_STATE, stateValue);
     }
 
-    private void addQuestState(int state) {
-        setQuestState(mQuestState |= state);
+    public boolean questHasState(QuestState state) {
+        return (mQuestState & state.value()) != 0;
     }
 
-    private void removeQuestState(int state) {
-        setQuestState(mQuestState &= ~state);
+    private void addQuestState(QuestState state) {
+        setQuestState(mQuestState |= state.value());
     }
 
-    private void replaceQuestState(int stateForRemove, int stateForAdd) {
+    private void removeQuestState(QuestState state) {
+        setQuestState(mQuestState &= ~state.value());
+    }
+
+    private void replaceQuestState(QuestState stateForRemove, QuestState stateForAdd) {
         removeQuestState(stateForRemove);
         addQuestState(stateForAdd);
     }
@@ -363,7 +367,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     private IQuest buildQuest() {
         AppropriateQuestTrainingProgramRuleWrapper ruleWrapper =
                 mQuestTrainingProgram.getAppropriateRuleChanceByStatistics(mPupilStatistics);
-        IQuest quest = ruleWrapper.makeQuestGenerator(this).generate();
+        IQuest quest = ruleWrapper.makeQuest(this);
         quest.setQuestType(ruleWrapper.questType);
         switch (quest.getQuestType()) {
 
@@ -546,13 +550,17 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     //onInitQuest -> onStartQuest / pause -> answered
-    public static class QuestState {
-        public static int RESTORED = 1;
-        public static int DELAYED_START = 2;
-        public static int CREATED = 4;
-        public static int STARTED = 8;
-        public static int STOPPED = 16;
-        public static int PAUSED = 32;
-        public static int ANSWERED = 64;
+    public enum QuestState {
+        RESTORED,
+        DELAYED_START,
+        CREATED,
+        STARTED,
+        STOPPED,
+        PAUSED,
+        ANSWERED;
+
+        public int value() {
+            return (int) Math.pow(2, ordinal());
+        }
     }
 }

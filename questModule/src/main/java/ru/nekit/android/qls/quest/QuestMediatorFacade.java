@@ -43,6 +43,8 @@ import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESTART;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_STOP;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_WRONG_ANSWER;
 
 public class QuestMediatorFacade implements View.OnClickListener, IQuestMediatorFacade,
         EventBus.IEventHandler,
@@ -77,7 +79,10 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
                 EVENT_QUEST_RESTART,
                 EVENT_QUEST_PAUSE,
                 EVENT_QUEST_RESUME,
-                EVENT_QUEST_STOP);
+                EVENT_QUEST_STOP,
+                EVENT_WRONG_ANSWER,
+                EVENT_RIGHT_ANSWER
+        );
     }
 
     @Override
@@ -217,6 +222,13 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
             mAlternativeAnswerMediator.onStartQuest(false);
         }
         requestFocus();
+    }
+
+    @Override
+    public void onAnswer(boolean isRight) {
+        mTitleMediator.onAnswer(isRight);
+        mContentMediator.onAnswer(isRight);
+        mAlternativeAnswerMediator.onAnswer(isRight);
     }
 
     @Override
@@ -377,6 +389,18 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
             case EVENT_QUEST_STOP:
 
                 onStopQuest();
+
+                break;
+
+            case EVENT_RIGHT_ANSWER:
+
+                onAnswer(true);
+
+                break;
+
+            case EVENT_WRONG_ANSWER:
+
+                onAnswer(false);
 
                 break;
 

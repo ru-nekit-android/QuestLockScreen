@@ -13,7 +13,7 @@ import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.mediator.choice.ChoiceAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.coins.CoinQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.coins.CoinQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.colors.ColorsQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.colored.ColoredVisualRepresentationQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitArithmeticQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitArithmeticQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.fruitArithmetic.FruitComparisonAlternativeAnswerMediator;
@@ -178,7 +178,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
-                        new ColorsQuestAlternativeAnswerMediator()
+                        new ColoredVisualRepresentationQuestAlternativeAnswerMediator()
                 );
 
                 break;

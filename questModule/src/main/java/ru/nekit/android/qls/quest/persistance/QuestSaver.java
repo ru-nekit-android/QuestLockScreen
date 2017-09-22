@@ -122,7 +122,7 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
             JsonArray jsonArrayVisualRepresentationItems =
                     (JsonArray) jsonObjectQuest.get(QUEST_VISUAL_REPRESENTATION);
             QuestVisualRepresentationList questVisualRepresentationList =
-                    new QuestVisualRepresentationList();
+                    new QuestVisualRepresentationList(null);
             for (JsonElement jsonElement : jsonArrayVisualRepresentationItems) {
                 questVisualRepresentationList.add(jsonElement.getAsInt());
             }
