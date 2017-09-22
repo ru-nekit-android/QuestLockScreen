@@ -7,9 +7,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import ru.nekit.android.qls.CONST;
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.utils.Callable;
 
@@ -68,8 +68,8 @@ public class TimeQuestTrainingProgramRule extends AbstractQuestTrainingProgramRu
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(memberCount, 0);
         int[][] values = new int[2][memberCount];
@@ -87,6 +87,6 @@ public class TimeQuestTrainingProgramRule extends AbstractQuestTrainingProgramRu
         });
         generator.setMembersMinAndMaxValues(values);
         generator.setFlags(NumberSummandQuestGenerator.Flag.ONLY_POSITIVE_SUMMANDS);
-        return generator;
+        return generator.generate();
     }
 }

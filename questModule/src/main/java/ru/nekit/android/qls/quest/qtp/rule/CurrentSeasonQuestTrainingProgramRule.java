@@ -2,12 +2,14 @@ package ru.nekit.android.qls.quest.qtp.rule;
 
 
 import android.os.Parcel;
+import android.support.annotation.NonNull;
 
 import java.util.Calendar;
 
 import ru.nekit.android.qls.quest.QuestType;
+import ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
@@ -38,23 +40,25 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
         return QuestVisualResourceGroup.SEASONS;
     }
 
-    int getUnknownIndex(QuestVisualRepresentationList questVisualRepresentationList) {
+    int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
+                        @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
         Calendar calendar = Calendar.getInstance();
-        QuestVisualResourceItem questVisualResourceItem = null;
+        BaseQuestVisualResourceItem questVisualResourceItem = null;
         int currentMonth = calendar.get(Calendar.MONTH);
         if (currentMonth == 11 || currentMonth <= 1) {
-            questVisualResourceItem = QuestVisualResourceItem.WINTER;
+            questVisualResourceItem = BaseQuestVisualResourceItem.WINTER;
         }
         if (currentMonth > 1 || currentMonth <= 4) {
-            questVisualResourceItem = QuestVisualResourceItem.SPRING;
+            questVisualResourceItem = BaseQuestVisualResourceItem.SPRING;
         }
         if (currentMonth > 4 || currentMonth <= 7) {
-            questVisualResourceItem = QuestVisualResourceItem.SUMMER;
+            questVisualResourceItem = BaseQuestVisualResourceItem.SUMMER;
         }
         if (currentMonth > 7 || currentMonth <= 10) {
-            questVisualResourceItem = QuestVisualResourceItem.FALL;
+            questVisualResourceItem = BaseQuestVisualResourceItem.FALL;
         }
-        return questVisualRepresentationList.getIdsList().indexOf(questVisualResourceItem.getId());
+        return questVisualRepresentationList.getIdsList().indexOf(
+                questResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));
     }
 
     QuestType getActualQuestType() {

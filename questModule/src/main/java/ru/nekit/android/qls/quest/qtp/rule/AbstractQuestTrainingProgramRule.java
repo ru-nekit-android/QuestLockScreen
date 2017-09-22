@@ -13,10 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -125,8 +125,10 @@ public abstract class AbstractQuestTrainingProgramRule implements Parcelable {
         mEnabled = !object.has(ENABLED) || object.get(ENABLED).getAsBoolean();
     }
 
-    public abstract IQuestGenerator makeQuestGenerator(@NonNull QuestContext context,
-                                                       @NonNull QuestionType questionType);
+    public IQuest makeQuest(@NonNull QuestContext context,
+                            @NonNull QuestionType questionType) {
+        return null;
+    }
 
     QuestionType getRandomQuestionType() {
         return mQuestionTypes.get(MathUtils.randUnsignedInt(mQuestionTypes.size() - 1));

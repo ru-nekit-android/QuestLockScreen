@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.TextQuestGenerator;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.CAMOUFLAGE_LENGTH;
@@ -59,10 +59,10 @@ public class TextCamouflageTrainingProgramRule extends AbstractQuestTrainingProg
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         TextQuestGenerator generator = new TextQuestGenerator(questContext, questionType);
         generator.makeTextCamouflage(wordLength, camouflageLength);
-        return generator;
+        return generator.generate();
     }
 }

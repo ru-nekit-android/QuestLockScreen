@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.EACH_MEMBER_MIN_AND_MAX_VALUES;
@@ -77,13 +77,13 @@ public class MetricsQuestTrainingProgramRule extends AbstractQuestTrainingProgra
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(memberCounts);
         generator.setEachMemberMinAndMaxValues(eachMemberMinAndMaxValues);
         generator.setFlags(flags);
         generator.setLeftNodeMembersZeroValueChance(new int[]{85, 25, 0});
-        return generator;
+        return generator.generate();
     }
 }

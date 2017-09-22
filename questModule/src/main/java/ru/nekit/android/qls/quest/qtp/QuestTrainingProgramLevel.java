@@ -17,7 +17,7 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.ChoiceQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.CoinsQuestTrainingRule;
-import ru.nekit.android.qls.quest.qtp.rule.ColorsQuestTrainingRule;
+import ru.nekit.android.qls.quest.qtp.rule.ColoredVisualRepresentationQuestTrainingRule;
 import ru.nekit.android.qls.quest.qtp.rule.CurrentTimeQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.MetricsQuestTrainingProgramRule;
@@ -207,7 +207,7 @@ public class QuestTrainingProgramLevel implements Parcelable {
 
                         case COLORS:
 
-                            rule = new ColorsQuestTrainingRule();
+                            rule = new ColoredVisualRepresentationQuestTrainingRule();
 
                             break;
 

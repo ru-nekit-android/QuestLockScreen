@@ -13,9 +13,9 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
+import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
 import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
@@ -77,13 +77,13 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     }
 
     QuestVisualRepresentationList getQuestVisualRepresentationList(
-            @NonNull QuestContext questContext) {
+            @NonNull QuestResourceLibrary questResourceLibrary) {
         actualGroup = getActualGroup();
         QuestVisualRepresentationList questVisualRepresentationList =
-                new QuestVisualRepresentationList();
-        QuestVisualResourceItem[] questVisualResourceItems =
-                questContext.getQuestResourceLibrary().getVisualResourceItemList();
-        for (QuestVisualResourceItem questVisualResourceItem : questVisualResourceItems) {
+                new QuestVisualRepresentationList(questResourceLibrary);
+        List<IQuestVisualResourceItem> questVisualResourceItems =
+                questResourceLibrary.getVisualResourceItemList();
+        for (IQuestVisualResourceItem questVisualResourceItem : questVisualResourceItems) {
             if (questVisualResourceItem.getGroups() != null) {
                 for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(actualGroup)) {
@@ -96,42 +96,39 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         return questVisualRepresentationList;
     }
 
-    private IQuestGenerator makeChoiceQuestGenerator(
+    private IQuest makeChoiceQuest(
             @NonNull final QuestVisualRepresentationList questVisualRepresentationList,
             @NonNull final QuestType questType,
             @NonNull final QuestionType questionType,
             final int unknownMemberIndex) {
-        return new IQuestGenerator() {
-            @Override
-            public IQuest generate() {
-                NumberSummandQuest quest = new NumberSummandQuest();
-                quest.setQuestType(questType);
-                quest.setQuestionType(questionType);
-                final int length = questVisualRepresentationList.size();
-                quest.leftNode = new int[length];
-                for (int i = 0; i < length; i++) {
-                    quest.leftNode[i] = questVisualRepresentationList.get(i);
-                }
-                quest.unknownMemberIndex = unknownMemberIndex;
-                return quest;
-            }
-        };
+        NumberSummandQuest quest = new NumberSummandQuest();
+        quest.setQuestType(questType);
+        quest.setQuestionType(questionType);
+        final int length = questVisualRepresentationList.size();
+        quest.leftNode = new int[length];
+        for (int i = 0; i < length; i++) {
+            quest.leftNode[i] = questVisualRepresentationList.get(i);
+        }
+        quest.unknownMemberIndex = unknownMemberIndex;
+        return quest;
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         QuestVisualRepresentationList questVisualRepresentationList =
-                getQuestVisualRepresentationList(questContext);
-        return makeChoiceQuestGenerator(questVisualRepresentationList, getActualQuestType(),
-                questionType, getUnknownIndex(questVisualRepresentationList));
+                getQuestVisualRepresentationList(questContext.getQuestResourceLibrary());
+        return makeChoiceQuest(questVisualRepresentationList, getActualQuestType(),
+                questionType, getUnknownIndex(questContext.getQuestResourceLibrary(),
+                        questVisualRepresentationList));
     }
 
     QuestVisualResourceGroup getActualGroup() {
         return QuestVisualResourceGroup.getGroup(MathUtils.randItem(types));
     }
 
-    int getUnknownIndex(QuestVisualRepresentationList questVisualRepresentationList) {
+    int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
+                        @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
         return MathUtils.randListLength(questVisualRepresentationList.getIdsList());
     }
 

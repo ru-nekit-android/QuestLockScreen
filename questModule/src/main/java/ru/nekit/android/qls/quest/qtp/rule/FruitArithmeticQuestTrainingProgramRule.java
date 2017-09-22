@@ -9,12 +9,12 @@ import com.google.gson.JsonObject;
 import java.util.Collections;
 import java.util.List;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator.Flag;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
 import ru.nekit.android.qls.utils.Callable;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.ANSWER_VARIANTS;
@@ -99,8 +99,8 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull final QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         if (questionType == QuestionType.SOLUTION) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT, memberCount);
@@ -114,22 +114,22 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
             );
         } else if (questionType == QuestionType.COMPARISON) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON, memberCount);
-            List<QuestVisualResourceItem> visualResourceItemList =
+            List<IQuestVisualResourceItem> visualResourceItemList =
                     questContext.getQuestResourceLibrary().getVisualResourceItemsByGroup(FRUIT);
             answerVariants = Math.min(Math.max(VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON,
                     answerVariants),
                     visualResourceItemList.size());
             Collections.shuffle(visualResourceItemList);
             generator.setAvailableMemberValues(visualResourceItemList.subList(0, answerVariants),
-                    new Callable<QuestVisualResourceItem, Integer>() {
+                    new Callable<IQuestVisualResourceItem, Integer>() {
                         @Override
-                        public Integer call(QuestVisualResourceItem value) {
-                            return value.getId();
+                        public Integer call(IQuestVisualResourceItem value) {
+                            return questContext.getQuestResourceLibrary().getQuestVisualResourceItemId(value);
                         }
                     });
         }
         generator.setMemberCounts(memberCount, 0);
-        return generator;
+        return generator.generate();
     }
 
     public int getAnswerVariants() {

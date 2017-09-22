@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 
@@ -59,13 +59,13 @@ public class PerimeterQuestTrainingProgramRule extends AbstractQuestTrainingProg
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext questContext,
-                                              @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext questContext,
+                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(2, 1);
         generator.setFlags(NumberSummandQuestGenerator.Flag.ONLY_POSITIVE_SUMMANDS);
         generator.setLeftNodeMembersZeroValueChance(new int[]{0, PERIMETER_SQUARE_FIGURE_CHANCE});
         generator.setMembersMinAndMaxValues(memberMinAndMaxValues);
-        return generator;
+        return generator.generate();
     }
 }

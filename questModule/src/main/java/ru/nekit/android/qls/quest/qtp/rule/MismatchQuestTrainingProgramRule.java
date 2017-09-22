@@ -7,10 +7,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
+import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -40,10 +40,10 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
 
     @Override
     QuestVisualRepresentationList getQuestVisualRepresentationList(
-            @NonNull QuestContext questContext) {
+            @NonNull QuestResourceLibrary questResourceLibrary) {
         QuestVisualResourceGroup mismatchGroup = null;
         QuestVisualRepresentationList questVisualRepresentationList =
-                super.getQuestVisualRepresentationList(questContext);
+                super.getQuestVisualRepresentationList(questResourceLibrary);
         List<QuestVisualResourceGroup> questVisualResourceGroups =
                 Arrays.asList(QuestVisualResourceGroup.values());
         Collections.shuffle(questVisualResourceGroups);
@@ -53,10 +53,11 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
                 break;
             }
         }
-        List<QuestVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
+        List<IQuestVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
         unknownMemberIndex = MathUtils.randListLength(questVisualRepresentationList.getIdsList());
         questVisualRepresentationList.getIdsList().add(unknownMemberIndex,
-                mismatchQVRItemIdList.get(MathUtils.randListLength(mismatchQVRItemIdList)).getId());
+                questResourceLibrary.getQuestVisualResourceItemId(
+                        mismatchQVRItemIdList.get(MathUtils.randListLength(mismatchQVRItemIdList))));
         questVisualRepresentationList.getIdsList().remove(unknownMemberIndex + 1);
         return questVisualRepresentationList;
     }
@@ -67,7 +68,8 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     }
 
     @Override
-    int getUnknownIndex(QuestVisualRepresentationList questVisualRepresentationList) {
+    int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
+                        @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
         return unknownMemberIndex;
     }
 }

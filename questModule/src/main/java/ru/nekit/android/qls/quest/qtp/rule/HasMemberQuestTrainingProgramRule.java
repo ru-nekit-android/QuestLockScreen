@@ -6,33 +6,33 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.IQuestGenerator;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_COUNT;
 
-public class SimpleMemberQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
+public class HasMemberQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
 
-    public static final Creator<SimpleMemberQuestTrainingProgramRule> CREATOR =
-            new Creator<SimpleMemberQuestTrainingProgramRule>() {
+    public static final Creator<HasMemberQuestTrainingProgramRule> CREATOR =
+            new Creator<HasMemberQuestTrainingProgramRule>() {
                 @Override
-                public SimpleMemberQuestTrainingProgramRule createFromParcel(Parcel in) {
-                    return new SimpleMemberQuestTrainingProgramRule(in);
+                public HasMemberQuestTrainingProgramRule createFromParcel(Parcel in) {
+                    return new HasMemberQuestTrainingProgramRule(in);
                 }
 
                 @Override
-                public SimpleMemberQuestTrainingProgramRule[] newArray(int size) {
-                    return new SimpleMemberQuestTrainingProgramRule[size];
+                public HasMemberQuestTrainingProgramRule[] newArray(int size) {
+                    return new HasMemberQuestTrainingProgramRule[size];
                 }
             };
 
     protected int memberCount;
 
-    public SimpleMemberQuestTrainingProgramRule() {
+    public HasMemberQuestTrainingProgramRule() {
     }
 
-    private SimpleMemberQuestTrainingProgramRule(Parcel in) {
+    private HasMemberQuestTrainingProgramRule(Parcel in) {
         super(in);
         memberCount = in.readInt();
     }
@@ -46,7 +46,7 @@ public class SimpleMemberQuestTrainingProgramRule extends AbstractQuestTrainingP
     }
 
     @Override
-    public IQuestGenerator makeQuestGenerator(@NonNull QuestContext context, @NonNull QuestionType questionType) {
+    public IQuest makeQuest(@NonNull QuestContext context, @NonNull QuestionType questionType) {
         return null;
     }
 
