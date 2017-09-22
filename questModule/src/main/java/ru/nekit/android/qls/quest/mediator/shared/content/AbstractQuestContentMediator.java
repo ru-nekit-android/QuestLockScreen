@@ -68,4 +68,10 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
     public void deactivate() {
 
     }
+
+
+    @Override
+    public void onAnswer(boolean isRight) {
+
+    }
 }

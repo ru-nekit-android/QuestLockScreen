@@ -256,6 +256,11 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
+    public void onAnswer(boolean isRight) {
+
+    }
+
+    @Override
     public void onPauseQuest() {
 
     }
