@@ -7,9 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.ITitleable;
 
-public enum QuestVisualResourceItem implements ITitleable {
+public enum BaseQuestVisualResourceItem implements IQuestVisualResourceItem {
 
     MINUS(R.drawable.qvri_minus,
             R.string.qvri_minus_title,
@@ -73,24 +72,15 @@ public enum QuestVisualResourceItem implements ITitleable {
     @Nullable
     private QuestVisualResourceGroup[] mGroups;
 
-    QuestVisualResourceItem(@DrawableRes int drawableResourceId,
-                            @StringRes int titleResourceId,
-                            @Nullable QuestVisualResourceGroup... groups) {
+    BaseQuestVisualResourceItem(@DrawableRes int drawableResourceId,
+                                @StringRes int titleResourceId,
+                                @Nullable QuestVisualResourceGroup... groups) {
         mDrawableResourceId = drawableResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;
-
     }
 
-    private static QuestVisualResourceItem getByOrdinal(int ordinal) {
-        return values()[ordinal];
-    }
-
-    public static QuestVisualResourceItem getByItemId(int itemId) {
-        return getByOrdinal(itemId);
-    }
-
-    public int getId() {
+    int getId() {
         return ordinal();
     }
 

@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.resourceLibrary;
 
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
@@ -9,23 +8,56 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import ru.nekit.android.qls.quest.QuestContext;
 
 public class QuestResourceLibrary {
 
     private static final String TEXT_QUEST_FOLDER = "textQuestResources";
     private static final String TEXT_CAMOUFLAGE_DICTIONARY_FILE = "textCamouflageDictionary.txt";
 
-    @NonNull
-    private Context mContext;
+    private static final Class[] LIBRARY = new Class[]{
+            BaseQuestVisualResourceItem.class,
+            ColoredQuestVisualResourceItem.class
+    };
 
-    public QuestResourceLibrary(@NonNull Context context) {
-        mContext = context;
+    private final List<IQuestVisualResourceItem> mQuestVisualResourceItemList;
+
+    @NonNull
+    private QuestContext mQuestContext;
+
+    @SuppressWarnings("unchecked")
+    public QuestResourceLibrary(@NonNull QuestContext questContext) {
+        mQuestContext = questContext;
+        mQuestVisualResourceItemList = new ArrayList<>();
+        for (Class libraryClass : LIBRARY) {
+            IQuestVisualResourceItem[] questVisualResourceItems = null;
+            if (libraryClass.isEnum()) {
+                try {
+                    Method method = libraryClass.getMethod("values");
+                    try {
+                        questVisualResourceItems = (IQuestVisualResourceItem[]) method.invoke(null);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            }
+            mQuestVisualResourceItemList.addAll(Arrays.asList(questVisualResourceItems));
+        }
+
     }
 
     public List<String> getWordList(int wordLength) {
-        AssetManager assetManager = mContext.getAssets();
+        AssetManager assetManager = mQuestContext.getAssets();
         String textCamouflageDictionaryPath = TEXT_QUEST_FOLDER +
                 "/" +
                 TEXT_CAMOUFLAGE_DICTIONARY_FILE;
@@ -49,9 +81,9 @@ public class QuestResourceLibrary {
         return wordList;
     }
 
-    public List<QuestVisualResourceItem> getVisualResourceItemsByGroup(QuestVisualResourceGroup group) {
-        List<QuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (QuestVisualResourceItem questVisualResourceItem : QuestVisualResourceItem.values()) {
+    public List<IQuestVisualResourceItem> getVisualResourceItemsByGroup(QuestVisualResourceGroup group) {
+        List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
+        for (IQuestVisualResourceItem questVisualResourceItem : mQuestVisualResourceItemList) {
             QuestVisualResourceGroup[] groups = questVisualResourceItem.getGroups();
             if (groups != null) {
                 for (QuestVisualResourceGroup groupItem : groups) {
@@ -64,12 +96,15 @@ public class QuestResourceLibrary {
         return questVisualResourceItems;
     }
 
-    public QuestVisualResourceItem getVisualResourceItem(int itemId) {
-        return QuestVisualResourceItem.getByItemId(itemId);
+    public List<IQuestVisualResourceItem> getVisualResourceItemList() {
+        return mQuestVisualResourceItemList;
     }
 
-    public QuestVisualResourceItem[] getVisualResourceItemList() {
-        return QuestVisualResourceItem.values();
+    public int getQuestVisualResourceItemId(IQuestVisualResourceItem questVisualResourceItem) {
+        return mQuestVisualResourceItemList.indexOf(questVisualResourceItem);
     }
 
+    public IQuestVisualResourceItem getVisualResourceItem(int itemId) {
+        return mQuestVisualResourceItemList.get(itemId);
+    }
 }

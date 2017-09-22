@@ -18,7 +18,10 @@ public enum QuestVisualResourceGroup implements ITitleable {
     MATH_OPERATOR(R.string.qvrg_math_operator_title),
     BERRY(R.string.qvrg_berry_title, FRUIT, CHOICE),
     POMUM(R.string.qvrg_pomum_title, FRUIT, CHOICE),
-    SEASONS(R.string.qvrg_seasons_title, CHOICE);
+    SEASONS(R.string.qvrg_seasons_title, CHOICE),
+    SEX(R.string.qvrg_sex_title),
+    GIRL(R.string.qvrg_girl_title, SEX),
+    BOY(R.string.qvrg_boy_title, SEX);
 
     @StringRes
     private int mTitleResourceId;
@@ -63,9 +66,9 @@ public enum QuestVisualResourceGroup implements ITitleable {
         return children;
     }
 
-    public List<QuestVisualResourceItem> getQuestVisualItems() {
-        List<QuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (QuestVisualResourceItem questVisualResourceItem : QuestVisualResourceItem.values()) {
+    public List<IQuestVisualResourceItem> getQuestVisualItems() {
+        List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
+        for (IQuestVisualResourceItem questVisualResourceItem : BaseQuestVisualResourceItem.values()) {
             if (questVisualResourceItem.getGroups() != null) {
                 for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(this)) {

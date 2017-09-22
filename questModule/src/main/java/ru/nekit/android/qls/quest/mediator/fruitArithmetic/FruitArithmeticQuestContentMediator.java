@@ -19,11 +19,14 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.EQUAL;
+import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.MINUS;
+import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.PLUS;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 
@@ -31,6 +34,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private FruitArithmeticQuest mFruitArithmeticQuest;
     private SparseArray<Drawable> mFruitImageDrawableCache;
     private SparseArray<Drawable> mFruitShadowImageDrawableCache;
+    private QuestResourceLibrary questResourceLibrary;
 
     @Override
     public void onCreateQuest(@NonNull QuestContext questContext,
@@ -50,6 +54,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
             mContentContainer.setOrientation(LinearLayout.HORIZONTAL);
             mContentContainer.setLayoutParams(contentLayoutParams);
         }
+        questResourceLibrary = questContext.getQuestResourceLibrary();
     }
 
     @Override
@@ -136,18 +141,14 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                     index = 0;
                 }
                 marginTop = Math.min(2, index) * baseSize / 4;
-                QuestVisualResourceItem questVisualResourceItem =
-                        QuestVisualResourceItem.getByItemId(visualRepresentationId);
-                switch (questVisualResourceItem) {
-                    case MINUS:
-                    case PLUS:
-                    case EQUAL:
+                if (visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(MINUS)
+                        || visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(PLUS)
+                        || visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(EQUAL)) {
 
-                        marginRight = 0;
-                        marginLeft = 0;
-                        marginTop = 0;
+                    marginRight = 0;
+                    marginLeft = 0;
+                    marginTop = 0;
 
-                        break;
                 }
                 if (index > 0) {
                     visualRepresentationItemLayoutParams.setMargins(
