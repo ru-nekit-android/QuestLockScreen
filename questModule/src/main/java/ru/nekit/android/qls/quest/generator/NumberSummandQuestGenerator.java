@@ -15,12 +15,12 @@ import ru.nekit.android.qls.utils.MathUtils;
 
 public class NumberSummandQuestGenerator implements IQuestGenerator {
 
-    public static final int CHANCE_EQUALITY_FOR_COMPARISON = 25;
+    private static final int CHANCE_EQUALITY_FOR_COMPARISON = 25;
     private static final int LEFT_NODE_INDEX = 0;
     private static final int RIGHT_NODE_INDEX = 1;
 
     private NumberSummandQuest mQuest;
-    private int[] mMemberMaxValue, mMemberMinValue, mZeroChance, mAvailableValueArray, mPresetValues;
+    private int[] mMemberMaxValue, mMemberMinValue, mZeroChance, mAvailableValueArray;
     private int[][] mEachMemberMinMaxValue;
     private int mFlags;
     private Callable<Integer, Integer> mLeftNodeEachItemTransformFunction;
@@ -97,10 +97,6 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
     }
 
     private void generateArrayRandomAvailableValues(NumberSummandQuest quest) {
-        /*
-        int memberCount = quest.leftNode.length;
-        quest.leftNode = new int[memberCount];
-        */
         for (int i = 0; i < quest.leftNode.length; i++) {
             quest.leftNode[i] = mAvailableValueArray[MathUtils.randUnsignedInt(mAvailableValueArray.length - 1)];
         }
@@ -130,7 +126,6 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
         int[] memberArray = (nodeIndex == LEFT_NODE_INDEX ? mQuest.leftNode : mQuest.rightNode);
         if (memberArray != null) {
             int memberCount = memberArray.length;
-
             int[] memberRandomValues;
             if (nodeIndex == LEFT_NODE_INDEX) {
                 quest.leftNode = new int[memberCount];
@@ -226,22 +221,10 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
         }
     }
 
-    public void setPresetValues(@NonNull Enum[] values) {
-        final int length = values.length;
-        mPresetValues = new int[length];
-        for (int i = 0; i < length; i++) {
-            mPresetValues[i] = values[i].ordinal();
-        }
-    }
-
     @Override
     public IQuest generate() {
         if (mAvailableValueArray == null) {
-            if (mPresetValues == null) {
-                generateArrayRandomValuesInRange(mQuest, LEFT_NODE_INDEX);
-            } else {
-                mQuest.leftNode = mPresetValues;
-            }
+            generateArrayRandomValuesInRange(mQuest, LEFT_NODE_INDEX);
             switch (mQuest.getQuestionType()) {
 
                 case COMPARISON:
@@ -258,14 +241,16 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
                 case UNKNOWN_MEMBER:
 
                     generateRightNodeEqualsLeftNode(mQuest);
-                    mQuest.unknownMemberIndex = MathUtils.randInt(0, mQuest.leftNode.length - 1);
+                    mQuest.unknownMemberIndex =
+                            MathUtils.randUnsignedInt(mQuest.leftNode.length - 1);
 
                     break;
 
                 case UNKNOWN_OPERATION:
 
                     generateRightNodeEqualsLeftNode(mQuest);
-                    mQuest.unknownOperatorIndex = MathUtils.randInt(0, mQuest.leftNode.length - 2);
+                    mQuest.unknownOperatorIndex =
+                            MathUtils.randUnsignedInt(mQuest.leftNode.length - 2);
                     mQuest.setAvailableAnswerVariants(new Object[]{MathematicalOperation.ADDITION,
                             MathematicalOperation.SUBTRACTION});
 
@@ -283,15 +268,13 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
 
                 case UNKNOWN_MEMBER:
 
-                    //mQuest.rightNode = new int[]{mQuest.getLeftNodeSum()};
-                    mQuest.unknownMemberIndex = MathUtils.randInt(0, mQuest.leftNode.length - 1);
+                    mQuest.unknownMemberIndex = MathUtils.randUnsignedInt(mQuest.leftNode.length - 1);
 
                     break;
 
                 case UNKNOWN_OPERATION:
                 case COMPARISON:
 
-                    //throw new UnsupportedOperationException(String.format("Type %s is not support", mQuest.getQuestionType()));
                     break;
 
             }
@@ -310,21 +293,15 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
 
     public enum Flag {
 
-        POSITIVE_FIRST_SUMMAND(1),
-        AVOID_NEGATIVE_ANSWER(2),
-        AVOID_NEGATIVE_ANSWER_WHILE_CALCULATION(4),
-        AVOID_ZERO_ANSWER(8),
-        AVOID_ZERO_ANSWER_WHILE_CALCULATION(16),
-        ONLY_POSITIVE_SUMMANDS(32);
-
-        private int value;
-
-        Flag(int value) {
-            this.value = value;
-        }
+        POSITIVE_FIRST_SUMMAND,
+        AVOID_NEGATIVE_ANSWER,
+        AVOID_NEGATIVE_ANSWER_WHILE_CALCULATION,
+        AVOID_ZERO_ANSWER,
+        AVOID_ZERO_ANSWER_WHILE_CALCULATION,
+        ONLY_POSITIVE_SUMMANDS;
 
         public int value() {
-            return value;
+            return (int) Math.pow(2, ordinal());
         }
 
     }
