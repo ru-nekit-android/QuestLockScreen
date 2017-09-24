@@ -10,7 +10,7 @@ import java.util.List;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 import static ru.nekit.android.qls.quest.math.MathematicalOperation.ADDITION;
 import static ru.nekit.android.qls.quest.math.MathematicalOperation.SUBTRACTION;

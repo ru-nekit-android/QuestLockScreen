@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.utils;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -15,7 +14,7 @@ public abstract class AbstractStateSaver<T> {
 
     private Gson gson;
 
-    public AbstractStateSaver(@NonNull Context context) {
+    public AbstractStateSaver() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gson = gsonBuilder.create();
     }

@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.pupil;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,8 +23,8 @@ public class PupilManager {
     @NonNull
     private PupilSaver mPupilSaver;
 
-    public PupilManager(@NonNull Context context) {
-        mPupilSaver = new PupilSaver(context);
+    public PupilManager() {
+        mPupilSaver = new PupilSaver();
     }
 
     public void setAsCurrent(@NonNull Pupil pupil) {

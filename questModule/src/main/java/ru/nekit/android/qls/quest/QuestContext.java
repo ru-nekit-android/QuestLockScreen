@@ -32,11 +32,11 @@ import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.statistics.BaseStatistics;
 import ru.nekit.android.qls.quest.statistics.PupilStatistics;
 import ru.nekit.android.qls.quest.statistics.QuestStatistics;
-import ru.nekit.android.qls.quest.types.quest.CurrentTimeQuest;
-import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
-import ru.nekit.android.qls.quest.types.quest.MetricsQuest;
-import ru.nekit.android.qls.quest.types.quest.PerimeterQuest;
-import ru.nekit.android.qls.quest.types.quest.TimeQuest;
+import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
+import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.MetricsQuest;
+import ru.nekit.android.qls.quest.types.PerimeterQuest;
+import ru.nekit.android.qls.quest.types.TimeQuest;
 import ru.nekit.android.qls.utils.RobotoTypefaceUtil;
 import ru.nekit.android.qls.utils.ScreenHost;
 import ru.nekit.android.qls.utils.TimeUtils;
@@ -93,11 +93,11 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public QuestContext(@NonNull Context context, @NonNull EventBus eventBus, @StyleRes int themeResourceId) {
         super(context, themeResourceId);
         mEventBus = eventBus;
-        mQuestSaver = new QuestSaver(this);
+        mQuestSaver = new QuestSaver();
         mSettingsStorage = new SettingsStorage();
-        mQuestResourceLibrary = new QuestResourceLibrary(this);
-        mQuestStatisticsSaver = new QuestStatisticsSaver(context);
-        PupilManager pupilManager = new PupilManager(context);
+        mQuestResourceLibrary = new QuestResourceLibrary(context);
+        mQuestStatisticsSaver = new QuestStatisticsSaver();
+        PupilManager pupilManager = new PupilManager();
         mPupil = pupilManager.getCurrentPupil();
         if (mQuestStatisticsSaver.hasSavedState()) {
             mPupilStatistics = mQuestStatisticsSaver.restore();
@@ -107,7 +107,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mTicTacHandler = new Handler();
         mEventBus.handleEvents(this, Intent.ACTION_SCREEN_ON);
         //WARNING!!! only for test
-        //mQuestSaver.reset();
+        mQuestSaver.reset();
     }
 
     //Quest state functional

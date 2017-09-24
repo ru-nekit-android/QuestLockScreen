@@ -122,10 +122,10 @@ import java.util.Map;
  *       .registerSubtype(Diamond.class);
  * }</pre>
  */
-final public class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
+public final class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     private final Class<?> baseType;
     private final String typeFieldName;
-    private final Map<String, Class<?>> labelToSubtype = new LinkedHashMap<>();
+    private final Map<String, Class<?>> labelToSubtype = new LinkedHashMap<String, Class<?>>();
     private final Map<Class<?>, String> subtypeToLabel = new LinkedHashMap<Class<?>, String>();
 
     private RuntimeTypeAdapterFactory(Class<?> baseType, String typeFieldName) {
@@ -183,7 +183,7 @@ final public class RuntimeTypeAdapterFactory<T> implements TypeAdapterFactory {
     }
 
     public <R> TypeAdapter<R> create(Gson gson, TypeToken<R> type) {
-        if (null == type || !baseType.isAssignableFrom(type.getRawType())) {
+        if (type.getRawType() != baseType) {
             return null;
         }
 

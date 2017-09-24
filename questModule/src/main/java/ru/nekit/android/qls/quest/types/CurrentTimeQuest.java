@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types.quest;
+package ru.nekit.android.qls.quest.types;
 
 import android.support.annotation.NonNull;
 

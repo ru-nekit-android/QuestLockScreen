@@ -9,7 +9,7 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.types.quest.PerimeterQuest;
+import ru.nekit.android.qls.quest.types.PerimeterQuest;
 
 import static android.view.View.GONE;
 

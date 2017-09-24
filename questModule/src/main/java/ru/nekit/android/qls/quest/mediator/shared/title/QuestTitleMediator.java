@@ -12,12 +12,13 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.PerimeterQuest;
+import ru.nekit.android.qls.quest.types.TextQuest;
+import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.quest.types.model.ColorModel;
-import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
-import ru.nekit.android.qls.quest.types.quest.PerimeterQuest;
-import ru.nekit.android.qls.quest.types.quest.TextQuest;
-import ru.nekit.android.qls.quest.types.quest.TimeQuest;
 import ru.nekit.android.qls.utils.ViewHolder;
 
 import static ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
@@ -212,7 +213,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                             mTitleText = String.format("Выберите %s",
                                     questResourceLibrary.getVisualResourceItem(
-                                            numberSummandQuest.getUnknownMember()).
+                                            numberSummandQuest.getUnknownValue()).
                                             getTitle(mQuestContext));
 
                             break;
@@ -236,8 +237,12 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                 case COLORS:
 
-                    mTitleText = String.format("Выберите %s цвет",
-                            ColorModel.getById(numberSummandQuest.getUnknownMember()).getTitle(questContext)
+                    VisualRepresentationalNumberSummandQuest visualRepresentationalNumberSummandQuest
+                            = (VisualRepresentationalNumberSummandQuest) mQuest;
+                    int unknownIndex = visualRepresentationalNumberSummandQuest.getUnknownValue();
+                    mTitleText = String.format("Выберите %s %s",
+                            ColorModel.getById(unknownIndex).getTitle(questContext),
+                            questResourceLibrary.getVisualResourceItem(visualRepresentationalNumberSummandQuest.getVisualRepresentationList().get(unknownIndex)).getTitle(questContext)
                     );
 
                     break;

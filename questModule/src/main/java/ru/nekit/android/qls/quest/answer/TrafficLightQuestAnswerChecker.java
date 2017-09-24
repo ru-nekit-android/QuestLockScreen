@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
 
 import static ru.nekit.android.qls.quest.types.model.TrafficLightModel.RED;
 

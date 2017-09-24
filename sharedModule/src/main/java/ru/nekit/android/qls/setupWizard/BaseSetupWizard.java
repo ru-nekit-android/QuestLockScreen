@@ -27,7 +27,7 @@ public abstract class BaseSetupWizard {
     public BaseSetupWizard(@NonNull Context context) {
         mContext = context;
         mSettingsStorage = new SettingsStorage();
-        mPupilManager = new PupilManager(context);
+        mPupilManager = new PupilManager();
     }
 
     final ISetupStep getExpectedSetupStep() {

@@ -64,7 +64,7 @@ public class SetupPupilAvatarFragment extends QuestSetupWizardFragment
 
     @Override
     protected void onSetupStart(@NonNull View view) {
-        PupilManager pupilManager = new PupilManager(getContext());
+        PupilManager pupilManager = new PupilManager();
         //noinspection ConstantConditions
         mPupil = pupilManager.getCurrentPupil();
         mAvatarPartImageList = new ArrayList<>();

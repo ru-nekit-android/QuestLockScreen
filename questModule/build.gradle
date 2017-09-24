@@ -16,8 +16,6 @@ android {
         versionCode 5
         versionName "1.26"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        //renderscriptTargetApi 20
-        //renderscriptSupportModeEnabled true
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -48,12 +46,8 @@ dependencies {
     compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }
-    //testCompile 'org.robolectric:robolectric:3.2.2'
-    //testCompile 'junit:junit:4.12'
-    //testCompile 'org.mockito:mockito-core:1.10.19'
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
     compile 'com.github.christophesmet:android_maskable_layout:-SNAPSHOT'
-    //testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
     compile project(':sharedModule')
 }

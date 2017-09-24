@@ -8,29 +8,32 @@ import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
 
-public enum ColoredQuestVisualResourceItem
-        implements IContentAndBackgroundQuestVisualResourceItem {
+public enum ChildrenToyQuestVisualResourceItem
+        implements ITripleContentQuestVisualResourceItem {
 
-    CAR(R.drawable.qvri_car_content,
-            R.drawable.qvri_car_background,
+    CAR(R.drawable.qvri_car_background,
+            R.drawable.qvri_car_content,
+            R.drawable.qvri_car_foreground,
             R.string.qvri_car_title,
             QuestVisualResourceGroup.BOY),
 
-    DOLL(0, 0, R.string.qvri_doll_title, QuestVisualResourceGroup.GIRL);
+    DOLL(0, 0, 0, R.string.qvri_doll_title, QuestVisualResourceGroup.GIRL);
 
     @DrawableRes
-    private int mDrawableContentResourceId, mDrawableBackgroundResourceId;
+    private int mDrawableContentResourceId, mDrawableBackgroundResourceId, mDrawableForegroundResourceId;
     @StringRes
     private int mTitleResourceId;
     @Nullable
     private QuestVisualResourceGroup[] mGroups;
 
-    ColoredQuestVisualResourceItem(@DrawableRes int drawableContentResourceId,
-                                   @DrawableRes int drawableBackgroundResourceId,
-                                   @StringRes int titleResourceId,
-                                   @Nullable QuestVisualResourceGroup... groups) {
-        mDrawableContentResourceId = drawableContentResourceId;
+    ChildrenToyQuestVisualResourceItem(@DrawableRes int drawableBackgroundResourceId,
+                                       @DrawableRes int drawableContentResourceId,
+                                       @DrawableRes int drawableForegroundResourceId,
+                                       @StringRes int titleResourceId,
+                                       @Nullable QuestVisualResourceGroup... groups) {
         mDrawableBackgroundResourceId = drawableBackgroundResourceId;
+        mDrawableContentResourceId = drawableContentResourceId;
+        mDrawableForegroundResourceId = drawableForegroundResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;
     }
@@ -57,6 +60,11 @@ public enum ColoredQuestVisualResourceItem
     @DrawableRes
     public int getBackgroundDrawableResourceId() {
         return mDrawableBackgroundResourceId;
+    }
+
+    @DrawableRes
+    public int getForegroundDrawableResourceId() {
+        return mDrawableForegroundResourceId;
     }
 
     @DrawableRes

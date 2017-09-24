@@ -11,7 +11,7 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.types.quest.TextQuest;
+import ru.nekit.android.qls.quest.types.TextQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class TextQuestGenerator implements IQuestGenerator {

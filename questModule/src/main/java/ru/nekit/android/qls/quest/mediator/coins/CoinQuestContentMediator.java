@@ -14,8 +14,8 @@ import java.util.List;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
+import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.model.CoinModel;
-import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
 
 import static ru.nekit.android.qls.quest.QuestionType.UNKNOWN_MEMBER;
 

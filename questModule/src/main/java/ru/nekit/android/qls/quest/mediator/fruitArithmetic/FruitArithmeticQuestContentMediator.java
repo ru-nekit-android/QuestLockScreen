@@ -20,13 +20,13 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.types.quest.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.EQUAL;
-import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.MINUS;
-import static ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem.PLUS;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem.EQUAL;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem.MINUS;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem.PLUS;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 

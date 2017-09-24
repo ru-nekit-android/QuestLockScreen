@@ -66,7 +66,7 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
 
     @Override
     public void onStartQuest(boolean playAnimationOnDelayedStart) {
-
+        super.onStartQuest(playAnimationOnDelayedStart);
     }
 
     @Override

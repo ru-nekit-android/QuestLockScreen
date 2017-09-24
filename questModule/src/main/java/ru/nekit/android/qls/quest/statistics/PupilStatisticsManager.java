@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest.statistics;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.pupil.Pupil;
@@ -10,8 +9,8 @@ public class PupilStatisticsManager {
 
     private QuestStatisticsSaver mQuestStatisticsSaver;
 
-    public PupilStatisticsManager(@NonNull Context context) {
-        mQuestStatisticsSaver = new QuestStatisticsSaver(context);
+    public PupilStatisticsManager() {
+        mQuestStatisticsSaver = new QuestStatisticsSaver();
     }
 
     public PupilStatistics getPupilStatistics(@NonNull Pupil pupil) {

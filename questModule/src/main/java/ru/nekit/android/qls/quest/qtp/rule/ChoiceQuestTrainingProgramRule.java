@@ -16,7 +16,7 @@ import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 

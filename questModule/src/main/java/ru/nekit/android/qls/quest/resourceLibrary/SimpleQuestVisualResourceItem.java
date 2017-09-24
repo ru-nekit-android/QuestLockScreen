@@ -8,7 +8,7 @@ import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
 
-public enum BaseQuestVisualResourceItem implements IQuestVisualResourceItem {
+public enum SimpleQuestVisualResourceItem implements IQuestVisualResourceItem {
 
     MINUS(R.drawable.qvri_minus,
             R.string.qvri_minus_title,
@@ -72,9 +72,9 @@ public enum BaseQuestVisualResourceItem implements IQuestVisualResourceItem {
     @Nullable
     private QuestVisualResourceGroup[] mGroups;
 
-    BaseQuestVisualResourceItem(@DrawableRes int drawableResourceId,
-                                @StringRes int titleResourceId,
-                                @Nullable QuestVisualResourceGroup... groups) {
+    SimpleQuestVisualResourceItem(@DrawableRes int drawableResourceId,
+                                  @StringRes int titleResourceId,
+                                  @Nullable QuestVisualResourceGroup... groups) {
         mDrawableResourceId = drawableResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;

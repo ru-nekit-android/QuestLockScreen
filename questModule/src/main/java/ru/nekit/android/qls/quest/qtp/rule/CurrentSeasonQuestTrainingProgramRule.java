@@ -7,9 +7,9 @@ import android.support.annotation.NonNull;
 import java.util.Calendar;
 
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.resourceLibrary.BaseQuestVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
+import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
@@ -43,19 +43,19 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
                         @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
         Calendar calendar = Calendar.getInstance();
-        BaseQuestVisualResourceItem questVisualResourceItem = null;
+        SimpleQuestVisualResourceItem questVisualResourceItem = null;
         int currentMonth = calendar.get(Calendar.MONTH);
         if (currentMonth == 11 || currentMonth <= 1) {
-            questVisualResourceItem = BaseQuestVisualResourceItem.WINTER;
+            questVisualResourceItem = SimpleQuestVisualResourceItem.WINTER;
         }
         if (currentMonth > 1 || currentMonth <= 4) {
-            questVisualResourceItem = BaseQuestVisualResourceItem.SPRING;
+            questVisualResourceItem = SimpleQuestVisualResourceItem.SPRING;
         }
         if (currentMonth > 4 || currentMonth <= 7) {
-            questVisualResourceItem = BaseQuestVisualResourceItem.SUMMER;
+            questVisualResourceItem = SimpleQuestVisualResourceItem.SUMMER;
         }
         if (currentMonth > 7 || currentMonth <= 10) {
-            questVisualResourceItem = BaseQuestVisualResourceItem.FALL;
+            questVisualResourceItem = SimpleQuestVisualResourceItem.FALL;
         }
         return questVisualRepresentationList.getIdsList().indexOf(
                 questResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));

@@ -155,7 +155,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         }
         if (mPupilManager == null) {
-            mPupilManager = new PupilManager(context);
+            mPupilManager = new PupilManager();
         }
         if (mEventBus == null) {
             mEventBus = new EventBus(this);

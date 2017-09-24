@@ -14,9 +14,7 @@ public enum ColorModel implements ITitleable {
     WHITE(R.color.white, R.string.color_white),
     BLACK(R.color.black, R.string.color_black),
     RED(R.color.red, R.string.color_red),
-    GREEN(R.color.green, R.string.color_green),
-    DEFAULT(R.color.green, R.string.color_default);
-
+    GREEN(R.color.green, R.string.color_green);
 
     @ColorRes
     private final int colorResId;

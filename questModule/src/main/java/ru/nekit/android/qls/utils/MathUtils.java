@@ -36,6 +36,11 @@ public class MathUtils {
         return rand.nextInt(max + 1);
     }
 
+    public static int randLength(int value) {
+        Random rand = new Random();
+        return rand.nextInt(value - 1);
+    }
+
     public static <T> T randItem(List<T> list) {
         return list.get(randListLength(list));
     }

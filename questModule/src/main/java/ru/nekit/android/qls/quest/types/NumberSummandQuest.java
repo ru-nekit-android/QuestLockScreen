@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types.quest;
+package ru.nekit.android.qls.quest.types;
 
 import android.text.InputType;
 
@@ -43,7 +43,7 @@ public class NumberSummandQuest extends Quest {
         return MathematicalSignComparison.EQUAL;
     }
 
-    public int getUnknownMember() {
+    public int getUnknownValue() {
         return leftNode[unknownMemberIndex];
     }
 
@@ -60,7 +60,7 @@ public class NumberSummandQuest extends Quest {
 
             case UNKNOWN_MEMBER:
 
-                solution = Math.abs(getUnknownMember());
+                solution = Math.abs(getUnknownValue());
 
                 break;
         }

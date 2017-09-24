@@ -10,7 +10,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
-import ru.nekit.android.qls.quest.types.quest.TimeQuest;
+import ru.nekit.android.qls.quest.types.TimeQuest;
 import ru.nekit.android.qls.utils.IViewHolder;
 
 class TimeAdapter extends SquareItemAdapter<TimeAdapter.TimeViewHolder> {

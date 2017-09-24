@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.quest.resourceLibrary;
 
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
@@ -14,26 +15,23 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.QuestContext;
-
 public class QuestResourceLibrary {
 
     private static final String TEXT_QUEST_FOLDER = "textQuestResources";
     private static final String TEXT_CAMOUFLAGE_DICTIONARY_FILE = "textCamouflageDictionary.txt";
 
     private static final Class[] LIBRARY = new Class[]{
-            BaseQuestVisualResourceItem.class,
-            ColoredQuestVisualResourceItem.class
+            SimpleQuestVisualResourceItem.class,
+            ChildrenToyQuestVisualResourceItem.class
     };
 
+    @NonNull
+    private final Context mContext;
     private final List<IQuestVisualResourceItem> mQuestVisualResourceItemList;
 
-    @NonNull
-    private QuestContext mQuestContext;
-
     @SuppressWarnings("unchecked")
-    public QuestResourceLibrary(@NonNull QuestContext questContext) {
-        mQuestContext = questContext;
+    public QuestResourceLibrary(@NonNull Context context) {
+        mContext = context;
         mQuestVisualResourceItemList = new ArrayList<>();
         for (Class libraryClass : LIBRARY) {
             IQuestVisualResourceItem[] questVisualResourceItems = null;
@@ -53,11 +51,11 @@ public class QuestResourceLibrary {
             }
             mQuestVisualResourceItemList.addAll(Arrays.asList(questVisualResourceItems));
         }
-
     }
 
+    @NonNull
     public List<String> getWordList(int wordLength) {
-        AssetManager assetManager = mQuestContext.getAssets();
+        AssetManager assetManager = mContext.getAssets();
         String textCamouflageDictionaryPath = TEXT_QUEST_FOLDER +
                 "/" +
                 TEXT_CAMOUFLAGE_DICTIONARY_FILE;
@@ -81,6 +79,7 @@ public class QuestResourceLibrary {
         return wordList;
     }
 
+    @NonNull
     public List<IQuestVisualResourceItem> getVisualResourceItemsByGroup(QuestVisualResourceGroup group) {
         List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
         for (IQuestVisualResourceItem questVisualResourceItem : mQuestVisualResourceItemList) {
@@ -100,7 +99,7 @@ public class QuestResourceLibrary {
         return mQuestVisualResourceItemList;
     }
 
-    public int getQuestVisualResourceItemId(IQuestVisualResourceItem questVisualResourceItem) {
+    public int getQuestVisualResourceItemId(@NonNull IQuestVisualResourceItem questVisualResourceItem) {
         return mQuestVisualResourceItemList.indexOf(questVisualResourceItem);
     }
 

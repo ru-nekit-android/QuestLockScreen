@@ -68,7 +68,7 @@ public enum QuestVisualResourceGroup implements ITitleable {
 
     public List<IQuestVisualResourceItem> getQuestVisualItems() {
         List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (IQuestVisualResourceItem questVisualResourceItem : BaseQuestVisualResourceItem.values()) {
+        for (IQuestVisualResourceItem questVisualResourceItem : SimpleQuestVisualResourceItem.values()) {
             if (questVisualResourceItem.getGroups() != null) {
                 for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(this)) {

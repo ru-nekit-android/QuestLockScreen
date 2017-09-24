@@ -9,7 +9,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.utils.Callable;
 import ru.nekit.android.qls.utils.MathUtils;
 

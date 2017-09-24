@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.quest.ITitleable;
 
-
 public interface IQuestVisualResourceItem extends ITitleable {
 
     @Nullable

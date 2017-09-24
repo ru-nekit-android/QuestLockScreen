@@ -9,8 +9,8 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.IQuest;
-import ru.nekit.android.qls.quest.types.quest.MetricsQuest;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.MetricsQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class MetricsQuestContentFormatter implements IQuestTextContentFormatter {
 

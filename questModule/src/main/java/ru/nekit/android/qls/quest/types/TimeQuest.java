@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.types.quest;
+package ru.nekit.android.qls.quest.types;
 
 import android.support.annotation.NonNull;
 
@@ -45,7 +45,7 @@ public class TimeQuest extends NumberSummandQuest implements IGroupWeightCompari
     }
 
     public int getUnknownTime() {
-        return getUnknownMember();
+        return getUnknownValue();
     }
 
     public int getUnknownTimeHours() {

@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest.persistance;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.PreferencesUtil;
@@ -8,10 +7,6 @@ import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.utils.AbstractStateSaver;
 
 public class PupilSaver extends AbstractStateSaver<Pupil> {
-
-    public PupilSaver(@NonNull Context context) {
-        super(context);
-    }
 
     @Override
     public String getName() {

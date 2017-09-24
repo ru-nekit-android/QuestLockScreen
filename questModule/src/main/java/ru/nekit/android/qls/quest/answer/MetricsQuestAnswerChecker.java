@@ -5,8 +5,8 @@ import android.support.annotation.NonNull;
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
-import ru.nekit.android.qls.quest.types.quest.MetricsQuest;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.MetricsQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class MetricsQuestAnswerChecker extends QuestAnswerChecker<MathematicalSignComparison> {
 

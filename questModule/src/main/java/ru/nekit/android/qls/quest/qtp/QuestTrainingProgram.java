@@ -76,7 +76,7 @@ public class QuestTrainingProgram implements Parcelable {
     public static QuestTrainingProgram buildForCurrentPupil(
             @NonNull Context context) {
         QuestTrainingProgram questTrainingProgram = new QuestTrainingProgram();
-        PupilSaver pupilSaver = new PupilSaver(context);
+        PupilSaver pupilSaver = new PupilSaver();
         Pupil pupil = pupilSaver.restore();
         questTrainingProgram.buildForPupil(context, pupil);
         return questTrainingProgram;

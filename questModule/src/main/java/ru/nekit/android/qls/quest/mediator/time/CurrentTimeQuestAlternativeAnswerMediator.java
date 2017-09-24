@@ -7,7 +7,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.quest.QuestContextEvent;
-import ru.nekit.android.qls.quest.types.quest.CurrentTimeQuest;
+import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
 
 public class CurrentTimeQuestAlternativeAnswerMediator extends TimeQuestAlternativeAnswerMediator
         implements EventBus.IEventHandler {

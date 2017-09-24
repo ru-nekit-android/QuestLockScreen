@@ -1,14 +1,15 @@
 package ru.nekit.android.qls.quest.types.shared;
 
-
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import java.util.List;
 
 public interface IQuestVisualRepresentation {
 
     @Nullable
-    QuestVisualRepresentationList getVisualRepresentationList();
+    List<Integer> getVisualRepresentationList();
 
-    void setVisualRepresentationList(@NonNull QuestVisualRepresentationList value);
+    void setVisualRepresentationList(@NonNull List<Integer> value);
 
 }

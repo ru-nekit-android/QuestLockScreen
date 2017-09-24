@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.mediator.shared.answer.AbstractListableQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.types.quest.NumberSummandQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class TimeQuestAlternativeAnswerMediator
         extends AbstractListableQuestAlternativeAnswerMediator<Integer, TimeAdapter> {
