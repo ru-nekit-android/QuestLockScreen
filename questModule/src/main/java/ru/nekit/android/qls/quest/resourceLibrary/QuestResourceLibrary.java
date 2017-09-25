@@ -27,19 +27,19 @@ public class QuestResourceLibrary {
 
     @NonNull
     private final Context mContext;
-    private final List<IQuestVisualResourceItem> mQuestVisualResourceItemList;
+    private final List<IVisualResourceItem> mQuestVisualResourceItemList;
 
     @SuppressWarnings("unchecked")
     public QuestResourceLibrary(@NonNull Context context) {
         mContext = context;
         mQuestVisualResourceItemList = new ArrayList<>();
         for (Class libraryClass : LIBRARY) {
-            IQuestVisualResourceItem[] questVisualResourceItems = null;
+            IVisualResourceItem[] questVisualResourceItems = null;
             if (libraryClass.isEnum()) {
                 try {
                     Method method = libraryClass.getMethod("values");
                     try {
-                        questVisualResourceItems = (IQuestVisualResourceItem[]) method.invoke(null);
+                        questVisualResourceItems = (IVisualResourceItem[]) method.invoke(null);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     } catch (InvocationTargetException e) {
@@ -80,12 +80,12 @@ public class QuestResourceLibrary {
     }
 
     @NonNull
-    public List<IQuestVisualResourceItem> getVisualResourceItemsByGroup(QuestVisualResourceGroup group) {
-        List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (IQuestVisualResourceItem questVisualResourceItem : mQuestVisualResourceItemList) {
-            QuestVisualResourceGroup[] groups = questVisualResourceItem.getGroups();
+    public List<IVisualResourceItem> getVisualResourceItemsByGroup(VisualResourceGroup group) {
+        List<IVisualResourceItem> questVisualResourceItems = new ArrayList<>();
+        for (IVisualResourceItem questVisualResourceItem : mQuestVisualResourceItemList) {
+            VisualResourceGroup[] groups = questVisualResourceItem.getGroups();
             if (groups != null) {
-                for (QuestVisualResourceGroup groupItem : groups) {
+                for (VisualResourceGroup groupItem : groups) {
                     if (groupItem.hasParent(group)) {
                         questVisualResourceItems.add(questVisualResourceItem);
                     }
@@ -95,15 +95,15 @@ public class QuestResourceLibrary {
         return questVisualResourceItems;
     }
 
-    public List<IQuestVisualResourceItem> getVisualResourceItemList() {
+    public List<IVisualResourceItem> getVisualResourceItemList() {
         return mQuestVisualResourceItemList;
     }
 
-    public int getQuestVisualResourceItemId(@NonNull IQuestVisualResourceItem questVisualResourceItem) {
+    public int getQuestVisualResourceItemId(@NonNull IVisualResourceItem questVisualResourceItem) {
         return mQuestVisualResourceItemList.indexOf(questVisualResourceItem);
     }
 
-    public IQuestVisualResourceItem getVisualResourceItem(int itemId) {
+    public IVisualResourceItem getVisualResourceItem(int itemId) {
         return mQuestVisualResourceItemList.get(itemId);
     }
 }

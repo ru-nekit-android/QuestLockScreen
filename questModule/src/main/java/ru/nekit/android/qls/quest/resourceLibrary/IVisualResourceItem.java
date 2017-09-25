@@ -5,10 +5,10 @@ import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.quest.ITitleable;
 
-public interface IQuestVisualResourceItem extends ITitleable {
+public interface IVisualResourceItem extends ITitleable {
 
     @Nullable
-    QuestVisualResourceGroup[] getGroups();
+    VisualResourceGroup[] getGroups();
 
     @DrawableRes
     int getDrawableResourceId();

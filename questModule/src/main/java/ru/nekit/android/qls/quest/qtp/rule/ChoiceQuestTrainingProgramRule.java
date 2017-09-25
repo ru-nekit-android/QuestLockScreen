@@ -13,9 +13,9 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
+import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
@@ -38,7 +38,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     };
 
     protected int[] types;
-    QuestVisualResourceGroup actualGroup;
+    VisualResourceGroup actualGroup;
 
     public ChoiceQuestTrainingProgramRule() {
 
@@ -63,11 +63,11 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             final int length = stringTypes.length;
             types = new int[stringTypes.length];
             for (int i = 0; i < length; i++) {
-                types[i] = QuestVisualResourceGroup.valueOf(stringTypes[i].toUpperCase()).getId();
+                types[i] = VisualResourceGroup.valueOf(stringTypes[i].toUpperCase()).getId();
             }
         } else {
-            List<QuestVisualResourceGroup> questVisualResourceGroupList =
-                    QuestVisualResourceGroup.CHOICE.getChildren();
+            List<VisualResourceGroup> questVisualResourceGroupList =
+                    VisualResourceGroup.CHOICE.getChildren();
             final int length = questVisualResourceGroupList.size();
             types = new int[length];
             for (int i = 0; i < length; i++) {
@@ -81,11 +81,11 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         actualGroup = getActualGroup();
         QuestVisualRepresentationList questVisualRepresentationList =
                 new QuestVisualRepresentationList(questResourceLibrary);
-        List<IQuestVisualResourceItem> questVisualResourceItems =
+        List<IVisualResourceItem> questVisualResourceItems =
                 questResourceLibrary.getVisualResourceItemList();
-        for (IQuestVisualResourceItem questVisualResourceItem : questVisualResourceItems) {
+        for (IVisualResourceItem questVisualResourceItem : questVisualResourceItems) {
             if (questVisualResourceItem.getGroups() != null) {
-                for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
+                for (VisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(actualGroup)) {
                         questVisualRepresentationList.add(questVisualResourceItem);
                     }
@@ -123,8 +123,8 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
                         questVisualRepresentationList));
     }
 
-    QuestVisualResourceGroup getActualGroup() {
-        return QuestVisualResourceGroup.getGroup(MathUtils.randItem(types));
+    VisualResourceGroup getActualGroup() {
+        return VisualResourceGroup.getGroup(MathUtils.randItem(types));
     }
 
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,

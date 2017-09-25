@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.quest.window;
 
 import android.content.Context;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.widget.TextView;
 
@@ -11,14 +12,15 @@ public class RightAnswerWindowContentViewHolder extends WindowContentViewHolder 
 
     public TextView titleView;
 
-    public RightAnswerWindowContentViewHolder(@NonNull Context context) {
-        super(context, R.layout.wc_right_answer);
+    public RightAnswerWindowContentViewHolder(@NonNull Context context,
+                                              @LayoutRes int layoutRedId) {
+        super(context, layoutRedId);
         titleView = (TextView) mView.findViewById(R.id.tv_title);
-        titleView.setText(R.string.congratulation_for_right_answer);
     }
 
     @Override
     protected int getCloseButtonId() {
         return R.id.btn_ok;
     }
+
 }

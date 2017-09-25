@@ -18,6 +18,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
+import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
 import ru.nekit.android.qls.quest.mediator.IQuestMediator;
 import ru.nekit.android.qls.quest.mediator.shared.answer.IQuestAlternativeAnswerMediator;
@@ -225,10 +226,19 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
     }
 
     @Override
-    public void onAnswer(boolean isRight) {
-        mTitleMediator.onAnswer(isRight);
-        mContentMediator.onAnswer(isRight);
-        mAlternativeAnswerMediator.onAnswer(isRight);
+    public boolean onRightAnswer() {
+        boolean showRightAnswerFullContent = true;
+        showRightAnswerFullContent = showRightAnswerFullContent && mTitleMediator.onRightAnswer();
+        showRightAnswerFullContent = showRightAnswerFullContent && mContentMediator.onRightAnswer();
+        showRightAnswerFullContent = showRightAnswerFullContent && mAlternativeAnswerMediator.onRightAnswer();
+        return showRightAnswerFullContent;
+    }
+
+    @Override
+    public void onWrongAnswer() {
+        mTitleMediator.onWrongAnswer();
+        mContentMediator.onWrongAnswer();
+        mAlternativeAnswerMediator.onWrongAnswer();
     }
 
     @Override
@@ -394,13 +404,16 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
 
             case EVENT_RIGHT_ANSWER:
 
-                onAnswer(true);
+                boolean showRightAnswerFullContent = onRightAnswer();
+                mQuestContext.getEventBus().sendEvent(LockScreenQuestContentMediator.EVENT_SHOW_RIGHT_ANSWER_WINDOW,
+                        LockScreenQuestContentMediator.NAME_SHOW_FULL_RIGHT_ANSWER_WINDOW,
+                        showRightAnswerFullContent);
 
                 break;
 
             case EVENT_WRONG_ANSWER:
 
-                onAnswer(false);
+                onWrongAnswer();
 
                 break;
 

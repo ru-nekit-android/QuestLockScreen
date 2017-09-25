@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
+import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -41,19 +41,19 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     @Override
     QuestVisualRepresentationList getQuestVisualRepresentationList(
             @NonNull QuestResourceLibrary questResourceLibrary) {
-        QuestVisualResourceGroup mismatchGroup = null;
+        VisualResourceGroup mismatchGroup = null;
         QuestVisualRepresentationList questVisualRepresentationList =
                 super.getQuestVisualRepresentationList(questResourceLibrary);
-        List<QuestVisualResourceGroup> questVisualResourceGroups =
-                Arrays.asList(QuestVisualResourceGroup.values());
+        List<VisualResourceGroup> questVisualResourceGroups =
+                Arrays.asList(VisualResourceGroup.values());
         Collections.shuffle(questVisualResourceGroups);
-        for (QuestVisualResourceGroup group : questVisualResourceGroups) {
+        for (VisualResourceGroup group : questVisualResourceGroups) {
             if (!group.hasParent(actualGroup) && !actualGroup.hasParent(group)) {
                 mismatchGroup = group;
                 break;
             }
         }
-        List<IQuestVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
+        List<IVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
         unknownMemberIndex = MathUtils.randListLength(questVisualRepresentationList.getIdsList());
         questVisualRepresentationList.getIdsList().add(unknownMemberIndex,
                 questResourceLibrary.getQuestVisualResourceItemId(

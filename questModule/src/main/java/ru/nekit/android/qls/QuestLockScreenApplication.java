@@ -11,7 +11,6 @@ public class QuestLockScreenApplication extends Application {
         super.onCreate();
         PreferencesUtil.init(this);
         LockScreen.activateForSetupWizard(this);
-
     }
 
     @Override

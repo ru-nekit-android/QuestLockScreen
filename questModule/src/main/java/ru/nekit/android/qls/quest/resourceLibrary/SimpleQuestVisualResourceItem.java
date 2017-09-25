@@ -8,73 +8,73 @@ import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
 
-public enum SimpleQuestVisualResourceItem implements IQuestVisualResourceItem {
+public enum SimpleQuestVisualResourceItem implements IVisualResourceItem {
 
     MINUS(R.drawable.qvri_minus,
             R.string.qvri_minus_title,
-            QuestVisualResourceGroup.MATH_OPERATOR),
+            VisualResourceGroup.MATH_OPERATOR),
 
     PLUS(R.drawable.qvri_plus,
             R.string.qvri_plus_title,
-            QuestVisualResourceGroup.MATH_OPERATOR),
+            VisualResourceGroup.MATH_OPERATOR),
 
     EQUAL(R.drawable.qvri_equal,
             R.string.qvri_equal_title,
-            QuestVisualResourceGroup.MATH_OPERATOR),
+            VisualResourceGroup.MATH_OPERATOR),
 
     ORANGE(R.drawable.qvri_orange,
             R.string.qvri_orange_title,
-            QuestVisualResourceGroup.POMUM),
+            VisualResourceGroup.POMUM),
 
     STRAWBERRY(R.drawable.qvri_strawberry,
             R.string.qvri_strawberry_title,
-            QuestVisualResourceGroup.BERRY),
+            VisualResourceGroup.BERRY),
 
     APPLE(R.drawable.qvri_apple,
             R.string.qvri_apple_title,
-            QuestVisualResourceGroup.POMUM),
+            VisualResourceGroup.POMUM),
 
     PEAR(R.drawable.qvri_pear,
             R.string.qvri_pear_title,
-            QuestVisualResourceGroup.POMUM),
+            VisualResourceGroup.POMUM),
 
     CHERRY(R.drawable.qvri_cherry,
             R.string.qvri_cherry_title,
-            QuestVisualResourceGroup.BERRY),
+            VisualResourceGroup.BERRY),
 
     RASPBERRY(R.drawable.qvri_raspberry,
             R.string.qvri_raspberry_title,
-            QuestVisualResourceGroup.BERRY),
+            VisualResourceGroup.BERRY),
 
     WINTER(R.drawable.qvri_tree_winter,
             R.string.qvri_winter_title,
-            QuestVisualResourceGroup.SEASONS),
+            VisualResourceGroup.SEASONS),
 
     SPRING(R.drawable.qvri_tree_spring, R.string.qvri_spring_title,
-            QuestVisualResourceGroup.SEASONS),
+            VisualResourceGroup.SEASONS),
 
     SUMMER(R.drawable.qvri_tree_summer, R.string.qvri_summer_title,
-            QuestVisualResourceGroup.SEASONS),
+            VisualResourceGroup.SEASONS),
 
     FALL(R.drawable.qvri_tree_fall, R.string.qvri_fall_title,
-            QuestVisualResourceGroup.SEASONS),
+            VisualResourceGroup.SEASONS),
 
     PINEAPPLE(R.drawable.qvri_pineapple, R.string.qvri_pineapple_title,
-            QuestVisualResourceGroup.POMUM),
+            VisualResourceGroup.POMUM),
 
     BLACKBERRY(R.drawable.qvri_blackberry, R.string.qvri_blackberry_title,
-            QuestVisualResourceGroup.BERRY);
+            VisualResourceGroup.BERRY);
 
     @DrawableRes
     private int mDrawableResourceId;
     @StringRes
     private int mTitleResourceId;
     @Nullable
-    private QuestVisualResourceGroup[] mGroups;
+    private VisualResourceGroup[] mGroups;
 
     SimpleQuestVisualResourceItem(@DrawableRes int drawableResourceId,
                                   @StringRes int titleResourceId,
-                                  @Nullable QuestVisualResourceGroup... groups) {
+                                  @Nullable VisualResourceGroup... groups) {
         mDrawableResourceId = drawableResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;
@@ -90,7 +90,7 @@ public enum SimpleQuestVisualResourceItem implements IQuestVisualResourceItem {
     }
 
     @Nullable
-    public QuestVisualResourceGroup[] getGroups() {
+    public VisualResourceGroup[] getGroups() {
         return mGroups;
     }
 

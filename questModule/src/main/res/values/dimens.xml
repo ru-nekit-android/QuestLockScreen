@@ -2,6 +2,7 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="line_weight">1dp</dimen>
+    <dimen name="status_bar_height">25dp</dimen>
     <dimen name="title_container_height">58dp</dimen>
     <dimen name="card_view_elevation">4dp</dimen>
     <dimen name="book_title_avatar_width">51dp</dimen>
@@ -22,7 +23,6 @@
     <dimen name="book_content_top">55dp</dimen>
     <dimen name="book_content_bottom">60dp</dimen>
     <dimen name="quest_series_size">6sp</dimen>
-    <dimen name="status_bar_height">25dp</dimen>
     <dimen name="qr_code_size">250dp</dimen>
     <dimen name="qvri_base_size">25dp</dimen>
 

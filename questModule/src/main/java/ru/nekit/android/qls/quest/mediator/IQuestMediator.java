@@ -13,7 +13,9 @@ public interface IQuestMediator {
 
     void onStartQuest(boolean playAnimationOnDelayedStart);
 
-    void onAnswer(boolean isRight);
+    boolean onRightAnswer();
+
+    void onWrongAnswer();
 
     void onRestartQuest();
 

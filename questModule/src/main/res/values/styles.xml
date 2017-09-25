@@ -390,6 +390,12 @@
         </item>
     </style>
 
+    <style name="Window.RightAnswer.Simple">
+        <item name="dimAmount">0</item>
+        <item name="animationDuration">0</item>
+        <item name="backgroundColorEnd">@color/transparent</item>
+    </style>
+
     <style name="Window.WrongAnswer">
         <item name="backgroundColorEnd">#33FFFFFF</item>
         <item name="animationDuration">200</item>

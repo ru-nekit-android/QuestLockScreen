@@ -74,6 +74,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     private QuestSaver mQuestSaver;
     private QuestTrainingProgram mQuestTrainingProgram;
     private QuestStatisticsSaver mQuestStatisticsSaver;
+    private QuestHistoryItem.Pair mQuestHistoryPair;
     @NonNull
     private PupilStatistics mPupilStatistics;
     private int mQuestState;
@@ -251,8 +252,8 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
                 mEventBus.sendEvent(EVENT_LEVEL_UP);
                 questHistoryItem.isLevelUp = true;
             }
-            mEventBus.sendEvent(EVENT_RIGHT_ANSWER, QuestHistoryItem.Pair.NAME,
-                    new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem));
+            mQuestHistoryPair = new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem);
+            mEventBus.sendEvent(EVENT_RIGHT_ANSWER);
             //detachView
             destroyTicTac();
             mQuestSaver.reset();
@@ -270,6 +271,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus.sendEvent(EVENT_UPDATE_STATISTICS);
     }
 
+    public QuestHistoryItem.Pair getQuestHistoryPair() {
+        return mQuestHistoryPair;
+    }
+
     @Override
     public void wrongAnswer() {
         if (!questHasState(ANSWERED)) {
@@ -280,8 +285,8 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
                     sessionTime);
             updateStatisticsAndHistoryItem(mPupilStatistics, globalQuestHistoryItem, false, sessionTime);
             saveStatisticsAndNotify();
-            mEventBus.sendEvent(EVENT_WRONG_ANSWER, QuestHistoryItem.Pair.NAME,
-                    new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem));
+            mQuestHistoryPair = new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem);
+            mEventBus.sendEvent(EVENT_WRONG_ANSWER);
             Vibrate.make(this, 800);
         }
     }

@@ -11,7 +11,7 @@ import java.util.List;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.ITitleable;
 
-public enum QuestVisualResourceGroup implements ITitleable {
+public enum VisualResourceGroup implements ITitleable {
 
     CHOICE(R.string.qvrg_choice_title),
     FRUIT(R.string.qvrg_fruit_title),
@@ -21,19 +21,20 @@ public enum QuestVisualResourceGroup implements ITitleable {
     SEASONS(R.string.qvrg_seasons_title, CHOICE),
     SEX(R.string.qvrg_sex_title),
     GIRL(R.string.qvrg_girl_title, SEX),
-    BOY(R.string.qvrg_boy_title, SEX);
+    BOY(R.string.qvrg_boy_title, SEX),
+    CHILDREN_TOY(R.string.qvrg_children_toy_title);
 
     @StringRes
     private int mTitleResourceId;
     @Nullable
-    private QuestVisualResourceGroup[] mParents;
+    private VisualResourceGroup[] mParents;
 
-    QuestVisualResourceGroup(@StringRes int titleResourceId, @Nullable QuestVisualResourceGroup... parents) {
+    VisualResourceGroup(@StringRes int titleResourceId, @Nullable VisualResourceGroup... parents) {
         mTitleResourceId = titleResourceId;
         mParents = parents;
     }
 
-    public static QuestVisualResourceGroup getGroup(int id) {
+    public static VisualResourceGroup getGroup(int id) {
         return values()[id];
     }
 
@@ -47,16 +48,16 @@ public enum QuestVisualResourceGroup implements ITitleable {
     }
 
     @Nullable
-    public QuestVisualResourceGroup[] getParents() {
+    public VisualResourceGroup[] getParents() {
         return mParents;
     }
 
-    public List<QuestVisualResourceGroup> getChildren() {
-        List<QuestVisualResourceGroup> children = new ArrayList<>();
-        for (QuestVisualResourceGroup group : values()) {
-            QuestVisualResourceGroup[] parents = group.getParents();
+    public List<VisualResourceGroup> getChildren() {
+        List<VisualResourceGroup> children = new ArrayList<>();
+        for (VisualResourceGroup group : values()) {
+            VisualResourceGroup[] parents = group.getParents();
             if (parents != null) {
-                for (QuestVisualResourceGroup parentItem : parents) {
+                for (VisualResourceGroup parentItem : parents) {
                     if (parentItem == this) {
                         children.add(group);
                     }
@@ -66,11 +67,11 @@ public enum QuestVisualResourceGroup implements ITitleable {
         return children;
     }
 
-    public List<IQuestVisualResourceItem> getQuestVisualItems() {
-        List<IQuestVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (IQuestVisualResourceItem questVisualResourceItem : SimpleQuestVisualResourceItem.values()) {
+    public List<IVisualResourceItem> getQuestVisualItems() {
+        List<IVisualResourceItem> questVisualResourceItems = new ArrayList<>();
+        for (IVisualResourceItem questVisualResourceItem : SimpleQuestVisualResourceItem.values()) {
             if (questVisualResourceItem.getGroups() != null) {
-                for (QuestVisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
+                for (VisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
                     if (groupItem.hasParent(this)) {
                         questVisualResourceItems.add(questVisualResourceItem);
                     }
@@ -80,12 +81,12 @@ public enum QuestVisualResourceGroup implements ITitleable {
         return questVisualResourceItems;
     }
 
-    public boolean hasParent(QuestVisualResourceGroup group) {
+    public boolean hasParent(VisualResourceGroup group) {
         boolean result = this == group;
         if (!result) {
-            QuestVisualResourceGroup[] parents = getParents();
+            VisualResourceGroup[] parents = getParents();
             if (parents != null) {
-                for (QuestVisualResourceGroup parentItem : parents) {
+                for (VisualResourceGroup parentItem : parents) {
                     result = parentItem.hasParent(group);
                     if (result) {
                         break;

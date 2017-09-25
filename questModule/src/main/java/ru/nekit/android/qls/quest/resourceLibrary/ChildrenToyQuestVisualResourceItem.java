@@ -6,34 +6,67 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import ru.nekit.android.qls.R;
 
+import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.COLOR_AS_BACKGROUND;
+import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.COLOR_AS_CONTENT;
+import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.NONE;
+
 public enum ChildrenToyQuestVisualResourceItem
-        implements ITripleContentQuestVisualResourceItem {
+        implements IColoredVisualResourceItemList {
 
-    CAR(R.drawable.qvri_car_background,
-            R.drawable.qvri_car_content,
-            R.drawable.qvri_car_foreground,
+    CAR(new ArrayList<>(Arrays.asList(
+            new ColoredVisualResourceItem(R.drawable.qvri_car_background, COLOR_AS_CONTENT),
+            new ColoredVisualResourceItem(R.drawable.qvri_car_content, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_car_foreground, COLOR_AS_BACKGROUND))),
             R.string.qvri_car_title,
-            QuestVisualResourceGroup.BOY),
+            VisualResourceGroup.BOY,
+            VisualResourceGroup.CHILDREN_TOY),
 
-    DOLL(0, 0, 0, R.string.qvri_doll_title, QuestVisualResourceGroup.GIRL);
+    DOLL_BOOTS(new ArrayList<>(Arrays.asList(
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_background, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_boots, COLOR_AS_CONTENT),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_skirt, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_blouse, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_foreground, NONE))),
+            R.string.qvri_doll_boots_title,
+            VisualResourceGroup.GIRL,
+            VisualResourceGroup.CHILDREN_TOY),
 
-    @DrawableRes
-    private int mDrawableContentResourceId, mDrawableBackgroundResourceId, mDrawableForegroundResourceId;
+    DOLL_SKIRT(new ArrayList<>(Arrays.asList(
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_background, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_boots, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_skirt, COLOR_AS_CONTENT),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_blouse, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_foreground, NONE))),
+            R.string.qvri_doll_skirt_title,
+            VisualResourceGroup.GIRL,
+            VisualResourceGroup.CHILDREN_TOY),
+
+    DOLL_BLOUSE(new ArrayList<>(Arrays.asList(
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_background, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_boots, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_skirt, NONE),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_blouse, COLOR_AS_CONTENT),
+            new ColoredVisualResourceItem(R.drawable.qvri_doll_foreground, NONE))),
+            R.string.qvri_doll_blouse_title,
+            VisualResourceGroup.GIRL,
+            VisualResourceGroup.CHILDREN_TOY);
+
+    private final List<ColoredVisualResourceItem> mColoredVisualResourceItemList;
     @StringRes
     private int mTitleResourceId;
     @Nullable
-    private QuestVisualResourceGroup[] mGroups;
+    private VisualResourceGroup[] mGroups;
 
-    ChildrenToyQuestVisualResourceItem(@DrawableRes int drawableBackgroundResourceId,
-                                       @DrawableRes int drawableContentResourceId,
-                                       @DrawableRes int drawableForegroundResourceId,
+    ChildrenToyQuestVisualResourceItem(@NonNull List<ColoredVisualResourceItem> coloredVisualResourceItemList,
                                        @StringRes int titleResourceId,
-                                       @Nullable QuestVisualResourceGroup... groups) {
-        mDrawableBackgroundResourceId = drawableBackgroundResourceId;
-        mDrawableContentResourceId = drawableContentResourceId;
-        mDrawableForegroundResourceId = drawableForegroundResourceId;
+                                       @Nullable VisualResourceGroup... groups) {
+        mColoredVisualResourceItemList = coloredVisualResourceItemList;
         mTitleResourceId = titleResourceId;
         mGroups = groups;
     }
@@ -48,27 +81,17 @@ public enum ChildrenToyQuestVisualResourceItem
     }
 
     @Nullable
-    public QuestVisualResourceGroup[] getGroups() {
+    public VisualResourceGroup[] getGroups() {
         return mGroups;
     }
 
-    @DrawableRes
-    public int getContentDrawableResourceId() {
-        return mDrawableContentResourceId;
-    }
-
-    @DrawableRes
-    public int getBackgroundDrawableResourceId() {
-        return mDrawableBackgroundResourceId;
-    }
-
-    @DrawableRes
-    public int getForegroundDrawableResourceId() {
-        return mDrawableForegroundResourceId;
+    @NonNull
+    public List<ColoredVisualResourceItem> getColoredVisualResourceItemList() {
+        return mColoredVisualResourceItemList;
     }
 
     @DrawableRes
     public int getDrawableResourceId() {
-        return getContentDrawableResourceId();
+        return 0;
     }
 }

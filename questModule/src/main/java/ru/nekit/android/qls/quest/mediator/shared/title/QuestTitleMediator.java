@@ -239,9 +239,9 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                     VisualRepresentationalNumberSummandQuest visualRepresentationalNumberSummandQuest
                             = (VisualRepresentationalNumberSummandQuest) mQuest;
-                    int unknownIndex = visualRepresentationalNumberSummandQuest.getUnknownValue();
+                    int unknownIndex = visualRepresentationalNumberSummandQuest.unknownMemberIndex;
                     mTitleText = String.format("Выберите %s %s",
-                            ColorModel.getById(unknownIndex).getTitle(questContext),
+                            ColorModel.getById(visualRepresentationalNumberSummandQuest.leftNode[unknownIndex]).getTitle(questContext),
                             questResourceLibrary.getVisualResourceItem(visualRepresentationalNumberSummandQuest.getVisualRepresentationList().get(unknownIndex)).getTitle(questContext)
                     );
 
@@ -261,7 +261,12 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onAnswer(boolean isRight) {
+    public boolean onRightAnswer() {
+        return true;
+    }
+
+    @Override
+    public void onWrongAnswer() {
 
     }
 

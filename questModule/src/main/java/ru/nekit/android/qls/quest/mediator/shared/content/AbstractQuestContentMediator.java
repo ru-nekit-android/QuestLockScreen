@@ -69,9 +69,12 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     }
 
+    @Override
+    public boolean onRightAnswer() {
+        return true;
+    }
 
     @Override
-    public void onAnswer(boolean isRight) {
-
+    public void onWrongAnswer() {
     }
 }

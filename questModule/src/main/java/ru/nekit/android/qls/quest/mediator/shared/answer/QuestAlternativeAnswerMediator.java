@@ -161,7 +161,12 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
 
     @Override
-    public void onAnswer(boolean isRight) {
+    public boolean onRightAnswer() {
+        return true;
+    }
+
+    @Override
+    public void onWrongAnswer() {
 
     }
 }

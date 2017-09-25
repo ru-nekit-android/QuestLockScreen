@@ -132,8 +132,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 EVENT_TIC_TAC,
                 EVENT_QUEST_CREATE,
                 EVENT_QUEST_PAUSE,
-                EVENT_QUEST_RESUME,
-                ACTION_TIME_TICK
+                EVENT_QUEST_RESUME
+                //ACTION_TIME_TICK
         );
     }
 

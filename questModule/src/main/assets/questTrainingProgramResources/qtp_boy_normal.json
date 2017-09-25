@@ -128,7 +128,7 @@
           "answerVariants": 2,
           "memberCount": 20,
           "delayedStart": false,
-          "enabled": false
+          "enabled": true
         }
       ]
     }

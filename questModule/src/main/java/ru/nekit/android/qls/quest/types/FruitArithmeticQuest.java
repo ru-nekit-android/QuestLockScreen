@@ -12,10 +12,10 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
-import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -35,13 +35,12 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
         NumberSummandQuest outQuest = (NumberSummandQuest) inQuest;
         final int length = outQuest.leftNode.length;
         int i = 0;
-
         leftNode = outQuest.leftNode;
         rightNode = outQuest.rightNode;
         if (questionType == QuestionType.SOLUTION) {
-            List<IQuestVisualResourceItem> visualResourceSourceList =
-                    questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? QuestVisualResourceGroup.POMUM : QuestVisualResourceGroup.BERRY);
-            IQuestVisualResourceItem[] questVisualResourceItems = new SimpleQuestVisualResourceItem[length];
+            List<IVisualResourceItem> visualResourceSourceList =
+                    questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? VisualResourceGroup.POMUM : VisualResourceGroup.BERRY);
+            IVisualResourceItem[] questVisualResourceItems = new SimpleQuestVisualResourceItem[length];
             for (; i < length; i++) {
                 questVisualResourceItems[i] = visualResourceSourceList.get(
                         MathUtils.randUnsignedInt(visualResourceSourceList.size() - 1));

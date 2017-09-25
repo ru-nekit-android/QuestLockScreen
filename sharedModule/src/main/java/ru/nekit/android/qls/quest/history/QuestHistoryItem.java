@@ -73,10 +73,8 @@ public class QuestHistoryItem implements Parcelable {
         return 0;
     }
 
-
     public static class Pair implements Parcelable {
 
-        public static final String NAME = "questHistoryPairItem";
         public static final Creator<Pair> CREATOR = new Creator<Pair>() {
             @Override
             public Pair createFromParcel(Parcel in) {

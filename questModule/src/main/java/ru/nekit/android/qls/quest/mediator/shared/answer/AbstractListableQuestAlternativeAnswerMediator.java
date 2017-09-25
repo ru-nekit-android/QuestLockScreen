@@ -20,7 +20,7 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
         extends RecyclerView.Adapter> extends QuestAlternativeAnswerMediator {
 
     protected ListAdapterType mListAdapter;
-    private RecyclerView mListView;
+    protected RecyclerView mListView;
     private RelativeLayout mListViewContainer;
 
     @Override
@@ -76,4 +76,7 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
     @NonNull
     protected abstract ListAdapterType getListAdapter(List<ListDataType> listData);
 
+    @Override
+    public void onWrongAnswer() {
+    }
 }

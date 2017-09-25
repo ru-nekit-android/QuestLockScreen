@@ -11,14 +11,14 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.quest.types.model.ColorModel;
 import ru.nekit.android.qls.utils.MathUtils;
 
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.BOY;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.GIRL;
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.BOY;
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.GIRL;
 
 public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuestTrainingProgramRule {
 
@@ -40,7 +40,7 @@ public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuest
         List<Integer> questVisualRepresentationList = new ArrayList<>();
         ColorModel[] targetColors = Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount);
         int i = 0;
-        IQuestVisualResourceItem questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
+        IVisualResourceItem questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
                 getVisualResourceItemsByGroup(questContext.getPupil().sex == PupilSex.BOY ? BOY : GIRL));
         for (; i < memberCount; i++) {
             quest.leftNode[i] = targetColors[i].getId();

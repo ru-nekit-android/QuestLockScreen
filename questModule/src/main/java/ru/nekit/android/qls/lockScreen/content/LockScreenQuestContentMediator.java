@@ -49,6 +49,9 @@ import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_S
 public class LockScreenQuestContentMediator extends AbstractLockScreenContentMediator
         implements View.OnClickListener, EventBus.IEventHandler {
 
+    public static final String EVENT_SHOW_RIGHT_ANSWER_WINDOW = "event_show_right_answer_window";
+    public static final String NAME_SHOW_FULL_RIGHT_ANSWER_WINDOW = "name_show_full_right_answer_window";
+
     @NonNull
     private final QuestContext mQuestContext;
     private QuestVisualBuilder mCurrentQuestVisualBuilder, mPreviousQuestVisualBuilder;
@@ -114,7 +117,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         mViewHolder.outAnimation.setAnimationListener(mAnimationListener);
         questContext.getEventBus().handleEvents(this,
                 TransitionChoreograph.EVENT_TRANSITION_CHANGED,
-                QuestContextEvent.EVENT_RIGHT_ANSWER,
+                EVENT_SHOW_RIGHT_ANSWER_WINDOW,
                 QuestContextEvent.EVENT_WRONG_ANSWER
         );
         mCurrentQuestVisualBuilder = new QuestVisualBuilder(questContext);
@@ -228,24 +231,28 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
     }
 
     @Override
-    public void onEvent(@NonNull Intent intent) {
+    public void onEvent(@NonNull final Intent intent) {
         String action = intent.getAction();
         switch (action) {
 
-            case QuestContextEvent.EVENT_RIGHT_ANSWER:
+            case EVENT_SHOW_RIGHT_ANSWER_WINDOW:
 
-                final QuestHistoryItem.Pair questHistoryPair =
-                        intent.getParcelableExtra(QuestHistoryItem.Pair.NAME);
                 KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
                     @Override
                     public void run() {
+                        boolean showFullRightAnserWindow = intent.getBooleanExtra(NAME_SHOW_FULL_RIGHT_ANSWER_WINDOW,
+                                true);
+                        QuestHistoryItem.Pair questHistoryPair = mQuestContext.getQuestHistoryPair();
                         updatePupilStatisticsView();
-
                         RightAnswerWindowContentViewHolder content =
-                                new RightAnswerWindowContentViewHolder(mQuestContext);
+                                new RightAnswerWindowContentViewHolder(mQuestContext,
+                                        showFullRightAnserWindow ? R.layout.wc_right_answer
+                                                : R.layout.wc_right_answer_simple);
                         mRightAnswerWindow = Window.open(mQuestContext,
                                 content,
-                                R.style.Window_RightAnswer,
+                                showFullRightAnserWindow ?
+                                        R.style.Window_RightAnswer :
+                                        R.style.Window_RightAnswer_Simple,
                                 mWindowListener
                         );
                         SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss.SSS",

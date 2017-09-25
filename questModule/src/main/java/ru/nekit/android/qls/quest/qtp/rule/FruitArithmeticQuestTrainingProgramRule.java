@@ -14,13 +14,13 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator.Flag;
-import ru.nekit.android.qls.quest.resourceLibrary.IQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
 import ru.nekit.android.qls.utils.Callable;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.ANSWER_VARIANTS;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_COUNT;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_MIN_AND_MAX_VALUES;
-import static ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup.FRUIT;
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.FRUIT;
 
 public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
 
@@ -114,16 +114,16 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
             );
         } else if (questionType == QuestionType.COMPARISON) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON, memberCount);
-            List<IQuestVisualResourceItem> visualResourceItemList =
+            List<IVisualResourceItem> visualResourceItemList =
                     questContext.getQuestResourceLibrary().getVisualResourceItemsByGroup(FRUIT);
             answerVariants = Math.min(Math.max(VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON,
                     answerVariants),
                     visualResourceItemList.size());
             Collections.shuffle(visualResourceItemList);
             generator.setAvailableMemberValues(visualResourceItemList.subList(0, answerVariants),
-                    new Callable<IQuestVisualResourceItem, Integer>() {
+                    new Callable<IVisualResourceItem, Integer>() {
                         @Override
-                        public Integer call(IQuestVisualResourceItem value) {
+                        public Integer call(IVisualResourceItem value) {
                             return questContext.getQuestResourceLibrary().getQuestVisualResourceItemId(value);
                         }
                     });

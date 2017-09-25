@@ -128,5 +128,9 @@
     <string name="qvri_car_title">Машина</string>
     <string name="qvri_doll_title">Кукла</string>
     <string name="color_default">По умолчанию</string>
+    <string name="qvrg_children_toy_title">Детская игрушка</string>
+    <string name="qvri_doll_boots_title">Ботиночки</string>
+    <string name="qvri_doll_skirt_title">Юбка</string>
+    <string name="qvri_doll_blouse_title">Блузка</string>
 
 </resources>

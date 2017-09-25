@@ -12,7 +12,7 @@ public class VisualRepresentationalNumberSummandQuest extends NumberSummandQuest
         implements IQuestVisualRepresentation {
 
     @Nullable
-    protected List<Integer> mVisualRepresentationList;
+    List<Integer> mVisualRepresentationList;
 
     public VisualRepresentationalNumberSummandQuest() {
         mVisualRepresentationList = new ArrayList<>();

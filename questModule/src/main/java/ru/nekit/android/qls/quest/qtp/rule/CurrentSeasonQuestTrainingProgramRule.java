@@ -8,8 +8,8 @@ import java.util.Calendar;
 
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestVisualResourceGroup;
 import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
@@ -36,8 +36,8 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
     }
 
     @Override
-    QuestVisualResourceGroup getActualGroup() {
-        return QuestVisualResourceGroup.SEASONS;
+    VisualResourceGroup getActualGroup() {
+        return VisualResourceGroup.SEASONS;
     }
 
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
