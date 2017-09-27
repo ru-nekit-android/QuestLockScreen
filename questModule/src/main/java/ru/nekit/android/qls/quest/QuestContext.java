@@ -112,10 +112,6 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     //Quest state functional
-    private void setQuestState(QuestState state) {
-        setQuestState(state.value());
-    }
-
     private void setQuestState(int stateValue) {
         PreferencesUtil.setInt(NAME_QUEST_STATE, stateValue);
     }
@@ -164,7 +160,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             }
         }
         if (mQuest == null) {
-            mQuest = buildQuest();
+            mQuest = createQuest();
             mQuestSaver.save(mQuest);
             clearQuesState();
         }
@@ -369,7 +365,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     @NonNull
-    private IQuest buildQuest() {
+    private IQuest createQuest() {
         AppropriateQuestTrainingProgramRuleWrapper ruleWrapper =
                 mQuestTrainingProgram.getAppropriateRuleChanceByStatistics(mPupilStatistics);
         IQuest quest = ruleWrapper.makeQuest(this);
@@ -493,13 +489,6 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         }
         updateQuestTrainingProgramVersion(questTrainingProgram);
         mQuestTrainingProgram = questTrainingProgram;
-    }
-
-    public String formatQuestName(@NonNull QuestType questType,
-                                  @NonNull QuestionType questionType) {
-        return String.format(getString(R.string.quest_name_formatter),
-                questType.getTitle(this),
-                questionType.getTitle(this));
     }
 
     public AbstractQuestTrainingProgramRule getQTPRule() {

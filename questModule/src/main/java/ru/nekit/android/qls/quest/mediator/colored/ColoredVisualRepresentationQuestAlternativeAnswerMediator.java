@@ -12,17 +12,17 @@ import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResourceItemList
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.quest.types.model.ColorModel;
-import ru.nekit.android.qls.quest.types.model.ContentAndBackgroundColoredModel;
+import ru.nekit.android.qls.quest.types.shared.PrimaryAndSecondaryColoredItem;
 
 public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
-        extends AbstractListableQuestAlternativeAnswerMediator<Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>,
+        extends AbstractListableQuestAlternativeAnswerMediator<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>,
         ColoredVisualRepresentationQuestAdapter> {
 
-    List<Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>> mDataList;
+    List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> mDataList;
 
     @NonNull
     @Override
-    protected List<Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>> getListData() {
+    protected List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> getListData() {
         mDataList = new ArrayList<>();
         final int length = getQuest().getVisualRepresentationList().size();
         QuestResourceLibrary questResourceLibrary = mQuestContext.getQuestResourceLibrary();
@@ -31,8 +31,8 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
                     (IColoredVisualResourceItemList)
                             questResourceLibrary.getVisualResourceItem(getQuest().
                                     getVisualRepresentationList().get(i));
-            ContentAndBackgroundColoredModel contentAndBackgroundColoredModel =
-                    new ContentAndBackgroundColoredModel(ColorModel.getById(getQuest().leftNode[i]),
+            PrimaryAndSecondaryColoredItem contentAndBackgroundColoredModel =
+                    new PrimaryAndSecondaryColoredItem(ColorModel.getById(getQuest().leftNode[i]),
                             ColorModel.getById(getQuest().rightNode[i]));
             mDataList.add(new Pair<>(visualResourceItem, contentAndBackgroundColoredModel));
         }
@@ -46,7 +46,7 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
     @NonNull
     @Override
     protected ColoredVisualRepresentationQuestAdapter getListAdapter(List<Pair<IColoredVisualResourceItemList,
-            ContentAndBackgroundColoredModel>> listData) {
+            PrimaryAndSecondaryColoredItem>> listData) {
         return new ColoredVisualRepresentationQuestAdapter(mQuestContext, listData, this);
     }
 
@@ -56,18 +56,18 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
         updateSizeInternal(true);
     }
 
-    private void updateSizeInternal(@Size boolean useSizeDevider) {
+    private void updateSizeInternal(@Size boolean useSizeDivider) {
         int size = Math.min(mRootContentContainer.getWidth(), mRootContentContainer.getHeight());
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = (int) Math.ceil(dataListLength / (float) getColumnCount());
-        mListAdapter.setSize(size / (useSizeDevider ? Math.max(getColumnCount(), rowCount) : 1));
+        mListAdapter.setSize(size / (useSizeDivider ? Math.max(getColumnCount(), rowCount) : 1));
         mListAdapter.notifyDataSetChanged();
     }
 
     @Override
     public boolean onRightAnswer() {
         super.onRightAnswer();
-        Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>
+        Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>
                 item = mDataList.get(getQuest().unknownMemberIndex);
         mDataList.clear();
         mDataList.add(item);

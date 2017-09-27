@@ -2,6 +2,7 @@ package ru.nekit.android.qls.quest.mediator.colored;
 
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.widget.AppCompatImageView;
@@ -19,12 +20,10 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
 import ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem;
 import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResourceItemList;
-import ru.nekit.android.qls.quest.types.model.ContentAndBackgroundColoredModel;
+import ru.nekit.android.qls.quest.types.shared.PrimaryAndSecondaryColoredItem;
 import ru.nekit.android.qls.utils.IViewHolder;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.COLOR_AS_BACKGROUND;
-import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.COLOR_AS_CONTENT;
 import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem.ColorType.NONE;
 
 public class ColoredVisualRepresentationQuestAdapter
@@ -35,10 +34,10 @@ public class ColoredVisualRepresentationQuestAdapter
     @NonNull
     private final View.OnClickListener mClickListener;
     @NonNull
-    private final List<Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>> mListData;
+    private final List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> mListData;
 
     ColoredVisualRepresentationQuestAdapter(@NonNull QuestContext questContext,
-                                            @NonNull List<Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel>> listData,
+                                            @NonNull List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> listData,
                                             @NonNull View.OnClickListener clickListener) {
         mQuestContext = questContext;
         mListData = listData;
@@ -60,25 +59,47 @@ public class ColoredVisualRepresentationQuestAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Resources resources = mQuestContext.getResources();
-        Pair<IColoredVisualResourceItemList, ContentAndBackgroundColoredModel> item
+        Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem> item
                 = mListData.get(position);
         for (ColoredVisualResourceItem coloredVisualResourceItem : item.first.getColoredVisualResourceItemList()) {
             int drawableResourceId = coloredVisualResourceItem.drawableResourceId;
             if (drawableResourceId != 0) {
                 AppCompatImageView imageView = new AppCompatImageView(mQuestContext);
-                ColoredVisualResourceItem.ColorType colorType = coloredVisualResourceItem.colorType;
                 Drawable drawable = resources.getDrawable(coloredVisualResourceItem.drawableResourceId);
-                if (colorType != NONE) {
+                if (coloredVisualResourceItem.colorType != NONE) {
                     drawable = drawable.mutate();
                     DrawableCompat.wrap(drawable);
-                    ContentAndBackgroundColoredModel coloredModel = item.second;
-                    if (colorType == COLOR_AS_CONTENT) {
-                        DrawableCompat.setTint(drawable,
-                                coloredModel.getContentColorModel().getColor(mQuestContext));
-                    } else if (colorType == COLOR_AS_BACKGROUND) {
-                        DrawableCompat.setTint(drawable,
-                                coloredModel.getBackgroundColorModel().getColor(mQuestContext));
+                    PrimaryAndSecondaryColoredItem coloredModel = item.second;
+                    @ColorInt
+                    int color = 0;
+                    switch (coloredVisualResourceItem.colorType) {
+
+                        case AS_PRIMARY:
+
+                            color = coloredModel.getPrimaryColorModel().getColor(mQuestContext);
+
+                            break;
+
+                        case AS_SECONDARY:
+
+                            color = coloredModel.getSecondaryColorModel().getColor(mQuestContext);
+
+                            break;
+
+                        case INVERSE_AS_PRIMARY:
+
+                            color = (0xFFFFFF - coloredModel.getPrimaryColorModel().getColor(mQuestContext)) | 0xFF000000;
+
+                            break;
+
+                        case INVERSE_AS_SECONDARY:
+
+                            color = (0xFFFFFF - coloredModel.getSecondaryColorModel().getColor(mQuestContext)) | 0xFF000000;
+
+                            break;
+
                     }
+                    DrawableCompat.setTint(drawable, color);
                 }
                 imageView.setImageDrawable(drawable);
                 RelativeLayout.LayoutParams layoutParams =
@@ -89,9 +110,9 @@ public class ColoredVisualRepresentationQuestAdapter
                 holder.getContainer().addView(imageView);
             }
         }
-        holder.getView().setBackgroundColor(item.second.getBackgroundColorModel().getColor(mQuestContext));
+        holder.getView().setBackgroundColor(item.second.getSecondaryColorModel().getColor(mQuestContext));
         holder.getView().setOnClickListener(mClickListener);
-        holder.getView().setTag(item.second.getContentColorModel().getId());
+        holder.getView().setTag(item.second.getPrimaryColorModel().getId());
     }
 
     @Override

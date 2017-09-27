@@ -9,9 +9,10 @@ public class ColoredVisualResourceItem {
     @DrawableRes
     public final int drawableResourceId;
     @NonNull
-    public final ColorType colorType;
+    public ColorType colorType;
 
-    public ColoredVisualResourceItem(@DrawableRes int drawableResourceId, ColorType colorType) {
+    public ColoredVisualResourceItem(@DrawableRes int drawableResourceId,
+                                     @NonNull ColorType colorType) {
         this.drawableResourceId = drawableResourceId;
         this.colorType = colorType;
     }
@@ -24,8 +25,10 @@ public class ColoredVisualResourceItem {
     public enum ColorType {
 
         NONE,
-        COLOR_AS_CONTENT,
-        COLOR_AS_BACKGROUND
+        AS_PRIMARY,
+        AS_SECONDARY,
+        INVERSE_AS_PRIMARY,
+        INVERSE_AS_SECONDARY;
 
     }
 }
