@@ -22,8 +22,8 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     @CallSuper
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext,
-                              @NonNull ViewGroup rootContentContainer) {
+    public void onCreate(@NonNull QuestContext questContext,
+                         @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
         mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();

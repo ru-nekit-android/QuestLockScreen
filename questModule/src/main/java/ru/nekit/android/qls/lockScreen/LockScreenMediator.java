@@ -132,8 +132,8 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 EVENT_TIC_TAC,
                 EVENT_QUEST_CREATE,
                 EVENT_QUEST_PAUSE,
-                EVENT_QUEST_RESUME
-                //ACTION_TIME_TICK
+                EVENT_QUEST_RESUME,
+                ACTION_TIME_TICK
         );
     }
 
@@ -202,7 +202,6 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                     ,
                     PixelFormat.TRANSLUCENT);
             mLockScreenLayoutParams.screenBrightness = 1;
-            //mLockScreenLayoutParams.height = 0;
             mLockScreenLayoutParams.gravity = (isLandscape ? Gravity.CENTER_HORIZONTAL : Gravity.LEFT);
             mLockScreenLayoutParams.screenOrientation = isLandscape ?
                     ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
@@ -300,17 +299,17 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
                 break;
 
-            case EVENT_QUEST_RESUME:
-
-                fadeAnimation(mStatusBarViewHolder.timerContainer, false);
-
-                break;
-
             case EVENT_WINDOW_CLOSED:
 
                 if (mTransitionChoreograph.getCurrentTransition() == QUEST) {
                     mQuestContext.resumeQuest();
                 }
+
+                break;
+
+            case EVENT_QUEST_RESUME:
+
+                fadeAnimation(mStatusBarViewHolder.timerContainer, false);
 
                 break;
 
@@ -360,12 +359,11 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                         mCurrentContentMediator.attachView();
                         KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView());
                     }
-                    if (currentTransition == QUEST) {
+                    boolean questState = currentTransition == QUEST;
+                    if (questState) {
                         mStatusBarViewHolder.timerContainer.setVisibility(VISIBLE);
-                        fadeAnimation(mStatusBarViewHolder.timerContainer, false);
-                    } else {
-                        fadeAnimation(mStatusBarViewHolder.timerContainer, true);
                     }
+                    fadeAnimation(mStatusBarViewHolder.timerContainer, !questState);
                 }
 
                 break;

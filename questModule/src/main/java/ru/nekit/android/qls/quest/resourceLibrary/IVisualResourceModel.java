@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.quest.ITitleable;
 
-public interface IVisualResourceItem extends ITitleable {
+public interface IVisualResourceModel extends ITitleable {
 
     @Nullable
     VisualResourceGroup[] getGroups();

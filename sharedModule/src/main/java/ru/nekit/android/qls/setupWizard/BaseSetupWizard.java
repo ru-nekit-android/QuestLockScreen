@@ -13,8 +13,7 @@ import ru.nekit.android.qls.session.SessionType;
 public abstract class BaseSetupWizard {
 
     public static final int UNLOCK_SECRET_MIN_SIZE = 4;
-    private static final String BIND_CODE_PATTERN = "%s%s%s";
-    private static final String BIND_CODE_SEPARATOR = ":";
+    private static final String BIND_CODE_PATTERN = "QLS:%s:%s";
     @NonNull
     protected final Context mContext;
     @NonNull
@@ -101,13 +100,13 @@ public abstract class BaseSetupWizard {
     public String createBindCode() {
         Pupil pupil = mPupilManager.getCurrentPupil();
         assert pupil != null;
-        return String.format(BIND_CODE_PATTERN, pupil.getUuid(), BIND_CODE_SEPARATOR, pupil.name);
+        return String.format(BIND_CODE_PATTERN, pupil.getUuid(), pupil.name);
     }
 
     protected Pupil createPupilFromBindCode(@NonNull String bindCode) {
-        String[] values = TextUtils.split(bindCode, BIND_CODE_SEPARATOR);
-        Pupil pupil = new Pupil(values[0]);
-        pupil.name = values[1];
+        String[] values = TextUtils.split(bindCode, ":");
+        Pupil pupil = new Pupil(values[1]);
+        pupil.name = values[2];
         return pupil;
     }
 }

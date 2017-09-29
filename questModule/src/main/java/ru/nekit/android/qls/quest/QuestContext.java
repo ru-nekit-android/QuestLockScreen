@@ -108,7 +108,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mTicTacHandler = new Handler();
         mEventBus.handleEvents(this, Intent.ACTION_SCREEN_ON);
         //WARNING!!! only for test
-        mQuestSaver.reset();
+        //mQuestSaver.reset();
     }
 
     //Quest state functional
@@ -142,6 +142,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         sendTicTacEvent(getSessionTime());
     }
 
+    @NonNull
     public IQuest getQuest() {
         //try to restore if mQuest == null
         if (mQuest == null && mQuestSaver.hasSavedState()) {

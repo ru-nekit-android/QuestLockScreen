@@ -5,7 +5,7 @@ import android.view.View;
 
 public interface IQuestViewHolder {
 
-    void attachQuestContent(@NonNull View questView);
+    void attachQuestView(@NonNull View questView);
 
     void detachQuestView();
 

@@ -67,18 +67,18 @@ public enum VisualResourceGroup implements ITitleable {
         return children;
     }
 
-    public List<IVisualResourceItem> getQuestVisualItems() {
-        List<IVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (IVisualResourceItem questVisualResourceItem : SimpleQuestVisualResourceItem.values()) {
-            if (questVisualResourceItem.getGroups() != null) {
-                for (VisualResourceGroup groupItem : questVisualResourceItem.getGroups()) {
-                    if (groupItem.hasParent(this)) {
-                        questVisualResourceItems.add(questVisualResourceItem);
+    public List<IVisualResourceModel> getVisualResourceItems(@NonNull QuestResourceLibrary questResourceLibrary) {
+        List<IVisualResourceModel> result = new ArrayList<>();
+        for (IVisualResourceModel visualResourceModel : questResourceLibrary.getVisualResourceItems()) {
+            if (visualResourceModel.getGroups() != null) {
+                for (VisualResourceGroup group : visualResourceModel.getGroups()) {
+                    if (group.hasParent(this)) {
+                        result.add(visualResourceModel);
                     }
                 }
             }
         }
-        return questVisualResourceItems;
+        return result;
     }
 
     public boolean hasParent(VisualResourceGroup group) {

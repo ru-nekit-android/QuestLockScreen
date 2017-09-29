@@ -22,8 +22,8 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreateQuest(questContext, rootContentContainer);
+    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreate(questContext, rootContentContainer);
         mViewHolder = new SimpleExampleQuestViewHolder(mQuestContext);
         IQuestTextContentFormatter formatter = createFormatter();
         String[] questStringList = formatter.format(mQuestContext, mQuest);

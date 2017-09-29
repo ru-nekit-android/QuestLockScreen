@@ -8,7 +8,11 @@ import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
 
-public enum SimpleQuestVisualResourceItem implements IVisualResourceItem {
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.BERRY;
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.POMUM;
+import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.SEASONS;
+
+public enum SimpleQuestVisualResourceModel implements IVisualResourceModel {
 
     MINUS(R.drawable.qvri_minus,
             R.string.qvri_minus_title,
@@ -24,46 +28,46 @@ public enum SimpleQuestVisualResourceItem implements IVisualResourceItem {
 
     ORANGE(R.drawable.qvri_orange,
             R.string.qvri_orange_title,
-            VisualResourceGroup.POMUM),
+            POMUM),
 
     STRAWBERRY(R.drawable.qvri_strawberry,
             R.string.qvri_strawberry_title,
-            VisualResourceGroup.BERRY),
+            BERRY),
 
     APPLE(R.drawable.qvri_apple,
             R.string.qvri_apple_title,
-            VisualResourceGroup.POMUM),
+            POMUM),
 
     PEAR(R.drawable.qvri_pear,
             R.string.qvri_pear_title,
-            VisualResourceGroup.POMUM),
+            POMUM),
 
     CHERRY(R.drawable.qvri_cherry,
             R.string.qvri_cherry_title,
-            VisualResourceGroup.BERRY),
+            BERRY),
 
     RASPBERRY(R.drawable.qvri_raspberry,
             R.string.qvri_raspberry_title,
-            VisualResourceGroup.BERRY),
+            BERRY),
 
     WINTER(R.drawable.qvri_tree_winter,
             R.string.qvri_winter_title,
-            VisualResourceGroup.SEASONS),
+            SEASONS),
 
     SPRING(R.drawable.qvri_tree_spring, R.string.qvri_spring_title,
-            VisualResourceGroup.SEASONS),
+            SEASONS),
 
     SUMMER(R.drawable.qvri_tree_summer, R.string.qvri_summer_title,
-            VisualResourceGroup.SEASONS),
+            SEASONS),
 
     FALL(R.drawable.qvri_tree_fall, R.string.qvri_fall_title,
-            VisualResourceGroup.SEASONS),
+            SEASONS),
 
     PINEAPPLE(R.drawable.qvri_pineapple, R.string.qvri_pineapple_title,
-            VisualResourceGroup.POMUM),
+            POMUM),
 
     BLACKBERRY(R.drawable.qvri_blackberry, R.string.qvri_blackberry_title,
-            VisualResourceGroup.BERRY);
+            BERRY);
 
     @DrawableRes
     private int mDrawableResourceId;
@@ -72,9 +76,9 @@ public enum SimpleQuestVisualResourceItem implements IVisualResourceItem {
     @Nullable
     private VisualResourceGroup[] mGroups;
 
-    SimpleQuestVisualResourceItem(@DrawableRes int drawableResourceId,
-                                  @StringRes int titleResourceId,
-                                  @Nullable VisualResourceGroup... groups) {
+    SimpleQuestVisualResourceModel(@DrawableRes int drawableResourceId,
+                                   @StringRes int titleResourceId,
+                                   @Nullable VisualResourceGroup... groups) {
         mDrawableResourceId = drawableResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;

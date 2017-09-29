@@ -10,7 +10,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
@@ -37,7 +37,7 @@ public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuest
         List<Integer> questVisualRepresentationList = new ArrayList<>();
         ColorModel[] targetColors = Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount);
         int i = 0;
-        IVisualResourceItem questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
+        IVisualResourceModel questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
                 getVisualResourceItemsByGroup(VisualResourceGroup.CHILDREN_TOY));//questContext.getPupil().sex == PupilSex.BOY ? BOY : GIRL));
         for (; i < memberCount; i++) {
             quest.leftNode[i] = targetColors[i].getId();

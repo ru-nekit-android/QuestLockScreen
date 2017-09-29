@@ -132,5 +132,6 @@
     <string name="qvri_doll_boots_title">Ботиночки</string>
     <string name="qvri_doll_skirt_title">Юбка</string>
     <string name="qvri_doll_blouse_title">Блузка</string>
+    <string name="quest_series">%1$d из %2$d</string>
 
 </resources>

@@ -7,12 +7,24 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.lockScreen.service.LockScreenService;
-import ru.nekit.android.qls.setupWizard.BaseSetupStep;
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard;
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardActivity;
 import ru.nekit.android.qls.setupWizard.ISetupStep;
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard;
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step;
+
+import static ru.nekit.android.qls.setupWizard.BaseSetupStep.ENTER_UNLOCK_SECRET;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.BIND_PARENT_CONTROL;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.CALL_PHONE_AND_READ_CONTACTS_PERMISSION;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.CHANGE_UNLOCK_SECRET;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.OVERLAY_PERMISSION;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.PUPIL_AVATAR;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.PUPIL_NAME;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.PUPIL_SEX;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.QTP_COMPLEXITY;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.SETTINGS;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.SETUP_ALLOW_CONTACTS;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.SETUP_UNLOCK_SECRET;
+import static ru.nekit.android.qls.setupWizard.QuestSetupWizard.Step.START;
 
 public class QuestSetupWizardActivity extends BaseSetupWizardActivity implements EventBus.IEventHandler {
 
@@ -37,43 +49,41 @@ public class QuestSetupWizardActivity extends BaseSetupWizardActivity implements
     protected void onDestroy() {
         mEventBus.stopHandleEvents(this);
         super.onDestroy();
-
     }
-
 
     @Override
     public void showSetupWizardStep(@NonNull ISetupStep step, Object... params) {
         getSetupWizard().setCurrentSetupStep(step);
-        if (step.equals(Step.START)) {
+        if (step.equals(START)) {
             replaceFragment(StartSetupWizardFragment.getInstance());
-        } else if (Step.OVERLAY_PERMISSION.equals(step)) {
+        } else if (OVERLAY_PERMISSION.equals(step)) {
             replaceFragment(OverlayPermissionFragment.getInstance());
-        } else if (Step.SETUP_UNLOCK_SECRET.equals(step) ||
-                step.equals(BaseSetupStep.ENTER_UNLOCK_SECRET) ||
-                step.equals(Step.CHANGE_UNLOCK_SECRET)) {
+        } else if (SETUP_UNLOCK_SECRET.equals(step) ||
+                step.equals(ENTER_UNLOCK_SECRET) ||
+                step.equals(CHANGE_UNLOCK_SECRET)) {
             replaceFragment(UnlockSecretFragment.getInstance(step));
-        } else if (Step.PUPIL_NAME.equals(step)) {
+        } else if (PUPIL_NAME.equals(step)) {
             replaceFragment(SetupPupilNameFragment.getInstance());
-        } else if (Step.PUPIL_SEX.equals(step)) {
+        } else if (PUPIL_SEX.equals(step)) {
             replaceFragment(PupilSetSexFragment.getInstance());
-        } else if (Step.QTP_COMPLEXITY.equals(step)) {
+        } else if (QTP_COMPLEXITY.equals(step)) {
             replaceFragment(SetupQTPComplexityFragment.getInstance());
-        } else if (Step.PUPIL_AVATAR.equals(step)) {
+        } else if (PUPIL_AVATAR.equals(step)) {
             replaceFragment(SetupPupilAvatarFragment.getInstance());
-        } else if (Step.CALL_PHONE_AND_READ_CONTACTS_PERMISSION.equals(step)) {
+        } else if (CALL_PHONE_AND_READ_CONTACTS_PERMISSION.equals(step)) {
             replaceFragment(CallPhoneAndReadContactsPermissionFragment.getInstance());
-        } else if (Step.SETUP_ALLOW_CONTACTS.equals(step)) {
+        } else if (SETUP_ALLOW_CONTACTS.equals(step)) {
             replaceFragment(PhoneContactsFragment.getInstance());
-        } else if (Step.BIND_PARENT_CONTROL.equals(step)) {
+        } else if (BIND_PARENT_CONTROL.equals(step)) {
             replaceFragment(BindParentFragment.getInstance());
-        } else if (Step.SETTINGS.equals(step)) {
+        } else if (SETTINGS.equals(step)) {
             replaceFragment(SettingsFragment.getInstance());
         }
     }
 
     @Override
     public void onEvent(@NonNull Intent intent) {
-        showSetupWizardStep(Step.SETTINGS);
+        showSetupWizardStep(SETTINGS);
     }
 
     @NonNull

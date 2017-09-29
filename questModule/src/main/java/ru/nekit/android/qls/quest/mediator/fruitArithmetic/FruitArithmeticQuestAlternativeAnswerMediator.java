@@ -18,8 +18,8 @@ public class FruitArithmeticQuestAlternativeAnswerMediator extends QuestAlternat
     }
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreateQuest(questContext, rootContentContainer);
+    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreate(questContext, rootContentContainer);
         switch (mQuest.getQuestionType()) {
 
             case SOLUTION:

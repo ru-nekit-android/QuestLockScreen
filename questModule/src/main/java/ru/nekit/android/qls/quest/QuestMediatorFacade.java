@@ -113,13 +113,13 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
     }
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
         mQuest = questContext.getQuest();
         mViewHolder = new QuestViewHolder(questContext);
-        mTitleMediator.onCreateQuest(questContext, mViewHolder.titleContainer);
-        mContentMediator.onCreateQuest(questContext, mViewHolder.contentContainer);
-        mAlternativeAnswerMediator.onCreateQuest(questContext, mViewHolder.alternativeAnswerContainer);
+        mTitleMediator.onCreate(questContext, mViewHolder.titleContainer);
+        mContentMediator.onCreate(questContext, mViewHolder.contentContainer);
+        mAlternativeAnswerMediator.onCreate(questContext, mViewHolder.alternativeAnswerContainer);
         mViewHolder.titleContainer.addView(mTitleMediator.getView());
         View contentView = mContentMediator.getView();
         RelativeLayout.LayoutParams answerContainerLayoutParams =
@@ -405,7 +405,7 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
             case EVENT_RIGHT_ANSWER:
 
                 boolean showRightAnswerFullContent = onRightAnswer();
-                mQuestContext.getEventBus().sendEvent(LockScreenQuestContentMediator.EVENT_SHOW_RIGHT_ANSWER_WINDOW,
+                mQuestContext.getEventBus().sendEvent(LockScreenQuestContentMediator.ACTION_SHOW_RIGHT_ANSWER_WINDOW,
                         LockScreenQuestContentMediator.NAME_SHOW_FULL_RIGHT_ANSWER_WINDOW,
                         showRightAnswerFullContent);
 

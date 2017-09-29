@@ -184,7 +184,7 @@ public class QuestVisualBuilder {
                 break;
 
         }
-        mQuestMediatorFacade.onCreateQuest(mQuestContext, contentContainer);
+        mQuestMediatorFacade.onCreate(mQuestContext, contentContainer);
     }
 
     public View getView() {

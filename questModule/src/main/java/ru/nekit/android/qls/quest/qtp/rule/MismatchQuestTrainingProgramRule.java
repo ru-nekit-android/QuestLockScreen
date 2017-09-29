@@ -8,11 +8,12 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
-import ru.nekit.android.qls.utils.MathUtils;
+
+import static ru.nekit.android.qls.utils.MathUtils.randListLength;
 
 public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
 
@@ -39,31 +40,34 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
     }
 
     @Override
+    @NonNull
     QuestVisualRepresentationList getQuestVisualRepresentationList(
             @NonNull QuestResourceLibrary questResourceLibrary) {
-        VisualResourceGroup mismatchGroup = null;
         QuestVisualRepresentationList questVisualRepresentationList =
                 super.getQuestVisualRepresentationList(questResourceLibrary);
+        VisualResourceGroup mismatchGroup = null;
         List<VisualResourceGroup> questVisualResourceGroups =
                 Arrays.asList(VisualResourceGroup.values());
         Collections.shuffle(questVisualResourceGroups);
         for (VisualResourceGroup group : questVisualResourceGroups) {
-            if (!group.hasParent(actualGroup) && !actualGroup.hasParent(group)) {
+            if (!group.hasParent(targetGroup) && !targetGroup.hasParent(group)) {
                 mismatchGroup = group;
                 break;
             }
         }
-        List<IVisualResourceItem> mismatchQVRItemIdList = mismatchGroup.getQuestVisualItems();
-        unknownMemberIndex = MathUtils.randListLength(questVisualRepresentationList.getIdsList());
+        List<IVisualResourceModel> mismatchQVRItemIdList =
+                mismatchGroup.getVisualResourceItems(questResourceLibrary);
+        unknownMemberIndex = randListLength(questVisualRepresentationList.getIdsList());
         questVisualRepresentationList.getIdsList().add(unknownMemberIndex,
                 questResourceLibrary.getQuestVisualResourceItemId(
-                        mismatchQVRItemIdList.get(MathUtils.randListLength(mismatchQVRItemIdList))));
+                        mismatchQVRItemIdList.get(randListLength(mismatchQVRItemIdList))));
         questVisualRepresentationList.getIdsList().remove(unknownMemberIndex + 1);
         return questVisualRepresentationList;
     }
 
 
-    QuestType getActualQuestType() {
+    @Override
+    public QuestType getQuestType() {
         return QuestType.MISMATCH;
     }
 

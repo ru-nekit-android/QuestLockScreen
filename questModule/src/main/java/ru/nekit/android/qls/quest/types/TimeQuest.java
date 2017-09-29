@@ -10,7 +10,7 @@ import ru.nekit.android.qls.utils.MathUtils;
 
 public class TimeQuest extends NumberSummandQuest implements IGroupWeightComparisonQuest {
 
-    private int comparisonType;
+    private int groupComparisonType;
 
     public TimeQuest(@NonNull IQuest quest) {
         setQuestType(QuestType.TIME);
@@ -22,7 +22,7 @@ public class TimeQuest extends NumberSummandQuest implements IGroupWeightCompari
             unknownMemberIndex = MathUtils.randUnsignedInt(length - 1);
         }
         if (quest.getQuestionType() == QuestionType.COMPARISON) {
-            comparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
+            groupComparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
         }
     }
 
@@ -68,7 +68,7 @@ public class TimeQuest extends NumberSummandQuest implements IGroupWeightCompari
 
     @Override
     public int getGroupComparisonType() {
-        return getQuestionType() == QuestionType.COMPARISON ? comparisonType : -1;
+        return getQuestionType() == QuestionType.COMPARISON ? groupComparisonType : -1;
     }
 
     @Override

@@ -14,7 +14,7 @@ import java.util.List;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.mediator.shared.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
+import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.model.CoinModel;
 
 import static ru.nekit.android.qls.quest.QuestionType.UNKNOWN_MEMBER;
@@ -29,14 +29,14 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
         return (int) (width * sizeMultiplier);
     }
 
-    private FruitArithmeticQuest getQuest() {
-        return (FruitArithmeticQuest) mQuest;
+    private NumberSummandQuest getQuest() {
+        return (NumberSummandQuest) mQuest;
     }
 
     @Override
-    public void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreateQuest(questContext, rootContentContainer);
-        FruitArithmeticQuest quest = getQuest();
+    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.onCreate(questContext, rootContentContainer);
+        NumberSummandQuest quest = getQuest();
         mContentContainer = new FrameLayout(questContext);
         mCoinViewHolderList = new ArrayList<>();
         //sort for beauty

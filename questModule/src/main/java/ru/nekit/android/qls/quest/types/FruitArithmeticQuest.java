@@ -12,9 +12,9 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceItem;
+import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.utils.MathUtils;
@@ -22,7 +22,7 @@ import ru.nekit.android.qls.utils.MathUtils;
 public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQuest
         implements IGroupWeightComparisonQuest {
 
-    private int comparisonType;
+    private int groupComparisonType;
 
     public FruitArithmeticQuest(@NonNull QuestContext questContext,
                                 @NonNull IQuest inQuest,
@@ -38,9 +38,9 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
         leftNode = outQuest.leftNode;
         rightNode = outQuest.rightNode;
         if (questionType == QuestionType.SOLUTION) {
-            List<IVisualResourceItem> visualResourceSourceList =
+            List<IVisualResourceModel> visualResourceSourceList =
                     questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? VisualResourceGroup.POMUM : VisualResourceGroup.BERRY);
-            IVisualResourceItem[] questVisualResourceItems = new SimpleQuestVisualResourceItem[length];
+            IVisualResourceModel[] questVisualResourceItems = new SimpleQuestVisualResourceModel[length];
             for (; i < length; i++) {
                 questVisualResourceItems[i] = visualResourceSourceList.get(
                         MathUtils.randUnsignedInt(visualResourceSourceList.size() - 1));
@@ -53,10 +53,10 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
                 }
                 if (i < length - 1) {
                     mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(
-                            leftNode[i + 1] > 0 ? SimpleQuestVisualResourceItem.PLUS : SimpleQuestVisualResourceItem.MINUS));
+                            leftNode[i + 1] > 0 ? SimpleQuestVisualResourceModel.PLUS : SimpleQuestVisualResourceModel.MINUS));
                 }
             }
-            mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(SimpleQuestVisualResourceItem.EQUAL));
+            mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(SimpleQuestVisualResourceModel.EQUAL));
             int answer = outQuest.getTypedAnswer();
             List<Integer> availableVariantList = new ArrayList<>();
             int leftShift = MathUtils.randUnsignedInt(Math.min(
@@ -75,7 +75,7 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
             Collections.shuffle(availableVariantList);
             mAvailableAnswerVariants = availableVariantList.toArray();
         } else if (questionType == QuestionType.COMPARISON) {
-            comparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
+            groupComparisonType = MathUtils.randInt(MIN_GROUP_WEIGHT, MAX_GROUP_WEIGHT);
             for (; i < length; i++) {
                 mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(questResourceLibrary.getVisualResourceItem(leftNode[i])));
             }
@@ -84,6 +84,6 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
 
     @Override
     public int getGroupComparisonType() {
-        return getQuestionType() == QuestionType.COMPARISON ? comparisonType : -1;
+        return getQuestionType() == QuestionType.COMPARISON ? groupComparisonType : -1;
     }
 }

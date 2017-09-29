@@ -21,25 +21,25 @@ public class QuestResourceLibrary {
     private static final String TEXT_CAMOUFLAGE_DICTIONARY_FILE = "textCamouflageDictionary.txt";
 
     private static final Class[] LIBRARY = new Class[]{
-            SimpleQuestVisualResourceItem.class,
-            ChildrenToyQuestVisualResourceItem.class
+            SimpleQuestVisualResourceModel.class,
+            ChildrenToyVisualResourceModel.class
     };
 
     @NonNull
     private final Context mContext;
-    private final List<IVisualResourceItem> mQuestVisualResourceItemList;
+    private final List<IVisualResourceModel> mQuestVisualResourceItemList;
 
     @SuppressWarnings("unchecked")
     public QuestResourceLibrary(@NonNull Context context) {
         mContext = context;
         mQuestVisualResourceItemList = new ArrayList<>();
         for (Class libraryClass : LIBRARY) {
-            IVisualResourceItem[] questVisualResourceItems = null;
+            IVisualResourceModel[] questVisualResourceItems = null;
             if (libraryClass.isEnum()) {
                 try {
                     Method method = libraryClass.getMethod("values");
                     try {
-                        questVisualResourceItems = (IVisualResourceItem[]) method.invoke(null);
+                        questVisualResourceItems = (IVisualResourceModel[]) method.invoke(null);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     } catch (InvocationTargetException e) {
@@ -80,9 +80,9 @@ public class QuestResourceLibrary {
     }
 
     @NonNull
-    public List<IVisualResourceItem> getVisualResourceItemsByGroup(VisualResourceGroup group) {
-        List<IVisualResourceItem> questVisualResourceItems = new ArrayList<>();
-        for (IVisualResourceItem questVisualResourceItem : mQuestVisualResourceItemList) {
+    public List<IVisualResourceModel> getVisualResourceItemsByGroup(VisualResourceGroup group) {
+        List<IVisualResourceModel> questVisualResourceItems = new ArrayList<>();
+        for (IVisualResourceModel questVisualResourceItem : mQuestVisualResourceItemList) {
             VisualResourceGroup[] groups = questVisualResourceItem.getGroups();
             if (groups != null) {
                 for (VisualResourceGroup groupItem : groups) {
@@ -95,15 +95,15 @@ public class QuestResourceLibrary {
         return questVisualResourceItems;
     }
 
-    public List<IVisualResourceItem> getVisualResourceItemList() {
+    public List<IVisualResourceModel> getVisualResourceItems() {
         return mQuestVisualResourceItemList;
     }
 
-    public int getQuestVisualResourceItemId(@NonNull IVisualResourceItem questVisualResourceItem) {
+    public int getQuestVisualResourceItemId(@NonNull IVisualResourceModel questVisualResourceItem) {
         return mQuestVisualResourceItemList.indexOf(questVisualResourceItem);
     }
 
-    public IVisualResourceItem getVisualResourceItem(int itemId) {
+    public IVisualResourceModel getVisualResourceItem(int itemId) {
         return mQuestVisualResourceItemList.get(itemId);
     }
 }

@@ -9,7 +9,7 @@ import ru.nekit.android.qls.quest.QuestContext;
 
 public interface IQuestMediator {
 
-    void onCreateQuest(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer);
+    void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer);
 
     void onStartQuest(boolean playAnimationOnDelayedStart);
 

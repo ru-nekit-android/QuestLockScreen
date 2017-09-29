@@ -19,8 +19,8 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.shared.adapter.SquareItemAdapter;
 import ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResourceItem;
-import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResourceItemList;
-import ru.nekit.android.qls.quest.types.shared.PrimaryAndSecondaryColoredItem;
+import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResourceModelList;
+import ru.nekit.android.qls.quest.types.shared.PrimaryAndSecondaryColorModel;
 import ru.nekit.android.qls.utils.IViewHolder;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -34,10 +34,10 @@ public class ColoredVisualRepresentationQuestAdapter
     @NonNull
     private final View.OnClickListener mClickListener;
     @NonNull
-    private final List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> mListData;
+    private final List<Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel>> mListData;
 
     ColoredVisualRepresentationQuestAdapter(@NonNull QuestContext questContext,
-                                            @NonNull List<Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem>> listData,
+                                            @NonNull List<Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel>> listData,
                                             @NonNull View.OnClickListener clickListener) {
         mQuestContext = questContext;
         mListData = listData;
@@ -59,9 +59,9 @@ public class ColoredVisualRepresentationQuestAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Resources resources = mQuestContext.getResources();
-        Pair<IColoredVisualResourceItemList, PrimaryAndSecondaryColoredItem> item
+        Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel> item
                 = mListData.get(position);
-        for (ColoredVisualResourceItem coloredVisualResourceItem : item.first.getColoredVisualResourceItemList()) {
+        for (ColoredVisualResourceItem coloredVisualResourceItem : item.first.getColoredVisualResourceModelList()) {
             int drawableResourceId = coloredVisualResourceItem.drawableResourceId;
             if (drawableResourceId != 0) {
                 AppCompatImageView imageView = new AppCompatImageView(mQuestContext);
@@ -69,32 +69,32 @@ public class ColoredVisualRepresentationQuestAdapter
                 if (coloredVisualResourceItem.colorType != NONE) {
                     drawable = drawable.mutate();
                     DrawableCompat.wrap(drawable);
-                    PrimaryAndSecondaryColoredItem coloredModel = item.second;
+                    PrimaryAndSecondaryColorModel coloredItem = item.second;
                     @ColorInt
                     int color = 0;
                     switch (coloredVisualResourceItem.colorType) {
 
                         case AS_PRIMARY:
 
-                            color = coloredModel.getPrimaryColorModel().getColor(mQuestContext);
+                            color = coloredItem.getPrimaryColorModel().getColor(mQuestContext);
 
                             break;
 
                         case AS_SECONDARY:
 
-                            color = coloredModel.getSecondaryColorModel().getColor(mQuestContext);
+                            color = coloredItem.getSecondaryColorModel().getColor(mQuestContext);
 
                             break;
 
                         case INVERSE_AS_PRIMARY:
 
-                            color = (0xFFFFFF - coloredModel.getPrimaryColorModel().getColor(mQuestContext)) | 0xFF000000;
+                            color = (0xFFFFFF - coloredItem.getPrimaryColorModel().getColor(mQuestContext)) | 0xFF000000;
 
                             break;
 
                         case INVERSE_AS_SECONDARY:
 
-                            color = (0xFFFFFF - coloredModel.getSecondaryColorModel().getColor(mQuestContext)) | 0xFF000000;
+                            color = (0xFFFFFF - coloredItem.getSecondaryColorModel().getColor(mQuestContext)) | 0xFF000000;
 
                             break;
 

@@ -15,24 +15,26 @@ import ru.nekit.android.shared.R;
 public abstract class BaseSetupWizardActivity extends FragmentActivity implements ISetupWizardHolder,
         View.OnClickListener {
 
+    private static final String FRAGMENT_NAME = "fragment_name";
+
     protected EventBus mEventBus;
     protected BaseSetupWizard mSetupWizard;
     private Button mNextButton, mAltButton;
     private ViewGroup mToolContainer, mFragmentContainer;
-    private BaseSetupWizardFragment mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context context = getApplicationContext();
         setContentView(R.layout.activity_setup_wizard);
-        mEventBus = new EventBus(this);
+        mEventBus = new EventBus(context);
         mToolContainer = (ViewGroup) findViewById(R.id.container_tool);
         mFragmentContainer = (ViewGroup) findViewById(R.id.container_fragment);
         mNextButton = (Button) findViewById(R.id.btn_next);
         mAltButton = (Button) findViewById(R.id.btn_alt);
         mNextButton.setOnClickListener(this);
         mAltButton.setOnClickListener(this);
-        mSetupWizard = createSetupWizard(getApplicationContext());
+        mSetupWizard = createSetupWizard(context);
         showSetupWizardStep(mSetupWizard.getNextStep());
     }
 
@@ -49,12 +51,16 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
 
     @Override
     public boolean nextButtonAction() {
-        return mCurrentFragment.nextButtonAction();
+        return getCurrentFragment().nextButtonAction();
+    }
+
+    private BaseSetupWizardFragment getCurrentFragment() {
+        return (BaseSetupWizardFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_NAME);
     }
 
     @Override
     public void altButtonAction() {
-        mCurrentFragment.altButtonAction();
+        getCurrentFragment().altButtonAction();
     }
 
     @Override
@@ -79,7 +85,6 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
     public abstract void showSetupWizardStep(@NonNull ISetupStep step, Object... params);
 
     protected void replaceFragment(@NonNull BaseSetupWizardFragment fragment) {
-        mCurrentFragment = fragment;
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //fragmentTransaction.setCustomAnimations(R.anim.slide_in_short, R.anim.slide_out_short);
         //fragmentTransaction.disallowAddToBackStack();
@@ -87,7 +92,7 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
         if (fragment.addToBackStack()) {
             fragmentTransaction.addToBackStack(null);
         }
-        fragmentTransaction.replace(R.id.container_fragment, fragment);
+        fragmentTransaction.replace(R.id.container_fragment, fragment, FRAGMENT_NAME);
         fragmentTransaction.commit();
         //Animation fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out_short);
         //Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_short);
