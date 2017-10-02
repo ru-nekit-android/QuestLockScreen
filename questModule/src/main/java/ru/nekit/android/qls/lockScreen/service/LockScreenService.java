@@ -41,6 +41,7 @@ import ru.nekit.android.qls.utils.TimeUtils;
 
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_SCREEN_ON;
+import static android.content.IntentFilter.SYSTEM_HIGH_PRIORITY;
 import static ru.nekit.android.qls.PreferencesUtil.getBoolean;
 import static ru.nekit.android.qls.PreferencesUtil.setBoolean;
 import static ru.nekit.android.qls.lockScreen.LockScreen.LockScreenStartType.EXPLICIT;
@@ -91,6 +92,21 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
     private QuestContext mQuestContext;
     private LockScreenMediator mLockScreenMediator;
+
+    private EventBus.IEventHandler screenEventHandler = new EventBus.IEventHandler() {
+        @Override
+        public void onEvent(@NonNull Intent intent) {
+            mStartLimiterStatistics.updateScreenOnLifeTime();
+            mQuestContext.stopQuest();
+            createLockScreenView(ON_SCREEN_OFF);
+        }
+
+        @NonNull
+        @Override
+        public String getEventBusName() {
+            return ACTION_SCREEN_OFF;
+        }
+    };
 
     @Override
     public void onMessageReceive(@NonNull TypedMessage typedMessage,
@@ -160,7 +176,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
         if (mEventBus == null) {
             mEventBus = new EventBus(this);
             mEventBus.handleEvents(this,
-                    ACTION_SCREEN_OFF,
                     ACTION_SCREEN_ON,
                     EVENT_SET_CURRENT_PUPIL,
                     ACTION_HIDE_LOCK_SCREEN_VIEW,
@@ -172,6 +187,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
                     EVENT_RIGHT_ANSWER,
                     EVENT_WRONG_ANSWER,
                     EVENT_QUEST_CREATE);
+            mEventBus.handleEvent(screenEventHandler, ACTION_SCREEN_OFF, SYSTEM_HIGH_PRIORITY);
         }
         if (mStartLimiterStatistics == null) {
             mStartLimiterStatistics = new StartLimiterStatistics(context);
@@ -257,6 +273,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
     public void onDestroy() {
         destroyLockScreenView();
         mEventBus.stopHandleEvents(this);
+        mEventBus.stopHandleEvents(screenEventHandler);
         setStandardKeyguardState(false);
         mNotificationManager.cancelAll();
         stopForeground(true);
@@ -360,14 +377,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
         String action = intent.getAction();
         if (action != null) {
             switch (action) {
-
-                case ACTION_SCREEN_OFF:
-
-                    mStartLimiterStatistics.updateScreenOnLifeTime();
-                    mQuestContext.stopQuest();
-                    createLockScreenView(ON_SCREEN_OFF);
-
-                    break;
 
                 case ACTION_SCREEN_ON:
 

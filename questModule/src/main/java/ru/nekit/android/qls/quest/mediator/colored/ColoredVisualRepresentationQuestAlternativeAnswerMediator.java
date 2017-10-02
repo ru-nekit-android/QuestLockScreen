@@ -18,7 +18,7 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
         extends AbstractListableQuestAlternativeAnswerMediator<Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel>,
         ColoredVisualRepresentationQuestAdapter> {
 
-    List<Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel>> mDataList;
+    private List<Pair<IColoredVisualResourceModelList, PrimaryAndSecondaryColorModel>> mDataList;
 
     @NonNull
     @Override
@@ -51,12 +51,25 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
-        updateSizeInternal(true);
+    public void deactivate() {
+        super.deactivate();
+        mDataList.clear();
+        mDataList = null;
     }
 
-    private void updateSizeInternal(@Size boolean useSizeDivider) {
+    @Override
+    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+        super.onStartQuest(playAnimationOnDelayedStart);
+        updateListAdapter(true);
+    }
+
+    @Override
+    public void onRestartQuest() {
+        super.onRestartQuest();
+        updateListAdapter(true);
+    }
+
+    private void updateListAdapter(@Size boolean useSizeDivider) {
         int size = Math.min(mRootContentContainer.getWidth(), mRootContentContainer.getHeight());
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = (int) Math.ceil(dataListLength / (float) getColumnCount());
@@ -71,7 +84,7 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
                 item = mDataList.get(getQuest().unknownMemberIndex);
         mDataList.clear();
         mDataList.add(item);
-        updateSizeInternal(false);
+        updateListAdapter(false);
         mListView.requestLayout();
         return false;
     }

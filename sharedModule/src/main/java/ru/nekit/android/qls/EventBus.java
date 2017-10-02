@@ -75,6 +75,22 @@ public class EventBus {
         }
     }
 
+    public void handleEvent(@NonNull final IEventHandler eventHandler,
+                            @NonNull String event, int priority) {
+        if (!mReceiverMap.containsKey(eventHandler.getEventBusName())) {
+            mReceiverMap.put(eventHandler.getEventBusName(), new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    eventHandler.onEvent(intent);
+                }
+            });
+            IntentFilter intentFilter = new IntentFilter();
+            intentFilter.setPriority(priority);
+            intentFilter.addAction(event);
+            mContext.registerReceiver(mReceiverMap.get(eventHandler.getEventBusName()), intentFilter);
+        }
+    }
+
     public void stopHandleEvents(@NonNull final IEventHandler eventHandler) {
         if (mReceiverMap.containsKey(eventHandler.getEventBusName())) {
             mContext.unregisterReceiver(mReceiverMap.remove(eventHandler.getEventBusName()));

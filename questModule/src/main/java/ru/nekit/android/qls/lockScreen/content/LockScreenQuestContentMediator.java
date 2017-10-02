@@ -286,7 +286,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                 if (transition == QUEST) {
                     //remember current as previous
                     mPreviousQuestVisualBuilder = mCurrentQuestVisualBuilder;
-                    mCurrentQuestVisualBuilder.deactivate();
+                    mPreviousQuestVisualBuilder.deactivate();
                     mCurrentQuestVisualBuilder = new QuestVisualBuilder(mQuestContext);
                     mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
                     attachQuestView();

@@ -325,7 +325,7 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
         onStopQuest();
         mTitleMediator.deactivate();
         mContentMediator.deactivate();
-        mTitleMediator.deactivate();
+        mAlternativeAnswerMediator.deactivate();
     }
 
     @Override

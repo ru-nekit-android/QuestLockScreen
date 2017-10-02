@@ -42,6 +42,8 @@ import ru.nekit.android.qls.utils.ScreenHost;
 import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.Vibrate;
 
+import static android.content.Intent.ACTION_SCREEN_ON;
+import static android.content.IntentFilter.SYSTEM_HIGH_PRIORITY;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.ANSWERED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.CREATED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
@@ -106,7 +108,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             mPupilStatistics = new PupilStatistics();
         }
         mTicTacHandler = new Handler();
-        mEventBus.handleEvents(this, Intent.ACTION_SCREEN_ON);
+        mEventBus.handleEvent(this, ACTION_SCREEN_ON, SYSTEM_HIGH_PRIORITY);
         //WARNING!!! only for test
         //mQuestSaver.reset();
     }

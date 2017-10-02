@@ -13,8 +13,8 @@ android {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 5
-        versionName "1.26"
+        versionCode 6
+        versionName "1.27"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -47,7 +47,7 @@ dependencies {
         transitive = true
     }
     compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
-    compile 'com.github.christophesmet:android_maskable_layout:-SNAPSHOT'
+    compile 'com.github.christophesmet:android_maskable_layout:d51245736a'
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
     compile project(':sharedModule')
 }
