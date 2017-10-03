@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.answer.shared.IAlternativeAnswerVariantAdapter;
-import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
+import ru.nekit.android.qls.quest.model.TrafficLightModel;
 
 public class TrafficLightAlternativeAnswerVariantAdapter implements IAlternativeAnswerVariantAdapter {
 

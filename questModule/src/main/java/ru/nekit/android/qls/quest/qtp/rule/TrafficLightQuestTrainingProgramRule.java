@@ -7,7 +7,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
-import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
+import ru.nekit.android.qls.quest.model.TrafficLightModel;
 
 public class TrafficLightQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
 

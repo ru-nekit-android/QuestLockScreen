@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -74,7 +75,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                             final Animator revealAnimator = RevealAnimator.getRevealAnimator(mContext,
                                     view,
                                     mStyleParameters.openPosition,
-                                    new AnticipateOvershootInterpolator(),
+                                    new FastOutLinearInInterpolator(),
                                     mStyleParameters.animationDuration,
                                     false);
                             revealAnimator.addListener(new Animator.AnimatorListener() {

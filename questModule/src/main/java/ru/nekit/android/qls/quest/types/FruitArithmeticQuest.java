@@ -10,13 +10,13 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
-import ru.nekit.android.qls.quest.types.shared.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQuest

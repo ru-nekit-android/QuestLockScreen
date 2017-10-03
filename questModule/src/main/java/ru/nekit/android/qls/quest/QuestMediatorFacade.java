@@ -21,11 +21,11 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
 import ru.nekit.android.qls.quest.mediator.IQuestMediator;
-import ru.nekit.android.qls.quest.mediator.shared.answer.IQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.shared.answer.QuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.shared.content.EmptyQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.shared.content.IQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.shared.title.IQuestTitleMediator;
+import ru.nekit.android.qls.quest.mediator.answer.IQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.content.EmptyQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.content.IQuestContentMediator;
+import ru.nekit.android.qls.quest.mediator.title.IQuestTitleMediator;
 import ru.nekit.android.qls.utils.KeyboardHost;
 import ru.nekit.android.qls.utils.ViewHolder;
 

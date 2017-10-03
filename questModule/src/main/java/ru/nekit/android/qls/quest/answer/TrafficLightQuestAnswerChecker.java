@@ -4,10 +4,10 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.model.TrafficLightModel;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
-import ru.nekit.android.qls.quest.types.model.TrafficLightModel;
 
-import static ru.nekit.android.qls.quest.types.model.TrafficLightModel.RED;
+import static ru.nekit.android.qls.quest.model.TrafficLightModel.RED;
 
 public class TrafficLightQuestAnswerChecker extends QuestAnswerChecker<Integer> {
 

@@ -36,7 +36,7 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
 
     @NonNull
     @Override
-    public ILockScreenContentContainerViewHolder getViewHolder() {
+    public ILockScreenContentContainerViewHolder getContentContainerViewHolder() {
         return mViewHolder;
     }
 

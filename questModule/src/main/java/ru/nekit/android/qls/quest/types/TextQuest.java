@@ -3,9 +3,9 @@ package ru.nekit.android.qls.quest.types;
 import android.text.InputType;
 
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.types.shared.Quest;
+import ru.nekit.android.qls.quest.base.AbstractQuest;
 
-public class TextQuest extends Quest {
+public class TextQuest extends AbstractQuest {
 
     public String[] questionStringArray;
     private String[] answerStringArray;

@@ -177,11 +177,11 @@ public class LockScreenService extends Service implements MessageGateway.Message
             mEventBus = new EventBus(this);
             mEventBus.handleEvents(this,
                     ACTION_SCREEN_ON,
-                    EVENT_SET_CURRENT_PUPIL,
                     ACTION_HIDE_LOCK_SCREEN_VIEW,
                     INCOMING_CALL_RECEIVED,
                     INCOMING_CALL_ENDED,
                     OUTGOING_CALL_ENDED,
+                    EVENT_SET_CURRENT_PUPIL,
                     EVENT_TIC_TAC,
                     EVENT_OUTGOING_CALL,
                     EVENT_RIGHT_ANSWER,

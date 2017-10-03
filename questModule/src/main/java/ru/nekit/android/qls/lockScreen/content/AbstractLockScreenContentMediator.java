@@ -6,14 +6,15 @@ import ru.nekit.android.qls.lockScreen.TransitionChoreograph;
 
 public abstract class AbstractLockScreenContentMediator {
 
-    TransitionChoreograph mTransitionChoreograph;
+    @NonNull
+    protected TransitionChoreograph mTransitionChoreograph;
 
-    public void setTransitionChoreograph(TransitionChoreograph choreograph) {
+    public void setTransitionChoreograph(@NonNull TransitionChoreograph choreograph) {
         mTransitionChoreograph = choreograph;
     }
 
     @NonNull
-    public abstract ILockScreenContentContainerViewHolder getViewHolder();
+    public abstract ILockScreenContentContainerViewHolder getContentContainerViewHolder();
 
     public abstract void deactivate();
 

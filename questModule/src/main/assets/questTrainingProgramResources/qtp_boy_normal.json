@@ -20,14 +20,14 @@
             "unknown_member",
             "solution"
           ],
-          "enabled": true,
+          "enabled": false,
           "reward": 10,
           "delayedStart": false
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": true,
+          "enabled": false,
           "delayedStart": true
         },
         //ВРЕМЯ
@@ -37,7 +37,7 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -48,7 +48,7 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10,
           "delayedStart": false
@@ -57,7 +57,7 @@
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "delayedStart": true,
           "memberCount": 4
         },
@@ -65,7 +65,7 @@
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": true
+          "enabled": false
         },
         //ЦВЕТА
         {
@@ -84,7 +84,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ЛИШНИЙ
         {
@@ -96,7 +96,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -117,7 +117,7 @@
             ]
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -128,7 +128,7 @@
           "answerVariants": 2,
           "memberCount": 20,
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         }
       ]
     }

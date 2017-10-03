@@ -129,7 +129,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <!--Quest part of Lockscreen-->
+    AbstractQuestuest part of Lockscreen-->
 
     <style name="LockScreen.QuestContent" />
 
@@ -225,7 +225,7 @@
         <!--<item name="android:background">#22222222</item>-->
     </style>
 
-    <!--Quest part-->
+    AbstractQuestuest part-->
 
     <style name="Quest" parent="TextAppearance">
         <item name="answerButtonVisible">true</item>

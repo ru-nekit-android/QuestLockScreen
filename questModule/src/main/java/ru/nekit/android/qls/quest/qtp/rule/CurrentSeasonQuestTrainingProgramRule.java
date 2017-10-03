@@ -1,16 +1,15 @@
 package ru.nekit.android.qls.quest.qtp.rule;
 
-
 import android.os.Parcel;
 import android.support.annotation.NonNull;
 
 import java.util.Calendar;
+import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
-import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
 
@@ -41,7 +40,7 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
     }
 
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
-                        @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
+                        @NonNull List<Integer> questVisualRepresentationList) {
         Calendar calendar = Calendar.getInstance();
         SimpleQuestVisualResourceModel questVisualResourceItem = null;
         int currentMonth = calendar.get(Calendar.MONTH);
@@ -57,7 +56,7 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
         if (currentMonth > 7 || currentMonth <= 10) {
             questVisualResourceItem = SimpleQuestVisualResourceModel.FALL;
         }
-        return questVisualRepresentationList.getIdsList().indexOf(
+        return questVisualRepresentationList.indexOf(
                 questResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));
     }
 

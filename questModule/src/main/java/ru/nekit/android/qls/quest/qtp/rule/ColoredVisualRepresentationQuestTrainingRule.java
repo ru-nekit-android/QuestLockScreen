@@ -10,11 +10,11 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
-import ru.nekit.android.qls.quest.types.model.ColorModel;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuestTrainingProgramRule {

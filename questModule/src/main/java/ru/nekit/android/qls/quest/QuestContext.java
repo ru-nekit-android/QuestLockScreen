@@ -113,7 +113,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         //mQuestSaver.reset();
     }
 
-    //Quest state functional
+    //AbstractQuest state functional
     private void setQuestState(int stateValue) {
         PreferencesUtil.setInt(NAME_QUEST_STATE, stateValue);
     }

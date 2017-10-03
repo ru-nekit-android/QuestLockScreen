@@ -11,7 +11,6 @@ import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
-import ru.nekit.android.qls.quest.types.shared.QuestVisualRepresentationList;
 
 import static ru.nekit.android.qls.utils.MathUtils.randListLength;
 
@@ -41,9 +40,9 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
 
     @Override
     @NonNull
-    QuestVisualRepresentationList getQuestVisualRepresentationList(
+    List<Integer> getQuestVisualRepresentationList(
             @NonNull QuestResourceLibrary questResourceLibrary) {
-        QuestVisualRepresentationList questVisualRepresentationList =
+        List<Integer> questVisualRepresentationList =
                 super.getQuestVisualRepresentationList(questResourceLibrary);
         VisualResourceGroup mismatchGroup = null;
         List<VisualResourceGroup> questVisualResourceGroups =
@@ -57,11 +56,11 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
         }
         List<IVisualResourceModel> mismatchQVRItemIdList =
                 mismatchGroup.getVisualResourceItems(questResourceLibrary);
-        unknownMemberIndex = randListLength(questVisualRepresentationList.getIdsList());
-        questVisualRepresentationList.getIdsList().add(unknownMemberIndex,
+        unknownMemberIndex = randListLength(questVisualRepresentationList);
+        questVisualRepresentationList.add(unknownMemberIndex,
                 questResourceLibrary.getQuestVisualResourceItemId(
                         mismatchQVRItemIdList.get(randListLength(mismatchQVRItemIdList))));
-        questVisualRepresentationList.getIdsList().remove(unknownMemberIndex + 1);
+        questVisualRepresentationList.remove(unknownMemberIndex + 1);
         return questVisualRepresentationList;
     }
 
@@ -73,7 +72,7 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
 
     @Override
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
-                        @NonNull QuestVisualRepresentationList questVisualRepresentationList) {
+                        @NonNull List<Integer> questVisualRepresentationList) {
         return unknownMemberIndex;
     }
 }

@@ -16,7 +16,6 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -29,12 +28,9 @@ import ru.nekit.android.qls.lockScreen.content.AbstractLockScreenContentMediator
 import ru.nekit.android.qls.lockScreen.content.ILockScreenContentContainerViewHolder;
 import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
 import ru.nekit.android.qls.lockScreen.content.SupportContentMediator;
-import ru.nekit.android.qls.lockScreen.service.LockScreenService;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.statistics.QuestStatistics;
 import ru.nekit.android.qls.utils.KeyboardHost;
-import ru.nekit.android.qls.utils.RevealAnimator;
-import ru.nekit.android.qls.utils.RevealPoint;
 import ru.nekit.android.qls.utils.ScreenHost;
 import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.ViewHolder;
@@ -65,15 +61,16 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
     @NonNull
     private final LockScreenViewHolder mViewHolder;
     @NonNull
-    private final StyleParameters mStyleParameters;
-    @NonNull
     private final WindowManager mWindowManager;
+    @NonNull
+    private final StyleParameters mStyleParameters;
     @NonNull
     private final TransitionChoreograph mTransitionChoreograph;
     private StatusBarViewHolder mStatusBarViewHolder;
     private AbstractLockScreenContentMediator mCurrentContentMediator, mPreviousContentMediator;
     private QuestStatistics mCurrentQuestStatistics;
     private LayoutParams mLockScreenLayoutParams;
+
     private Animator.AnimatorListener mAnimatorListenerOnClose = new Animator.AnimatorListener() {
         @Override
         public void onAnimationStart(Animator animation) {
@@ -83,8 +80,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         @Override
         public void onAnimationEnd(Animator animation) {
             animation.removeAllListeners();
-            mQuestContext.getEventBus().sendEvent(LockScreenService.ACTION_HIDE_LOCK_SCREEN_VIEW);
-            detachView();
+            LockScreen.hide(mQuestContext);
         }
 
         @Override
@@ -97,13 +93,11 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         }
     };
 
-    public LockScreenMediator(@NonNull final QuestContext questContext) {
+    public LockScreenMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mWindowManager = (WindowManager) questContext.getSystemService(Context.WINDOW_SERVICE);
         mTransitionChoreograph = new TransitionChoreograph(questContext);
-        mViewHolder = new LockScreenViewHolder(questContext);
-        mViewHolder.getView().addOnLayoutChangeListener(this);
-        mViewHolder.outAnimation.setAnimationListener(new Animation.AnimationListener() {
+        mViewHolder = new LockScreenViewHolder(questContext, new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
 
@@ -111,10 +105,21 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mViewHolder.setInAnimation(AnimationUtils.loadAnimation(mQuestContext,
-                        R.anim.slide_in));
-                mPreviousContentMediator.deactivate();
-                mPreviousContentMediator.detachView();
+                if (animation == mViewHolder.outAnimation) {
+                    mViewHolder.setInAnimation(AnimationUtils.loadAnimation(mQuestContext,
+                            R.anim.slide_in));
+                    mPreviousContentMediator.getContentContainerViewHolder()
+                            .getTitleContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
+                    mPreviousContentMediator.getContentContainerViewHolder().
+                            getContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
+                    mPreviousContentMediator.deactivate();
+                    mPreviousContentMediator.detachView();
+                } else if (animation == mViewHolder.inAnimation) {
+                    mCurrentContentMediator.getContentContainerViewHolder().
+                            getTitleContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
+                    mCurrentContentMediator.getContentContainerViewHolder().
+                            getContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
+                }
             }
 
             @Override
@@ -122,6 +127,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
             }
         });
+        mViewHolder.getView().addOnLayoutChangeListener(this);
         mStyleParameters = new StyleParameters(questContext);
         questContext.getEventBus().handleEvents(this,
                 ACTION_DETACH,
@@ -148,11 +154,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
     }
 
     private void close() {
-        close(RevealPoint.POSITION_MIDDLE_CENTER);
-    }
-
-    private void close(String position) {
-        startWindowAnimation(position, false, mAnimatorListenerOnClose);
+        startWindowAnimation(false, mAnimatorListenerOnClose);
     }
 
     private boolean isLandscape() {
@@ -242,15 +244,9 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         return mViewHolder.getView().getParent() != null;
     }
 
-    private void startWindowAnimation(String position, boolean openAnimation,
+    private void startWindowAnimation(boolean openAnimation,
                                       @Nullable Animator.AnimatorListener listener) {
-        final Animator animator = RevealAnimator.getRevealAnimator(mQuestContext,
-                mViewHolder.container, position, new AnticipateOvershootInterpolator(),
-                mStyleParameters.animationDuration, !openAnimation);
-        if (listener != null) {
-            animator.addListener(listener);
-        }
-        animator.start();
+        mViewHolder.container.animate().setListener(listener).withLayer().alpha(0).start();
     }
 
     public void deactivate() {
@@ -259,6 +255,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
             mCurrentContentMediator.deactivate();
         }
         mViewHolder.outAnimation.setAnimationListener(null);
+        mViewHolder.inAnimation.setAnimationListener(null);
         mQuestContext.getEventBus().stopHandleEvents(this);
     }
 
@@ -353,6 +350,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                             mCurrentContentMediator = new SupportContentMediator(mQuestContext);
                         }
                         mCurrentContentMediator.setTransitionChoreograph(mTransitionChoreograph);
+
                         mViewHolder.switchToContent(mCurrentContentMediator, useAnimation,
                                 previousTransition == null && currentTransition == QUEST
                         );
@@ -439,26 +437,37 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         @NonNull
         final ViewFlipper contentContainer, titleContainer;
         @NonNull
-        private Animation outAnimation;
+        final Animation.AnimationListener mAnimationListener;
+        Animation outAnimation, inAnimation;
 
-        LockScreenViewHolder(@NonNull final QuestContext questContext) {
+        LockScreenViewHolder(@NonNull final QuestContext questContext,
+                             @NonNull Animation.AnimationListener animationListener) {
             super(questContext, R.layout.layout_lock_screen);
             this.questContext = questContext;
+            mAnimationListener = animationListener;
             container = mView.findViewById(R.id.container);
             contentContainer = (ViewFlipper) mView.findViewById(R.id.container_content);
             titleContainer = (ViewFlipper) mView.findViewById(R.id.container_title);
             outAnimation = AnimationUtils.loadAnimation(questContext, R.anim.slide_out);
             titleContainer.setOutAnimation(outAnimation);
             contentContainer.setOutAnimation(outAnimation);
+            outAnimation.setAnimationListener(animationListener);
         }
 
-        void switchToContent(@NonNull AbstractLockScreenContentMediator contentMediator,
+        void switchToContent(@NonNull AbstractLockScreenContentMediator lockScreenContentMediator,
                              boolean useAnimation, boolean useFadeAnimation) {
             boolean contentContainerHasChild = contentContainer.getChildCount() != 0;
             boolean titleContainerHasChild = titleContainer.getChildCount() != 0;
-            setInAnimation(AnimationUtils.loadAnimation(questContext,
-                    useFadeAnimation ? R.anim.fade_in : R.anim.slide_in));
-            ILockScreenContentContainerViewHolder contentViewHolder = contentMediator.getViewHolder();
+            View view = lockScreenContentMediator.getContentContainerViewHolder().getView();
+            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (inAnimation != null) {
+                inAnimation.setAnimationListener(null);
+            }
+            inAnimation = AnimationUtils.loadAnimation(questContext,
+                    useFadeAnimation ? R.anim.fade_in : R.anim.slide_in);
+            inAnimation.setAnimationListener(mAnimationListener);
+            setInAnimation(inAnimation);
+            ILockScreenContentContainerViewHolder contentViewHolder = lockScreenContentMediator.getContentContainerViewHolder();
             View titleContent = contentViewHolder.getTitleContentContainer();
             if (titleContent != null) {
                 titleContainer.setVisibility(VISIBLE);
@@ -474,10 +483,12 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 contentContainer.setVisibility(GONE);
             }
             if (useAnimation) {
+                content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 contentContainer.showNext();
                 if (contentContainerHasChild) {
                     contentContainer.removeViewAt(0);
                 }
+                titleContainer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 titleContainer.showNext();
                 if (titleContainerHasChild) {
                     titleContainer.removeViewAt(0);
