@@ -13,9 +13,9 @@ import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -38,9 +38,9 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
         leftNode = outQuest.leftNode;
         rightNode = outQuest.rightNode;
         if (questionType == QuestionType.SOLUTION) {
-            List<IVisualResourceModel> visualResourceSourceList =
+            List<IVisualResource> visualResourceSourceList =
                     questResourceLibrary.getVisualResourceItemsByGroup(MathUtils.randBoolean() ? VisualResourceGroup.POMUM : VisualResourceGroup.BERRY);
-            IVisualResourceModel[] questVisualResourceItems = new SimpleQuestVisualResourceModel[length];
+            IVisualResource[] questVisualResourceItems = new SimpleQuestVisualResource[length];
             for (; i < length; i++) {
                 questVisualResourceItems[i] = visualResourceSourceList.get(
                         MathUtils.randUnsignedInt(visualResourceSourceList.size() - 1));
@@ -53,10 +53,10 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
                 }
                 if (i < length - 1) {
                     mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(
-                            leftNode[i + 1] > 0 ? SimpleQuestVisualResourceModel.PLUS : SimpleQuestVisualResourceModel.MINUS));
+                            leftNode[i + 1] > 0 ? SimpleQuestVisualResource.PLUS : SimpleQuestVisualResource.MINUS));
                 }
             }
-            mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(SimpleQuestVisualResourceModel.EQUAL));
+            mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(SimpleQuestVisualResource.EQUAL));
             int answer = outQuest.getTypedAnswer();
             List<Integer> availableVariantList = new ArrayList<>();
             int leftShift = MathUtils.randUnsignedInt(Math.min(

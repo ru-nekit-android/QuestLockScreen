@@ -14,7 +14,7 @@ import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
@@ -81,9 +81,9 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             @NonNull QuestResourceLibrary questResourceLibrary) {
         targetGroup = getTargetGroup();
         List<Integer> questVisualRepresentationList = new ArrayList<>();
-        List<IVisualResourceModel> visualResourceModels =
+        List<IVisualResource> visualResourceModels =
                 questResourceLibrary.getVisualResourceItems();
-        for (IVisualResourceModel model : visualResourceModels) {
+        for (IVisualResource model : visualResourceModels) {
             if (model.getGroups() != null) {
                 for (VisualResourceGroup groupItem : model.getGroups()) {
                     if (groupItem.hasParent(targetGroup)) {

@@ -21,8 +21,8 @@ public class TrafficLightQuestAlternativeAnswerMediator extends QuestAlternative
     }
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         switch (mQuest.getQuestionType()) {
 
             case SOLUTION:

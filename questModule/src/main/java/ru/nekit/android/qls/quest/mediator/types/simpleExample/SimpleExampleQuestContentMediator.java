@@ -22,8 +22,8 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         mViewHolder = new SimpleExampleQuestViewHolder(mQuestContext);
         IQuestTextContentFormatter formatter = createFormatter();
         String[] questStringList = formatter.format(mQuestContext, mQuest);
@@ -65,8 +65,8 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
+    public void onStartQuest(boolean delayedStart) {
+        super.onStartQuest(delayedStart);
     }
 
     @Override

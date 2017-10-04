@@ -14,7 +14,7 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator.Flag;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.utils.Callable;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.ANSWER_VARIANTS;
@@ -114,16 +114,16 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
             );
         } else if (questionType == QuestionType.COMPARISON) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON, memberCount);
-            List<IVisualResourceModel> visualResourceItemList =
+            List<IVisualResource> visualResourceItemList =
                     questContext.getQuestResourceLibrary().getVisualResourceItemsByGroup(FRUIT);
             answerVariants = Math.min(Math.max(VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON,
                     answerVariants),
                     visualResourceItemList.size());
             Collections.shuffle(visualResourceItemList);
             generator.setAvailableMemberValues(visualResourceItemList.subList(0, answerVariants),
-                    new Callable<IVisualResourceModel, Integer>() {
+                    new Callable<IVisualResource, Integer>() {
                         @Override
-                        public Integer call(IVisualResourceModel value) {
+                        public Integer call(IVisualResource value) {
                             return questContext.getQuestResourceLibrary().getQuestVisualResourceItemId(value);
                         }
                     });

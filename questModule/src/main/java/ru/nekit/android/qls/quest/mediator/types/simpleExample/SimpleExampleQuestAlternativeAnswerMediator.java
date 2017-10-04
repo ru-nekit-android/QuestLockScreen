@@ -9,8 +9,8 @@ import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator
 public class SimpleExampleQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMediator {
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         switch (mQuest.getQuestionType()) {
 
             case UNKNOWN_OPERATION:

@@ -35,7 +35,7 @@ import java.util.Map;
 
 /**
  * Adapts values whose runtime type may differ from their declaration type. This
- * is necessary when a field's type is not the same type that GSON should create
+ * is necessary when a field's type is not the same type that GSON should activate
  * when deserializing that field. For example, consider these types:
  * <pre>   {@code
  *   abstract class Shape {
@@ -113,7 +113,7 @@ import java.util.Map;
  * <pre>   {@code
  *   Gson gson = new GsonBuilder()
  *       .registerTypeAdapterFactory(shapeAdapterFactory)
- *       .create();
+ *       .activate();
  * }</pre>
  * Like {@code GsonBuilder}, this API supports chaining: <pre>   {@code
  *   RuntimeTypeAdapterFactory<Shape> shapeAdapterFactory = RuntimeTypeAdapterFactory.of(Shape.class)

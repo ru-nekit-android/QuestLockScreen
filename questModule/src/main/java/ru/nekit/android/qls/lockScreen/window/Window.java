@@ -27,10 +27,12 @@ import ru.nekit.android.qls.utils.ScreenHost;
 
 public class Window implements View.OnAttachStateChangeListener, View.OnLayoutChangeListener {
 
+    public static final String VALUE_WINDOW_CLASS = "ru.nekit.android.qls.value_window_class";
     public static final String EVENT_WINDOW_OPEN = "ru.nekit.android.qls.event_window_open";
     public static final String EVENT_WINDOW_OPENED = "ru.nekit.android.qls.event_window_opened";
     public static final String EVENT_WINDOW_CLOSE = "ru.nekit.android.qls.event_window_close";
     public static final String EVENT_WINDOW_CLOSED = "ru.nekit.android.qls.event_window_closed";
+    public static final String EVENT_WINDOW_CLOSED_INTERNAL = "ru.nekit.android.qls.event_window_closed_internal";
 
     private static final CopyOnWriteArrayList<Window> windowStack;
 
@@ -39,93 +41,35 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
     @NonNull
-    private final StyleParameters mStyleParameters;
-    @NonNull
-    private final WindowContentViewHolder mContent;
-    @NonNull
     private final QuestContext mContext;
     @NonNull
-    private final WindowViewHolder mViewHolder;
-    @NonNull
     private final WindowManager mWindowManager;
+    private StyleParameters mStyleParameters;
+    private WindowContentViewHolder mContent;
+    @StyleRes
+    private int mStyleResId;
+    private WindowViewHolder mViewHolder;
     @Nullable
     private WindowListener mWindowListener;
     private boolean mIsOpen;
     private WindowManager.LayoutParams layoutParams;
 
-    public Window(@NonNull QuestContext context,
-                  @NonNull WindowContentViewHolder content,
-                  @StyleRes int styleResId) {
+    public Window(@NonNull QuestContext context) {
         mContext = context;
-        mContent = content;
-        mStyleParameters = new StyleParameters(mContext, styleResId);
-        mViewHolder = new WindowViewHolder(mContext);
-        mContent.getCloseButton().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                close(true, mStyleParameters.closePosition);
-            }
-        });
-        if (mStyleParameters.openPosition != null) {
-            mViewHolder.contentContainer.addOnAttachStateChangeListener(
-                    new View.OnAttachStateChangeListener() {
-                        @Override
-                        public void onViewAttachedToWindow(View view) {
-                            view.removeOnAttachStateChangeListener(this);
-                            final Animator revealAnimator = RevealAnimator.getRevealAnimator(mContext,
-                                    view,
-                                    mStyleParameters.openPosition,
-                                    new FastOutLinearInInterpolator(),
-                                    mStyleParameters.animationDuration,
-                                    false);
-                            revealAnimator.addListener(new Animator.AnimatorListener() {
-                                @Override
-                                public void onAnimationStart(Animator animation) {
-                                    if (mWindowListener != null) {
-                                        mWindowListener.onWindowOpen(Window.this);
-                                    }
-                                }
-
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    if (mWindowListener != null) {
-                                        mWindowListener.onWindowOpened(Window.this);
-                                    }
-                                    //revealAnimator.removeListener(this);
-                                    revealAnimator.removeAllListeners();
-                                    mContext.getEventBus().sendEvent(EVENT_WINDOW_OPENED);
-                                }
-
-                                @Override
-                                public void onAnimationCancel(Animator animation) {
-                                }
-
-                                @Override
-                                public void onAnimationRepeat(Animator animation) {
-                                }
-                            });
-                            revealAnimator.start();
-                            getColorAnimator(false).start();
-                        }
-
-                        @Override
-                        public void onViewDetachedFromWindow(View v) {
-                        }
-                    });
-        }
-        mViewHolder.contentContainer.addView(mContent.getView());
-        mViewHolder.getView().addOnAttachStateChangeListener(this);
         mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
     }
 
-    public static Window open(@NonNull QuestContext context,
-                              @NonNull WindowContentViewHolder content,
-                              @StyleRes int styleResId,
-                              @NonNull WindowListener windowListener) {
-        Window window = new Window(context, content, styleResId);
-        window.setWindowListener(windowListener);
-        window.open();
-        return window;
+    public Window(@NonNull QuestContext context, @NonNull WindowContentViewHolder content,
+                  @StyleRes int styleResId) {
+        this(context);
+        mContent = content;
+        mStyleResId = styleResId;
+    }
+
+    public static void open(@NonNull QuestContext context,
+                            @NonNull WindowContentViewHolder content,
+                            @StyleRes int styleResId) {
+        new Window(context, content, styleResId).open();
     }
 
     @NonNull
@@ -137,6 +81,13 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         for (Window window : windowStack) {
             window.close(null);
         }
+    }
+
+    public void open(@NonNull WindowContentViewHolder content,
+                     @StyleRes int styleResId) {
+        mContent = content;
+        mStyleResId = styleResId;
+        open();
     }
 
     private ValueAnimator getColorAnimator(boolean reverse) {
@@ -182,13 +133,70 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
 
     public void open() {
         if (!mIsOpen) {
+            mViewHolder = new WindowViewHolder(mContext);
+            mStyleParameters = new StyleParameters(mContext, mStyleResId);
+            mContent.getCloseButton().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    close(true, mStyleParameters.closePosition);
+                }
+            });
+            if (mStyleParameters.openPosition != null) {
+                mViewHolder.contentContainer.addOnAttachStateChangeListener(
+                        new View.OnAttachStateChangeListener() {
+                            @Override
+                            public void onViewAttachedToWindow(View view) {
+                                view.removeOnAttachStateChangeListener(this);
+                                final Animator revealAnimator = RevealAnimator.getRevealAnimator(mContext,
+                                        view,
+                                        mStyleParameters.openPosition,
+                                        new FastOutLinearInInterpolator(),
+                                        mStyleParameters.animationDuration,
+                                        false);
+                                revealAnimator.addListener(new Animator.AnimatorListener() {
+                                    @Override
+                                    public void onAnimationStart(Animator animation) {
+                                        if (mWindowListener != null) {
+                                            mWindowListener.onWindowOpen(Window.this);
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        if (mWindowListener != null) {
+                                            mWindowListener.onWindowOpened(Window.this);
+                                        }
+                                        //revealAnimator.removeListener(this);
+                                        revealAnimator.removeAllListeners();
+                                        sendEvent(EVENT_WINDOW_OPENED);
+                                    }
+
+                                    @Override
+                                    public void onAnimationCancel(Animator animation) {
+                                    }
+
+                                    @Override
+                                    public void onAnimationRepeat(Animator animation) {
+                                    }
+                                });
+                                revealAnimator.start();
+                                getColorAnimator(false).start();
+                            }
+
+                            @Override
+                            public void onViewDetachedFromWindow(View v) {
+                            }
+                        });
+            }
+            mViewHolder.contentContainer.addView(mContent.getView());
+            mViewHolder.getView().addOnAttachStateChangeListener(this);
             mIsOpen = true;
             windowStack.add(this);
             mWindowManager.addView(getView(), getLayoutParams());
             if (mWindowListener != null) {
                 mWindowListener.onWindowOpen(this);
             }
-            mContext.getEventBus().sendEvent(EVENT_WINDOW_OPEN);
+            sendEvent(EVENT_WINDOW_OPEN);
         }
     }
 
@@ -216,7 +224,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
             if (mWindowListener != null) {
                 mWindowListener.onWindowClose(this, isInternal);
             }
-            mContext.getEventBus().sendEvent(EVENT_WINDOW_CLOSE);
+            sendEvent(EVENT_WINDOW_CLOSE);
             if (closePosition != null) {
                 Animator animator = RevealAnimator.getRevealAnimator(mContext,
                         mViewHolder.contentContainer,
@@ -232,8 +240,12 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mViewHolder.getView().setVisibility(View.INVISIBLE);
+                        if (isInternal) {
+                            sendEvent(EVENT_WINDOW_CLOSED_INTERNAL);
+                        } else {
+                            sendEvent(EVENT_WINDOW_CLOSED);
+                        }
                         destroy(isInternal);
-                        mContext.getEventBus().sendEvent(EVENT_WINDOW_CLOSED);
                     }
 
                     @Override
@@ -252,6 +264,10 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                 destroy(isInternal);
             }
         }
+    }
+
+    private void sendEvent(String eventName) {
+        mContext.getEventBus().sendEvent(eventName, VALUE_WINDOW_CLASS, getClass());
     }
 
     private void destroy(boolean byCloseButton) {

@@ -18,9 +18,9 @@ public class MetricsQuestContentMediator extends SimpleExampleQuestContentMediat
     }
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext,
+    public void activate(@NonNull QuestContext questContext,
                          @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+        super.activate(questContext, rootContentContainer);
         mViewHolder.alternativeAnswerInput.setVisibility(View.GONE);
     }
 

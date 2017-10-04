@@ -24,8 +24,8 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
     private RelativeLayout mListViewContainer;
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         mListViewContainer = new RelativeLayout(mQuestContext);
         mListView = new RecyclerView(mQuestContext);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mQuestContext,

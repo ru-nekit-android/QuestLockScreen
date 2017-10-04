@@ -120,16 +120,14 @@ public class PupilStatisticsWindowMediator extends WindowMediator implements Vie
                 }
             };
 
-    private PupilStatisticsWindowMediator(@NonNull QuestContext questContext,
-                                          @NonNull Window.WindowListener windowListener) {
-        super(questContext, windowListener);
+    private PupilStatisticsWindowMediator(@NonNull QuestContext questContext) {
+        super(questContext);
         questContext.getEventBus().handleEvents(this, Window.EVENT_WINDOW_OPENED);
     }
 
-    public static void openWindow(@NonNull QuestContext questContext,
-                                  @NonNull Window.WindowListener windowListener) {
+    public static void openWindow(@NonNull QuestContext questContext) {
         if (instance == null) {
-            (instance = new PupilStatisticsWindowMediator(questContext, windowListener)).openWindow();
+            (instance = new PupilStatisticsWindowMediator(questContext)).openWindow();
         }
     }
 

@@ -8,12 +8,12 @@ import android.widget.RadioGroup;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.pupil.PupilSex;
 
-public class PupilSetSexFragment extends QuestSetupWizardFragment implements RadioGroup.OnCheckedChangeListener {
+public class SetupPupilSexFragment extends QuestSetupWizardFragment implements RadioGroup.OnCheckedChangeListener {
 
     private RadioGroup mPupilSexGroup;
 
-    public static PupilSetSexFragment getInstance() {
-        return new PupilSetSexFragment();
+    public static SetupPupilSexFragment getInstance() {
+        return new SetupPupilSexFragment();
     }
 
     @Override

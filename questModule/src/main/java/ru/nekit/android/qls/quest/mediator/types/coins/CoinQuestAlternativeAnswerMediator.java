@@ -16,8 +16,8 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     private List<CoinButtonHolder> mCoinButtonHostList;
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         mCoinButtonHostList = new ArrayList<>();
         switch (mQuest.getQuestionType()) {
 

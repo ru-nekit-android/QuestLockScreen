@@ -29,15 +29,14 @@
     <style name="SetupWizard.ContentContainer" />
 
     <style name="SetupWizard.PupilName">
-        <item name="android:padding">@dimen/base_semi_gap</item>
+
     </style>
 
     <style name="SetupWizard.PupilSex">
-        <item name="android:padding">@dimen/base_semi_gap</item>
+
     </style>
 
-    <style name="SetupWizard.QTPComplexity">
-    </style>
+    <style name="SetupWizard.QTPComplexity"></style>
 
     <style name="ToolContainer">
         <item name="android:background">@color/green</item>

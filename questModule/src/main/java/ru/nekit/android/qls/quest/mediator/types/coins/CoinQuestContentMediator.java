@@ -34,8 +34,8 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         NumberSummandQuest quest = getQuest();
         mContentContainer = new FrameLayout(questContext);
         mCoinViewHolderList = new ArrayList<>();
@@ -69,8 +69,8 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
+    public void onStartQuest(boolean delayedStart) {
+        super.onStartQuest(delayedStart);
         updateSize();
     }
 

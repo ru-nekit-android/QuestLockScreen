@@ -17,7 +17,6 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.lockScreen.LockScreen;
 import ru.nekit.android.qls.lockScreen.LockScreenMediator;
 import ru.nekit.android.qls.lockScreen.service.LockScreenService;
-import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.lockScreen.window.WindowContentViewHolder;
 import ru.nekit.android.qls.pupil.PhoneContact;
 import ru.nekit.android.qls.quest.QuestContext;
@@ -47,15 +46,13 @@ public class MenuWindowMediator extends WindowMediator
     private ViewHolder mCurrentContentHolder;
     private MenuWindowContentViewHolder mWindowContent;
 
-    private MenuWindowMediator(@NonNull QuestContext questContext,
-                               @NonNull Window.WindowListener windowListener) {
-        super(questContext, windowListener);
+    private MenuWindowMediator(@NonNull QuestContext questContext) {
+        super(questContext);
     }
 
-    public static void openWindow(@NonNull QuestContext questContext,
-                                  @NonNull Window.WindowListener windowListener) {
+    public static void openWindow(@NonNull QuestContext questContext) {
         if (instance == null) {
-            (instance = new MenuWindowMediator(questContext, windowListener)).openWindow();
+            (instance = new MenuWindowMediator(questContext)).openWindow();
         }
     }
 

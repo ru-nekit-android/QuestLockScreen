@@ -184,18 +184,18 @@ public class QuestVisualBuilder {
                 break;
 
         }
-        mQuestMediatorFacade.onCreate(mQuestContext, contentContainer);
+        mQuestMediatorFacade.activate(mQuestContext, contentContainer);
     }
 
     public View getView() {
         return mQuestMediatorFacade.getView();
     }
 
-    public void detachView() {
-        mQuestMediatorFacade.detachView();
-    }
-
     public void deactivate() {
         mQuestMediatorFacade.deactivate();
+    }
+
+    public void detachView() {
+        mQuestMediatorFacade.detachView();
     }
 }

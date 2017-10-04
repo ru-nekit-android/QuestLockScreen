@@ -35,15 +35,30 @@ import ru.nekit.android.qls.utils.ScreenHost;
 import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.ViewHolder;
 
+import static android.content.Context.WINDOW_SERVICE;
 import static android.content.Intent.ACTION_TIME_TICK;
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
+import static android.view.View.LAYER_TYPE_HARDWARE;
+import static android.view.View.LAYER_TYPE_NONE;
 import static android.view.View.VISIBLE;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON;
+import static android.view.WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+import static android.view.WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD;
+import static android.view.WindowManager.LayoutParams.FLAG_FULLSCREEN;
+import static android.view.WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
+import static android.view.WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
+import static android.view.WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
+import static android.view.WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
+import static android.view.WindowManager.LayoutParams.TYPE_SYSTEM_ERROR;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.EVENT_TRANSITION_CHANGED;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.Transition.QUEST;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED;
+import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED_INTERNAL;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_OPEN;
+import static ru.nekit.android.qls.quest.QuestContext.NAME_SESSION_TIME;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
@@ -95,7 +110,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
     public LockScreenMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
-        mWindowManager = (WindowManager) questContext.getSystemService(Context.WINDOW_SERVICE);
+        mWindowManager = (WindowManager) questContext.getSystemService(WINDOW_SERVICE);
         mTransitionChoreograph = new TransitionChoreograph(questContext);
         mViewHolder = new LockScreenViewHolder(questContext, new Animation.AnimationListener() {
             @Override
@@ -109,16 +124,11 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                     mViewHolder.setInAnimation(AnimationUtils.loadAnimation(mQuestContext,
                             R.anim.slide_in));
                     mPreviousContentMediator.getContentContainerViewHolder()
-                            .getTitleContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
-                    mPreviousContentMediator.getContentContainerViewHolder().
-                            getContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
-                    mPreviousContentMediator.deactivate();
+                            .getView().setLayerType(LAYER_TYPE_NONE, null);
                     mPreviousContentMediator.detachView();
                 } else if (animation == mViewHolder.inAnimation) {
-                    mCurrentContentMediator.getContentContainerViewHolder().
-                            getTitleContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
-                    mCurrentContentMediator.getContentContainerViewHolder().
-                            getContentContainer().setLayerType(View.LAYER_TYPE_NONE, null);
+                    mCurrentContentMediator.getContentContainerViewHolder()
+                            .getView().setLayerType(LAYER_TYPE_NONE, null);
                 }
             }
 
@@ -134,6 +144,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 ACTION_CLOSE,
                 EVENT_WINDOW_OPEN,
                 EVENT_WINDOW_CLOSED,
+                EVENT_WINDOW_CLOSED_INTERNAL,
                 EVENT_TRANSITION_CHANGED,
                 EVENT_TIC_TAC,
                 EVENT_QUEST_CREATE,
@@ -194,13 +205,13 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
             mLockScreenLayoutParams = new LayoutParams(
                     width,
                     MATCH_PARENT,
-                    LayoutParams.TYPE_SYSTEM_ERROR,
-                    LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                            | LayoutParams.FLAG_FULLSCREEN
-                            | LayoutParams.FLAG_DISMISS_KEYGUARD
-                            | LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-                            | LayoutParams.FLAG_DIM_BEHIND
-                            | LayoutParams.FLAG_HARDWARE_ACCELERATED
+                    TYPE_SYSTEM_ERROR,
+                    FLAG_SHOW_WHEN_LOCKED
+                            | FLAG_FULLSCREEN
+                            | FLAG_DISMISS_KEYGUARD
+                            | FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                            | FLAG_DIM_BEHIND
+                            | FLAG_HARDWARE_ACCELERATED
                     ,
                     PixelFormat.TRANSLUCENT);
             mLockScreenLayoutParams.screenBrightness = 1;
@@ -226,11 +237,11 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
         if (!isLandscape()) {
             mStatusBarViewHolder = new StatusBarViewHolder(mQuestContext);
             LayoutParams statusBarLayoutParams = new LayoutParams();
-            statusBarLayoutParams.type = LayoutParams.TYPE_SYSTEM_ERROR;
+            statusBarLayoutParams.type = TYPE_SYSTEM_ERROR;
             statusBarLayoutParams.gravity = Gravity.TOP;
-            statusBarLayoutParams.flags = LayoutParams.FLAG_NOT_FOCUSABLE |
-                    LayoutParams.FLAG_NOT_TOUCH_MODAL |
-                    LayoutParams.FLAG_LAYOUT_IN_SCREEN;
+            statusBarLayoutParams.flags = FLAG_NOT_FOCUSABLE |
+                    FLAG_NOT_TOUCH_MODAL |
+                    FLAG_LAYOUT_IN_SCREEN;
             statusBarLayoutParams.format = PixelFormat.TRANSLUCENT;
             statusBarLayoutParams.width = MATCH_PARENT;
             statusBarLayoutParams.height = getStatusBarHeight();
@@ -297,6 +308,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 break;
 
             case EVENT_WINDOW_CLOSED:
+            case EVENT_WINDOW_CLOSED_INTERNAL:
 
                 if (mTransitionChoreograph.getCurrentTransition() == QUEST) {
                     mQuestContext.resumeQuest();
@@ -325,7 +337,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
 
             case EVENT_TIC_TAC:
 
-                long sessionTime = intent.getLongExtra(QuestContext.NAME_SESSION_TIME, 0);
+                long sessionTime = intent.getLongExtra(NAME_SESSION_TIME, 0);
                 updateTimerProgress(sessionTime);
 
                 break;
@@ -344,13 +356,17 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                         boolean useAnimation = previousTransition != null ||
                                 currentTransition == QUEST;
                         mPreviousContentMediator = mCurrentContentMediator;
+                        if (mPreviousContentMediator != null) {
+                            mPreviousContentMediator.deactivate();
+                            mPreviousContentMediator.getContentContainerViewHolder().
+                                    getView().setLayerType(LAYER_TYPE_HARDWARE, null);
+                        }
                         if (currentTransition == QUEST) {
                             mCurrentContentMediator = new LockScreenQuestContentMediator(mQuestContext);
                         } else {
                             mCurrentContentMediator = new SupportContentMediator(mQuestContext);
                         }
                         mCurrentContentMediator.setTransitionChoreograph(mTransitionChoreograph);
-
                         mViewHolder.switchToContent(mCurrentContentMediator, useAnimation,
                                 previousTransition == null && currentTransition == QUEST
                         );
@@ -458,8 +474,6 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                              boolean useAnimation, boolean useFadeAnimation) {
             boolean contentContainerHasChild = contentContainer.getChildCount() != 0;
             boolean titleContainerHasChild = titleContainer.getChildCount() != 0;
-            View view = lockScreenContentMediator.getContentContainerViewHolder().getView();
-            view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             if (inAnimation != null) {
                 inAnimation.setAnimationListener(null);
             }
@@ -483,12 +497,11 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                 contentContainer.setVisibility(GONE);
             }
             if (useAnimation) {
-                content.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                mView.setLayerType(LAYER_TYPE_HARDWARE, null);
                 contentContainer.showNext();
                 if (contentContainerHasChild) {
                     contentContainer.removeViewAt(0);
                 }
-                titleContainer.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                 titleContainer.showNext();
                 if (titleContainerHasChild) {
                     titleContainer.removeViewAt(0);

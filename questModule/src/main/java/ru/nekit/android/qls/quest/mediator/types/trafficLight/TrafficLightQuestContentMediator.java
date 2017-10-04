@@ -21,8 +21,8 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     private TrafficLightQuestViewHolder mViewHolder;
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+        super.activate(questContext, rootContentContainer);
         mViewHolder = new TrafficLightQuestViewHolder(questContext);
         TrafficLightModel answer = TrafficLightModel.fromOrdinal((int) mQuest.getAnswer());
         mViewHolder.trafficRedLight.setVisibility(INVISIBLE);
@@ -37,14 +37,34 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(false);
-        updateSize();
+    public void onCreateQuest() {
+        super.onCreateQuest();
+        updateSizeInternal();
+    }
+
+    @Override
+    public void onStartQuest(boolean delayedStart) {
+        updateSizeInternal();
+        super.onStartQuest(delayedStart);
+    }
+
+    protected void playDelayedStartAnimation() {
+        View view = getView();
+        if (view != null) {
+            view.setAlpha(0);
+            view.animate().withLayer().alpha(1).
+                    setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+        }
     }
 
     @Override
     public View getView() {
         return mViewHolder.getView();
+    }
+
+    @Override
+    public void updateSize() {
+
     }
 
     @Override
@@ -57,8 +77,8 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
         return false;
     }
 
-    @Override
-    public void updateSize() {
+
+    private void updateSizeInternal() {
         Resources resources = mQuestContext.getResources();
         View pupilAvatarView = mViewHolder.pupilAvatarContainer;
         float globalScale = (float) mViewHolder.trafficLightBackground.getHeight() /

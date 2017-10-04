@@ -97,6 +97,12 @@ public class EventBus {
         }
     }
 
+    public void sendEvent(String event, String dataName, Class data) {
+        Intent intent = new Intent(event);
+        intent.putExtra(dataName, data);
+        mContext.sendBroadcast(intent);
+    }
+
     public interface IEventHandler {
 
         void onEvent(@NonNull Intent intent);

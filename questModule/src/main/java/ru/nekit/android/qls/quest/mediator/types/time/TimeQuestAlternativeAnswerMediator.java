@@ -7,12 +7,27 @@ import java.util.List;
 import ru.nekit.android.qls.quest.mediator.answer.AbstractListableQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
+
 public class TimeQuestAlternativeAnswerMediator
         extends AbstractListableQuestAlternativeAnswerMediator<Integer, TimeAdapter> {
 
+
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
+    public void onStartQuest(boolean delayedStart) {
+        updateListAdapter();
+        super.onStartQuest(delayedStart);
+    }
+
+    @Override
+    public void onCreateQuest() {
+        if (mQuestContext.questHasState(DELAYED_START)) {
+            updateListAdapter();
+        }
+        super.onCreateQuest();
+    }
+
+    private void updateListAdapter() {
         int size;
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = dataListLength / getColumnCount();

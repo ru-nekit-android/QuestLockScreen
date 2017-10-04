@@ -32,7 +32,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     private String mTitleText;
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
         mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();
@@ -256,7 +256,12 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
+    public void onCreateQuest() {
+
+    }
+
+    @Override
+    public void onStartQuest(boolean delayedStart) {
 
     }
 

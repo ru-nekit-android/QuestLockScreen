@@ -22,7 +22,7 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     @CallSuper
     @Override
-    public void onCreate(@NonNull QuestContext questContext,
+    public void activate(@NonNull QuestContext questContext,
                          @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
         mRootContentContainer = rootContentContainer;
@@ -31,15 +31,24 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     @CallSuper
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        if (playAnimationOnDelayedStart) {
-            View view = getView();
-            if (view != null) {
-                view.setScaleX(0.1f);
-                view.setScaleY(0.1f);
-                view.animate().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).
-                        setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
-            }
+    public void onStartQuest(boolean delayedStart) {
+        if (delayedStart) {
+            playDelayedStartAnimation();
+        }
+    }
+
+    @Override
+    public void onCreateQuest() {
+
+    }
+
+    protected void playDelayedStartAnimation() {
+        View view = getView();
+        if (view != null) {
+            view.setScaleX(0.1f);
+            view.setScaleY(0.1f);
+            view.animate().withLayer().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).
+                    setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
         }
     }
 

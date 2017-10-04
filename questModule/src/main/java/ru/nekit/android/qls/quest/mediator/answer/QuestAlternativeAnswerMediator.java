@@ -39,25 +39,35 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     @CallSuper
     @Override
-    public void onCreate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
         mQuestContext = questContext;
         mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();
         mButtonList = new ArrayList<>();
     }
 
+    @Override
+    public void onCreateQuest() {
+
+    }
+
     @CallSuper
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        if (playAnimationOnDelayedStart) {
-            View view = mRootContentContainer;
-            if (getView() != null) {
-                view = getView();
-            }
-            view.setScaleX(0.1f);
-            view.setScaleY(0.1f);
-            view.animate().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+    public void onStartQuest(boolean delayedStart) {
+        if (delayedStart) {
+            playDelayedStartAnimation();
         }
+    }
+
+    protected void playDelayedStartAnimation() {
+        View view = mRootContentContainer;
+        if (getView() != null) {
+            view = getView();
+        }
+        view.setScaleX(0);
+        view.setScaleY(0);
+        view.animate().withLayer().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator())
+                .setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
     }
 
     @Override

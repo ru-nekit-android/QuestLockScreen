@@ -38,8 +38,8 @@ public class FruitComparisonAlternativeAnswerMediator extends
 
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
+    public void onStartQuest(boolean delayedStart) {
+        super.onStartQuest(delayedStart);
         int size = Math.min(mRootContentContainer.getWidth(), mRootContentContainer.getHeight());
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = (int) Math.ceil(dataListLength / (float) getColumnCount());

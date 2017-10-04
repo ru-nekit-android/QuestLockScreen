@@ -65,7 +65,7 @@ public class QuestSetupWizardActivity extends BaseSetupWizardActivity implements
         } else if (PUPIL_NAME.equals(step)) {
             replaceFragment(SetupPupilNameFragment.getInstance());
         } else if (PUPIL_SEX.equals(step)) {
-            replaceFragment(PupilSetSexFragment.getInstance());
+            replaceFragment(SetupPupilSexFragment.getInstance());
         } else if (QTP_COMPLEXITY.equals(step)) {
             replaceFragment(SetupQTPComplexityFragment.getInstance());
         } else if (PUPIL_AVATAR.equals(step)) {

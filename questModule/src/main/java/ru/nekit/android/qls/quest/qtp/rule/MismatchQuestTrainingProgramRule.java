@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 
@@ -54,7 +54,7 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
                 break;
             }
         }
-        List<IVisualResourceModel> mismatchQVRItemIdList =
+        List<IVisualResource> mismatchQVRItemIdList =
                 mismatchGroup.getVisualResourceItems(questResourceLibrary);
         unknownMemberIndex = randListLength(questVisualRepresentationList);
         questVisualRepresentationList.add(unknownMemberIndex,

@@ -8,7 +8,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel;
+import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
@@ -42,19 +42,19 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
                         @NonNull List<Integer> questVisualRepresentationList) {
         Calendar calendar = Calendar.getInstance();
-        SimpleQuestVisualResourceModel questVisualResourceItem = null;
+        SimpleQuestVisualResource questVisualResourceItem = null;
         int currentMonth = calendar.get(Calendar.MONTH);
         if (currentMonth == 11 || currentMonth <= 1) {
-            questVisualResourceItem = SimpleQuestVisualResourceModel.WINTER;
+            questVisualResourceItem = SimpleQuestVisualResource.WINTER;
         }
         if (currentMonth > 1 || currentMonth <= 4) {
-            questVisualResourceItem = SimpleQuestVisualResourceModel.SPRING;
+            questVisualResourceItem = SimpleQuestVisualResource.SPRING;
         }
         if (currentMonth > 4 || currentMonth <= 7) {
-            questVisualResourceItem = SimpleQuestVisualResourceModel.SUMMER;
+            questVisualResourceItem = SimpleQuestVisualResource.SUMMER;
         }
         if (currentMonth > 7 || currentMonth <= 10) {
-            questVisualResourceItem = SimpleQuestVisualResourceModel.FALL;
+            questVisualResourceItem = SimpleQuestVisualResource.FALL;
         }
         return questVisualRepresentationList.indexOf(
                 questResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));

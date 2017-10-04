@@ -12,7 +12,7 @@ import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.BER
 import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.POMUM;
 import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.SEASONS;
 
-public enum SimpleQuestVisualResourceModel implements IVisualResourceModel {
+public enum SimpleQuestVisualResource implements IVisualResource {
 
     MINUS(R.drawable.qvri_minus,
             R.string.qvri_minus_title,
@@ -76,9 +76,9 @@ public enum SimpleQuestVisualResourceModel implements IVisualResourceModel {
     @Nullable
     private VisualResourceGroup[] mGroups;
 
-    SimpleQuestVisualResourceModel(@DrawableRes int drawableResourceId,
-                                   @StringRes int titleResourceId,
-                                   @Nullable VisualResourceGroup... groups) {
+    SimpleQuestVisualResource(@DrawableRes int drawableResourceId,
+                              @StringRes int titleResourceId,
+                              @Nullable VisualResourceGroup... groups) {
         mDrawableResourceId = drawableResourceId;
         mTitleResourceId = titleResourceId;
         mGroups = groups;

@@ -24,9 +24,9 @@ import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel.EQUAL;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel.MINUS;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResourceModel.PLUS;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.EQUAL;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.MINUS;
+import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.PLUS;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 
@@ -37,9 +37,9 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private QuestResourceLibrary questResourceLibrary;
 
     @Override
-    public void onCreate(@NonNull QuestContext questContext,
+    public void activate(@NonNull QuestContext questContext,
                          @NonNull ViewGroup rootContentContainer) {
-        super.onCreate(questContext, rootContentContainer);
+        super.activate(questContext, rootContentContainer);
         mFruitImageDrawableCache = new SparseArray<>();
         mFruitShadowImageDrawableCache = new SparseArray<>();
         mFruitArithmeticQuest = (FruitArithmeticQuest) mQuest;
@@ -110,8 +110,8 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     }
 
     @Override
-    public void onStartQuest(boolean playAnimationOnDelayedStart) {
-        super.onStartQuest(playAnimationOnDelayedStart);
+    public void onStartQuest(boolean delayedStart) {
+        super.onStartQuest(delayedStart);
         updateSize();
     }
 

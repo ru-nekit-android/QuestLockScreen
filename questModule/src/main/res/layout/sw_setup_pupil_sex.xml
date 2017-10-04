@@ -4,7 +4,7 @@
     style="@style/SetupWizard.PupilSex"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.nekit.android.qls.setupWizard.view.PupilSetSexFragment">
+    tools:context="ru.nekit.android.qls.setupWizard.view.SetupPupilSexFragment">
 
     <com.devspark.robototextview.widget.RobotoTextView
         android:id="@+id/tv_title"
