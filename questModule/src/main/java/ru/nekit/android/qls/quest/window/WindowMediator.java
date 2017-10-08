@@ -15,7 +15,7 @@ abstract class WindowMediator implements Window.WindowListener {
     protected final QuestContext mQuestContext;
     @NonNull
     private final WindowContentViewHolder mWindowContentViewHolder;
-    Window mWindow;
+    protected Window mWindow;
     private View.OnAttachStateChangeListener onAttachStateChangeListener =
             new View.OnAttachStateChangeListener() {
                 @Override
@@ -59,7 +59,6 @@ abstract class WindowMediator implements Window.WindowListener {
 
     @Override
     final public void onWindowClosed(@NonNull Window window) {
-        mWindowContentViewHolder.getView().removeOnAttachStateChangeListener(onAttachStateChangeListener);
         destroy();
     }
 
@@ -69,6 +68,7 @@ abstract class WindowMediator implements Window.WindowListener {
 
     @Override
     public void onWindowClose(@NonNull Window window) {
+        mWindowContentViewHolder.getView().removeOnAttachStateChangeListener(onAttachStateChangeListener);
     }
 
     protected void destroy() {

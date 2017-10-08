@@ -206,8 +206,8 @@ public class MenuWindowMediator extends WindowMediator
         if (pattern.size() >= BaseSetupWizard.UNLOCK_SECRET_MIN_SIZE) {
             if (LockScreen.tryToLogin(mQuestContext,
                     PatternLockUtils.patternToMD5(unlockViewHolder.patterLockView, pattern))) {
-                mQuestContext.getEventBus().sendEvent(LockScreenMediator.ACTION_CLOSE);
                 mWindow.close(RevealPoint.POSITION_MIDDLE_CENTER);
+                mQuestContext.getEventBus().sendEvent(LockScreenMediator.ACTION_CLOSE);
             } else {
                 unlockViewHolder.patterLockView.setViewMode(WRONG);
                 Vibrate.make(mQuestContext, 400);
