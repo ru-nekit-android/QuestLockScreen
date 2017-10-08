@@ -9,24 +9,26 @@ import ru.nekit.android.qls.quest.QuestContext;
 
 public interface IQuestMediator {
 
-    void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer);
+    void create(@NonNull QuestContext questContext);
 
-    void onCreateQuest();
+    void onQuestAttach(@NonNull ViewGroup rootContentContainer);
 
-    void onStartQuest(boolean delayedStart);
+    void onQuestShow();
+
+    void onQuestStart(boolean delayedStart);
 
     boolean onRightAnswer();
 
     void onWrongAnswer();
 
-    void onRestartQuest();
+    void onQuestRestart();
 
-    void onPauseQuest();
+    void onQuestPause();
 
-    void onResumeQuest();
+    void onQuestResume();
 
     //call when screen is getting off
-    void onStopQuest();
+    void onQuestStop();
 
     void deactivate();
 

@@ -57,7 +57,7 @@ import static ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver.INCOMIN
 import static ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver.INCOMING_CALL_RECEIVED;
 import static ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver.OUTGOING_CALL_ENDED;
 import static ru.nekit.android.qls.pupil.PupilManager.EVENT_SET_CURRENT_PUPIL;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_ATTACH;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_TIC_TAC;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_WRONG_ANSWER;
@@ -186,7 +186,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
                     EVENT_OUTGOING_CALL,
                     EVENT_RIGHT_ANSWER,
                     EVENT_WRONG_ANSWER,
-                    EVENT_QUEST_CREATE);
+                    EVENT_QUEST_ATTACH);
             mEventBus.handleEvent(screenEventHandler, ACTION_SCREEN_OFF, SYSTEM_HIGH_PRIORITY);
         }
         if (mStartLimiterStatistics == null) {
@@ -421,7 +421,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
                     break;
 
-                case EVENT_QUEST_CREATE:
+                case EVENT_QUEST_ATTACH:
 
                     if (!mQuestContext.questHasState(QuestContext.QuestState.RESTORED)) {
                         mMessageGateway.send(InternalCommand.NAME, new InternalCommand(action));

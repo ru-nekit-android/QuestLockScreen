@@ -21,8 +21,8 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     private TrafficLightQuestViewHolder mViewHolder;
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mViewHolder = new TrafficLightQuestViewHolder(questContext);
         TrafficLightModel answer = TrafficLightModel.fromOrdinal((int) mQuest.getAnswer());
         mViewHolder.trafficRedLight.setVisibility(INVISIBLE);
@@ -37,24 +37,19 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     }
 
     @Override
-    public void onCreateQuest() {
-        super.onCreateQuest();
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        super.onQuestAttach(rootContentContainer);
         updateSizeInternal();
     }
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
+    public void onQuestStart(boolean delayedStart) {
         updateSizeInternal();
-        super.onStartQuest(delayedStart);
+        super.onQuestStart(delayedStart);
     }
 
+    @Override
     protected void playDelayedStartAnimation() {
-        View view = getView();
-        if (view != null) {
-            view.setAlpha(0);
-            view.animate().withLayer().alpha(1).
-                    setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
-        }
     }
 
     @Override

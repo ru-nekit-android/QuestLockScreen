@@ -2,7 +2,6 @@ package ru.nekit.android.qls.quest.mediator.types.metrics;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import ru.nekit.android.qls.quest.QuestContext;
@@ -18,9 +17,8 @@ public class MetricsQuestContentMediator extends SimpleExampleQuestContentMediat
     }
 
     @Override
-    public void activate(@NonNull QuestContext questContext,
-                         @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mViewHolder.alternativeAnswerInput.setVisibility(View.GONE);
     }
 

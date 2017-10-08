@@ -1,5 +1,5 @@
 {
-  "version": 1.264,
+  "version": 1.28,
   "name": "example",
   "description": "example",
   "sex": "BOY",
@@ -22,12 +22,12 @@
           ],
           "enabled": true,
           "reward": 10,
-          "delayedStart": false
+          "delayedStart": true
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": true,
+          "enabled": false,
           "delayedStart": true
         },
         //ВРЕМЯ
@@ -37,7 +37,7 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -48,7 +48,7 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10,
           "delayedStart": false
@@ -57,7 +57,7 @@
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "delayedStart": true,
           "memberCount": 4
         },
@@ -65,13 +65,13 @@
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": true
+          "enabled": false
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "delayedStart": true
         },
@@ -85,7 +85,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ЛИШНИЙ
         {
@@ -97,7 +97,7 @@
             "pomum"
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -118,7 +118,7 @@
             ]
           ],
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -129,7 +129,7 @@
           "answerVariants": 2,
           "memberCount": 20,
           "delayedStart": false,
-          "enabled": true
+          "enabled": false
         }
       ]
     }

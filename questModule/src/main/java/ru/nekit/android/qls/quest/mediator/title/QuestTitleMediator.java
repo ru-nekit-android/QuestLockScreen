@@ -11,6 +11,7 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
@@ -32,9 +33,8 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     private String mTitleText;
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void create(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
-        mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();
         QuestionType questionType = mQuest.getQuestionType();
         mViewHolder = new QuestTitleViewHolder(questContext);
@@ -50,7 +50,11 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                         case UNKNOWN_MEMBER:
 
-                            mTitleText = String.format("Какой монеты не хватает, если в стопке %s рублей?", numberSummandQuest.getLeftNodeSum());
+                            int nominationSum = 0;
+                            for (int id : numberSummandQuest.leftNode) {
+                                nominationSum += CoinModel.getById(id).nomination;
+                            }
+                            mTitleText = String.format("Какой монеты не хватает, если в стопке %s рублей?", nominationSum);
 
                             break;
 
@@ -256,12 +260,17 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onCreateQuest() {
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        mRootContentContainer = rootContentContainer;
+    }
+
+    @Override
+    public void onQuestShow() {
 
     }
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
+    public void onQuestStart(boolean delayedStart) {
 
     }
 
@@ -276,17 +285,17 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onPauseQuest() {
+    public void onQuestPause() {
 
     }
 
     @Override
-    public void onResumeQuest() {
+    public void onQuestResume() {
 
     }
 
     @Override
-    public void onStopQuest() {
+    public void onQuestStop() {
 
     }
 
@@ -296,7 +305,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onRestartQuest() {
+    public void onQuestRestart() {
 
     }
 

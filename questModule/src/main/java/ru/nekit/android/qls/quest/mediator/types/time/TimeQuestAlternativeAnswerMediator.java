@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.quest.mediator.types.time;
 
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -14,17 +15,17 @@ public class TimeQuestAlternativeAnswerMediator
 
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
+    public void onQuestStart(boolean delayedStart) {
         updateListAdapter();
-        super.onStartQuest(delayedStart);
+        super.onQuestStart(delayedStart);
     }
 
     @Override
-    public void onCreateQuest() {
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
         if (mQuestContext.questHasState(DELAYED_START)) {
             updateListAdapter();
         }
-        super.onCreateQuest();
+        super.onQuestAttach(rootContentContainer);
     }
 
     private void updateListAdapter() {

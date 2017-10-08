@@ -9,7 +9,6 @@ import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.SparseArray;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -37,9 +36,8 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private QuestResourceLibrary questResourceLibrary;
 
     @Override
-    public void activate(@NonNull QuestContext questContext,
-                         @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mFruitImageDrawableCache = new SparseArray<>();
         mFruitShadowImageDrawableCache = new SparseArray<>();
         mFruitArithmeticQuest = (FruitArithmeticQuest) mQuest;
@@ -110,8 +108,8 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     }
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
-        super.onStartQuest(delayedStart);
+    public void onQuestStart(boolean delayedStart) {
+        super.onQuestStart(delayedStart);
         updateSize();
     }
 

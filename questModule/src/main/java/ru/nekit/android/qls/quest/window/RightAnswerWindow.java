@@ -17,7 +17,9 @@ import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_S
 
 public class RightAnswerWindow extends Window {
 
-    public RightAnswerWindow(@NonNull QuestContext context) {
+    public static final String NAME = "rightAnswerName";
+
+    private RightAnswerWindow(@NonNull QuestContext context) {
         super(context);
     }
 
@@ -29,7 +31,6 @@ public class RightAnswerWindow extends Window {
         private RightAnswerWindowContentViewHolder mContent;
         @StyleRes
         private int mStyleResId;
-
 
         public Builder(@NonNull QuestContext context) {
             mQuestContext = context;
@@ -69,7 +70,7 @@ public class RightAnswerWindow extends Window {
                         questHistoryPair.globalQuestHistory.rightAnswerSeries);
             }
             mContent.titleView.setText(text);
-            mWindow.open(mContent, mStyleResId);
+            mWindow.open(NAME, mContent, mStyleResId);
         }
     }
 }

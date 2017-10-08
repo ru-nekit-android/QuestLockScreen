@@ -16,8 +16,8 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     private List<CoinButtonHolder> mCoinButtonHostList;
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mCoinButtonHostList = new ArrayList<>();
         switch (mQuest.getQuestionType()) {
 
@@ -25,8 +25,8 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
 
                 Object[] availableVariants = mQuest.getAvailableAnswerVariants();
                 if (availableVariants != null) {
-                    for (Object variant : availableVariants) {
-                        CoinModel coinModel = CoinModel.getByNomination((int) variant);
+                    for (Object item : availableVariants) {
+                        CoinModel coinModel = CoinModel.getById((int) item);
                         if (coinModel != null) {
                             CoinButtonHolder coinButtonHost =
                                     CoinViewBuilder.createButton(mQuestContext, coinModel, this);
@@ -41,6 +41,23 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     }
 
     @Override
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        super.onQuestAttach(rootContentContainer);
+        updateSizeInternal();
+    }
+
+    @Override
+    public void onQuestShow() {
+        super.onQuestShow();
+        updateSizeInternal();
+    }
+
+    @Override
+    public void onQuestStart(boolean delayedStart) {
+        super.onQuestStart(delayedStart);
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         mCoinButtonHostList.clear();
@@ -49,6 +66,10 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
 
     @Override
     public void updateSize() {
+        updateSizeInternal();
+    }
+
+    private void updateSizeInternal() {
         int width = mRootContentContainer.getWidth();
         switch (mQuest.getQuestionType()) {
 
@@ -73,7 +94,7 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
                     coinButtonHost.getView().requestLayout();
                 }
 
-
+                mRootContentContainer.requestLayout();
                 break;
         }
     }

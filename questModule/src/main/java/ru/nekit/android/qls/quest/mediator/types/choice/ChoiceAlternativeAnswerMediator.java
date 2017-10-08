@@ -13,8 +13,8 @@ public class ChoiceAlternativeAnswerMediator
         extends AbstractSquareImageQuestAlternativeAnswerMediator {
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
-        super.onStartQuest(delayedStart);
+    public void onQuestStart(boolean delayedStart) {
+        super.onQuestStart(delayedStart);
         int size = Math.min(mRootContentContainer.getWidth(), mRootContentContainer.getHeight());
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = (int) Math.ceil(dataListLength / (float) getColumnCount());

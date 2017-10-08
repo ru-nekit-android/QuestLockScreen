@@ -11,10 +11,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
 
 import java.util.List;
@@ -27,12 +27,11 @@ import ru.nekit.android.qls.utils.ScreenHost;
 
 public class Window implements View.OnAttachStateChangeListener, View.OnLayoutChangeListener {
 
-    public static final String VALUE_WINDOW_CLASS = "ru.nekit.android.qls.value_window_class";
+    public static final String VALUE_WINDOW_NAME = "ru.nekit.android.qls.value_window_name";
     public static final String EVENT_WINDOW_OPEN = "ru.nekit.android.qls.event_window_open";
     public static final String EVENT_WINDOW_OPENED = "ru.nekit.android.qls.event_window_opened";
     public static final String EVENT_WINDOW_CLOSE = "ru.nekit.android.qls.event_window_close";
     public static final String EVENT_WINDOW_CLOSED = "ru.nekit.android.qls.event_window_closed";
-    public static final String EVENT_WINDOW_CLOSED_INTERNAL = "ru.nekit.android.qls.event_window_closed_internal";
 
     private static final CopyOnWriteArrayList<Window> windowStack;
 
@@ -53,6 +52,8 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     private WindowListener mWindowListener;
     private boolean mIsOpen;
     private WindowManager.LayoutParams layoutParams;
+    @Nullable
+    private String mName;
 
     public Window(@NonNull QuestContext context) {
         mContext = context;
@@ -66,12 +67,6 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         mStyleResId = styleResId;
     }
 
-    public static void open(@NonNull QuestContext context,
-                            @NonNull WindowContentViewHolder content,
-                            @StyleRes int styleResId) {
-        new Window(context, content, styleResId).open();
-    }
-
     @NonNull
     public static List<Window> getWindowStack() {
         return windowStack;
@@ -83,12 +78,18 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         }
     }
 
-    public void open(@NonNull WindowContentViewHolder content,
+    public void open(@NonNull WindowContentViewHolder content, @StyleRes int styleResId) {
+        this.open(null, content, styleResId);
+    }
+
+    public void open(@Nullable String name, @NonNull WindowContentViewHolder content,
                      @StyleRes int styleResId) {
+        mName = name;
         mContent = content;
         mStyleResId = styleResId;
         open();
     }
+
 
     private ValueAnimator getColorAnimator(boolean reverse) {
         int startColor = reverse ? mStyleParameters.backgroundColorEnd
@@ -138,7 +139,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
             mContent.getCloseButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    close(true, mStyleParameters.closePosition);
+                    close(mStyleParameters.closePosition);
                 }
             });
             if (mStyleParameters.openPosition != null) {
@@ -150,7 +151,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                                 final Animator revealAnimator = RevealAnimator.getRevealAnimator(mContext,
                                         view,
                                         mStyleParameters.openPosition,
-                                        new FastOutLinearInInterpolator(),
+                                        new AccelerateInterpolator(),
                                         mStyleParameters.animationDuration,
                                         false);
                                 revealAnimator.addListener(new Animator.AnimatorListener() {
@@ -205,9 +206,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
-                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
-                        | WindowManager.LayoutParams.FLAG_DIM_BEHIND
+                WindowManager.LayoutParams.FLAG_DIM_BEHIND
                 , PixelFormat.TRANSLUCENT);
         layoutParams.dimAmount = mStyleParameters.dimAmount;
         layoutParams.gravity = Gravity.LEFT;
@@ -215,14 +214,10 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
     public void close(@Nullable String closePosition) {
-        close(false, closePosition);
-    }
-
-    private void close(final boolean isInternal, @Nullable String closePosition) {
         if (mIsOpen) {
             mIsOpen = false;
             if (mWindowListener != null) {
-                mWindowListener.onWindowClose(this, isInternal);
+                mWindowListener.onWindowClose(this);
             }
             sendEvent(EVENT_WINDOW_CLOSE);
             if (closePosition != null) {
@@ -240,12 +235,8 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         mViewHolder.getView().setVisibility(View.INVISIBLE);
-                        if (isInternal) {
-                            sendEvent(EVENT_WINDOW_CLOSED_INTERNAL);
-                        } else {
-                            sendEvent(EVENT_WINDOW_CLOSED);
-                        }
-                        destroy(isInternal);
+                        sendEvent(EVENT_WINDOW_CLOSED);
+                        destroy();
                     }
 
                     @Override
@@ -261,16 +252,16 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                 animator.start();
                 getColorAnimator(true).start();
             } else {
-                destroy(isInternal);
+                destroy();
             }
         }
     }
 
     private void sendEvent(String eventName) {
-        mContext.getEventBus().sendEvent(eventName, VALUE_WINDOW_CLASS, getClass());
+        mContext.getEventBus().sendEvent(eventName, VALUE_WINDOW_NAME, mName);
     }
 
-    private void destroy(boolean byCloseButton) {
+    private void destroy() {
         mViewHolder.destroy();
         mContent.getCloseButton().setOnClickListener(null);
         windowStack.remove(this);
@@ -278,7 +269,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
             mWindowManager.removeView(getView());
         }
         if (mWindowListener != null) {
-            mWindowListener.onWindowClosed(this, byCloseButton);
+            mWindowListener.onWindowClosed(this);
         }
     }
 
@@ -319,9 +310,9 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
 
         void onWindowOpened(@NonNull Window window);
 
-        void onWindowClose(@NonNull Window window, boolean internal);
+        void onWindowClose(@NonNull Window window);
 
-        void onWindowClosed(@NonNull Window window, boolean internal);
+        void onWindowClosed(@NonNull Window window);
 
     }
 

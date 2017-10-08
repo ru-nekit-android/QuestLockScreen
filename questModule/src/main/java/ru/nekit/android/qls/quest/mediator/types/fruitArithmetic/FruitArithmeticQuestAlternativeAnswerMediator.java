@@ -3,7 +3,6 @@ package ru.nekit.android.qls.quest.mediator.types.fruitArithmetic;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,8 +17,8 @@ public class FruitArithmeticQuestAlternativeAnswerMediator extends QuestAlternat
     }
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         switch (mQuest.getQuestionType()) {
 
             case SOLUTION:

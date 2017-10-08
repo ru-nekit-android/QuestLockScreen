@@ -13,10 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import org.jetbrains.annotations.Nullable;
+
 import at.grabner.circleprogress.CircleProgressView;
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.lockScreen.LockScreenMediator;
 import ru.nekit.android.qls.lockScreen.TransitionChoreograph.Transition;
 import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.quest.IQuestViewHolder;
@@ -27,41 +28,36 @@ import ru.nekit.android.qls.quest.qtp.QuestTrainingProgramLevel;
 import ru.nekit.android.qls.quest.window.MenuWindowMediator;
 import ru.nekit.android.qls.quest.window.PupilStatisticsWindowMediator;
 import ru.nekit.android.qls.quest.window.RightAnswerWindow;
-import ru.nekit.android.qls.quest.window.RightAnswerWindowContentViewHolder;
-import ru.nekit.android.qls.quest.window.WrongAnswerWindowContentViewHolder;
 import ru.nekit.android.qls.utils.KeyboardHost;
 import ru.nekit.android.qls.utils.ViewHolder;
 
 import static android.view.View.INVISIBLE;
-import static android.view.View.LAYER_TYPE_NONE;
 import static android.view.View.VISIBLE;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.EVENT_TRANSITION_CHANGED;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.Transition.QUEST;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED;
-import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED_INTERNAL;
+import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_OPEN;
 import static ru.nekit.android.qls.lockScreen.window.Window.closeAllWindows;
-import static ru.nekit.android.qls.lockScreen.window.Window.getWindowStack;
-import static ru.nekit.android.qls.lockScreen.window.Window.open;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_WRONG_ANSWER;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
 
 public class LockScreenQuestContentMediator extends AbstractLockScreenContentMediator
         implements View.OnClickListener, EventBus.IEventHandler {
 
-    public static final String ACTION_SHOW_RIGHT_ANSWER_WINDOW = "action_show_right_answer_window";
-
     @NonNull
     private final QuestContext mQuestContext;
-    private QuestVisualBuilder mCurrentQuestVisualBuilder, mPreviousQuestVisualBuilder;
+    private QuestVisualBuilder mQuestVisualBuilder, mPreviousQuestVisualBuilder;
     private QuestContentViewHolder mViewHolder;
 
     public LockScreenQuestContentMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
+
         mViewHolder = new QuestContentViewHolder(questContext);
         mViewHolder.menuButton.setOnClickListener(this);
         mViewHolder.statisticsContainer.setOnClickListener(this);
         mViewHolder.delayedStartContainer.setOnClickListener(this);
+
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -71,11 +67,12 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
             public void onAnimationEnd(Animation animation) {
                 if (animation == mViewHolder.inAnimation) {
                     updateQuestTitle();
-                    mCurrentQuestVisualBuilder.getView().setLayerType(LAYER_TYPE_NONE, null);
                     mViewHolder.updateViewVisibility(mQuestContext);
+                    //mQuestVisualBuilder.getView().setLayerType(LAYER_TYPE_NONE, null);
+                    mQuestContext.showAndStartQuestIfAble();
                 } else if (animation == mViewHolder.outAnimation) {
-                    mPreviousQuestVisualBuilder.getView().setLayerType(LAYER_TYPE_NONE, null);
                     mPreviousQuestVisualBuilder.detachView();
+                    //mPreviousQuestVisualBuilder.getView().setLayerType(LAYER_TYPE_NONE, null);
                     mPreviousQuestVisualBuilder = null;
                 }
             }
@@ -86,15 +83,14 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         };
         mViewHolder.inAnimation.setAnimationListener(animationListener);
         mViewHolder.outAnimation.setAnimationListener(animationListener);
+
         questContext.getEventBus().handleEvents(this,
                 EVENT_TRANSITION_CHANGED,
-                ACTION_SHOW_RIGHT_ANSWER_WINDOW,
-                EVENT_WRONG_ANSWER,
-                EVENT_WINDOW_CLOSED,
-                EVENT_WINDOW_CLOSED_INTERNAL
+                EVENT_RIGHT_ANSWER,
+                EVENT_WINDOW_OPEN,
+                EVENT_WINDOW_CLOSED
         );
-        mCurrentQuestVisualBuilder = new QuestVisualBuilder(questContext);
-        mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
+
         updatePupilStatisticsView();
     }
 
@@ -136,10 +132,6 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         return mViewHolder;
     }
 
-    private boolean allowToClose() {
-        return getWindowStack().isEmpty();
-    }
-
     @Override
     public void deactivate() {
         mQuestContext.getEventBus().stopHandleEvents(this);
@@ -150,7 +142,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         if (mPreviousQuestVisualBuilder != null) {
             mPreviousQuestVisualBuilder.deactivate();
         }
-        mCurrentQuestVisualBuilder.deactivate();
+        mQuestVisualBuilder.deactivate();
     }
 
     @Override
@@ -159,7 +151,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         if (mPreviousQuestVisualBuilder != null) {
             mPreviousQuestVisualBuilder.detachView();
         }
-        mCurrentQuestVisualBuilder.detachView();
+        mQuestVisualBuilder.detachView();
         mViewHolder.detachQuestView();
     }
 
@@ -167,12 +159,30 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
     public void attachView() {
         updateQuestTitle();
         mViewHolder.updateViewVisibility(mQuestContext);
-        attachQuestView();
+        createAndAttachQuestView();
     }
 
-    private void attachQuestView() {
-        mViewHolder.attachQuestView(mCurrentQuestVisualBuilder.getView());
-        mQuestContext.createAndStartQuestIfAble();
+    private void createAndAttachQuestView() {
+        mQuestVisualBuilder = new QuestVisualBuilder(mQuestContext);
+        mQuestVisualBuilder.create();
+        View questView = mQuestVisualBuilder.getView();
+        questView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                mQuestContext.attachQuest();
+                Transition transition = mTransitionChoreograph.getPreviousTransition();
+                if (transition != QUEST) {
+                    mQuestContext.showAndStartQuestIfAble();
+                }
+                view.removeOnAttachStateChangeListener(this);
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+
+            }
+        });
+        mViewHolder.attachQuestView(questView);
     }
 
     @Override
@@ -192,7 +202,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                 }
             });
         } else if (view == mViewHolder.delayedStartContainer) {
-            if (mQuestContext.startQuestIfAble()) {
+            if (mQuestContext.startQuest()) {
                 mViewHolder.updateViewVisibility(mQuestContext);
             }
         }
@@ -203,45 +213,28 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         String action = intent.getAction();
         switch (action) {
 
-            case ACTION_SHOW_RIGHT_ANSWER_WINDOW:
+            case EVENT_RIGHT_ANSWER:
 
-                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
-                    @Override
-                    public void run() {
-                        updatePupilStatisticsView();
-                        RightAnswerWindowContentViewHolder content =
-                                new RightAnswerWindowContentViewHolder(mQuestContext,
-                                        R.layout.wc_right_answer);
-                        new RightAnswerWindow.Builder(mQuestContext).
-                                setContent(content).
-                                setStyle(R.style.Window_RightAnswer).
-                                open();
-                    }
-                });
+                updatePupilStatisticsView();
 
                 break;
 
-            case EVENT_WRONG_ANSWER:
+            case EVENT_WINDOW_OPEN:
 
-                open(mQuestContext,
-                        new WrongAnswerWindowContentViewHolder(mQuestContext),
-                        R.style.Window_WrongAnswer
-                );
+                mQuestContext.pauseQuest();
 
                 break;
 
             case EVENT_WINDOW_CLOSED:
 
-                if (allowToClose()) {
-                    mQuestContext.getEventBus().sendEvent(LockScreenMediator.ACTION_CLOSE);
-                }
-
-                break;
-
-            case EVENT_WINDOW_CLOSED_INTERNAL:
-
-                if (intent.getSerializableExtra(Window.VALUE_WINDOW_CLASS).equals(RightAnswerWindow.class)) {
+                @Nullable
+                String windowName = intent.getStringExtra(Window.VALUE_WINDOW_NAME);
+                if (windowName != null && windowName.equals(RightAnswerWindow.NAME)) {
                     mTransitionChoreograph.goCurrentTransition();
+                } else {
+                    if (mTransitionChoreograph.getCurrentTransition() == QUEST) {
+                        mQuestContext.resumeQuest();
+                    }
                 }
 
                 break;
@@ -251,11 +244,9 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                 Transition transition = mTransitionChoreograph.getCurrentTransition();
                 if (transition == QUEST) {
                     //remember current as previous
-                    mPreviousQuestVisualBuilder = mCurrentQuestVisualBuilder;
+                    mPreviousQuestVisualBuilder = mQuestVisualBuilder;
                     mPreviousQuestVisualBuilder.deactivate();
-                    mCurrentQuestVisualBuilder = new QuestVisualBuilder(mQuestContext);
-                    mCurrentQuestVisualBuilder.create(mViewHolder.questContentContainer);
-                    attachQuestView();
+                    createAndAttachQuestView();
                 }
 
                 break;
@@ -314,12 +305,12 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
 
         @Override
         public void attachQuestView(@NonNull View questView) {
-            questView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             boolean contentContainerHasNoChild = questContentContainer.getChildCount() == 0;
             questContentContainer.addView(questView);
+            //questView.setLayerType(LAYER_TYPE_HARDWARE, null);
             if (!contentContainerHasNoChild) {
                 View previousQuestView = questContentContainer.getChildAt(0);
-                previousQuestView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                //previousQuestView.setLayerType(LAYER_TYPE_HARDWARE, null);
                 questContentContainer.showNext();
                 questContentContainer.removeViewAt(0);
             }
@@ -335,7 +326,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
             delayedStartContainer.setVisibility(showDelayStartView ? VISIBLE : INVISIBLE);
             if (showDelayStartView) {
                 delayedStartContainer.setAlpha(0);
-                delayedStartContainer.animate().alpha(1).withLayer().setDuration(mContext.getResources().getInteger(R.integer.short_animation_duration));
+                delayedStartContainer.animate().withLayer().alpha(1).setDuration(mContext.getResources().getInteger(R.integer.short_animation_duration));
             }
         }
     }

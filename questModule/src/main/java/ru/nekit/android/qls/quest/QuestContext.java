@@ -45,17 +45,19 @@ import ru.nekit.android.qls.utils.Vibrate;
 import static android.content.Intent.ACTION_SCREEN_ON;
 import static android.content.IntentFilter.SYSTEM_HIGH_PRIORITY;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.ANSWERED;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.CREATED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.ATTACHED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.PAUSED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.RESTORED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.SHOWN;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STOPPED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_LEVEL_UP;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_CREATE;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_ATTACH;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESTART;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_SHOW;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_STOP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
@@ -69,6 +71,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     public static final String NAME_SESSION_TIME = "sessionTime";
     public static final String NAME_QUEST_STATE = "quest.quest_state_0";
+
     @NonNull
     private final EventBus mEventBus;
     private Pupil mPupil;
@@ -163,7 +166,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             }
         }
         if (mQuest == null) {
-            mQuest = createQuest();
+            mQuest = makeQuest();
             mQuestSaver.save(mQuest);
             clearQuesState();
         }
@@ -324,22 +327,25 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         Vibrate.make(this, 400);
     }
 
-    public boolean startQuestIfAble() {
-        boolean isStarted = questHasState(STARTED);
-        if (!isStarted) {
-            replaceQuestState(CREATED, STARTED);
-            if (questHasState(STOPPED)) {
-                mEventBus.sendEvent(EVENT_QUEST_RESTART);
-            } else {
-                mEventBus.sendEvent(EVENT_QUEST_START);
+    public boolean startQuest() {
+        boolean screenIsOn = ScreenHost.isScreenOn(this);
+        boolean questIsStarted = questHasState(STARTED);
+        if (screenIsOn) {
+            if (!questIsStarted) {
+                replaceQuestState(ATTACHED, STARTED);
+                if (questHasState(STOPPED)) {
+                    mEventBus.sendEvent(EVENT_QUEST_RESTART);
+                } else {
+                    mEventBus.sendEvent(EVENT_QUEST_START);
+                }
+                destroyTicTac();
+                mStartSessionTime = TimeUtils.getCurrentTime();
+                mTicTacHandler.postDelayed(mTicTacRunnable,
+                        questHasDelayedStart() && CONST.PLAY_ANIMATION_ON_DELAYED_START ?
+                                getQuestDelayedStartAnimationDuration() : 0);
             }
-            destroyTicTac();
-            mStartSessionTime = TimeUtils.getCurrentTime();
-            mTicTacHandler.postDelayed(mTicTacRunnable,
-                    questHasDelayedStart() && CONST.PLAY_ANIMATION_ON_DELAYED_START ?
-                            getQuestDelayedStartAnimationDuration() : 0);
         }
-        return !isStarted;
+        return screenIsOn && !questIsStarted;
     }
 
     public void stopQuest() {
@@ -368,7 +374,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     @NonNull
-    private IQuest createQuest() {
+    private IQuest makeQuest() {
         AppropriateQuestTrainingProgramRuleWrapper ruleWrapper =
                 mQuestTrainingProgram.getAppropriateRuleChanceByStatistics(mPupilStatistics);
         IQuest quest = ruleWrapper.makeQuest(this);
@@ -409,14 +415,19 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         return quest;
     }
 
-    public void createAndStartQuestIfAble() {
+    public void attachQuest() {
         if (mQuest != null) {
-            addQuestState(CREATED);
-            mEventBus.sendEvent(EVENT_QUEST_CREATE);
+            addQuestState(ATTACHED);
+            mEventBus.sendEvent(EVENT_QUEST_ATTACH);
+        }
+    }
+
+    public void showAndStartQuestIfAble() {
+        if (mQuest != null) {
+            addQuestState(SHOWN);
+            mEventBus.sendEvent(EVENT_QUEST_SHOW);
             if (!questHasDelayedStart()) {
-                if (ScreenHost.isScreenOn(this)) {
-                    startQuestIfAble();
-                }
+                startQuest();
             }
         }
     }
@@ -503,7 +514,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         return mQuestTrainingProgram.getCurrentLevel(mPupilStatistics);
     }
 
-    public boolean questHasDelayedStart() {
+    private boolean questHasDelayedStart() {
         AbstractQuestTrainingProgramRule rule = getQTPRule();
         if (rule.getDelayedStart() == -1) {
             QuestTrainingProgramLevel questTrainingProgramLevel = getQTPLevel();
@@ -523,7 +534,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public void onEvent(@NonNull Intent intent) {
         if (mQuest != null) {
             if (!questHasDelayedStart() || questHasState(STOPPED)) {
-                startQuestIfAble();
+                startQuest();
             }
         }
     }
@@ -546,15 +557,16 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus.sendEvent(EVENT_QUEST_RESUME);
     }
 
-    //onInitQuest -> onStartQuest / pause -> answered
+    //create (view builder) -> attach -> show -> start -> [pause -> resume] -> stop
     public enum QuestState {
-        RESTORED,
-        DELAYED_START,
-        CREATED,
+        RESTORED,//mix
+        DELAYED_START,//mix
+        ATTACHED,
+        SHOWN,
         STARTED,
         STOPPED,
         PAUSED,
-        ANSWERED;
+        ANSWERED;//mix
 
         public int value() {
             return (int) Math.pow(2, ordinal());

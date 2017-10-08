@@ -19,7 +19,7 @@ public class CoinsQuestTrainingRule extends HasMemberQuestTrainingProgramRule {
         generator.setAvailableMemberValues(CoinModel.values(), new Callable<CoinModel, Integer>() {
             @Override
             public Integer call(CoinModel value) {
-                return value.nomination;
+                return value.getId();
             }
         });
         generator.setFlags(NumberSummandQuestGenerator.Flag.ONLY_POSITIVE_SUMMANDS);

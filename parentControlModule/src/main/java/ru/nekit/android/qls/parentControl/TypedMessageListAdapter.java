@@ -54,7 +54,7 @@ public class TypedMessageListAdapter extends
             case InternalCommand.NAME:
 
                 InternalCommand internalCommand = (InternalCommand) message.data;
-                if (QuestContextEvent.EVENT_QUEST_CREATE.equals(internalCommand.command)) {
+                if (QuestContextEvent.EVENT_QUEST_ATTACH.equals(internalCommand.command)) {
                     text = "Начат новый квест";
                 } else {
                     text = "Другая операция";

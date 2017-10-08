@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.mediator.types.metrics;
 
 import android.support.annotation.NonNull;
-import android.view.ViewGroup;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.MetricsAlternativeAnswerVariantAdapter;
@@ -14,8 +13,8 @@ public class MetricsQuestAlternativeAnswerMediator extends QuestAlternativeAnswe
     }
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         switch (mQuest.getQuestionType()) {
 
             case COMPARISON:

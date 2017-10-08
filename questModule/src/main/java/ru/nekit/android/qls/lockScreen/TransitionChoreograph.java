@@ -86,7 +86,7 @@ public class TransitionChoreograph {
     }
 
     @Nullable
-    Transition getPreviousTransition() {
+    public Transition getPreviousTransition() {
         return getTransition(NAME_PREVIOUS_TRANSITION);
     }
 

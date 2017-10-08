@@ -2,6 +2,7 @@ package ru.nekit.android.qls.quest.mediator.types.colored;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
+import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,22 +59,22 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
     }
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
+    public void onQuestStart(boolean delayedStart) {
         updateListAdapter(true);
-        super.onStartQuest(delayedStart);
+        super.onQuestStart(delayedStart);
     }
 
     @Override
-    public void onCreateQuest() {
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
         if (mQuestContext.questHasState(DELAYED_START)) {
             updateListAdapter(true);
         }
-        super.onCreateQuest();
+        super.onQuestAttach(rootContentContainer);
     }
 
     @Override
-    public void onRestartQuest() {
-        super.onRestartQuest();
+    public void onQuestRestart() {
+        super.onQuestRestart();
         updateListAdapter(true);
     }
 

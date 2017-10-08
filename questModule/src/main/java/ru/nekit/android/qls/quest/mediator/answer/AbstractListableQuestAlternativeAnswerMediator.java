@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.List;
@@ -24,8 +23,8 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
     private RelativeLayout mListViewContainer;
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mListViewContainer = new RelativeLayout(mQuestContext);
         mListView = new RecyclerView(mQuestContext);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mQuestContext,

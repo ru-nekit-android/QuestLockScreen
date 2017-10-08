@@ -39,21 +39,25 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     @CallSuper
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
+    public void create(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
-        mRootContentContainer = rootContentContainer;
         mQuest = questContext.getQuest();
         mButtonList = new ArrayList<>();
     }
 
     @Override
-    public void onCreateQuest() {
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        mRootContentContainer = rootContentContainer;
+    }
+
+    @Override
+    public void onQuestShow() {
 
     }
 
     @CallSuper
     @Override
-    public void onStartQuest(boolean delayedStart) {
+    public void onQuestStart(boolean delayedStart) {
         if (delayedStart) {
             playDelayedStartAnimation();
         }
@@ -64,31 +68,39 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         if (getView() != null) {
             view = getView();
         }
-        view.setScaleX(0);
-        view.setScaleY(0);
-        view.animate().withLayer().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator())
-                .setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+        if (view != null) {
+            view.setScaleX(0);
+            view.setScaleY(0);
+            final View finalView = view;
+            view.animate().withLayer().withEndAction(new Runnable() {
+                @Override
+                public void run() {
+                    finalView.setLayerType(View.LAYER_TYPE_NONE, null);
+                }
+            }).scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator())
+                    .setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+        }
     }
 
     @Override
-    public void onPauseQuest() {
+    public void onQuestPause() {
 
     }
 
     @Override
-    public void onResumeQuest() {
+    public void onQuestResume() {
 
     }
 
     @CallSuper
     @Override
-    public void onRestartQuest() {
+    public void onQuestRestart() {
 
     }
 
     @CallSuper
     @Override
-    public void onStopQuest() {
+    public void onQuestStop() {
 
     }
 

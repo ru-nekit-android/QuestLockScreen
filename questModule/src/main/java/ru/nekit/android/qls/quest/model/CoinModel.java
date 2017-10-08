@@ -22,13 +22,8 @@ public enum CoinModel {
     }
 
     @Nullable
-    public static CoinModel getByNomination(int value) {
-        for (CoinModel coinModel : values()) {
-            if (value == coinModel.nomination) {
-                return coinModel;
-            }
-        }
-        return null;
+    public static CoinModel getById(int id) {
+        return values()[id];
     }
 
     public static int getMaxRelativeSizeValue() {
@@ -37,5 +32,9 @@ public enum CoinModel {
             maxRelativeSizeValue = Math.max(coinModel.relativeSizeValue, maxRelativeSizeValue);
         }
         return maxRelativeSizeValue;
+    }
+
+    public int getId() {
+        return ordinal();
     }
 }

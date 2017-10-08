@@ -2,7 +2,6 @@ package ru.nekit.android.qls.quest;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.ViewSwitcher;
 
 import ru.nekit.android.qls.quest.answer.CoinQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.GroupWeightComparisonQuestAnswerChecker;
@@ -42,7 +41,7 @@ public class QuestVisualBuilder {
         mQuestContext = questContext;
     }
 
-    public void create(@NonNull ViewSwitcher contentContainer) {
+    public void create() {
         IQuest quest = mQuestContext.getQuest();
         switch (quest.getQuestType()) {
 
@@ -184,7 +183,7 @@ public class QuestVisualBuilder {
                 break;
 
         }
-        mQuestMediatorFacade.activate(mQuestContext, contentContainer);
+        mQuestMediatorFacade.create(mQuestContext);
     }
 
     public View getView() {
@@ -198,4 +197,5 @@ public class QuestVisualBuilder {
     public void detachView() {
         mQuestMediatorFacade.detachView();
     }
+
 }

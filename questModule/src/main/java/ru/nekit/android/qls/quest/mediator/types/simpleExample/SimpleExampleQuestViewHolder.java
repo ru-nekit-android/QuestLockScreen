@@ -9,9 +9,6 @@ import android.widget.TextView;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-/**
- * Created by nekit on 17.01.17.
- */
 public class SimpleExampleQuestViewHolder extends ViewHolder {
 
     public EditText alternativeAnswerInput;

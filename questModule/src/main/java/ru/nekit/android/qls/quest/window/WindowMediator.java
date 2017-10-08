@@ -58,7 +58,7 @@ abstract class WindowMediator implements Window.WindowListener {
     }
 
     @Override
-    final public void onWindowClosed(@NonNull Window window, boolean internal) {
+    final public void onWindowClosed(@NonNull Window window) {
         mWindowContentViewHolder.getView().removeOnAttachStateChangeListener(onAttachStateChangeListener);
         destroy();
     }
@@ -68,11 +68,9 @@ abstract class WindowMediator implements Window.WindowListener {
     }
 
     @Override
-    public void onWindowClose(@NonNull Window window, boolean internal) {
+    public void onWindowClose(@NonNull Window window) {
     }
 
     protected void destroy() {
-
     }
-
 }

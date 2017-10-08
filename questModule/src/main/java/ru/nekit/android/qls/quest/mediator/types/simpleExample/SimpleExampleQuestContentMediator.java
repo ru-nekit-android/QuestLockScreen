@@ -2,7 +2,6 @@ package ru.nekit.android.qls.quest.mediator.types.simpleExample;
 
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 
 import ru.nekit.android.qls.quest.QuestContext;
@@ -22,8 +21,8 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void activate(@NonNull QuestContext questContext, @NonNull ViewGroup rootContentContainer) {
-        super.activate(questContext, rootContentContainer);
+    public void create(@NonNull QuestContext questContext) {
+        super.create(questContext);
         mViewHolder = new SimpleExampleQuestViewHolder(mQuestContext);
         IQuestTextContentFormatter formatter = createFormatter();
         String[] questStringList = formatter.format(mQuestContext, mQuest);
@@ -65,8 +64,8 @@ public class SimpleExampleQuestContentMediator extends AbstractQuestContentMedia
     }
 
     @Override
-    public void onStartQuest(boolean delayedStart) {
-        super.onStartQuest(delayedStart);
+    public void onQuestStart(boolean delayedStart) {
+        super.onQuestStart(delayedStart);
     }
 
     @Override
