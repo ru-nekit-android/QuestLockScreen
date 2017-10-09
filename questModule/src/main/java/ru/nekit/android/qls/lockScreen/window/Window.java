@@ -14,10 +14,10 @@ import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnticipateOvershootInterpolator;
 
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.nekit.android.qls.R;
@@ -40,7 +40,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
     @NonNull
-    private final QuestContext mContext;
+    private final QuestContext mQuestContext;
     @NonNull
     private final WindowManager mWindowManager;
     private StyleParameters mStyleParameters;
@@ -51,13 +51,13 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     @Nullable
     private WindowListener mWindowListener;
     private boolean mIsOpen;
-    private WindowManager.LayoutParams layoutParams;
+    private LayoutParams layoutParams;
     @Nullable
     private String mName;
 
     public Window(@NonNull QuestContext context) {
-        mContext = context;
-        mWindowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        mQuestContext = context;
+        mWindowManager = (WindowManager) mQuestContext.getSystemService(Context.WINDOW_SERVICE);
     }
 
     public Window(@NonNull QuestContext context, @NonNull WindowContentViewHolder content,
@@ -67,19 +67,10 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         mStyleResId = styleResId;
     }
 
-    @NonNull
-    public static List<Window> getWindowStack() {
-        return windowStack;
-    }
-
     public static void closeAllWindows() {
         for (Window window : windowStack) {
             window.close(null);
         }
-    }
-
-    public void open(@NonNull WindowContentViewHolder content, @StyleRes int styleResId) {
-        this.open(null, content, styleResId);
     }
 
     public void open(@Nullable String name, @NonNull WindowContentViewHolder content,
@@ -134,8 +125,8 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
 
     public void open() {
         if (!mIsOpen) {
-            mViewHolder = new WindowViewHolder(mContext);
-            mStyleParameters = new StyleParameters(mContext, mStyleResId);
+            mViewHolder = new WindowViewHolder(mQuestContext);
+            mStyleParameters = new StyleParameters(mQuestContext, mStyleResId);
             mContent.getCloseButton().setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -148,7 +139,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                             @Override
                             public void onViewAttachedToWindow(View view) {
                                 view.removeOnAttachStateChangeListener(this);
-                                final Animator revealAnimator = RevealAnimator.getRevealAnimator(mContext,
+                                final Animator revealAnimator = RevealAnimator.getRevealAnimator(mQuestContext,
                                         view,
                                         mStyleParameters.openPosition,
                                         new AccelerateInterpolator(),
@@ -167,7 +158,6 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                                         if (mWindowListener != null) {
                                             mWindowListener.onWindowOpened(Window.this);
                                         }
-                                        //revealAnimator.removeListener(this);
                                         revealAnimator.removeAllListeners();
                                         sendEvent(EVENT_WINDOW_OPENED);
                                     }
@@ -201,12 +191,12 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         }
     }
 
-    private WindowManager.LayoutParams getLayoutParams() {
-        layoutParams = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_ERROR,
-                WindowManager.LayoutParams.FLAG_DIM_BEHIND
+    private LayoutParams getLayoutParams() {
+        layoutParams = new LayoutParams(
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.TYPE_SYSTEM_ERROR,
+                LayoutParams.FLAG_DIM_BEHIND
                 , PixelFormat.TRANSLUCENT);
         layoutParams.dimAmount = mStyleParameters.dimAmount;
         layoutParams.gravity = Gravity.LEFT;
@@ -221,7 +211,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
             }
             sendEvent(EVENT_WINDOW_CLOSE);
             if (closePosition != null) {
-                Animator animator = RevealAnimator.getRevealAnimator(mContext,
+                Animator animator = RevealAnimator.getRevealAnimator(mQuestContext,
                         mViewHolder.contentContainer,
                         closePosition,
                         new AnticipateOvershootInterpolator(),
@@ -258,7 +248,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
     private void sendEvent(String eventName) {
-        mContext.getEventBus().sendEvent(eventName, VALUE_WINDOW_NAME, mName);
+        mQuestContext.getEventBus().sendEvent(eventName, VALUE_WINDOW_NAME, mName);
     }
 
     private void destroy() {
@@ -293,7 +283,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
         int[] position = new int[2];
         view.getLocationOnScreen(position);
         if (position[1] < getStatusBarHeight()) {
-            Point screenSize = ScreenHost.getScreenSize(mContext);
+            Point screenSize = ScreenHost.getScreenSize(mQuestContext);
             layoutParams.height = screenSize.y - getStatusBarHeight();
             layoutParams.y = getStatusBarHeight();
             mWindowManager.updateViewLayout(mViewHolder.getView(), layoutParams);
@@ -301,7 +291,7 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
     private int getStatusBarHeight() {
-        return mContext.getResources().getDimensionPixelSize(R.dimen.status_bar_height);
+        return mQuestContext.getResources().getDimensionPixelSize(R.dimen.status_bar_height);
     }
 
     public interface WindowListener {

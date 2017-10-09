@@ -6,14 +6,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public abstract class AbstractQuestContentMediator implements IQuestContentMediator {
 
     protected QuestContext mQuestContext;
     protected ViewGroup mRootContentContainer;
-    protected IQuest mQuest;
+    protected Quest mQuest;
 
     @Override
     public void detachView() {

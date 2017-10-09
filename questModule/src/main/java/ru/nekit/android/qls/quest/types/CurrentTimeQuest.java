@@ -4,9 +4,9 @@ import android.support.annotation.NonNull;
 
 import java.util.Calendar;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.utils.MathUtils;
 import ru.nekit.android.qls.utils.TimeUtils;
 
@@ -14,7 +14,7 @@ public class CurrentTimeQuest extends TimeQuest {
 
     private long timeStamp;
 
-    public CurrentTimeQuest(@NonNull IQuest quest) {
+    public CurrentTimeQuest(@NonNull Quest quest) {
         super(quest);
         setQuestType(QuestType.CURRENT_TIME);
         setQuestionType(QuestionType.UNKNOWN_MEMBER);
@@ -44,7 +44,7 @@ public class CurrentTimeQuest extends TimeQuest {
     }
 
     @Override
-    public Object getAnswer() {
+    public Integer getAnswer() {
         return unknownMemberIndex;
     }
 }

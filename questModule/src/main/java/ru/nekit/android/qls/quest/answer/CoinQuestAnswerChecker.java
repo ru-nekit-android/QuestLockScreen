@@ -2,21 +2,21 @@ package ru.nekit.android.qls.quest.answer;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class CoinQuestAnswerChecker extends QuestAnswerChecker<CoinModel> {
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull CoinModel answer) {
-
-        switch (quest.getQuestionType()) {
+    public boolean checkAlternativeInput(@NonNull Quest inQuest, @NonNull CoinModel answer) {
+        NumberSummandQuest quest = (NumberSummandQuest) inQuest;
+        switch (inQuest.getQuestionType()) {
 
             case UNKNOWN_MEMBER:
 
-                return CoinModel.getById((int) quest.getAnswer()).nomination == answer.nomination;
+                return CoinModel.getById(quest.getAnswer()).nomination == answer.nomination;
 
             default:
 
@@ -25,7 +25,7 @@ public class CoinQuestAnswerChecker extends QuestAnswerChecker<CoinModel> {
     }
 
     @Override
-    public boolean checkStringInput(@NonNull IQuest inQuest, @NonNull String value) {
+    public boolean checkStringInput(@NonNull Quest inQuest, @NonNull String value) {
         NumberSummandQuest quest = (NumberSummandQuest) inQuest;
         int answer = 0;
         for (int i = 0; i < quest.leftNode.length; i++) {

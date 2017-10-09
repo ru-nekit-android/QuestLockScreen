@@ -1,7 +1,7 @@
 package ru.nekit.android.qls.quest.types;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public class MetricsQuest extends NumberSummandQuest {
 
@@ -13,7 +13,7 @@ public class MetricsQuest extends NumberSummandQuest {
         setQuestionType(type);
     }
 
-    public static IQuest convert(IQuest quest) {
+    public static Quest convert(Quest quest) {
         NumberSummandQuest inQuest = (NumberSummandQuest) quest;
         if (quest.getQuestionType() == QuestionType.SOLUTION) {
             avoidSimpleSolution(inQuest.leftNode);

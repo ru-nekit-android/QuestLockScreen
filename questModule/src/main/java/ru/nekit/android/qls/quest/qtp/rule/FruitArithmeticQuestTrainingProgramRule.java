@@ -9,9 +9,9 @@ import com.google.gson.JsonObject;
 import java.util.Collections;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator.Flag;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
@@ -37,11 +37,11 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
                 }
             };
 
-    public static final int VALUE_DEFAULT_ANSWER_VARIANTS = 4;
-    public static final int VALUE_DEFAULT_MEMBER_COUNT = 2;
+    private static final int VALUE_DEFAULT_ANSWER_VARIANTS = 4;
+    private static final int VALUE_DEFAULT_MEMBER_COUNT = 2;
 
-    public static final int VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON = 2;
-    public static final int VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON = 4;
+    private static final int VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON = 2;
+    private static final int VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON = 4;
 
     private int memberCount;
     private int answerVariants;
@@ -99,8 +99,8 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
     }
 
     @Override
-    public IQuest makeQuest(@NonNull final QuestContext questContext,
-                            @NonNull QuestionType questionType) {
+    public Quest makeQuest(@NonNull final QuestContext questContext,
+                           @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         if (questionType == QuestionType.SOLUTION) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT, memberCount);

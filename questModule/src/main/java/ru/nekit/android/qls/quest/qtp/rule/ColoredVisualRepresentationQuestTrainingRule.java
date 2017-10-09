@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
@@ -22,8 +22,8 @@ public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuest
     private static final int VALUE_DEFAULT_MEMBER_COUNT = 2;
 
     @Override
-    public IQuest makeQuest(@NonNull QuestContext questContext,
-                            @NonNull QuestionType questionType) {
+    public Quest makeQuest(@NonNull QuestContext questContext,
+                           @NonNull QuestionType questionType) {
         //TODO: exclude default colors
         ColorModel[] allColors = ColorModel.values();
         memberCount = Math.min(Math.max(memberCount, VALUE_DEFAULT_MEMBER_COUNT), allColors.length);

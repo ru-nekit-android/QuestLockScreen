@@ -8,9 +8,9 @@ import android.support.annotation.StringRes;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.types.TextQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -56,7 +56,7 @@ public class TextQuestGenerator implements IQuestGenerator {
     }
 
     @Override
-    public IQuest generate() {
+    public Quest generate() {
         if (mType == Type.TEXT_CAMOUFLAGE) {
             List<String> wordList = mQuestContext.getQuestResourceLibrary().getWordList(mWordLength);
             String answer = DEFAULT_TEXT_CAMOUFLAGE_WORD;

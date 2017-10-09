@@ -6,15 +6,13 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 
 public class PerimeterQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
-
-    public static final int PERIMETER_SQUARE_FIGURE_CHANCE = 25;
 
     public static final Creator<PerimeterQuestTrainingProgramRule> CREATOR =
             new Creator<PerimeterQuestTrainingProgramRule>() {
@@ -28,6 +26,7 @@ public class PerimeterQuestTrainingProgramRule extends AbstractQuestTrainingProg
                     return new PerimeterQuestTrainingProgramRule[size];
                 }
             };
+    private static final int PERIMETER_SQUARE_FIGURE_CHANCE = 25;
     private int[][] memberMinAndMaxValues;
 
     public PerimeterQuestTrainingProgramRule() {
@@ -59,8 +58,8 @@ public class PerimeterQuestTrainingProgramRule extends AbstractQuestTrainingProg
     }
 
     @Override
-    public IQuest makeQuest(@NonNull QuestContext questContext,
-                            @NonNull QuestionType questionType) {
+    public Quest makeQuest(@NonNull QuestContext questContext,
+                           @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(2, 1);
         generator.setFlags(NumberSummandQuestGenerator.Flag.ONLY_POSITIVE_SUMMANDS);

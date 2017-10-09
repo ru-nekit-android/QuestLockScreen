@@ -20,6 +20,7 @@ import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.mediator.IQuestMediator;
 import ru.nekit.android.qls.quest.mediator.answer.IQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator;
@@ -49,15 +50,13 @@ import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_STOP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_WRONG_ANSWER;
-import static ru.nekit.android.qls.utils.KeyboardHost.hideKeyboard;
-import static ru.nekit.android.qls.utils.KeyboardHost.showKeyboard;
 
 public class QuestMediatorFacade implements View.OnClickListener, IQuestMediatorFacade,
         EventBus.IEventHandler,
         View.OnLayoutChangeListener {
 
     private QuestContext mQuestContext;
-    private IQuest mQuest;
+    private Quest mQuest;
     private QuestViewHolder mViewHolder;
     @NonNull
     private IQuestTitleMediator mTitleMediator;
@@ -258,31 +257,19 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
         showRightAnswerWindow = showRightAnswerWindow && mContentMediator.onRightAnswer();
         showRightAnswerWindow = showRightAnswerWindow && mAlternativeAnswerMediator.onRightAnswer();
         if (showRightAnswerWindow) {
-            KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.answerInput, new Runnable() {
-                @Override
-                public void run() {
-                    new RightAnswerWindow.Builder(mQuestContext).
-                            setContent(R.layout.wc_right_answer).
-                            setStyle(R.style.Window_RightAnswer).
-                            open();
-                }
-            });
+            new RightAnswerWindow.Builder(mQuestContext).
+                    setContent(R.layout.wc_right_answer).
+                    setStyle(R.style.Window_RightAnswer).
+                    open();
         }
         return showRightAnswerWindow;
     }
 
     @Override
     public void onWrongAnswer() {
-        KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
-            @Override
-            public void run() {
-                Window wrongAnswerWindow = new Window(mQuestContext,
-                        new WrongAnswerWindowContentViewHolder(mQuestContext),
-                        R.style.Window_WrongAnswer);
-                wrongAnswerWindow.open();
-
-            }
-        });
+        new Window(mQuestContext,
+                new WrongAnswerWindowContentViewHolder(mQuestContext),
+                R.style.Window_WrongAnswer).open();
         mTitleMediator.onWrongAnswer();
         mContentMediator.onWrongAnswer();
         mAlternativeAnswerMediator.onWrongAnswer();
@@ -298,9 +285,6 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
 
     @Override
     public void onQuestPause() {
-        //requestFocus();
-        //mViewHolder.answerInput.clearFocus();
-        //hideKeyboard(mQuestContext, mViewHolder.rootContainer, null);
         mTitleMediator.onQuestPause();
         mContentMediator.onQuestPause();
         mAlternativeAnswerMediator.onQuestPause();
@@ -308,10 +292,10 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
 
     @Override
     public void onQuestResume() {
-        requestFocus();
         mTitleMediator.onQuestResume();
         mContentMediator.onQuestResume();
         mAlternativeAnswerMediator.onQuestResume();
+        requestFocus();
     }
 
     @Override
@@ -401,20 +385,20 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
 
     private void requestFocus() {
         if (questDelayedStart() && !mQuestContext.questHasState(STARTED)) {
-            hideKeyboard(mQuestContext, mViewHolder.answerInput, null);
+            KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.answerInput, null);
         } else {
             if (alternativeAnswerButtonIsPresent()) {
-                hideKeyboard(mQuestContext, mViewHolder.answerInput);
+                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.answerInput);
             }
             if (mContentMediator.getAnswerInput() == null) {
                 if (mViewHolder.answerInput.getVisibility() == VISIBLE) {
-                    showKeyboard(mQuestContext, mViewHolder.answerInput);
+                    KeyboardHost.showKeyboard(mQuestContext, mViewHolder.answerInput);
                 } else {
-                    hideKeyboard(mQuestContext, mViewHolder.answerInput);
+                    KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.answerInput);
                 }
             } else {
                 if (mContentMediator.getAnswerInput().getVisibility() == VISIBLE) {
-                    showKeyboard(mQuestContext, mContentMediator.getAnswerInput());
+                    KeyboardHost.showKeyboard(mQuestContext, mContentMediator.getAnswerInput());
                 }
             }
         }

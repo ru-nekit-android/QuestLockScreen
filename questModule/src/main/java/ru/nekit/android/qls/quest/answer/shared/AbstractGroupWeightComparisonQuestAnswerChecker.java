@@ -6,16 +6,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public abstract class AbstractGroupWeightComparisonQuestAnswerChecker<T>
         implements IAnswerChecker<T> {
 
-    protected abstract List<T> getGroupList(@NonNull IQuest quest);
+    protected abstract List<T> getGroupList(@NonNull Quest quest);
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull T answer) {
+    public boolean checkAlternativeInput(@NonNull Quest quest, @NonNull T answer) {
         IGroupWeightComparisonQuest inQuest = (IGroupWeightComparisonQuest) quest;
         HashMap<T, Integer> map = new HashMap<>();
         List<T> groupList = getGroupList(quest);
@@ -37,12 +37,12 @@ public abstract class AbstractGroupWeightComparisonQuestAnswerChecker<T>
     }
 
     @Override
-    public boolean checkStringInputFormat(@NonNull IQuest quest, @NonNull String value) {
+    public boolean checkStringInputFormat(@NonNull Quest quest, @NonNull String value) {
         return false;
     }
 
     @Override
-    public boolean checkStringInput(@NonNull IQuest quest, @NonNull String value) {
+    public boolean checkStringInput(@NonNull Quest quest, @NonNull String value) {
         return false;
     }
 

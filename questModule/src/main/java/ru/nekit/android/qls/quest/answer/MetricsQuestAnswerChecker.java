@@ -2,8 +2,8 @@ package ru.nekit.android.qls.quest.answer;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
@@ -11,7 +11,7 @@ import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 public class MetricsQuestAnswerChecker extends QuestAnswerChecker<MathematicalSignComparison> {
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest,
+    public boolean checkAlternativeInput(@NonNull Quest quest,
                                          @NonNull MathematicalSignComparison answer) {
         NumberSummandQuest numberSummandQuest = (NumberSummandQuest) quest;
         switch (quest.getQuestionType()) {
@@ -46,7 +46,7 @@ public class MetricsQuestAnswerChecker extends QuestAnswerChecker<MathematicalSi
     }
 
     @Override
-    public boolean checkStringInput(@NonNull IQuest quest, @NonNull String value) {
+    public boolean checkStringInput(@NonNull Quest quest, @NonNull String value) {
         NumberSummandQuest numberSummandQuest = (NumberSummandQuest) quest;
         switch (quest.getQuestionType()) {
             case SOLUTION:

@@ -12,17 +12,17 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.shared.IAlternativeAnswerVariantAdapter;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerCallback;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerChecker;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         IQuestAlternativeAnswerMediator {
 
     protected QuestContext mQuestContext;
-    protected IQuest mQuest;
+    protected Quest mQuest;
     protected ViewGroup mRootContentContainer;
     protected List<View> mButtonList;
     private IAnswerChecker mAnswerChecker;
@@ -63,7 +63,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
         }
     }
 
-    protected void playDelayedStartAnimation() {
+    private void playDelayedStartAnimation() {
         View view = mRootContentContainer;
         if (getView() != null) {
             view = getView();

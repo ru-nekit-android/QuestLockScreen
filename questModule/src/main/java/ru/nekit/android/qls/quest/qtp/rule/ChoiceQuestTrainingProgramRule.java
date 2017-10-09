@@ -10,10 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
@@ -97,8 +97,8 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     }
 
     @Override
-    public IQuest makeQuest(@NonNull QuestContext questContext,
-                            @NonNull QuestionType questionType) {
+    public Quest makeQuest(@NonNull QuestContext questContext,
+                           @NonNull QuestionType questionType) {
         List<Integer> questVisualRepresentationList =
                 getQuestVisualRepresentationList(questContext.getQuestResourceLibrary());
         NumberSummandQuest quest = new NumberSummandQuest();

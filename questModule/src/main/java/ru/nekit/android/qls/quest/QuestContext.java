@@ -21,6 +21,7 @@ import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.pupil.PupilManager;
 import ru.nekit.android.qls.quest.answer.shared.IAnswerCallback;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.history.QuestHistoryItem;
 import ru.nekit.android.qls.quest.persistance.QuestSaver;
 import ru.nekit.android.qls.quest.persistance.QuestStatisticsSaver;
@@ -75,7 +76,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     @NonNull
     private final EventBus mEventBus;
     private Pupil mPupil;
-    private IQuest mQuest;
+    private Quest mQuest;
     private QuestSaver mQuestSaver;
     private QuestTrainingProgram mQuestTrainingProgram;
     private QuestStatisticsSaver mQuestStatisticsSaver;
@@ -116,7 +117,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         //mQuestSaver.reset();
     }
 
-    //AbstractQuest state functional
+    //Quest state functional
     private void setQuestState(int stateValue) {
         PreferencesUtil.setInt(NAME_QUEST_STATE, stateValue);
     }
@@ -148,7 +149,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     @NonNull
-    public IQuest getQuest() {
+    public Quest getQuest() {
         //try to restore if mQuest == null
         if (mQuest == null && mQuestSaver.hasSavedState()) {
             //restore - @Nullable mQuest
@@ -374,10 +375,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     }
 
     @NonNull
-    private IQuest makeQuest() {
+    private Quest makeQuest() {
         AppropriateQuestTrainingProgramRuleWrapper ruleWrapper =
                 mQuestTrainingProgram.getAppropriateRuleChanceByStatistics(mPupilStatistics);
-        IQuest quest = ruleWrapper.makeQuest(this);
+        Quest quest = ruleWrapper.makeQuest(this);
         quest.setQuestType(ruleWrapper.questType);
         switch (quest.getQuestType()) {
 

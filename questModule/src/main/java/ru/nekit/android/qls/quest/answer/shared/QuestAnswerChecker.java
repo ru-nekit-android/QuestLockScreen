@@ -2,17 +2,17 @@ package ru.nekit.android.qls.quest.answer.shared;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public class QuestAnswerChecker<T> implements IAnswerChecker<T> {
 
     @Override
-    public boolean checkAlternativeInput(@NonNull IQuest quest, @NonNull T answer) {
+    public boolean checkAlternativeInput(@NonNull Quest quest, @NonNull T answer) {
         return quest.getAnswer().equals(answer);
     }
 
     @Override
-    public boolean checkStringInputFormat(@NonNull IQuest quest, @NonNull String value) {
+    public boolean checkStringInputFormat(@NonNull Quest quest, @NonNull String value) {
         boolean result = false;
         Class answerClass = quest.getAnswerClass();
         if (answerClass == Integer.class) {
@@ -36,7 +36,7 @@ public class QuestAnswerChecker<T> implements IAnswerChecker<T> {
     }
 
     @Override
-    public boolean checkStringInput(@NonNull IQuest quest, @NonNull String value) {
+    public boolean checkStringInput(@NonNull Quest quest, @NonNull String value) {
         boolean result = false;
         Class answerClass = quest.getAnswerClass();
         if (answerClass == Integer.class) {

@@ -6,9 +6,9 @@ import android.support.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_COUNT;
 
@@ -46,7 +46,7 @@ public class HasMemberQuestTrainingProgramRule extends AbstractQuestTrainingProg
     }
 
     @Override
-    public IQuest makeQuest(@NonNull QuestContext context, @NonNull QuestionType questionType) {
+    public Quest makeQuest(@NonNull QuestContext context, @NonNull QuestionType questionType) {
         return null;
     }
 

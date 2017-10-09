@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
@@ -37,7 +37,7 @@ public class MetricsQuestContentFormatter implements IQuestTextContentFormatter 
         return stringList;
     }
 
-    public String[] format(@NonNull Context context, @NonNull IQuest quest) {
+    public String[] format(@NonNull Context context, @NonNull Quest quest) {
         mContext = context;
         NumberSummandQuest numberSummandQuest = (NumberSummandQuest) quest;
         missingCharacter = context.getString(R.string.missed_character);

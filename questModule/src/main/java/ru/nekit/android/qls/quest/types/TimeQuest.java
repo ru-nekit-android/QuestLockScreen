@@ -2,17 +2,17 @@ package ru.nekit.android.qls.quest.types;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class TimeQuest extends NumberSummandQuest implements IGroupWeightComparisonQuest {
 
     private int groupComparisonType;
 
-    public TimeQuest(@NonNull IQuest quest) {
+    public TimeQuest(@NonNull Quest quest) {
         setQuestType(QuestType.TIME);
         setQuestionType(quest.getQuestionType());
         NumberSummandQuest inQuest = (NumberSummandQuest) quest;
@@ -72,7 +72,7 @@ public class TimeQuest extends NumberSummandQuest implements IGroupWeightCompari
     }
 
     @Override
-    public Object getAnswer() {
+    public Integer getAnswer() {
         if (getQuestionType() == QuestionType.COMPARISON) {
             boolean isMax = getGroupComparisonType() == MAX_GROUP_WEIGHT;
             int answer = isMax ? 0 : Integer.MAX_VALUE;

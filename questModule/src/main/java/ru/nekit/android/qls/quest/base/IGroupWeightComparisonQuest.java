@@ -1,8 +1,6 @@
 package ru.nekit.android.qls.quest.base;
 
-import ru.nekit.android.qls.quest.IQuest;
-
-public interface IGroupWeightComparisonQuest extends IQuest {
+public interface IGroupWeightComparisonQuest {
 
     int MIN_GROUP_WEIGHT = 0;
     int MAX_GROUP_WEIGHT = 1;

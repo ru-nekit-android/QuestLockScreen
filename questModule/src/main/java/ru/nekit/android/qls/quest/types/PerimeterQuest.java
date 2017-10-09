@@ -4,12 +4,12 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestType;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public class PerimeterQuest extends NumberSummandQuest {
 
-    public PerimeterQuest(@NonNull IQuest quest) {
+    public PerimeterQuest(@NonNull Quest quest) {
         setQuestType(QuestType.PERIMETER);
         setQuestionType(quest.getQuestionType());
         NumberSummandQuest inQuest = (NumberSummandQuest) quest;
@@ -48,7 +48,7 @@ public class PerimeterQuest extends NumberSummandQuest {
     }
 
     @Override
-    public Object getAnswer() {
+    public Integer getAnswer() {
         switch (getQuestionType()) {
 
             case SOLUTION:

@@ -1,9 +1,9 @@
 package ru.nekit.android.qls.quest.generator;
 
-import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 
 public interface IQuestGenerator {
 
-    IQuest generate();
+    Quest generate();
 
 }

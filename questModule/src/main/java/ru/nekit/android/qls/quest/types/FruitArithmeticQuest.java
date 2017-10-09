@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
@@ -25,7 +25,7 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
     private int groupComparisonType;
 
     public FruitArithmeticQuest(@NonNull QuestContext questContext,
-                                @NonNull IQuest inQuest,
+                                @NonNull Quest inQuest,
                                 @NonNull AbstractQuestTrainingProgramRule inRule) {
         QuestResourceLibrary questResourceLibrary = questContext.getQuestResourceLibrary();
         QuestionType questionType = inQuest.getQuestionType();
@@ -57,7 +57,7 @@ public class FruitArithmeticQuest extends VisualRepresentationalNumberSummandQue
                 }
             }
             mVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(SimpleQuestVisualResource.EQUAL));
-            int answer = outQuest.getTypedAnswer();
+            int answer = outQuest.getAnswer();
             List<Integer> availableVariantList = new ArrayList<>();
             int leftShift = MathUtils.randUnsignedInt(Math.min(
                     outRule.getAnswerVariants() - 1, answer));

@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 
 import ru.nekit.android.qls.PreferencesUtil;
 import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
@@ -23,7 +23,7 @@ import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest
 import ru.nekit.android.qls.utils.AbstractStateSaver;
 import ru.nekit.android.qls.utils.RuntimeTypeAdapterFactory;
 
-public class QuestSaver extends AbstractStateSaver<IQuest> {
+public class QuestSaver extends AbstractStateSaver<Quest> {
 
     private final String CLASS_NAME_META = "@class";
     private final String VALUE = "value";
@@ -35,9 +35,9 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
     public QuestSaver() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         mGsonAvailableVariants = new GsonBuilder().create();
-        final RuntimeTypeAdapterFactory<IQuest> typeFactory = RuntimeTypeAdapterFactory
-                .of(IQuest.class, CLASS_NAME_META);
-        for (Class<? extends IQuest> classItem : getSupportsClasses()) {
+        final RuntimeTypeAdapterFactory<Quest> typeFactory = RuntimeTypeAdapterFactory
+                .of(Quest.class, CLASS_NAME_META);
+        for (Class<? extends Quest> classItem : getSupportsClasses()) {
             typeFactory.registerSubtype(classItem, classItem.getName());
         }
         gsonBuilder.registerTypeAdapterFactory(typeFactory);
@@ -56,7 +56,7 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
     }
 
     @SuppressWarnings("unchecked")
-    private Class<? extends IQuest>[] getSupportsClasses() {
+    private Class<? extends Quest>[] getSupportsClasses() {
         return new Class[]{
                 NumberSummandQuest.class,
                 PerimeterQuest.class,
@@ -69,8 +69,8 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
         };
     }
 
-    public void save(@NonNull IQuest quest) {
-        JsonObject jsonObjectResult = (JsonObject) mGson.toJsonTree(quest, IQuest.class);
+    public void save(@NonNull Quest quest) {
+        JsonObject jsonObjectResult = (JsonObject) mGson.toJsonTree(quest, Quest.class);
         JsonArray jsonArrayAvailableVariants = new JsonArray();
         Object[] availableVariants = quest.getAvailableAnswerVariants();
         if (availableVariants != null) {
@@ -85,9 +85,9 @@ public class QuestSaver extends AbstractStateSaver<IQuest> {
         saveString(jsonObjectResult.toString());
     }
 
-    public IQuest restore() {
+    public Quest restore() {
         JsonObject jsonObjectQuest = mParser.parse(restoreString()).getAsJsonObject();
-        IQuest quest = mGson.fromJson(jsonObjectQuest, IQuest.class);
+        Quest quest = mGson.fromJson(jsonObjectQuest, Quest.class);
         JsonArray jsonArrayAvailableVariants =
                 (JsonArray) jsonObjectQuest.get(QUEST_AVAILABLE_VARIANTS);
         Object[] availableVariants = new Object[jsonArrayAvailableVariants.size()];

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.IQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
@@ -34,7 +34,7 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
         return String.valueOf(Math.abs(value));
     }
 
-    public String[] format(@NonNull Context context, @NonNull IQuest quest) {
+    public String[] format(@NonNull Context context, @NonNull Quest quest) {
         NumberSummandQuest numberSummandQuest = (NumberSummandQuest) quest;
         missingCharacter = context.getString(R.string.missed_character);
         String joinCharacter = context.getString(R.string.join_character);

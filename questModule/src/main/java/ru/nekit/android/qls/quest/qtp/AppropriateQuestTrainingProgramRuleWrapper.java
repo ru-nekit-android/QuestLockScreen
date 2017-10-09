@@ -2,10 +2,10 @@ package ru.nekit.android.qls.quest.qtp;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
 
 public class AppropriateQuestTrainingProgramRuleWrapper {
@@ -31,7 +31,7 @@ public class AppropriateQuestTrainingProgramRuleWrapper {
         this.chanceValue = startPriority * BASE_CHANCE;
     }
 
-    public IQuest makeQuest(@NonNull QuestContext context) {
+    public Quest makeQuest(@NonNull QuestContext context) {
         return qtpRule.makeQuest(context, questionType);
     }
 

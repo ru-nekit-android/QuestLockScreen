@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
@@ -222,7 +222,7 @@ public class NumberSummandQuestGenerator implements IQuestGenerator {
     }
 
     @Override
-    public IQuest generate() {
+    public Quest generate() {
         if (mAvailableValueArray == null) {
             generateArrayRandomValuesInRange(mQuest, LEFT_NODE_INDEX);
             switch (mQuest.getQuestionType()) {

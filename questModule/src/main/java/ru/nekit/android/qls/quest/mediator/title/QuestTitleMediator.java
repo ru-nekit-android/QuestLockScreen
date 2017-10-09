@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.IQuest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
@@ -28,7 +28,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
     protected QuestContext mQuestContext;
     protected ViewGroup mRootContentContainer;
-    protected IQuest mQuest;
+    protected Quest mQuest;
     private QuestTitleViewHolder mViewHolder;
     private String mTitleText;
 

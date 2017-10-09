@@ -5,12 +5,12 @@ import android.text.InputType;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.base.AbstractQuest;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.utils.MathUtils;
 
-public class NumberSummandQuest extends AbstractQuest {
+public class NumberSummandQuest extends Quest<Integer> {
 
     /*
                      /(<,=,>)\
@@ -48,7 +48,7 @@ public class NumberSummandQuest extends AbstractQuest {
     }
 
     @Override
-    public Object getAnswer() {
+    public Integer getAnswer() {
         int solution = 0;
         switch (getQuestionType()) {
             case SOLUTION:
@@ -73,10 +73,6 @@ public class NumberSummandQuest extends AbstractQuest {
             list.add(item);
         }
         return list;
-    }
-
-    public int getTypedAnswer() {
-        return (int) getAnswer();
     }
 
     @Override

@@ -9,6 +9,7 @@ import ru.nekit.android.qls.quest.answer.MetricsQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.SimpleExampleAnswerChecker;
 import ru.nekit.android.qls.quest.answer.TrafficLightQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.title.QuestTitleMediator;
 import ru.nekit.android.qls.quest.mediator.types.choice.ChoiceAlternativeAnswerMediator;
@@ -42,7 +43,7 @@ public class QuestVisualBuilder {
     }
 
     public void create() {
-        IQuest quest = mQuestContext.getQuest();
+        Quest quest = mQuestContext.getQuest();
         switch (quest.getQuestType()) {
 
             case COINS:
