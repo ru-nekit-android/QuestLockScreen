@@ -35,8 +35,8 @@ public class CoinQuestContentMediator extends AbstractQuestContentMediator {
     }
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         NumberSummandQuest quest = getQuest();
         mContentContainer = new RelativeLayout(questContext);
         mCoinViewHolderList = new ArrayList<>();

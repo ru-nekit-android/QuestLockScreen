@@ -8,7 +8,9 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.SparseArray;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -22,7 +24,6 @@ import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.EQUAL;
 import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.MINUS;
 import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.PLUS;
@@ -33,11 +34,12 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private FruitArithmeticQuest mFruitArithmeticQuest;
     private SparseArray<Drawable> mFruitImageDrawableCache;
     private SparseArray<Drawable> mFruitShadowImageDrawableCache;
-    private QuestResourceLibrary questResourceLibrary;
+    private QuestResourceLibrary mQuestResourceLibrary;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
+        mQuestResourceLibrary = questContext.getQuestResourceLibrary();
         mFruitImageDrawableCache = new SparseArray<>();
         mFruitShadowImageDrawableCache = new SparseArray<>();
         mFruitArithmeticQuest = (FruitArithmeticQuest) mQuest;
@@ -48,11 +50,11 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                 mContentContainer.addView(createFruitView(questContext,
                         mFruitArithmeticQuest.getVisualRepresentationList().get(i)));
             }
-            LayoutParams contentLayoutParams = new LayoutParams(MATCH_PARENT, WRAP_CONTENT);
+            LayoutParams contentLayoutParams = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
             mContentContainer.setOrientation(LinearLayout.HORIZONTAL);
+            mContentContainer.setGravity(Gravity.CENTER_VERTICAL);
             mContentContainer.setLayoutParams(contentLayoutParams);
         }
-        questResourceLibrary = questContext.getQuestResourceLibrary();
     }
 
     @Override
@@ -70,7 +72,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private Drawable getFruitImageDrawable(@NonNull QuestContext questContext,
                                            int visualRepresentationId) {
         return ContextCompat.getDrawable(questContext,
-                questContext.getQuestResourceLibrary().getVisualResourceItem(visualRepresentationId)
+                mQuestResourceLibrary.getVisualResourceItem(visualRepresentationId)
                         .getDrawableResourceId());
     }
 
@@ -108,15 +110,34 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     }
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        super.onQuestStart(delayedStart);
-        updateSize();
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        super.onQuestAttach(rootContentContainer);
+        updateSizeInternal();
+    }
+
+    @Override
+    public void onQuestStart(boolean delayedPlay) {
+        super.onQuestStart(delayedPlay);
+        if (!delayedPlay) {
+            updateSizeInternal();
+        }
+    }
+
+    @Override
+    public void onQuestPlay(boolean delayedPlay) {
+        if (delayedPlay) {
+            updateSizeInternal();
+        }
+        super.onQuestPlay(delayedPlay);
     }
 
     @Override
     public void updateSize() {
+        //none
+    }
+
+    private void updateSizeInternal() {
         if (mFruitArithmeticQuest.getQuestionType() == QuestionType.SOLUTION) {
-            int height = mRootContentContainer.getHeight();
             final int length = mFruitArithmeticQuest.getVisualRepresentationList().size();
             int index = 0;
             for (int i = 0; i < length; i++) {
@@ -139,9 +160,9 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                     index = 0;
                 }
                 marginTop = Math.min(2, index) * baseSize / 4;
-                if (visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(MINUS)
-                        || visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(PLUS)
-                        || visualRepresentationId == questResourceLibrary.getQuestVisualResourceItemId(EQUAL)) {
+                if (visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(MINUS)
+                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(PLUS)
+                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(EQUAL)) {
 
                     marginRight = 0;
                     marginLeft = 0;
@@ -159,7 +180,6 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                 visualRepresentationItemView.setLayoutParams(visualRepresentationItemLayoutParams);
                 visualRepresentationItemView.requestLayout();
             }
-            mContentContainer.setY((height - mContentContainer.getHeight()) / 2);
         }
     }
 

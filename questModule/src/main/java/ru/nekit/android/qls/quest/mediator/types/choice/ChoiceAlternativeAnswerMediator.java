@@ -2,6 +2,7 @@ package ru.nekit.android.qls.quest.mediator.types.choice;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.view.ViewGroup;
 
 import java.util.List;
 
@@ -13,8 +14,28 @@ public class ChoiceAlternativeAnswerMediator
         extends AbstractSquareImageQuestAlternativeAnswerMediator {
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        super.onQuestStart(delayedStart);
+    public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
+        super.onQuestAttach(rootContentContainer);
+        updateListAdapter();
+    }
+
+    @Override
+    public void onQuestStart(boolean delayedPlay) {
+        super.onQuestStart(delayedPlay);
+        if (!delayedPlay) {
+            updateListAdapter();
+        }
+    }
+
+    @Override
+    public void onQuestPlay(boolean delayedPlay) {
+        if (delayedPlay) {
+            updateListAdapter();
+        }
+        super.onQuestPlay(delayedPlay);
+    }
+
+    private void updateListAdapter() {
         int size = Math.min(mRootContentContainer.getWidth(), mRootContentContainer.getHeight());
         int dataListLength = mListAdapter.getItemCount();
         int rowCount = (int) Math.ceil(dataListLength / (float) getColumnCount());

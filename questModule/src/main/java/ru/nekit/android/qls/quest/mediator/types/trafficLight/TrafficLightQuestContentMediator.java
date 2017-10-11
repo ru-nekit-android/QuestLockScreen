@@ -21,8 +21,8 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     private TrafficLightQuestViewHolder mViewHolder;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         mViewHolder = new TrafficLightQuestViewHolder(questContext);
         TrafficLightModel answer = TrafficLightModel.fromOrdinal((int) mQuest.getAnswer());
         mViewHolder.trafficRedLight.setVisibility(INVISIBLE);
@@ -43,9 +43,9 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
     }
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
+    public void onQuestPlay(boolean delayedPlay) {
         updateSizeInternal();
-        super.onQuestStart(delayedStart);
+        super.onQuestPlay(delayedPlay);
     }
 
     @Override

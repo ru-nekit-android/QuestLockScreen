@@ -29,7 +29,7 @@ import ru.nekit.android.qls.quest.qtp.rule.TextCamouflageTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.TimeQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.TrafficLightQuestTrainingProgramRule;
 
-import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.DELAYED_START;
+import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.DELAYED_PLAY;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.DESCRIPTION;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.NAME;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.POINTS_MULTIPLIER;
@@ -53,7 +53,7 @@ public class QuestTrainingProgramLevel implements Parcelable {
     List<AbstractQuestTrainingProgramRule> questRules;
     private String name, description;
     private float pointsMultiplier;
-    private int delayedStart;
+    private int delayedPlay;
 
     QuestTrainingProgramLevel() {
 
@@ -66,7 +66,7 @@ public class QuestTrainingProgramLevel implements Parcelable {
         description = in.readString();
         pointsMultiplier = in.readFloat();
         questRules = in.readArrayList(AbstractQuestTrainingProgramRule.class.getClassLoader());
-        delayedStart = in.readInt();
+        delayedPlay = in.readInt();
     }
 
     public int getPointsWeight() {
@@ -86,7 +86,7 @@ public class QuestTrainingProgramLevel implements Parcelable {
         dest.writeString(description);
         dest.writeFloat(pointsMultiplier);
         dest.writeList(questRules);
-        dest.writeInt(delayedStart);
+        dest.writeInt(delayedPlay);
     }
 
     public float getPointsMultiplier() {
@@ -109,8 +109,8 @@ public class QuestTrainingProgramLevel implements Parcelable {
         return Integer.toString(getIndex() + 1);
     }
 
-    public int getDelayedStart() {
-        return delayedStart;
+    public int getDelayedPlay() {
+        return delayedPlay;
     }
 
     public void parse(@NonNull Context context, @NonNull JsonObject object) {
@@ -121,10 +121,10 @@ public class QuestTrainingProgramLevel implements Parcelable {
         if (object.has(DESCRIPTION)) {
             description = object.get(DESCRIPTION).getAsString();
         }
-        if (object.has(DELAYED_START)) {
-            delayedStart = object.get(DELAYED_START).getAsBoolean() ? 1 : 0;
+        if (object.has(DELAYED_PLAY)) {
+            delayedPlay = object.get(DELAYED_PLAY).getAsBoolean() ? 1 : 0;
         } else {
-            delayedStart = -1;
+            delayedPlay = -1;
         }
         pointsWeight = object.get(QuestTrainingProgram.Dictionary.POINTS_WEIGHT).getAsInt();
         if (object.has(POINTS_MULTIPLIER)) {

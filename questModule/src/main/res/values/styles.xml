@@ -135,7 +135,7 @@
 
     <style name="LockScreen.QuestContent.Container" />
 
-    <style name="LockScreen.QuestContent.DelayedStart" parent="TextAppearance">
+    <style name="LockScreen.QuestContent.DelayedPlay" parent="TextAppearance">
         <item name="android:gravity">center</item>
         <item name="textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
@@ -519,7 +519,7 @@
     <style name="Quest.FruitArithmetic.ItemList.ContentContainer" />
 
     <style name="Quest.FruitArithmetic.Button">
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">22sp</item>
         <item name="android:singleLine">true</item>
         <item name="android:maxLines">1</item>
         <item name="android:lines">1</item>
@@ -527,7 +527,7 @@
         <item name="android:textAllCaps">true</item>
         <item name="textAllCaps">true</item>
         <item name="fontFamily">roboto</item>
-        <item name="textWeight">normal</item>
+        <item name="textWeight">bold</item>
         <item name="textStyle">normal</item>
     </style>
 

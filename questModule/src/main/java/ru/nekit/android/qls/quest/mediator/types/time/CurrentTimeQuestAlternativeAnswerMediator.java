@@ -13,14 +13,14 @@ public class CurrentTimeQuestAlternativeAnswerMediator extends TimeQuestAlternat
         implements EventBus.IEventHandler {
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        super.onQuestStart(delayedStart);
+    public void onQuestPlay(boolean delayedPlay) {
+        super.onQuestPlay(delayedPlay);
         mQuestContext.getEventBus().handleEvents(this, QuestContextEvent.EVENT_TIC_TAC);
     }
 
     @Override
-    public void onQuestRestart() {
-        super.onQuestRestart();
+    public void onQuestReplay() {
+        super.onQuestReplay();
         mQuestContext.getEventBus().handleEvents(this, QuestContextEvent.EVENT_TIC_TAC);
     }
 

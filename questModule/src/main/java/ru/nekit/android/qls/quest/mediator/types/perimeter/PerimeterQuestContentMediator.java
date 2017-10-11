@@ -18,8 +18,8 @@ public class PerimeterQuestContentMediator extends AbstractQuestContentMediator 
     private PerimeterQuestViewHolder mViewHolder;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         PerimeterQuest quest = (PerimeterQuest) mQuest;
         mViewHolder = new PerimeterQuestViewHolder(mQuestContext);
         ViewGroup.LayoutParams figureViewLayoutParams = mViewHolder.figureView.getLayoutParams();

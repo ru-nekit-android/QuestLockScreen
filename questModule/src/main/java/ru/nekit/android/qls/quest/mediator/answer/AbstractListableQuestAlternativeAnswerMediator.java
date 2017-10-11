@@ -23,8 +23,8 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
     private RelativeLayout mListViewContainer;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         mListViewContainer = new RelativeLayout(mQuestContext);
         mListView = new RecyclerView(mQuestContext);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(mQuestContext,
@@ -76,6 +76,7 @@ public abstract class AbstractListableQuestAlternativeAnswerMediator<ListDataTyp
     protected abstract ListAdapterType getListAdapter(List<ListDataType> listData);
 
     @Override
-    public void onWrongAnswer() {
+    public boolean onWrongAnswer() {
+        return true;
     }
 }

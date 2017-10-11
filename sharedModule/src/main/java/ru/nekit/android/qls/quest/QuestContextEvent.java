@@ -9,9 +9,9 @@ public class QuestContextEvent {
     public static final String EVENT_RIGHT_ANSWER = "eventRightAnswer";
     public static final String EVENT_WRONG_ANSWER = "eventWrongAnswer";
     public static final String EVENT_QUEST_ATTACH = "eventQuestAttach";
-    public static final String EVENT_QUEST_SHOW = "eventQuestShow";
     public static final String EVENT_QUEST_START = "eventQuestStart";
-    public static final String EVENT_QUEST_RESTART = "eventQuestRestart";
+    public static final String EVENT_QUEST_PLAY = "eventQuestPlay";
+    public static final String EVENT_QUEST_REPLAY = "eventQuestReplay";
     public static final String EVENT_QUEST_STOP = "eventQuestStop";
     public static final String EVENT_QUEST_PAUSE = "eventQuestPause";
     public static final String EVENT_QUEST_RESUME = "eventQuestResume";

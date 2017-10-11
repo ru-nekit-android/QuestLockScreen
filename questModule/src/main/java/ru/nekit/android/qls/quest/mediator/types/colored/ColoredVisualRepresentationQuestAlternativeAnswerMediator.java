@@ -15,8 +15,6 @@ import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.quest.window.RightAnswerWindow;
 
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
-
 public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
         extends AbstractListableQuestAlternativeAnswerMediator<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>,
         ColoredVisualRepresentationQuestAdapter> {
@@ -59,22 +57,20 @@ public class ColoredVisualRepresentationQuestAlternativeAnswerMediator
     }
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
+    public void onQuestPlay(boolean delayedPlay) {
         updateListAdapter(true);
-        super.onQuestStart(delayedStart);
+        super.onQuestPlay(delayedPlay);
     }
 
     @Override
     public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
-        if (mQuestContext.questHasState(DELAYED_START)) {
-            updateListAdapter(true);
-        }
         super.onQuestAttach(rootContentContainer);
+        updateListAdapter(true);
     }
 
     @Override
-    public void onQuestRestart() {
-        super.onQuestRestart();
+    public void onQuestReplay() {
+        super.onQuestReplay();
         updateListAdapter(true);
     }
 

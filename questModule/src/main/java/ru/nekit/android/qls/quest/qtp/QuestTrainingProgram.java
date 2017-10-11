@@ -358,7 +358,7 @@ public class QuestTrainingProgram implements Parcelable {
         public final static String ALL = "all";
         public static final String WORD_LENGTH = "wordLength";
         public static final String CAMOUFLAGE_LENGTH = "camouflageLength";
-        public static final String DELAYED_START = "delayedStart";
+        public static final String DELAYED_PLAY = "delayedPlay";
         public static final String ANSWER_VARIANTS = "answerVariants";
         final static String VERSION = "version";
         final static String NAME = "name";

@@ -28,35 +28,36 @@ import ru.nekit.android.qls.quest.qtp.QuestTrainingProgramLevel;
 import ru.nekit.android.qls.quest.window.MenuWindowMediator;
 import ru.nekit.android.qls.quest.window.PupilStatisticsWindowMediator;
 import ru.nekit.android.qls.quest.window.RightAnswerWindow;
+import ru.nekit.android.qls.quest.window.WrongAnswerWindowContentViewHolder;
 import ru.nekit.android.qls.utils.KeyboardHost;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.EVENT_TRANSITION_CHANGED;
 import static ru.nekit.android.qls.lockScreen.TransitionChoreograph.Transition.QUEST;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_CLOSED;
 import static ru.nekit.android.qls.lockScreen.window.Window.EVENT_WINDOW_OPEN;
 import static ru.nekit.android.qls.lockScreen.window.Window.closeAllWindows;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_PLAY;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.PLAYED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
 
-public class LockScreenQuestContentMediator extends AbstractLockScreenContentMediator
+public class LockScreenQuestViewContainerMediator extends AbstractLockScreenContentMediator
         implements View.OnClickListener, EventBus.IEventHandler {
 
+    public static final String ACTION_SHOW_WRONG_ANSWER_WINDOW = "action_show_wrong_answer_window";
+    public static final String ACTION_SHOW_RIGHT_ANSWER_WINDOW = "action_show_right_answer_window";
     @NonNull
     private final QuestContext mQuestContext;
     private QuestVisualBuilder mQuestVisualBuilder, mPreviousQuestVisualBuilder;
-    private QuestContentViewHolder mViewHolder;
+    private LockScreenQuestViewContainerHolder mViewHolder;
 
-    public LockScreenQuestContentMediator(@NonNull QuestContext questContext) {
+    public LockScreenQuestViewContainerMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
 
-        mViewHolder = new QuestContentViewHolder(questContext);
+        mViewHolder = new LockScreenQuestViewContainerHolder(questContext);
         mViewHolder.menuButton.setOnClickListener(this);
         mViewHolder.statisticsContainer.setOnClickListener(this);
-        mViewHolder.delayedStartContainer.setOnClickListener(this);
+        mViewHolder.delayedPlayContainer.setOnClickListener(this);
 
         Animation.AnimationListener animationListener = new Animation.AnimationListener() {
             @Override
@@ -88,7 +89,9 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                 EVENT_TRANSITION_CHANGED,
                 EVENT_RIGHT_ANSWER,
                 EVENT_WINDOW_OPEN,
-                EVENT_WINDOW_CLOSED
+                EVENT_WINDOW_CLOSED,
+                ACTION_SHOW_RIGHT_ANSWER_WINDOW,
+                ACTION_SHOW_WRONG_ANSWER_WINDOW
         );
 
         updatePupilStatisticsView();
@@ -201,8 +204,8 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
                     MenuWindowMediator.openWindow(mQuestContext);
                 }
             });
-        } else if (view == mViewHolder.delayedStartContainer) {
-            if (mQuestContext.startQuest()) {
+        } else if (view == mViewHolder.delayedPlayContainer) {
+            if (mQuestContext.playQuest()) {
                 mViewHolder.updateViewVisibility(mQuestContext);
             }
         }
@@ -251,6 +254,33 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
 
                 break;
 
+            case ACTION_SHOW_RIGHT_ANSWER_WINDOW:
+
+                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
+                    @Override
+                    public void run() {
+                        new RightAnswerWindow.Builder(mQuestContext).
+                                setContent(R.layout.wc_right_answer).
+                                setStyle(R.style.Window_RightAnswer).
+                                open();
+                    }
+                });
+
+                break;
+
+            case ACTION_SHOW_WRONG_ANSWER_WINDOW:
+
+                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
+                    @Override
+                    public void run() {
+                        new Window(mQuestContext,
+                                new WrongAnswerWindowContentViewHolder(mQuestContext),
+                                R.style.Window_WrongAnswer).open();
+                    }
+                });
+
+                break;
+
         }
     }
 
@@ -260,20 +290,21 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         return getClass().getName();
     }
 
-    private static class QuestContentViewHolder extends ViewHolder implements
+    private static class LockScreenQuestViewContainerHolder extends ViewHolder implements
             ILockScreenContentContainerViewHolder, IQuestViewHolder {
 
         final QuestContext questContext;
         final ImageView menuButton;
         final TextView titleView, titleViewRight, pupilLevel;
-        final ViewGroup titleContainer, contentContainer, statisticsContainer, delayedStartContainer;
+        final ViewGroup rootContainer, titleContainer, contentContainer, statisticsContainer, delayedPlayContainer;
         final ViewSwitcher questContentContainer;
         final CircleProgressView pupilProgress;
         final Animation outAnimation, inAnimation;
 
-        QuestContentViewHolder(@NonNull final QuestContext questContext) {
-            super(questContext, R.layout.layout_lock_screen_quest_content);
+        LockScreenQuestViewContainerHolder(@NonNull final QuestContext questContext) {
+            super(questContext, R.layout.layout_lock_screen_quest_view_container);
             this.questContext = questContext;
+            rootContainer = (ViewGroup) getView().findViewById(R.id.container_root);
             titleContainer = (ViewGroup) getView().findViewById(R.id.container_title);
             contentContainer = (ViewGroup) getView().findViewById(R.id.container_content);
             questContentContainer = (ViewSwitcher) getView().findViewById(R.id.container_content_quest);
@@ -283,7 +314,7 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
             pupilLevel = (TextView) getView().findViewById(R.id.tv_pupil_level);
             pupilProgress = (CircleProgressView) getView().findViewById(R.id.pupil_progress);
             statisticsContainer = (ViewGroup) getView().findViewById(R.id.container_statistics);
-            delayedStartContainer = (ViewGroup) getView().findViewById(R.id.container_delayed_start);
+            delayedPlayContainer = (ViewGroup) getView().findViewById(R.id.container_delayed_play);
             outAnimation = AnimationUtils.loadAnimation(questContext, R.anim.slide_out);
             inAnimation = AnimationUtils.loadAnimation(questContext, R.anim.slide_in);
             questContentContainer.setOutAnimation(outAnimation);
@@ -322,11 +353,11 @@ public class LockScreenQuestContentMediator extends AbstractLockScreenContentMed
         }
 
         void updateViewVisibility(@NonNull QuestContext questContext) {
-            boolean showDelayStartView = questContext.questHasState(DELAYED_START) && !questContext.questHasState(STARTED);
-            delayedStartContainer.setVisibility(showDelayStartView ? VISIBLE : INVISIBLE);
-            if (showDelayStartView) {
-                delayedStartContainer.setAlpha(0);
-                delayedStartContainer.animate().withLayer().alpha(1).setDuration(mContext.getResources().getInteger(R.integer.short_animation_duration));
+            boolean showDelayedPlayContainer = questContext.questHasState(DELAYED_PLAY) && !questContext.questHasState(PLAYED);
+            delayedPlayContainer.setVisibility(showDelayedPlayContainer ? View.VISIBLE : View.INVISIBLE);
+            if (showDelayedPlayContainer) {
+                delayedPlayContainer.setAlpha(0);
+                delayedPlayContainer.animate().withLayer().alpha(1).setDuration(mContext.getResources().getInteger(R.integer.short_animation_duration));
             }
         }
     }

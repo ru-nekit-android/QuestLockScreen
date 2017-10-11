@@ -22,15 +22,15 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
 
     @CallSuper
     @Override
-    public void create(@NonNull QuestContext questContext) {
+    public void onCreate(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mQuest = questContext.getQuest();
     }
 
     @CallSuper
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        if (delayedStart) {
+    public void onQuestPlay(boolean delayedPlay) {
+        if (delayedPlay) {
             playDelayedStartAnimation();
         }
     }
@@ -41,15 +41,15 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
     }
 
     @Override
-    public void onQuestShow() {
+    public void onQuestStart(boolean delayedPlay) {
 
     }
 
     protected void playDelayedStartAnimation() {
         View view = getView();
         if (view != null) {
-            view.setScaleX(0.1f);
-            view.setScaleY(0.1f);
+            view.setScaleX(0f);
+            view.setScaleY(0f);
             final View finalView = view;
             view.animate().withLayer().withEndAction(new Runnable() {
                 @Override
@@ -57,7 +57,7 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
                     finalView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             }).scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator()).
-                    setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+                    setDuration(mQuestContext.getQuestDelayedPlayAnimationDuration());
         }
     }
 
@@ -77,7 +77,7 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
     }
 
     @Override
-    public void onQuestRestart() {
+    public void onQuestReplay() {
 
     }
 
@@ -93,6 +93,7 @@ public abstract class AbstractQuestContentMediator implements IQuestContentMedia
     }
 
     @Override
-    public void onWrongAnswer() {
+    public boolean onWrongAnswer() {
+        return true;
     }
 }

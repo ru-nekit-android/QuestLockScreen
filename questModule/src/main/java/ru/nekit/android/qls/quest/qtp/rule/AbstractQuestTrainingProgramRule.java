@@ -20,7 +20,7 @@ import ru.nekit.android.qls.quest.base.Quest;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 import ru.nekit.android.qls.utils.MathUtils;
 
-import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.DELAYED_START;
+import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.DELAYED_PLAY;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.ENABLED;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.REWARD;
 
@@ -63,7 +63,7 @@ public abstract class AbstractQuestTrainingProgramRule implements Parcelable {
         return mQuestionTypes;
     }
 
-    public int getDelayedStart() {
+    public int getDelayedPlay() {
         return mDelayedStart;
     }
 
@@ -111,8 +111,8 @@ public abstract class AbstractQuestTrainingProgramRule implements Parcelable {
             localQuestionTypes = new QuestionType[]{mQuestType.getDefaultQuestionType() == null ?
                     QuestionType.QUESTION_TYPE_BY_DEFAULT : mQuestType.getDefaultQuestionType()};
         }
-        if (object.has(DELAYED_START)) {
-            mDelayedStart = object.get(DELAYED_START).getAsBoolean() ? 1 : 0;
+        if (object.has(DELAYED_PLAY)) {
+            mDelayedStart = object.get(DELAYED_PLAY).getAsBoolean() ? 1 : 0;
         } else {
             mDelayedStart = -1;
         }

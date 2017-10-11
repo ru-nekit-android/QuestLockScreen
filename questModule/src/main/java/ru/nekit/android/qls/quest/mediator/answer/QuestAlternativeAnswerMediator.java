@@ -39,31 +39,32 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     @CallSuper
     @Override
-    public void create(@NonNull QuestContext questContext) {
+    public void onCreate(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mQuest = questContext.getQuest();
         mButtonList = new ArrayList<>();
     }
 
+    @CallSuper
     @Override
     public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
         mRootContentContainer = rootContentContainer;
     }
 
     @Override
-    public void onQuestShow() {
+    public void onQuestStart(boolean delayedPlay) {
 
     }
 
     @CallSuper
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        if (delayedStart) {
-            playDelayedStartAnimation();
+    public void onQuestPlay(boolean delayedPlay) {
+        if (delayedPlay) {
+            startDelayedPlayAnimation();
         }
     }
 
-    private void playDelayedStartAnimation() {
+    private void startDelayedPlayAnimation() {
         View view = mRootContentContainer;
         if (getView() != null) {
             view = getView();
@@ -78,7 +79,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
                     finalView.setLayerType(View.LAYER_TYPE_NONE, null);
                 }
             }).scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator())
-                    .setDuration(mQuestContext.getQuestDelayedStartAnimationDuration());
+                    .setDuration(mQuestContext.getQuestDelayedPlayAnimationDuration());
         }
     }
 
@@ -94,7 +95,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
 
     @CallSuper
     @Override
-    public void onQuestRestart() {
+    public void onQuestReplay() {
 
     }
 
@@ -188,7 +189,7 @@ public class QuestAlternativeAnswerMediator implements View.OnClickListener,
     }
 
     @Override
-    public void onWrongAnswer() {
-
+    public boolean onWrongAnswer() {
+        return true;
     }
 }

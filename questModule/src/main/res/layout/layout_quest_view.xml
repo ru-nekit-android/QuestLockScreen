@@ -3,11 +3,10 @@
     android:id="@+id/container_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:fitsSystemWindows="true">
 
     <FrameLayout
-        android:id="@+id/container_content"
+        android:id="@+id/container_content_22"
         style="@style/Quest.ContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

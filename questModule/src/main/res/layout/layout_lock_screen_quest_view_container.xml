@@ -2,6 +2,7 @@
 
 <!--Container (Useless)-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -68,21 +69,36 @@
     <!--Content-->
 
     <FrameLayout
+        android:id="@+id/container_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/container_delayed_start"
+            android:id="@+id/container_delayed_play"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.devspark.robototextview.widget.RobotoTextView
-                android:id="@+id/tv_delayed_start"
-                style="@style/LockScreen.QuestContent.DelayedStart"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/title_delayed_start" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/icon_delayed_play"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:srcCompat="@drawable/ic_play" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    android:id="@+id/tv_delayed_play"
+                    style="@style/LockScreen.QuestContent.DelayedPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_delayed_start" />
+
+            </LinearLayout>
 
         </RelativeLayout>
 

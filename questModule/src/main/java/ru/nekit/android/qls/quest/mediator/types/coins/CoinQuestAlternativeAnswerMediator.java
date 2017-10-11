@@ -16,8 +16,8 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     private List<CoinButtonHolder> mCoinButtonHostList;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         mCoinButtonHostList = new ArrayList<>();
         switch (mQuest.getQuestionType()) {
 
@@ -47,14 +47,14 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
     }
 
     @Override
-    public void onQuestShow() {
-        super.onQuestShow();
+    public void onQuestStart(boolean delayedPlay) {
+        super.onQuestStart(delayedPlay);
         updateSizeInternal();
     }
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
-        super.onQuestStart(delayedStart);
+    public void onQuestPlay(boolean delayedPlay) {
+        super.onQuestPlay(delayedPlay);
     }
 
     @Override

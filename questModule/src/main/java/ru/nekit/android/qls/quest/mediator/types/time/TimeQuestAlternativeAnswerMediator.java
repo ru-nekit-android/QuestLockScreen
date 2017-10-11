@@ -8,24 +8,20 @@ import java.util.List;
 import ru.nekit.android.qls.quest.mediator.answer.AbstractListableQuestAlternativeAnswerMediator;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
-
 public class TimeQuestAlternativeAnswerMediator
         extends AbstractListableQuestAlternativeAnswerMediator<Integer, TimeAdapter> {
 
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
+    public void onQuestPlay(boolean delayedPlay) {
         updateListAdapter();
-        super.onQuestStart(delayedStart);
+        super.onQuestPlay(delayedPlay);
     }
 
     @Override
     public void onQuestAttach(@NonNull ViewGroup rootContentContainer) {
-        if (mQuestContext.questHasState(DELAYED_START)) {
-            updateListAdapter();
-        }
         super.onQuestAttach(rootContentContainer);
+        updateListAdapter();
     }
 
     private void updateListAdapter() {

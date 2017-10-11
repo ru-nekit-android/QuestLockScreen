@@ -39,7 +39,6 @@ import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 import ru.nekit.android.qls.quest.types.TimeQuest;
 import ru.nekit.android.qls.utils.RobotoTypefaceUtil;
-import ru.nekit.android.qls.utils.ScreenHost;
 import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.Vibrate;
 
@@ -47,18 +46,18 @@ import static android.content.Intent.ACTION_SCREEN_ON;
 import static android.content.IntentFilter.SYSTEM_HIGH_PRIORITY;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.ANSWERED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.ATTACHED;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_START;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_PLAY;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.PAUSED;
+import static ru.nekit.android.qls.quest.QuestContext.QuestState.PLAYED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.RESTORED;
-import static ru.nekit.android.qls.quest.QuestContext.QuestState.SHOWN;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STARTED;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.STOPPED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_LEVEL_UP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_ATTACH;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PAUSE;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESTART;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_PLAY;
+import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_REPLAY;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_RESUME;
-import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_SHOW;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_START;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_QUEST_STOP;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_RIGHT_ANSWER;
@@ -67,6 +66,7 @@ import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_UPDATE_STATISTI
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_WRONG_ANSWER;
 import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD;
 import static ru.nekit.android.qls.quest.history.QuestHistoryItem.RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD;
+import static ru.nekit.android.qls.utils.ScreenHost.isScreenOn;
 
 public class QuestContext extends ContextThemeWrapper implements IAnswerCallback, EventBus.IEventHandler {
 
@@ -114,7 +114,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mTicTacHandler = new Handler();
         mEventBus.handleEvent(this, ACTION_SCREEN_ON, SYSTEM_HIGH_PRIORITY);
         //WARNING!!! only for test
-        //mQuestSaver.reset();
+        mQuestSaver.reset();
     }
 
     //Quest state functional
@@ -139,7 +139,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         addQuestState(stateForAdd);
     }
 
-    private void clearQuesState() {
+    private void clearQuestState() {
         setQuestState(mQuestState = 0);
     }
     //End quest state functional
@@ -161,7 +161,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
                     mQuest = null;
                 } else {
                     addQuestState(RESTORED);
-                    removeQuestState(STARTED);
+                    removeQuestState(PLAYED);
                     removeQuestState(STOPPED);
                 }
             }
@@ -169,10 +169,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         if (mQuest == null) {
             mQuest = makeQuest();
             mQuestSaver.save(mQuest);
-            clearQuesState();
+            clearQuestState();
         }
-        if (questHasDelayedStart()) {
-            addQuestState(DELAYED_START);
+        if (questHasDelayedPlay()) {
+            addQuestState(DELAYED_PLAY);
         }
         return mQuest;
     }
@@ -235,7 +235,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     @Override
     public void rightAnswer() {
         if (mQuest != null && !questHasState(ANSWERED)) {
-            replaceQuestState(STARTED, ANSWERED);
+            replaceQuestState(PLAYED, ANSWERED);
             long sessionTime = getSessionTime();
             QuestTrainingProgramLevel levelBeforeReward = getQTPLevel();
             //award for right answer quest obtain from quest training program rule
@@ -260,7 +260,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             //detachView
             destroyTicTac();
             mQuestSaver.reset();
-            clearQuesState();
+            clearQuestState();
             mQuest = null;
         }
     }
@@ -280,7 +280,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     @Override
     public void wrongAnswer() {
-        if (!questHasState(ANSWERED)) {
+        if (mQuest != null && !questHasState(ANSWERED)) {
             long sessionTime = getSessionTime();
             QuestHistoryItem questHistoryItem = createQuestHistoryItem(false, sessionTime);
             QuestHistoryItem globalQuestHistoryItem = createQuestHistoryItem(false, sessionTime);
@@ -328,22 +328,22 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         Vibrate.make(this, 400);
     }
 
-    public boolean startQuest() {
-        boolean screenIsOn = ScreenHost.isScreenOn(this);
-        boolean questIsStarted = questHasState(STARTED);
+    public boolean playQuest() {
+        boolean screenIsOn = isScreenOn(this);
+        boolean questIsStarted = questHasState(PLAYED);
         if (screenIsOn) {
             if (!questIsStarted) {
-                replaceQuestState(ATTACHED, STARTED);
+                replaceQuestState(ATTACHED, PLAYED);
                 if (questHasState(STOPPED)) {
-                    mEventBus.sendEvent(EVENT_QUEST_RESTART);
+                    mEventBus.sendEvent(EVENT_QUEST_REPLAY);
                 } else {
-                    mEventBus.sendEvent(EVENT_QUEST_START);
+                    mEventBus.sendEvent(EVENT_QUEST_PLAY);
                 }
                 destroyTicTac();
                 mStartSessionTime = TimeUtils.getCurrentTime();
                 mTicTacHandler.postDelayed(mTicTacRunnable,
-                        questHasDelayedStart() && CONST.PLAY_ANIMATION_ON_DELAYED_START ?
-                                getQuestDelayedStartAnimationDuration() : 0);
+                        questHasDelayedPlay() && CONST.PLAY_ANIMATION_ON_DELAYED_START ?
+                                getQuestDelayedPlayAnimationDuration() : 0);
             }
         }
         return screenIsOn && !questIsStarted;
@@ -351,8 +351,8 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     public void stopQuest() {
         destroyTicTac();
-        if (questHasState(STARTED)) {
-            replaceQuestState(STARTED, STOPPED);
+        if (questHasState(PLAYED)) {
+            replaceQuestState(PLAYED, STOPPED);
             mEventBus.sendEvent(EVENT_QUEST_STOP);
             sendTicTacEvent(0);
         }
@@ -370,7 +370,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     public void destroy() {
         destroyTicTac();
-        clearQuesState();
+        clearQuestState();
         mQuest = null;
     }
 
@@ -425,10 +425,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
 
     public void showAndStartQuestIfAble() {
         if (mQuest != null) {
-            addQuestState(SHOWN);
-            mEventBus.sendEvent(EVENT_QUEST_SHOW);
-            if (!questHasDelayedStart()) {
-                startQuest();
+            addQuestState(STARTED);
+            mEventBus.sendEvent(EVENT_QUEST_START);
+            if (!questHasDelayedPlay()) {
+                playQuest();
             }
         }
     }
@@ -515,27 +515,27 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         return mQuestTrainingProgram.getCurrentLevel(mPupilStatistics);
     }
 
-    private boolean questHasDelayedStart() {
+    private boolean questHasDelayedPlay() {
         AbstractQuestTrainingProgramRule rule = getQTPRule();
-        if (rule.getDelayedStart() == -1) {
+        if (rule.getDelayedPlay() == -1) {
             QuestTrainingProgramLevel questTrainingProgramLevel = getQTPLevel();
-            if (questTrainingProgramLevel.getDelayedStart() == -1) {
-                return CONST.VALUE_DELAYED_START_BY_DEFAULT;
+            if (questTrainingProgramLevel.getDelayedPlay() == -1) {
+                return CONST.VALUE_DELAYED_PLAY_BY_DEFAULT;
             }
-            return questTrainingProgramLevel.getDelayedStart() == 1;
+            return questTrainingProgramLevel.getDelayedPlay() == 1;
         }
-        return rule.getDelayedStart() == 1;
+        return rule.getDelayedPlay() == 1;
     }
 
-    public int getQuestDelayedStartAnimationDuration() {
+    public int getQuestDelayedPlayAnimationDuration() {
         return getResources().getInteger(R.integer.quest_delayed_start_animation_duration);
     }
 
     @Override
     public void onEvent(@NonNull Intent intent) {
         if (mQuest != null) {
-            if (!questHasDelayedStart() || questHasState(STOPPED)) {
-                startQuest();
+            if (!questHasDelayedPlay() || questHasState(STOPPED)) {
+                playQuest();
             }
         }
     }
@@ -558,15 +558,15 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus.sendEvent(EVENT_QUEST_RESUME);
     }
 
-    //create (view builder) -> attach -> show -> start -> [pause -> resume] -> stop
+    //onCreate (view builder) -> attach -> start -> play/pause/resume -> stop
     public enum QuestState {
         RESTORED,//mix
-        DELAYED_START,//mix
+        DELAYED_PLAY,//mix
         ATTACHED,
-        SHOWN,
         STARTED,
-        STOPPED,
+        PLAYED,
         PAUSED,
+        STOPPED,
         ANSWERED;//mix
 
         public int value() {

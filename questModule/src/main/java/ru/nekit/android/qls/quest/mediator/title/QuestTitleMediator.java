@@ -33,7 +33,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     private String mTitleText;
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
+    public void onCreate(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mQuest = questContext.getQuest();
         QuestionType questionType = mQuest.getQuestionType();
@@ -265,12 +265,12 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onQuestShow() {
+    public void onQuestStart(boolean delayedPlay) {
 
     }
 
     @Override
-    public void onQuestStart(boolean delayedStart) {
+    public void onQuestPlay(boolean delayedPlay) {
 
     }
 
@@ -280,8 +280,8 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onWrongAnswer() {
-
+    public boolean onWrongAnswer() {
+        return true;
     }
 
     @Override
@@ -305,7 +305,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     }
 
     @Override
-    public void onQuestRestart() {
+    public void onQuestReplay() {
 
     }
 

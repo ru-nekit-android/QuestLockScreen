@@ -26,7 +26,7 @@ import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.lockScreen.content.AbstractLockScreenContentMediator;
 import ru.nekit.android.qls.lockScreen.content.ILockScreenContentContainerViewHolder;
-import ru.nekit.android.qls.lockScreen.content.LockScreenQuestContentMediator;
+import ru.nekit.android.qls.lockScreen.content.LockScreenQuestViewContainerMediator;
 import ru.nekit.android.qls.lockScreen.content.SupportContentMediator;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.statistics.QuestStatistics;
@@ -338,7 +338,7 @@ public class LockScreenMediator implements EventBus.IEventHandler, View.OnLayout
                             //        getView().setLayerType(LAYER_TYPE_HARDWARE, null);
                         }
                         if (currentTransition == QUEST) {
-                            mCurrentContentMediator = new LockScreenQuestContentMediator(mQuestContext);
+                            mCurrentContentMediator = new LockScreenQuestViewContainerMediator(mQuestContext);
                         } else {
                             mCurrentContentMediator = new SupportContentMediator(mQuestContext);
                         }

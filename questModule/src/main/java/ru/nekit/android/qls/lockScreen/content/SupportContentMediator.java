@@ -22,14 +22,14 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
     @NonNull
     private final QuestContext mQuestContext;
     @NonNull
-    private final LockScreenSupportContentViewHolder mViewHolder;
+    private final LockScreenSupportViewContentHolder mViewHolder;
     @NonNull
     private final SettingsStorage mSettingsStorage;
 
     public SupportContentMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mSettingsStorage = new SettingsStorage();
-        mViewHolder = new LockScreenSupportContentViewHolder(questContext);
+        mViewHolder = new LockScreenSupportViewContentHolder(questContext);
         mViewHolder.okButton.setOnClickListener(this);
         mViewHolder.showNoMore.setOnCheckedChangeListener(this);
     }
@@ -107,7 +107,7 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
         }
     }
 
-    private static class LockScreenSupportContentViewHolder extends ViewHolder
+    private static class LockScreenSupportViewContentHolder extends ViewHolder
             implements ILockScreenContentContainerViewHolder {
 
         Button okButton;
@@ -116,8 +116,8 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
         CheckBox showNoMore;
         TextView titleView;
 
-        LockScreenSupportContentViewHolder(@NonNull Context context) {
-            super(context, R.layout.layout_lock_screen_support_content);
+        LockScreenSupportViewContentHolder(@NonNull Context context) {
+            super(context, R.layout.layout_lock_screen_support_view_container);
             titleContainer = getView().findViewById(R.id.container_title);
             content = (ViewGroup) getView().findViewById(R.id.content);
             toolContainer = (ViewGroup) getView().findViewById(R.id.container_tool);

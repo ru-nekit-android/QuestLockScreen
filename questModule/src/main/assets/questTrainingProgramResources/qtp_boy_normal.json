@@ -6,7 +6,7 @@
   "complexity": "NORMAL",
   "levels": [
     {
-      "delayedStart": false,
+      "delayedPlay": false,
       "name": "name_level_0",
       "description": "Прокачай пиздюка",
       "pointsWeight": 10000,
@@ -22,13 +22,13 @@
           ],
           "enabled": true,
           "reward": 10,
-          "delayedStart": true
+          "delayedPlay": true
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": false,
-          "delayedStart": true
+          "enabled": true,
+          "delayedPlay": true
         },
         //ВРЕМЯ
         {
@@ -37,9 +37,10 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
-          "accuracy": 10
+          "accuracy": 10,
+          "delayedPlay": true
         },
         //ВРЕМЯ
         {
@@ -48,32 +49,33 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
           "accuracy": 10,
-          "delayedStart": false
+          "delayedPlay": true
         },
         //ТЕКУЩЕЕ_ВРЕМЯ
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": false,
-          "delayedStart": true,
+          "enabled": true,
+          "delayedPlay": true,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": false
+          "enabled": true,
+          "delayedPlay": true
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
-          "delayedStart": true
+          "delayedPlay": true
         },
         //ВЫБОР
         {
@@ -84,8 +86,8 @@
             "berry",
             "pomum"
           ],
-          "delayedStart": false,
-          "enabled": false
+          "delayedPlay": true,
+          "enabled": true
         },
         //ЛИШНИЙ
         {
@@ -96,8 +98,8 @@
             "berry",
             "pomum"
           ],
-          "delayedStart": false,
-          "enabled": false
+          "delayedPlay": true,
+          "enabled": true
         },
         //ФРУКТЫ
         {
@@ -117,8 +119,8 @@
               5
             ]
           ],
-          "delayedStart": false,
-          "enabled": false
+          "delayedPlay": true,
+          "enabled": true
         },
         //ФРУКТЫ
         {
@@ -128,8 +130,8 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "delayedStart": false,
-          "enabled": false
+          "delayedPlay": true,
+          "enabled": true
         }
       ]
     }

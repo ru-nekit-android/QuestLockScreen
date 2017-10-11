@@ -49,8 +49,8 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
     }
 
     @Override
-    public void create(@NonNull QuestContext questContext) {
-        super.create(questContext);
+    public void onCreate(@NonNull QuestContext questContext) {
+        super.onCreate(questContext);
         //mViewHolder = new TextCamouflageQuestViewHolder(questContext);
         TextQuest quest = (TextQuest) mQuest;
         // mViewHolder.textViewGrid.setHasFixedSize(true);

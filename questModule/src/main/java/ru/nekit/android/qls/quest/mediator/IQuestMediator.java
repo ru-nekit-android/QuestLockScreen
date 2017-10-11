@@ -9,19 +9,19 @@ import ru.nekit.android.qls.quest.QuestContext;
 
 public interface IQuestMediator {
 
-    void create(@NonNull QuestContext questContext);
+    void onCreate(@NonNull QuestContext questContext);
 
     void onQuestAttach(@NonNull ViewGroup rootContentContainer);
 
-    void onQuestShow();
+    void onQuestStart(boolean delayedPlay);
 
-    void onQuestStart(boolean delayedStart);
+    void onQuestPlay(boolean delayedPlay);
 
     boolean onRightAnswer();
 
-    void onWrongAnswer();
+    boolean onWrongAnswer();
 
-    void onQuestRestart();
+    void onQuestReplay();
 
     void onQuestPause();
 
