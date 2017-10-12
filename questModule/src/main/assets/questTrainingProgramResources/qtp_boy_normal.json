@@ -17,7 +17,7 @@
           "questType": "монеты",
           "memberCount": 6,
           "questionTypes": [
-            "unknown_member",
+            //"unknown_member",
             "solution"
           ],
           "enabled": true,
@@ -27,7 +27,7 @@
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": true,
+          "enabled": false,
           "delayedPlay": true
         },
         //ВРЕМЯ
@@ -37,7 +37,7 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10,
           "delayedPlay": true
@@ -49,7 +49,7 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "accuracy": 10,
           "delayedPlay": true
@@ -58,7 +58,7 @@
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "delayedPlay": true,
           "memberCount": 4
         },
@@ -66,14 +66,14 @@
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "delayedPlay": true
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
           "delayedPlay": true
         },
@@ -87,7 +87,7 @@
             "pomum"
           ],
           "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ЛИШНИЙ
         {
@@ -99,7 +99,7 @@
             "pomum"
           ],
           "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -120,7 +120,7 @@
             ]
           ],
           "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -131,7 +131,7 @@
           "answerVariants": 2,
           "memberCount": 20,
           "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         }
       ]
     }

@@ -256,7 +256,7 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
 
             case ACTION_SHOW_RIGHT_ANSWER_WINDOW:
 
-                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
+                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.rootContainer, new Runnable() {
                     @Override
                     public void run() {
                         new RightAnswerWindow.Builder(mQuestContext).
@@ -270,7 +270,7 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
 
             case ACTION_SHOW_WRONG_ANSWER_WINDOW:
 
-                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.getView(), new Runnable() {
+                KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.rootContainer, new Runnable() {
                     @Override
                     public void run() {
                         new Window(mQuestContext,

@@ -59,9 +59,9 @@ public class CoinQuestAlternativeAnswerMediator extends QuestAlternativeAnswerMe
 
     @Override
     public void detachView() {
-        super.detachView();
         mCoinButtonHostList.clear();
         mCoinButtonHostList = null;
+        super.detachView();
     }
 
     @Override

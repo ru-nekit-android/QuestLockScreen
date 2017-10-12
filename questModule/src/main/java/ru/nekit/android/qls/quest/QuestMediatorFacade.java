@@ -1,7 +1,12 @@
 package ru.nekit.android.qls.quest;
 
+import android.animation.Animator;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.KeyEvent;
@@ -26,6 +31,7 @@ import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator
 import ru.nekit.android.qls.quest.mediator.content.EmptyQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.content.IQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.title.IQuestTitleMediator;
+import ru.nekit.android.qls.utils.AnimationUtils;
 import ru.nekit.android.qls.utils.KeyboardHost;
 import ru.nekit.android.qls.utils.ViewHolder;
 
@@ -222,6 +228,7 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
         mTitleMediator.onQuestStart(delayedPlay);
         mContentMediator.onQuestStart(delayedPlay);
         mAlternativeAnswerMediator.onQuestStart(delayedPlay);
+        requestFocus();
     }
 
     @Override
@@ -236,10 +243,8 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
                 int duration = mQuestContext.getQuestDelayedPlayAnimationDuration();
                 View view = mViewHolder.answerContainer;
                 if (view != null) {
-                    view.setScaleX(0f);
-                    view.setScaleY(0f);
-                    view.animate().withLayer().scaleX(1).scaleY(1).
-                            setInterpolator(new BounceInterpolator()).setDuration(duration);
+                    view.setAlpha(0);
+                    view.animate().withLayer().alpha(1).setDuration(duration);
                 }
             }
         } else {
@@ -331,11 +336,69 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
                     }
                 } else {
                     mQuestContext.wrongStringInputFormat();
+                    setErrorColorAndReturnToNormal();
                 }
             } else {
                 mQuestContext.emptyAnswer();
+                setErrorColorAndReturnToNormal();
             }
         }
+    }
+
+    private void setErrorColorAndReturnToNormal() {
+        AnimationUtils.getColorAnimator(mQuestContext, R.color.green,
+                R.color.red,
+                mQuestContext.getResources().getInteger(R.integer.short_animation_duration),
+                mViewHolder.answerInputContainer, new BounceInterpolator()
+        ).start();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                AnimationUtils.getColorAnimator(mQuestContext, R.color.red,
+                        R.color.green,
+                        mQuestContext.getResources().getInteger(R.integer.short_animation_duration),
+                        mViewHolder.answerInputContainer
+                ).start();
+            }
+        }, 1000);
+    }
+
+    private ValueAnimator getColorAnimator(boolean reverse) {
+        @ColorRes
+        int startColor = reverse ? R.color.red
+                : R.color.green;
+        int endColor = reverse ? R.color.green
+                : R.color.red;
+        final ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
+                startColor, endColor);
+        colorAnimation.setDuration(mQuestContext.getResources().getInteger(R.integer.short_animation_duration));
+        colorAnimation.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                colorAnimation.removeAllListeners();
+                colorAnimation.removeAllUpdateListeners();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animator) {
+                mViewHolder.answerInputContainer.setBackgroundColor((int) animator.getAnimatedValue());
+            }
+        });
+        return colorAnimation;
     }
 
     public View getView() {
@@ -491,7 +554,8 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
     static class QuestViewHolder extends ViewHolder {
 
         @NonNull
-        final ViewGroup rootContainer, titleContainer, answerContainer, contentContainer, alternativeAnswerContainer;
+        final ViewGroup rootContainer, titleContainer, answerContainer, contentContainer,
+                alternativeAnswerContainer, answerInputContainer;
         @NonNull
         final View answerButton;
         @NonNull
@@ -502,6 +566,7 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
             rootContainer = (ViewGroup) mView.findViewById(R.id.container_root);
             titleContainer = (ViewGroup) mView.findViewById(R.id.container_title);
             answerContainer = (ViewGroup) mView.findViewById(R.id.container_answer);
+            answerInputContainer = (ViewGroup) mView.findViewById(R.id.container_answer_input);
             contentContainer = (ViewGroup) mView.findViewById(R.id.container_content_22);
             alternativeAnswerContainer = (ViewGroup) mView.findViewById(R.id.container_alternative_answer);
             answerButton = mView.findViewById(R.id.btn_answer);

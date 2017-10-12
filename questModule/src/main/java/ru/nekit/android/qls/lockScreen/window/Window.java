@@ -1,14 +1,14 @@
 package ru.nekit.android.qls.lockScreen.window;
 
 import android.animation.Animator;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.Size;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
+import ru.nekit.android.qls.utils.AnimationUtils;
 import ru.nekit.android.qls.utils.RevealAnimator;
 import ru.nekit.android.qls.utils.ScreenHost;
 
@@ -82,43 +83,6 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     }
 
 
-    private ValueAnimator getColorAnimator(boolean reverse) {
-        int startColor = reverse ? mStyleParameters.backgroundColorEnd
-                : mStyleParameters.backgroundColorStart;
-        int endColor = reverse ? mStyleParameters.backgroundColorStart
-                : mStyleParameters.backgroundColorEnd;
-        final ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
-                startColor, endColor);
-        colorAnimation.setDuration(mStyleParameters.animationDuration);
-        colorAnimation.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                colorAnimation.removeAllListeners();
-                colorAnimation.removeAllUpdateListeners();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-
-            }
-        });
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animator) {
-                mViewHolder.contentContainer.setBackgroundColor((int) animator.getAnimatedValue());
-            }
-        });
-        return colorAnimation;
-    }
-
     public void setWindowListener(@NonNull WindowListener windowListener) {
         mWindowListener = windowListener;
     }
@@ -171,7 +135,10 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                                     }
                                 });
                                 revealAnimator.start();
-                                getColorAnimator(false).start();
+                                AnimationUtils.getColorAnimator(mStyleParameters.backgroundColorStart,
+                                        mStyleParameters.backgroundColorEnd,
+                                        mStyleParameters.animationDuration,
+                                        mViewHolder.contentContainer).start();
                             }
 
                             @Override
@@ -240,7 +207,11 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
                     }
                 });
                 animator.start();
-                getColorAnimator(true).start();
+                AnimationUtils.getColorAnimator(mStyleParameters.backgroundColorStart,
+                        mStyleParameters.backgroundColorEnd,
+                        mStyleParameters.animationDuration,
+                        mViewHolder.contentContainer
+                ).start();
             } else {
                 destroy();
             }
@@ -309,7 +280,10 @@ public class Window implements View.OnAttachStateChangeListener, View.OnLayoutCh
     private static class StyleParameters {
 
         String openPosition, closePosition;
-        int backgroundColorStart, backgroundColorEnd, animationDuration;
+        @ColorInt
+        int backgroundColorStart, backgroundColorEnd;
+        @Size
+        int animationDuration;
         float dimAmount;
 
         StyleParameters(@NonNull Context context, int styleResId) {

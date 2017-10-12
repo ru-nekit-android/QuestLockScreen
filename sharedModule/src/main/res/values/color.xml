@@ -2,10 +2,10 @@
 <resources>
     <color name="lock_screen_background_color">#ffffffff</color>
     <color name="white">#ffffff</color>
-    <color name="green">#07a44e</color>
+    <color name="green">#ff07a44e</color>
     <color name="green_light">#ff55d67c</color>
     <color name="green_dark">#ff007422</color>
-    <color name="red">#ed1c27</color>
+    <color name="red">#ffed1c27</color>
     <color name="red_light">#ffff5f51</color>
     <color name="red_dark">#ffb20000</color>
     <color name="black">#ff000000</color>
