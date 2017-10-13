@@ -1,10 +1,12 @@
 <component name="libraryTable">
   <library name="Circle-Progress-View-v1.3">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/Circle-Progress-View-v1.3.aar/606682e2a5c5c0eeadea73bb81bcebfa/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/Circle-Progress-View-v1.3.aar/606682e2a5c5c0eeadea73bb81bcebfa/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/Circle-Progress-View-v1.3.aar/1c2a58f02f8245df680470a4c0050cbb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/Circle-Progress-View-v1.3.aar/1c2a58f02f8245df680470a4c0050cbb/jars/classes.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jakob-grabner/Circle-Progress-View/v1.3/d6217ddd51d33a621352083c89b983779fabe7fb/Circle-Progress-View-v1.3-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.jakob-grabner/Circle-Progress-View/v1.3/6b0e1a18ba849802082e65f6b5fe5d05d71e2b13/Circle-Progress-View-v1.3-sources.jar!/" />
     </SOURCES>

@@ -113,7 +113,7 @@ public class ParentControlService extends Service
         mEventBus = new EventBus(this);
         mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mMessageGatewayList = new ArrayList<>();
-        mPupilManager = new PupilManager(this);
+        mPupilManager = new PupilManager();
         IntentFilter actionIntentFilter = new IntentFilter();
         actionIntentFilter.addAction(ACTION_BIND_PUPIL);
         registerReceiver(mActionReceiver, actionIntentFilter);

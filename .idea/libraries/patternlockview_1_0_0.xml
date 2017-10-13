@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="patternlockview-1.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/patternlockview-1.0.0.aar/2d61d6592ffdbedb3128bcaeaa0a271a/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/patternlockview-1.0.0.aar/2d61d6592ffdbedb3128bcaeaa0a271a/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.andrognito.patternlockview/patternlockview/1.0.0/b9ff2b969b97532fc830d416f48aa5bf5ae683a1/patternlockview-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.andrognito.patternlockview/patternlockview/1.0.0/c7de6c90a141e1a03c9db6693079e6fa795b24a0/patternlockview-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

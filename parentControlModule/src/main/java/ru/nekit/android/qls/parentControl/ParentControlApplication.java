@@ -11,6 +11,5 @@ public class ParentControlApplication extends Application {
         super.onCreate();
         PreferencesUtil.init(this);
         ParentControlService.start(this);
-        //new PupilManager(this).removeAll();
     }
 }
