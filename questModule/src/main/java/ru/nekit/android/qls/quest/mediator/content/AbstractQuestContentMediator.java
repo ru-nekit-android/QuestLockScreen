@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 
 public abstract class AbstractQuestContentMediator implements IQuestContentMediator {
 

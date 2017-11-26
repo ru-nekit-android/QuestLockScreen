@@ -20,7 +20,7 @@
             //"unknown_member",
             "solution"
           ],
-          "enabled": true,
+          "enabled": false,
           "reward": 10,
           "delayedPlay": true
         },
@@ -130,8 +130,15 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "delayedPlay": true,
+          "delayedPlay": false,
           "enabled": false
+        },
+        //НАПРАВЛЕНИЕ
+        {
+          "questType": "направление",
+          "delayedPlay": true,
+          "reward": 10,
+          "enabled": true
         }
       ]
     }

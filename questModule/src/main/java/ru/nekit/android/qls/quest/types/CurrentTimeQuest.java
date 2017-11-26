@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.utils.MathUtils;
 import ru.nekit.android.qls.utils.TimeUtils;
 

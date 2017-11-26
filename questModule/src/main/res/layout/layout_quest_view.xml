@@ -6,7 +6,7 @@
     android:fitsSystemWindows="true">
 
     <FrameLayout
-        android:id="@+id/container_content_22"
+        android:id="@+id/container_content"
         style="@style/Quest.ContentContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -26,19 +26,19 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:id="@+id/container_alternative_answer"
+            android:id="@+id/container_answer_alternative"
             style="@style/Quest.AlternativeAnswerContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:id="@+id/container_answer_input"
+            android:id="@+id/container_answer_default"
             style="@style/Quest.AnswerInputContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.devspark.robototextview.widget.RobotoEditText
-                android:id="@+id/input_answer"
+                android:id="@+id/input_answer_default"
                 style="@style/Quest.AnswerInput"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:visibility="gone" />
 
             <android.support.v7.widget.AppCompatImageButton
-                android:id="@+id/btn_answer"
+                android:id="@+id/btn_answer_default"
                 style="@style/Quest.AnswerButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

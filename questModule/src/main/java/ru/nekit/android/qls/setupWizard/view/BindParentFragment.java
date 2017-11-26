@@ -36,7 +36,7 @@ public class BindParentFragment extends QuestSetupWizardFragment {
         @Override
         public void run() {
             try {
-                Map<EncodeHintType, Object> hints = new HashMap<EncodeHintType, Object>();
+                Map<EncodeHintType, Object> hints = new HashMap<>();
                 hints.put(EncodeHintType.CHARACTER_SET, "windows-1251");
                 qrCodeOutput = encodeAsBitmap(qrCodeInput, QR_SIZE, hints);
                 qrCodeView.setImageBitmap(qrCodeOutput);

@@ -17,7 +17,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.base.PrimaryAndSecondaryColor;
+import ru.nekit.android.qls.quest.common.PrimaryAndSecondaryColor;
 import ru.nekit.android.qls.quest.mediator.adapter.SquareItemAdapter;
 import ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResource;

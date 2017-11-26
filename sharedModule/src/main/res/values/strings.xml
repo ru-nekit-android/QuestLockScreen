@@ -39,4 +39,6 @@
     <string name="quest_current_season_title">Текущее время года</string>
     <string name="quest_colors_synonym">цвета</string>
     <string name="quest_colors_title">Цвета</string>
+    <string name="quest_direction_synonym">направление</string>
+    <string name="quest_direction_title">Направление</string>
 </resources>

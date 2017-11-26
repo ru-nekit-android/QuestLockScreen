@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 
 public class PerimeterQuest extends NumberSummandQuest {
 

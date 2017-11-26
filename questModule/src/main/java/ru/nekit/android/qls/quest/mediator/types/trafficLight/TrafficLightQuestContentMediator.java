@@ -50,6 +50,7 @@ public class TrafficLightQuestContentMediator extends AbstractQuestContentMediat
 
     @Override
     protected void playDelayedStartAnimation() {
+        //override for no start delay animation
     }
 
     @Override

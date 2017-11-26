@@ -1,77 +1,114 @@
-//это коментарий
-/*
-это тоже коментарий
-*/
 {
-  "version": 1.1,
+  "version": 1.28,
   "name": "example",
   "description": "example",
-  //пол - есть три два: мальчик (BOY), девочка(GIRL)
   "sex": "GIRL",
-  //сложность - есть три варианта: простой (EASY), нормальный(NORMAL), сложный (HARD)
   "complexity": "NORMAL",
   "levels": [
     {
-      //название уровня (необязательно, но будем его отображать)
+      "delayedPlay": false,
       "name": "name_level_0",
-      //описание уровня (необязательно, но можем его отображать)
-      "description": "Прокачай пиздючку",
-      //сколько уровень весит в очках
+      "description": "Прокачай пиздюка",
       "pointsWeight": 10000,
-      //множитель очков: конечное количество очков, которое расчитывается исходя из награды за правильное решения задания умноженое на множитель очков
       "pointsMultiplier": 1.0,
-      //правила для заданий
       "quests": [
-        //МОНЕТЫ (solution, unknown_member)
+        //МОНЕТЫ
         {
           "questType": "монеты",
-          "memberCount": 4,
-          //возможные варианты: solution или unknown_member (в данном случае незвестный член - unknown_member)
-          //можно сразу несколько указывать
+          "memberCount": 6,
           "questionTypes": [
-            "unknown_member",
+            //"unknown_member",
             "solution"
           ],
-          //награда (может быть и не указана, по умолчанию 10)/
-          "reward": 10
+          "enabled": true,
+          "reward": 10,
+          "delayedPlay": true
         },
-        //СВЕТОФОР (solution)
+        //СВЕТОФОР
         {
-          "questType": "светофор"
+          "questType": "светофор",
+          "enabled": true,
+          "delayedPlay": true
         },
-        //ВРЕМЯ (unknown_member)
+        //ВРЕМЯ
         {
           "questType": "время",
           "reward": 10,
-          //количестко часов среди которых нужно найти правильный ответ (необязательно, будут подставлены значения по умолчанию)
+          "questionTypes": [
+            "unknown_member"
+          ],
+          "enabled": true,
+          "memberCount": 4,
+          "accuracy": 10,
+          "delayedPlay": true
+        },
+        //ВРЕМЯ
+        {
+          "questType": "время",
+          "reward": 10,
+          "questionTypes": [
+            "comparison"
+          ],
+          "enabled": true,
+          "memberCount": 4,
+          "accuracy": 10,
+          "delayedPlay": true
+        },
+        //ТЕКУЩЕЕ_ВРЕМЯ
+        {
+          "questType": "текущее_время",
+          "reward": 10,
+          "enabled": true,
+          "delayedPlay": true,
           "memberCount": 4
         },
-        //ВЫБОР (unknown_member)
+        //ТЕКУЩЕЕ_СЕЗОН
+        {
+          "questType": "текущий_сезон",
+          "reward": 10,
+          "enabled": true,
+          "delayedPlay": true
+        },
+        //ЦВЕТА
+        {
+          "questType": "цвета",
+          "reward": 10,
+          "enabled": true,
+          "memberCount": 4,
+          "delayedPlay": true
+        },
+        //ВЫБОР
         {
           "questType": "выбор",
           "reward": 10,
-          //Название наборов из которых делать выбор, на данный момент есть одна группа - это сезоны или впемена года
           "types": [
             "seasons",
             "berry",
             "pomum"
-          ]
+          ],
+          "delayedPlay": true,
+          "enabled": true
         },
-        //ФРУКТЫ (solution)
+        //ЛИШНИЙ
         {
-          //название задания. Варианты: фрукты, время, монеты, выбор
+          "questType": "лишний",
+          "reward": 10,
+          "types": [
+            "seasons",
+            "berry",
+            "pomum"
+          ],
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //ФРУКТЫ
+        {
           "questType": "фрукты",
-          //возможные варианты: solution или comparison (в данном случае решение).
           "questionTypes": [
             "solution"
           ],
-          //количество членов в примере (в данном случае 2 получается a + b) (необязательно, будут подставлены значения по умолчанию)
-          "memberCounts": [
-            2,
-            0
-          ],
-          //минимальное и максимальное значение для каждого члена в примере (необязательно, будут подставлены значения по умолчанию)
-          //вначале минимальные значения по порядку, потом максимальные по порядку
+          "memberCount": 2,
+          "answerVariants": 6,
           "memberMinAndMaxValues": [
             [
               1,
@@ -81,7 +118,27 @@
               5,
               5
             ]
-          ]
+          ],
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //ФРУКТЫ
+        {
+          "questType": "фрукты",
+          "questionTypes": [
+            "comparison"
+          ],
+          "answerVariants": 2,
+          "memberCount": 20,
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //НАПРАВЛЕНИЕ
+        {
+          "questType": "направление",
+          "delayedPlay": false,
+          "reward": 10,
+          "enabled": false
         }
       ]
     }

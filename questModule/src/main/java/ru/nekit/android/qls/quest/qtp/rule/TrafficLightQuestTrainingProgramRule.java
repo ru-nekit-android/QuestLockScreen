@@ -5,7 +5,7 @@ import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.model.TrafficLightModel;
 

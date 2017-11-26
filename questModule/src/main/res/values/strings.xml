@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Задачки</string>
+    <string name="app_name">Маленький гений</string>
     <string name="explicit_start">Включить</string>
     <string name="label_answer">Ответить</string>
     <string name="stop">Остановить</string>
@@ -133,5 +133,9 @@
     <string name="qvri_doll_skirt_title">Юбка</string>
     <string name="qvri_doll_blouse_title">Блузка</string>
     <string name="quest_series">%1$d из %2$d</string>
+    <string name="quest_direction_title_left">Влево</string>
+    <string name="quest_direction_title_down">Вниз</string>
+    <string name="quest_direction_title_right">Вправо</string>
+    <string name="quest_direction_title_up">Вверх</string>
 
 </resources>

@@ -9,7 +9,7 @@ import java.util.List;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;

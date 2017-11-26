@@ -1,129 +1,144 @@
 {
-  "version": 1.0,
+  "version": 1.28,
   "name": "example",
   "description": "example",
-  "sex": "GIRL",
-  "complexity": "NORMAL",
+  "sex": "BOY",
+  "complexity": "EASY",
   "levels": [
     {
+      "delayedPlay": false,
       "name": "name_level_0",
-      "description": "description_level_0",
-      "pointsWeight": 100,
+      "description": "Прокачай пиздюка",
+      "pointsWeight": 10000,
       "pointsMultiplier": 1.0,
-      "rules": [
-        //COINS
+      "quests": [
+        //МОНЕТЫ
         {
-          "questType": "COINS",
+          "questType": "монеты",
+          "memberCount": 6,
           "questionTypes": [
-            "SOLUTION"
+            //"unknown_member",
+            "solution"
           ],
+          "enabled": true,
           "reward": 10,
-          "memberCount": 2
+          "delayedPlay": true
         },
-        //SIMPLE_EXAMPLE
+        //СВЕТОФОР
         {
-          "questType": "SIMPLE_EXAMPLE",
-          "questionTypes": [
-            "SOLUTION",
-            "UNKNOWN_MEMBER",
-            "UNKNOWN_OPERATION",
-            "COMPARISON"
-          ],
+          "questType": "светофор",
+          "enabled": true,
+          "delayedPlay": true
+        },
+        //ВРЕМЯ
+        {
+          "questType": "время",
           "reward": 10,
-          "memberCounts": [
-            3,
-            3
-          ],
-          "memberMinAndMaxValues": [
-            [
-              1,
-              1,
-              1
-            ],
-            [
-              20,
-              20,
-              20
-            ]
-          ],
-          "flags": [
-            "POSITIVE_FIRST_SUMMAND",
-            "AVOID_NEGATIVE_ANSWER",
-            "AVOID_ZERO_ANSWER",
-            "AVOID_NEGATIVE_ANSWER_WHILE_CALCULATION"
-          ]
-        },
-        //METRICS
-        {
-          "questType": "METRICS",
           "questionTypes": [
-            "SOLUTION",
-            "COMPARISON"
+            "unknown_member"
           ],
-          "reward": 5,
-          "memberCounts": [
-            3,
-            3
-          ],
-          "eachMemberMinAndMaxValues": [
-            [
-              1,
-              3
-            ],
-            [
-              1,
-              5
-            ],
-            [
-              1,
-              100
-            ]
-          ],
-          "flags": [
-            "ONLY_POSITIVE_SUMMANDS"
-          ]
+          "enabled": true,
+          "memberCount": 4,
+          "accuracy": 10,
+          "delayedPlay": true
         },
-        //PERIMETER
+        //ВРЕМЯ
         {
-          "questType": "PERIMETER",
+          "questType": "время",
+          "reward": 10,
           "questionTypes": [
-            "SOLUTION",
-            "UNKNOWN_MEMBER"
+            "comparison"
           ],
-          "reward": 2,
-          "memberMinAndMaxValues": [
-            [
-              1,
-              1
-            ],
-            [
-              20,
-              20
-            ]
-          ]
+          "enabled": true,
+          "memberCount": 4,
+          "accuracy": 10,
+          "delayedPlay": true
         },
+        //ТЕКУЩЕЕ_ВРЕМЯ
         {
-          "questType": "TRAFFIC_LIGHT",
-          "questionTypes": [
-            "SOLUTION"
+          "questType": "текущее_время",
+          "reward": 10,
+          "enabled": true,
+          "delayedPlay": true,
+          "memberCount": 4
+        },
+        //ТЕКУЩЕЕ_СЕЗОН
+        {
+          "questType": "текущий_сезон",
+          "reward": 10,
+          "enabled": true,
+          "delayedPlay": true
+        },
+        //ЦВЕТА
+        {
+          "questType": "цвета",
+          "reward": 10,
+          "enabled": true,
+          "memberCount": 4,
+          "delayedPlay": true
+        },
+        //ВЫБОР
+        {
+          "questType": "выбор",
+          "reward": 10,
+          "types": [
+            "seasons",
+            "berry",
+            "pomum"
           ],
-          "reward": 5
-        }
-      ]
-    },
-    {
-      "name": "name_level_1",
-      "description": "description_level_1",
-      "pointsWeight": 200,
-      "rules": [
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //ЛИШНИЙ
         {
-          "questType": "COINS",
+          "questType": "лишний",
+          "reward": 10,
+          "types": [
+            "seasons",
+            "berry",
+            "pomum"
+          ],
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //ФРУКТЫ
+        {
+          "questType": "фрукты",
+          "questionTypes": [
+            "solution"
+          ],
           "memberCount": 2,
-          "reward": 10,
+          "answerVariants": 6,
+          "memberMinAndMaxValues": [
+            [
+              1,
+              1
+            ],
+            [
+              5,
+              5
+            ]
+          ],
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //ФРУКТЫ
+        {
+          "questType": "фрукты",
           "questionTypes": [
-            "SOLUTION",
-            "UNKNOWN_MEMBER"
-          ]
+            "comparison"
+          ],
+          "answerVariants": 2,
+          "memberCount": 20,
+          "delayedPlay": true,
+          "enabled": true
+        },
+        //НАПРАВЛЕНИЕ
+        {
+          "questType": "направление",
+          "delayedPlay": false,
+          "reward": 10,
+          "enabled": false
         }
       ]
     }

@@ -103,6 +103,7 @@ public abstract class BaseSetupWizard {
         return String.format(BIND_CODE_PATTERN, pupil.getUuid(), pupil.name);
     }
 
+    @NonNull
     protected Pupil createPupilFromBindCode(@NonNull String bindCode) {
         String[] values = TextUtils.split(bindCode, ":");
         Pupil pupil = new Pupil(values[1]);

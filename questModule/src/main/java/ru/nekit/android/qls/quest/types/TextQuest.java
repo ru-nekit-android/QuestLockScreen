@@ -3,7 +3,7 @@ package ru.nekit.android.qls.quest.types;
 import android.text.InputType;
 
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 
 public class TextQuest extends Quest {
 

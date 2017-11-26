@@ -8,7 +8,7 @@ import com.google.gson.JsonObject;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.generator.TextQuestGenerator;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.CAMOUFLAGE_LENGTH;

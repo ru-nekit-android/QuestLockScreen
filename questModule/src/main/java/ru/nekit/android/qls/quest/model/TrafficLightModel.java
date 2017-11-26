@@ -1,9 +1,5 @@
 package ru.nekit.android.qls.quest.model;
 
-/**
- * Created by nekit on 23.03.17.
- */
-
 public enum TrafficLightModel {
 
     GREEN,

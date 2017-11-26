@@ -10,9 +10,10 @@ import android.widget.TextView;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.base.Quest;
+import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.model.ColorModel;
+import ru.nekit.android.qls.quest.model.DirectionModel;
 import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
@@ -22,7 +23,7 @@ import ru.nekit.android.qls.quest.types.TimeQuest;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-import static ru.nekit.android.qls.quest.base.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
+import static ru.nekit.android.qls.quest.common.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
 
 public class QuestTitleMediator implements IQuestTitleMediator {
 
@@ -217,7 +218,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                             mTitleText = String.format("Выберите %s",
                                     questResourceLibrary.getVisualResourceItem(
-                                            numberSummandQuest.getUnknownValue()).
+                                            numberSummandQuest.getUnknownMember()).
                                             getTitle(mQuestContext));
 
                             break;
@@ -248,6 +249,13 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                             ColorModel.getById(visualRepresentationalNumberSummandQuest.leftNode[unknownIndex]).getTitle(questContext),
                             questResourceLibrary.getVisualResourceItem(visualRepresentationalNumberSummandQuest.getVisualRepresentationList().get(unknownIndex)).getTitle(questContext)
                     );
+
+                    break;
+
+                case DIRECTION:
+
+                    mTitleText = String.format("Выберите %s",
+                            DirectionModel.fromOrdinal(numberSummandQuest.getAnswer()).getTitle(questContext));
 
                     break;
             }

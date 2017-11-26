@@ -88,7 +88,11 @@ public abstract class BaseSetupWizardFragment extends Fragment {
         if (textResId == 0) {
             textResId = R.string.label_next;
         }
-        getNextButton().setText(getString(textResId));
+        setNextButtonText(getString(textResId));
+    }
+
+    final protected void setNextButtonText(@NonNull String text) {
+        getNextButton().setText(text);
     }
 
     final protected void setAltButtonText(@StringRes int textResId) {

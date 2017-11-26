@@ -8,26 +8,28 @@ import ru.nekit.android.qls.quest.answer.GroupWeightComparisonQuestAnswerChecker
 import ru.nekit.android.qls.quest.answer.MetricsQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.SimpleExampleAnswerChecker;
 import ru.nekit.android.qls.quest.answer.TrafficLightQuestAnswerChecker;
-import ru.nekit.android.qls.quest.answer.shared.QuestAnswerChecker;
-import ru.nekit.android.qls.quest.base.Quest;
-import ru.nekit.android.qls.quest.mediator.answer.QuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.answer.common.QuestAnswerChecker;
+import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.mediator.answer.ButtonsQuestAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.content.EmptyQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.title.QuestTitleMediator;
-import ru.nekit.android.qls.quest.mediator.types.choice.ChoiceAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.types.coins.CoinQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.choice.ChoiceAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.coins.CoinQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.types.coins.CoinQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.types.colored.ColoredVisualRepresentationQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.types.fruitArithmetic.FruitArithmeticQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.colored.ColoredVisualRepresentationQuestAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.direction.DirectionAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.fruitArithmetic.FruitArithmeticQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.types.fruitArithmetic.FruitArithmeticQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.types.fruitArithmetic.FruitComparisonAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.types.metrics.MetricsQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.fruitArithmetic.FruitComparisonAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.metrics.MetricsQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.types.metrics.MetricsQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.types.perimeter.PerimeterQuestContentMediator;
-import ru.nekit.android.qls.quest.mediator.types.simpleExample.SimpleExampleQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.simpleExample.SimpleExampleQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.types.simpleExample.SimpleExampleQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.types.textCamouflage.TextCamouflageContentMediator;
-import ru.nekit.android.qls.quest.mediator.types.time.CurrentTimeQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.types.time.TimeQuestAlternativeAnswerMediator;
-import ru.nekit.android.qls.quest.mediator.types.trafficLight.TrafficLightQuestAlternativeAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.time.CurrentTimeQuestAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.time.TimeQuestAnswerMediator;
+import ru.nekit.android.qls.quest.mediator.types.trafficLight.TrafficLightQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.types.trafficLight.TrafficLightQuestContentMediator;
 
 import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
@@ -53,7 +55,7 @@ public class QuestVisualBuilder {
                         new CoinQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new CoinQuestContentMediator(),
-                        new CoinQuestAlternativeAnswerMediator()
+                        new CoinQuestAnswerMediator()
                 );
 
                 break;
@@ -65,7 +67,7 @@ public class QuestVisualBuilder {
                         new SimpleExampleAnswerChecker(),
                         new QuestTitleMediator(),
                         new SimpleExampleQuestContentMediator(),
-                        new SimpleExampleQuestAlternativeAnswerMediator()
+                        new SimpleExampleQuestAnswerMediator()
                 );
 
                 break;
@@ -77,7 +79,7 @@ public class QuestVisualBuilder {
                         new MetricsQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new MetricsQuestContentMediator(),
-                        new MetricsQuestAlternativeAnswerMediator()
+                        new MetricsQuestAnswerMediator()
                 );
 
                 break;
@@ -89,7 +91,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new PerimeterQuestContentMediator(),
-                        new SimpleExampleQuestAlternativeAnswerMediator()
+                        new SimpleExampleQuestAnswerMediator()
                 );
 
                 break;
@@ -101,7 +103,7 @@ public class QuestVisualBuilder {
                         new TrafficLightQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new TrafficLightQuestContentMediator(),
-                        new TrafficLightQuestAlternativeAnswerMediator()
+                        new TrafficLightQuestAnswerMediator()
                 );
 
                 break;
@@ -113,7 +115,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         new TextCamouflageContentMediator(),
-                        new QuestAlternativeAnswerMediator()
+                        new ButtonsQuestAnswerMediator()
                 );
 
                 break;
@@ -127,8 +129,8 @@ public class QuestVisualBuilder {
                                 new GroupWeightComparisonQuestAnswerChecker(),
                         new QuestTitleMediator(),
                         isSolution ? new FruitArithmeticQuestContentMediator() : null,
-                        isSolution ? new FruitArithmeticQuestAlternativeAnswerMediator() :
-                                new FruitComparisonAlternativeAnswerMediator()
+                        isSolution ? new FruitArithmeticQuestAnswerMediator() :
+                                new FruitComparisonAnswerMediator()
                 );
 
                 break;
@@ -140,7 +142,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
-                        new TimeQuestAlternativeAnswerMediator()
+                        new TimeQuestAnswerMediator()
                 );
 
                 break;
@@ -152,7 +154,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
-                        new CurrentTimeQuestAlternativeAnswerMediator()
+                        new CurrentTimeQuestAnswerMediator()
                 );
 
                 break;
@@ -166,7 +168,7 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
-                        new ChoiceAlternativeAnswerMediator()
+                        new ChoiceAnswerMediator()
                 );
 
                 break;
@@ -178,7 +180,19 @@ public class QuestVisualBuilder {
                         new QuestAnswerChecker(),
                         new QuestTitleMediator(),
                         null,
-                        new ColoredVisualRepresentationQuestAlternativeAnswerMediator()
+                        new ColoredVisualRepresentationQuestAnswerMediator()
+                );
+
+                break;
+
+            case DIRECTION:
+
+                mQuestMediatorFacade = new QuestMediatorFacade(
+                        mQuestContext,
+                        new QuestAnswerChecker(),
+                        new QuestTitleMediator(),
+                        new EmptyQuestContentMediator(),
+                        new DirectionAnswerMediator()
                 );
 
                 break;

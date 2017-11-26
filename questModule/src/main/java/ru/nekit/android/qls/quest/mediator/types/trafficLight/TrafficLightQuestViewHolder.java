@@ -8,10 +8,6 @@ import android.view.ViewGroup;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-/**
- * Created by nekit on 17.01.17.
- */
-
 class TrafficLightQuestViewHolder extends ViewHolder {
 
     View trafficGreenLight, trafficRedLight, trafficLightBackground;

@@ -1,20 +1,15 @@
 apply plugin: 'com.android.application'
 
-repositories {
-    maven {
-        url "https://jitpack.io"
-    }
-}
-
 android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
+
     defaultConfig {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 7
-        versionName "1.28"
+        versionName "1.282"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -23,8 +18,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    productFlavors {
     }
 }
 
@@ -43,11 +36,12 @@ android.applicationVariants.all { variant ->
 }
 
 dependencies {
-    compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+    compile('io.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }
-    compile 'com.github.jakob-grabner:Circle-Progress-View:v1.3'
-    compile 'com.github.christophesmet:android_maskable_layout:-SNAPSHOT'
+    compile 'io.github.jakob-grabner:Circle-Progress-View:v1.3'
+    compile 'io.github.christophesmet:android_maskable_layout:-SNAPSHOT'
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
+    compile 'com.github.pwittchen:swipe:0.1.0'
     compile project(':sharedModule')
 }

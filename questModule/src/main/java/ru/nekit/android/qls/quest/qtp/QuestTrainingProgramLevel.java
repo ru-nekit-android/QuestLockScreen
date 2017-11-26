@@ -20,6 +20,7 @@ import ru.nekit.android.qls.quest.qtp.rule.CoinsQuestTrainingRule;
 import ru.nekit.android.qls.quest.qtp.rule.ColoredVisualRepresentationQuestTrainingRule;
 import ru.nekit.android.qls.quest.qtp.rule.CurrentSeasonQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.CurrentTimeQuestTrainingProgramRule;
+import ru.nekit.android.qls.quest.qtp.rule.DirectionQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.FruitArithmeticQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.MetricsQuestTrainingProgramRule;
 import ru.nekit.android.qls.quest.qtp.rule.MismatchQuestTrainingProgramRule;
@@ -59,6 +60,7 @@ public class QuestTrainingProgramLevel implements Parcelable {
 
     }
 
+    @SuppressWarnings("unchecked")
     protected QuestTrainingProgramLevel(Parcel in) {
         index = in.readInt();
         pointsWeight = in.readInt();
@@ -215,6 +217,12 @@ public class QuestTrainingProgramLevel implements Parcelable {
                         case COLORS:
 
                             rule = new ColoredVisualRepresentationQuestTrainingRule();
+
+                            break;
+
+                        case DIRECTION:
+
+                            rule = new DirectionQuestTrainingProgramRule();
 
                             break;
 

@@ -67,7 +67,11 @@ public enum QuestType implements ITitleable {
     COLORS(R.string.quest_colors_synonym,
             new QuestionType[]{UNKNOWN_MEMBER},
             R.string.quest_colors_title,
-            UNKNOWN_MEMBER);
+            UNKNOWN_MEMBER),
+
+    DIRECTION(R.string.quest_direction_synonym,
+            new QuestionType[]{UNKNOWN_MEMBER},
+            R.string.quest_direction_title, UNKNOWN_MEMBER);
 
     private QuestionType[] mSupportQuestionTypes;
     private QuestionType mDefaultQuestionType;
@@ -90,6 +94,10 @@ public enum QuestType implements ITitleable {
         this(synonymResourceId, supportQuestionTypes, titleResourceId, null);
     }
 
+    QuestType(@StringRes int synonymResourceId, @StringRes int titleResourceId) {
+        this(synonymResourceId, new QuestionType[]{QuestionType.QUESTION_TYPE_BY_DEFAULT}, titleResourceId, null);
+    }
+
     QuestType(QuestionType[] supportQuestionTypes,
               @StringRes int titleResourceId, @Nullable QuestionType defaultQuestionType) {
         this(0, supportQuestionTypes, titleResourceId, defaultQuestionType);
@@ -100,8 +108,7 @@ public enum QuestType implements ITitleable {
     }
 
     QuestType(@StringRes int titleResourceId) {
-        this(0, new QuestionType[]{QuestionType.QUESTION_TYPE_BY_DEFAULT},
-                titleResourceId);
+        this(0, titleResourceId);
     }
 
     @Nullable
