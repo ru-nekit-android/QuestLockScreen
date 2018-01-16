@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="com.github.johnkil.android-robototextview:robototextview-3.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/robototextview-3.0.0.aar/a601b5a21eb938411bc52ae072bb8c1d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/robototextview-3.0.0.aar/a601b5a21eb938411bc52ae072bb8c1d/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.johnkil.android-robototextview/robototextview/3.0.0/3cf30e6f008120aeefd78f8c7c863d589a2d8753/robototextview-3.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.johnkil.android-robototextview/robototextview/3.0.0/f0f1e4516ea66ca1c75ff7c90e77de39f80073b7/robototextview-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

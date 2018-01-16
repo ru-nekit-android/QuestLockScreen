@@ -46,6 +46,7 @@ public class PupilManager {
         return mPupilSaver.restore(getCurrentPupilUuid());
     }
 
+    @NonNull
     public List<Pupil> getPupilList() {
         List<Pupil> pupilList = new ArrayList<>();
         List<String> pupilUuidList = getPupilUuidList();

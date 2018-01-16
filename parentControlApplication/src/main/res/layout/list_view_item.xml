@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container"
+    style="@style/List"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.devspark.robototextview.widget.RobotoTextView
+        android:id="@+id/tv_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/base_gap" />
+
+</android.support.v7.widget.CardView>

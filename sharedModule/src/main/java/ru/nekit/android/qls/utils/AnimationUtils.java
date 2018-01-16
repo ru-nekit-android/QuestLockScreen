@@ -3,6 +3,7 @@ package ru.nekit.android.qls.utils;
 
 import android.animation.Animator;
 import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -33,6 +34,13 @@ public class AnimationUtils {
     public static ValueAnimator getColorAnimator(@ColorInt int startColor, @ColorInt int endColor,
                                                  int duration, @NonNull final View view) {
         return getColorAnimator(startColor, endColor, duration, view, null);
+    }
+
+    public static void shake(@NonNull View view) {
+        ObjectAnimator rotate = ObjectAnimator.ofFloat(view, "rotation", 0f, 20f, 0f, -20f, 0f);
+        rotate.setRepeatCount(5);
+        rotate.setDuration(100);
+        rotate.start();
     }
 
     public static ValueAnimator getColorAnimator(@ColorInt int startColor, @ColorInt int endColor,

@@ -8,15 +8,17 @@ interface ISetupWizardHolder {
 
     BaseSetupWizard getSetupWizard();
 
-    void showSetupWizardStep(ISetupStep step, Object... params);
+    void showSetupWizardStep(ISetupWizardStep step, Object... params);
 
     Button getNextButton();
 
     Button getAltButton();
 
-    boolean nextButtonAction();
+    boolean nextAction();
 
-    void altButtonAction();
+    void setUnconditionedNextAction(boolean value);
+
+    void altAction();
 
     ViewGroup getToolContainer();
 

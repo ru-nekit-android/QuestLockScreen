@@ -15,12 +15,13 @@ import ru.nekit.android.shared.R;
 public abstract class BaseSetupWizardActivity extends FragmentActivity implements ISetupWizardHolder,
         View.OnClickListener {
 
-    private static final String FRAGMENT_NAME = "fragment_name";
+    private static final String FRAGMENT_NAME = "SetupWizardFragment";
 
     protected EventBus mEventBus;
     protected BaseSetupWizard mSetupWizard;
     private Button mNextButton, mAltButton;
     private ViewGroup mToolContainer, mFragmentContainer;
+    private boolean mUnconditionedNextAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,14 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
         mNextButton.setOnClickListener(this);
         mAltButton.setOnClickListener(this);
         mSetupWizard = createSetupWizard(context);
+        showNextSetupWizardStep();
+    }
+
+    public Context getContext() {
+        return getApplicationContext();
+    }
+
+    private void showNextSetupWizardStep() {
         showSetupWizardStep(mSetupWizard.getNextStep());
     }
 
@@ -50,8 +59,15 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
     }
 
     @Override
-    public boolean nextButtonAction() {
-        return getCurrentFragment().nextButtonAction();
+    public boolean nextAction() {
+        if (mUnconditionedNextAction) {
+            return getCurrentFragment().nextAction();
+        }
+        return getSetupWizard().needLogin(getSetupWizard().getCurrentStep()) || getCurrentFragment().nextAction();
+    }
+
+    public void setUnconditionedNextAction(boolean value) {
+        mUnconditionedNextAction = value;
     }
 
     private BaseSetupWizardFragment getCurrentFragment() {
@@ -59,8 +75,8 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
     }
 
     @Override
-    public void altButtonAction() {
-        getCurrentFragment().altButtonAction();
+    public void altAction() {
+        getCurrentFragment().altAction();
     }
 
     @Override
@@ -82,7 +98,7 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
     }
 
     @Override
-    public abstract void showSetupWizardStep(@NonNull ISetupStep step, Object... params);
+    public abstract void showSetupWizardStep(@NonNull ISetupWizardStep step, Object... params);
 
     protected void replaceFragment(@NonNull BaseSetupWizardFragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -116,11 +132,11 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
     @Override
     public void onClick(View view) {
         if (view == mNextButton) {
-            if (nextButtonAction()) {
-                showSetupWizardStep(mSetupWizard.getNextStep());
+            if (nextAction()) {
+                showNextSetupWizardStep();
             }
         } else if (view == mAltButton) {
-            altButtonAction();
+            altAction();
         }
     }
 }

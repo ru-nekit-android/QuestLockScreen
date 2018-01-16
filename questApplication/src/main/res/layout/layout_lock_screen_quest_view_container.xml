@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Container (Useless)-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Title-->
+    <RelativeLayout
+        android:id="@+id/container_title"
+        style="@style/LockScreen.QuestContent.TitleContainer"
+        android:layout_width="match_parent"
+        android:animateLayoutChanges="true">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_title"
+            style="@style/LockScreen.QuestContent.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_message_right"
+            style="@style/LockScreen.QuestContent.TitleRight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/tv_title"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_toEndOf="@+id/tv_title"
+            android:layout_toLeftOf="@+id/container_statistics"
+            android:layout_toRightOf="@+id/tv_title" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_menu"
+            style="@style/MenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true" />
+
+        <RelativeLayout
+            android:id="@+id/container_statistics"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true">
+
+            <at.grabner.circleprogress.CircleProgressView
+                android:id="@+id/pupil_progress"
+                style="@style/PupilLevelProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <com.devspark.robototextview.widget.RobotoTextView
+                android:id="@+id/tv_pupil_level"
+                style="@style/PupilLevel"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_alignBottom="@+id/pupil_progress"
+                android:layout_alignLeft="@+id/pupil_progress"
+                android:layout_alignRight="@+id/pupil_progress"
+                android:layout_alignTop="@+id/pupil_progress"
+                android:gravity="center" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <!--Content-->
+
+    <FrameLayout
+        android:id="@+id/container_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/container_delayed_play"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/icon_delayed_play"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    app:srcCompat="@drawable/ic_play" />
+
+                <com.devspark.robototextview.widget.RobotoTextView
+                    android:id="@+id/tv_delayed_play"
+                    style="@style/LockScreen.QuestContent.DelayedPlay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_delayed_start" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <ViewSwitcher
+            android:id="@+id/container_content_quest"
+            style="@style/LockScreen.QuestContent.Container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</LinearLayout>

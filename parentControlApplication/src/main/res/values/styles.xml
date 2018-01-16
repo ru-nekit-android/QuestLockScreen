@@ -1,0 +1,103 @@
+<resources>
+
+    <style name="ParentControlTheme" parent="Theme.AppCompat.Light.NoActionBar" />
+
+    <style name="List">
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Container">
+        <item name="android:layout_margin">4dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="elevation">4dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="TransparentToolbar" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:windowActionBarOverlay">true</item>
+        <!-- Support Library compability -->
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="PupilList"></style>
+
+    <style name="PupilList.Header"></style>
+
+    <style name="PupilList.Header.Container">
+        <item name="android:padding">@dimen/base_semi_gap</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="PupilList.Header.Title" parent="TextAppearance">
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginBottom">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="PupilList.Item"></style>
+
+    <style name="PupilList.Item.Container">
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="PupilList.Item.Title" parent="TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="PupilList.Item.AvatarMask">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginBottom">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="android:layout_width">@dimen/pupil_avatar_width</item>
+        <item name="android:layout_height">@dimen/pupil_avatar_height</item>
+    </style>
+
+    <style name="PupilList.Item.AvatarContainer">
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <!-- CardView -->
+    <style name="CardViewStyle" parent="CardView">
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginRight">@dimen/card_view_margin</item>
+        <item name="android:layout_marginLeft">@dimen/card_view_margin</item>
+        <item name="cardCornerRadius">@dimen/card_view_card_corner_radius</item>
+        <item name="cardElevation">@dimen/card_view_card_elevation</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <!-- ToolBar -->
+    <style name="ToolbarStyle" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="titleTextColor">@android:color/white</item>
+    </style>
+
+    <!-- Button styles -->
+    <style name="BaseButtonStyle" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:layout_width">@dimen/button_width</item>
+        <item name="android:layout_height">@dimen/button_height</item>
+    </style>
+
+    <style name="ButtonStyle" parent="BaseButtonStyle">
+        <item name="android:background">@color/colorAccent</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:layout_gravity">bottom|end</item>
+    </style>
+
+
+</resources>

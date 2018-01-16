@@ -33,8 +33,8 @@ public abstract class BaseSetupWizardFragment extends Fragment {
         return getSetupWizardHolder().getSetupWizard();
     }
 
-    protected void showSetupWizardStep(@NonNull ISetupStep step, Object... params) {
-        getSetupWizardHolder().showSetupWizardStep(getSetupWizard().redirectToLoginIfNeed(step), params);
+    protected void showSetupWizardStep(@NonNull ISetupWizardStep step, Object... params) {
+        getSetupWizardHolder().showSetupWizardStep(step, params);
     }
 
     private ISetupWizardHolder getSetupWizardHolder() {
@@ -56,8 +56,8 @@ public abstract class BaseSetupWizardFragment extends Fragment {
         setToolContainerVisibility(true);
     }
 
-    protected void showExpectedSetupWizardStep() {
-        showSetupWizardStep(getSetupWizard().getExpectedSetupStep());
+    public void setUnconditionedNextAction(boolean value) {
+        getSetupWizardHolder().setUnconditionedNextAction(value);
     }
 
     final protected Button getNextButton() {
@@ -100,11 +100,11 @@ public abstract class BaseSetupWizardFragment extends Fragment {
         getAltButton().setText(getString(textResId));
     }
 
-    protected boolean nextButtonAction() {
+    protected boolean nextAction() {
         return true;
     }
 
-    protected void altButtonAction() {
+    protected void altAction() {
     }
 
     protected abstract int getLayoutId();

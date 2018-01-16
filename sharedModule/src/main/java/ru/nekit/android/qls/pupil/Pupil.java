@@ -18,7 +18,7 @@ public class Pupil {
     public String avatar;
     public boolean isBind;
     private String uuid;
-    private List<PhoneContact> phoneContacts;
+    private List<PhoneContact> allowContacts;
 
     public Pupil(@NonNull String uuid) {
         this.uuid = uuid;
@@ -44,14 +44,14 @@ public class Pupil {
     }
 
     @NonNull
-    public List<PhoneContact> getPhoneContacts() {
-        if (phoneContacts == null) {
-            phoneContacts = new ArrayList<>();
+    public List<PhoneContact> getAllowContacts() {
+        if (allowContacts == null) {
+            allowContacts = new ArrayList<>();
         }
-        return phoneContacts;
+        return allowContacts;
     }
 
-    public void setPhoneContacts(@NonNull List<PhoneContact> value) {
-        phoneContacts = value;
+    public void setAllowContacts(@NonNull List<PhoneContact> value) {
+        allowContacts = value;
     }
 }

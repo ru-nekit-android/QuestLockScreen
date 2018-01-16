@@ -1,7 +1,11 @@
 package ru.nekit.android.qls.pupil;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import ru.nekit.android.shared.R;
 
 public class PhoneContact implements Parcelable {
 
@@ -43,7 +47,7 @@ public class PhoneContact implements Parcelable {
         dest.writeString(phoneNumber);
     }
 
-    public String toString() {
-        return String.format("%s (%s)", name, phoneNumber);
+    public String toString(@NonNull Context context) {
+        return String.format(context.getString(R.string.phone_contact_formatter), name, phoneNumber);
     }
 }

@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.session;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import ru.nekit.android.qls.PreferencesUtil;
@@ -14,18 +13,18 @@ public class Session {
         return String.format("%s.%s", NAME, name);
     }
 
-    public static void startSession(@NonNull Context context, @NonNull SessionType sessionType) {
+    public static void startSession(@NonNull SessionType sessionType) {
         PreferencesUtil.setLong(getFullSessionName(sessionType.getName()),
                 TimeUtils.getCurrentTime());
     }
 
-    public static boolean isValid(@NonNull Context context, @NonNull SessionType sessionType) {
+    public static boolean isValid(@NonNull SessionType sessionType) {
         long sessionTime = PreferencesUtil.getLong(getFullSessionName(sessionType.getName()));
         return sessionTime != 0
                 && (TimeUtils.getCurrentTime() - sessionTime) <= sessionType.getExpiredTime();
     }
 
-    public static void reset(@NonNull Context context, @NonNull SessionType sessionType) {
+    public static void reset(@NonNull SessionType sessionType) {
         PreferencesUtil.setLong(getFullSessionName(sessionType.getName()), 0);
     }
 }

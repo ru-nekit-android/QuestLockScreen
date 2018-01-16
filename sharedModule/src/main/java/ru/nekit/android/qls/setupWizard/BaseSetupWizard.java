@@ -4,6 +4,9 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.pupil.PupilManager;
@@ -20,44 +23,41 @@ public abstract class BaseSetupWizard {
     protected final PupilManager mPupilManager;
     @NonNull
     protected final SettingsStorage mSettingsStorage;
-    protected ISetupStep mCurrentSetupStep;
-    private ISetupStep mExpectedSetupStep;
+    @NonNull
+    private final List<ISetupWizardStep> mStepStack;
+    protected ISetupWizardStep mCurrentStep;
 
     public BaseSetupWizard(@NonNull Context context) {
         mContext = context;
+        mStepStack = new ArrayList<>();
         mSettingsStorage = new SettingsStorage();
         mPupilManager = new PupilManager();
     }
 
-    final ISetupStep getExpectedSetupStep() {
-        return mExpectedSetupStep;
-    }
-
-    ISetupStep getNextStep() {
-        return redirectToLoginIfNeed(calculateNextStep());
-    }
-
-    ISetupStep redirectToLoginIfNeed(@NonNull ISetupStep step) {
-        if (needLogin(step)) {
-            if (mExpectedSetupStep != null) {
-                step = mExpectedSetupStep;
-                mExpectedSetupStep = null;
+    ISetupWizardStep getNextStep() {
+        ISetupWizardStep calculatedStep = calculateNextStep();
+        if (needLogin(calculatedStep)) {
+            mStepStack.clear();
+            mStepStack.add(BaseSetupWizardStep.UNLOCK_SECRET);
+        }
+        if (calculatedStep.needInternetConnection()) {
+            if (!internetIsConnected()) {
+                mStepStack.add(BaseSetupWizardStep.SETUP_INTERNET_CONNECTION);
             }
-            return step;
         }
-        if (step.needLogin()) {
-            mExpectedSetupStep = step;
+        int size = mStepStack.size();
+        if (size == 0 || (size > 0 && mStepStack.get(size - 1) != calculatedStep)) {
+            mStepStack.add(calculatedStep);
         }
-        return BaseSetupStep.ENTER_UNLOCK_SECRET;
+        return mStepStack.remove(0);
     }
 
-    protected boolean needLogin(ISetupStep step) {
-        return step.needLogin()
-                || !Session.isValid(mContext, SessionType.SETUP_WIZARD);
+    private boolean internetIsConnected() {
+        return true;
     }
 
     @NonNull
-    protected abstract ISetupStep calculateNextStep();
+    protected abstract ISetupWizardStep calculateNextStep();
 
     public void setIntroductionIsPresented(boolean value) {
         mSettingsStorage.setIntroductionIsPresented(value);
@@ -97,6 +97,7 @@ public abstract class BaseSetupWizard {
         mSettingsStorage.completeSetupWizard(getName(), value);
     }
 
+    @NonNull
     public String createBindCode() {
         Pupil pupil = mPupilManager.getCurrentPupil();
         assert pupil != null;
@@ -109,5 +110,13 @@ public abstract class BaseSetupWizard {
         Pupil pupil = new Pupil(values[1]);
         pupil.name = values[2];
         return pupil;
+    }
+
+    boolean needLogin(@NonNull ISetupWizardStep step) {
+        return step.needLogin() && !Session.isValid(SessionType.SETUP_WIZARD);
+    }
+
+    ISetupWizardStep getCurrentStep() {
+        return mCurrentStep;
     }
 }

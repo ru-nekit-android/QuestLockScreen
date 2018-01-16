@@ -43,7 +43,7 @@ public abstract class BaseSetupWizardPermissionRequestFragment extends BaseSetup
     }
 
     @Override
-    protected void altButtonAction() {
+    protected void altAction() {
         requestPermission();
     }
 

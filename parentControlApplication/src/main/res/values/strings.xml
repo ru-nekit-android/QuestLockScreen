@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Родительский контроль</string>
+    <string name="title_hello">Приветствие</string>
+    <string name="label_start_setup_wizard">Начать настройку</string>
+    <string name="label_setup_wizard_continue">Продолжить настройку</string>
+    <string name="title_ask_for_camera_permission">Запрос на доступ к камере</string>
+    <string name="label_bind_pupil">Добавить</string>
+    <string name="cancel">Отмена</string>
+    <string name="title_pupil_list">Список учеников</string>
+    <string name="title_bind_code">Наведите на код</string>
+    <string name="pupil_already_bound">Ученик уже добавлен</string>
+    <string name="text_notification">Добавте ученика</string>
+    <string name="title_notification">Мастер настройки</string>
+    <string name="title_selection_pupil_is_bound">Добавленый</string>
+    <string name="title_selection_pupil_is_waiting_for_binding">Ждущий добавления</string>
+    <string name="title_pupil_information">Информация о ученике</string>
+    <string name="back">Назад</string>
+    <string name="label_pupil_unbind">Отвязать ученика</string>
+
+    <string name="content_description_app_loading_image">App loading image</string>
+    <string name="label_acquire_present">Приобрести подарок</string>
+</resources>

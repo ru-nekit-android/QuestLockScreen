@@ -87,7 +87,8 @@ public abstract class AbstractStateSaver<T> {
     }
 
     public boolean hasSavedState() {
-        return !getUUID().equals("") && PreferencesUtil.getBoolean(HAS_SAVED_STATE(getName(), getUUID()));
+        String uuid = getUUID();
+        return !uuid.equals("") && PreferencesUtil.getBoolean(HAS_SAVED_STATE(getName(), uuid));
     }
 
 }
