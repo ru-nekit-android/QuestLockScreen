@@ -2,10 +2,10 @@ package ru.nekit.android.qls.quest.types;
 
 import android.support.annotation.NonNull;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.common.IGroupWeightComparisonQuest;
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.resources.common.IGroupWeightComparisonQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
 public class TimeQuest extends NumberSummandQuest implements IGroupWeightComparisonQuest {

@@ -10,13 +10,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.common.Quest;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection;
+import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -38,7 +38,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
     };
 
     protected int[] types;
-    VisualResourceGroup targetGroup;
+    VisualQuestResourceGroupCollection targetGroup;
 
     public ChoiceQuestTrainingProgramRule() {
 
@@ -63,15 +63,15 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             final int length = stringTypes.length;
             types = new int[stringTypes.length];
             for (int i = 0; i < length; i++) {
-                types[i] = VisualResourceGroup.valueOf(stringTypes[i].toUpperCase()).getId();
+                types[i] = VisualQuestResourceGroupCollection.valueOf(stringTypes[i].toUpperCase()).getId();
             }
         } else {
-            List<VisualResourceGroup> questVisualResourceGroupList =
-                    VisualResourceGroup.CHOICE.getChildren();
-            final int length = questVisualResourceGroupList.size();
+            List<VisualQuestResourceGroupCollection> questVisualQuestResourceGroupCollectionList =
+                    VisualQuestResourceGroupCollection.CHOICE.getChildren();
+            final int length = questVisualQuestResourceGroupCollectionList.size();
             types = new int[length];
             for (int i = 0; i < length; i++) {
-                types[i] = questVisualResourceGroupList.get(i).getId();
+                types[i] = questVisualQuestResourceGroupCollectionList.get(i).getId();
             }
         }
     }
@@ -81,13 +81,13 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
             @NonNull QuestResourceLibrary questResourceLibrary) {
         targetGroup = getTargetGroup();
         List<Integer> questVisualRepresentationList = new ArrayList<>();
-        List<IVisualResource> visualResourceModels =
-                questResourceLibrary.getVisualResourceItems();
-        for (IVisualResource model : visualResourceModels) {
+        List<IVisualQuestResourceHolder> visualResourceModels =
+                questResourceLibrary.getVisualQuestResourceList();
+        for (IVisualQuestResourceHolder model : visualResourceModels) {
             if (model.getGroups() != null) {
-                for (VisualResourceGroup groupItem : model.getGroups()) {
+                for (VisualQuestResourceGroupCollection groupItem : model.getGroups()) {
                     if (groupItem.hasParent(targetGroup)) {
-                        questVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceItemId(model));
+                        questVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceId(model));
                     }
                 }
             }
@@ -114,8 +114,8 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         return quest;
     }
 
-    VisualResourceGroup getTargetGroup() {
-        return VisualResourceGroup.getGroup(MathUtils.randItem(types));
+    VisualQuestResourceGroupCollection getTargetGroup() {
+        return VisualQuestResourceGroupCollection.getGroup(MathUtils.randItem(types));
     }
 
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,

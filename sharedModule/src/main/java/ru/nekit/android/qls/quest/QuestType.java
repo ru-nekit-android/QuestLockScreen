@@ -11,7 +11,7 @@ import static ru.nekit.android.qls.quest.QuestionType.COMPARISON;
 import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
 import static ru.nekit.android.qls.quest.QuestionType.UNKNOWN_MEMBER;
 
-public enum QuestType implements ITitleable {
+public enum QuestType implements INameHolder {
 
     //16 variants
     SIMPLE_EXAMPLE(QuestionType.values(),
@@ -135,8 +135,8 @@ public enum QuestType implements ITitleable {
         return mSupportQuestionTypes;
     }
 
-    @Nullable
-    public String getTitle(@NonNull Context context) {
+    @NonNull
+    public String getName(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
 }

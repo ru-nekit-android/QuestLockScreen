@@ -159,7 +159,7 @@ public class PupilStatisticsWindowMediator extends WindowMediator implements Vie
                     PupilAvatarViewBuilder.build(mQuestContext, pupil,
                             contentViewHolder.pupilAvatarContainer);
                     contentViewHolder.titleTextView.setText(String.format("%s\n%s\n%s", pupil.name,
-                            pupil.complexity.getTitle(mQuestContext),
+                            pupil.complexity.getName(mQuestContext),
                             mQuestContext.getQTPLevel().getName()));
                     contentViewHolder.nameTextView.setText(R.string.book_title_name);
                     mCurrentContentHolder = contentViewHolder;
@@ -203,8 +203,8 @@ public class PupilStatisticsWindowMediator extends WindowMediator implements Vie
                     for (QuestStatistics statistics : pupilStatistics.questStatistics) {
                         textContent.append(String.format(
                                 mQuestContext.getString(R.string.pupil_statistics_item_formatter),
-                                statistics.questType.getTitle(mQuestContext),
-                                statistics.questionType.getTitle(mQuestContext),
+                                statistics.questType.getName(mQuestContext),
+                                statistics.questionType.getName(mQuestContext),
                                 statistics.rightAnswerCount,
                                 statistics.wrongAnswerCount,
                                 dateFormat.format(statistics.bestAnswerTime),

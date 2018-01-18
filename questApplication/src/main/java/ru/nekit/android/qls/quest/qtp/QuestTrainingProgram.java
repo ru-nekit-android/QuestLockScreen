@@ -129,9 +129,8 @@ public class QuestTrainingProgram implements Parcelable {
                 name = qtpObject.get(Dictionary.NAME).getAsString();
                 description = qtpObject.get(Dictionary.DESCRIPTION).getAsString();
                 this.sex = gson.fromJson(qtpObject.get(Dictionary.SEX), PupilSex.class);
-                this.complexity =
-                        gson.fromJson(qtpObject.get(Dictionary.COMPLEXITY),
-                                QuestTrainingProgramComplexity.class);
+                this.complexity = gson.fromJson(qtpObject.get(Dictionary.COMPLEXITY),
+                        QuestTrainingProgramComplexity.class);
                 if (qtpObject.has(Dictionary.LEVELS)) {
                     JsonArray QTPLs = qtpObject.get(Dictionary.LEVELS).getAsJsonArray();
                     levels = new ArrayList<>(QTPLs.size());

@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import java.util.List;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.answer.common.AbstractGroupWeightComparisonQuestAnswerChecker;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 
 public class GroupWeightComparisonQuestAnswerChecker

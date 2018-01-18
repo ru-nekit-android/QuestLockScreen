@@ -10,6 +10,8 @@ import ru.nekit.android.qls.lockScreen.window.Window;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.utils.ViewHolder;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
 public class AnswerWindow extends Window {
 
     private AnswerWindow(@NonNull QuestContext questContext, @NonNull String name) {
@@ -22,7 +24,7 @@ public class AnswerWindow extends Window {
         return mName;
     }
 
-    public enum Variant {
+    public enum Type {
 
         RIGHT,
         WRONG;
@@ -36,7 +38,7 @@ public class AnswerWindow extends Window {
 
         private final QuestContext mQuestContext;
         @NonNull
-        private final Variant mVariant;
+        private final Type mType;
         @NonNull
         private AnswerWindow mWindow;
         @Nullable
@@ -46,9 +48,9 @@ public class AnswerWindow extends Window {
         @StyleRes
         private int mStyleResId = -1;
 
-        public Builder(@NonNull QuestContext context, @NonNull Variant variant) {
+        public Builder(@NonNull QuestContext context, @NonNull Type type) {
             mQuestContext = context;
-            mVariant = variant;
+            mType = type;
         }
 
         @NonNull
@@ -59,7 +61,9 @@ public class AnswerWindow extends Window {
 
         @NonNull
         public Builder setContent(@LayoutRes int contentResId) {
-            mContentHolder = new ViewHolder(mQuestContext, contentResId);
+            if (contentResId > 0) {
+                mContentHolder = new ViewHolder(mQuestContext, contentResId);
+            }
             return this;
         }
 
@@ -83,16 +87,17 @@ public class AnswerWindow extends Window {
 
         @NonNull
         public AnswerWindow create() {
-            mWindow = new AnswerWindow(mQuestContext, mVariant.getName());
+            mWindow = new AnswerWindow(mQuestContext, mType.getName());
             mWindowContainer = new AnswerWindowContainer(mQuestContext);
             if (mContentHolder != null) {
-                mWindowContainer.contentContainer.addView(mContentHolder.view);
+                mWindowContainer.contentContainer.addView(mContentHolder.view, MATCH_PARENT,
+                        MATCH_PARENT);
             }
             if (mToolContentHolder != null) {
                 mWindowContainer.toolContainer.addView(mToolContentHolder.view);
             }
             mWindow.mContent = mWindowContainer;
-            mWindow.mStyleResId = mStyleResId == -1 ? mVariant == Variant.RIGHT ?
+            mWindow.mStyleResId = mStyleResId == -1 ? mType == Type.RIGHT ?
                     R.style.Window_RightAnswer : R.style.Window_WrongAnswer : mStyleResId;
             return mWindow;
         }

@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;

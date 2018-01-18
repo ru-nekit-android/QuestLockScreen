@@ -3,8 +3,9 @@ package ru.nekit.android.qls.quest;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-public interface ITitleable {
+public interface INameHolder {
 
-    String getTitle(@NonNull Context context);
+    @NonNull
+    String getName(@NonNull Context context);
 
 }

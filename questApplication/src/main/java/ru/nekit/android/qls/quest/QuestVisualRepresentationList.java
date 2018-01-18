@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
 
 public class QuestVisualRepresentationList {
 
@@ -25,8 +25,8 @@ public class QuestVisualRepresentationList {
         return mIdsList;
     }
 
-    public void add(@NonNull IVisualResource questVisualResourceItem) {
-        add(mQuestResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));
+    public void add(@NonNull IVisualQuestResourceHolder questVisualResourceItem) {
+        add(mQuestResourceLibrary.getQuestVisualResourceId(questVisualResourceItem));
     }
 
     public void add(int id) {

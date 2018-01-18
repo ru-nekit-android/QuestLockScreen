@@ -6,7 +6,7 @@
   "complexity": "NORMAL",
   "levels": [
     {
-      "delayedPlay": false,
+      "delayedPlay": true,
       "name": "name_level_0",
       "description": "Прокачай героя",
       "pointsWeight": 10000,
@@ -20,15 +20,18 @@
             //"unknown_member",
             "solution"
           ],
-          "enabled": true,
-          "reward": 10,
-          "delayedPlay": true
+          "enabled": false,
+          "reward": 10
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": true,
-          "delayedPlay": true
+          "enabled": false
+          /*,
+            "difficultBy": [
+              "text",
+              "color"
+            ]*/
         },
         //ВРЕМЯ
         {
@@ -37,10 +40,9 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
-          "accuracy": 10,
-          "delayedPlay": true
+          "accuracy": 10
         },
         //ВРЕМЯ
         {
@@ -49,33 +51,29 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4,
-          "accuracy": 10,
-          "delayedPlay": true
+          "accuracy": 10
         },
         //ТЕКУЩЕЕ_ВРЕМЯ
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": true,
-          "delayedPlay": true,
+          "enabled": false,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": true,
-          "delayedPlay": true
+          "enabled": false
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
           "enabled": true,
-          "memberCount": 4,
-          "delayedPlay": true
+          "memberCount": 4
         },
         //ВЫБОР
         {
@@ -86,8 +84,7 @@
             "berry",
             "pomum"
           ],
-          "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ЛИШНИЙ
         {
@@ -98,8 +95,7 @@
             "berry",
             "pomum"
           ],
-          "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -119,8 +115,7 @@
               5
             ]
           ],
-          "delayedPlay": true,
-          "enabled": true
+          "enabled": false
         },
         //ФРУКТЫ
         {
@@ -130,15 +125,13 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "delayedPlay": false,
-          "enabled": true
+          "enabled": false
         },
         //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
-          "delayedPlay": true,
           "reward": 10,
-          "enabled": true
+          "enabled": false
         }
       ]
     }

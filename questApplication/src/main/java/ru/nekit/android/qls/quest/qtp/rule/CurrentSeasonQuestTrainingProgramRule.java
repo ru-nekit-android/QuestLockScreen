@@ -7,9 +7,9 @@ import java.util.Calendar;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource;
-import ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection;
 
 public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingProgramRule {
 
@@ -35,29 +35,29 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
     }
 
     @Override
-    VisualResourceGroup getTargetGroup() {
-        return VisualResourceGroup.SEASONS;
+    VisualQuestResourceGroupCollection getTargetGroup() {
+        return VisualQuestResourceGroupCollection.SEASONS;
     }
 
     int getUnknownIndex(@NonNull QuestResourceLibrary questResourceLibrary,
                         @NonNull List<Integer> questVisualRepresentationList) {
         Calendar calendar = Calendar.getInstance();
-        SimpleQuestVisualResource questVisualResourceItem = null;
+        SimpleQuestVisualQuestResourceCollection questVisualResourceItem = null;
         int currentMonth = calendar.get(Calendar.MONTH);
         if (currentMonth == 11 || currentMonth <= 1) {
-            questVisualResourceItem = SimpleQuestVisualResource.WINTER;
+            questVisualResourceItem = SimpleQuestVisualQuestResourceCollection.WINTER;
         }
         if (currentMonth > 1 && currentMonth <= 4) {
-            questVisualResourceItem = SimpleQuestVisualResource.SPRING;
+            questVisualResourceItem = SimpleQuestVisualQuestResourceCollection.SPRING;
         }
         if (currentMonth > 4 && currentMonth <= 7) {
-            questVisualResourceItem = SimpleQuestVisualResource.SUMMER;
+            questVisualResourceItem = SimpleQuestVisualQuestResourceCollection.SUMMER;
         }
         if (currentMonth > 7 && currentMonth <= 10) {
-            questVisualResourceItem = SimpleQuestVisualResource.FALL;
+            questVisualResourceItem = SimpleQuestVisualQuestResourceCollection.FALL;
         }
         return questVisualRepresentationList.indexOf(
-                questResourceLibrary.getQuestVisualResourceItemId(questVisualResourceItem));
+                questResourceLibrary.getQuestVisualResourceId(questVisualResourceItem));
     }
 
     @Override

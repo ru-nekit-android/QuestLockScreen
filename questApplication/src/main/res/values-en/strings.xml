@@ -70,7 +70,7 @@
     <string name="label_save_contacts">Сохранить контакты</string>
     <string name="label_allow_contacts">Контакты</string>
     <string name="label_stop_lock">Остановить</string>
-    <string name="title_wrong_answer">Неправильный ответ</string>
+    <string name="title_wrong_answer">Попробуй еще раз</string>
     <string name="text_quest_support_chars_en">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
     <string name="text_quest_support_chars_ru">абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ</string>
     <string name="text_quest_support_chars_number">1234567890</string>
@@ -140,8 +140,6 @@
     <string name="quest_direction_title_right">Вправо</string>
     <string name="quest_direction_title_up">Вверх</string>
     <string name="right_answer_timer_formatter">mm:ss.SSS</string>
-    <string name="quest_direction_right_answer_message">Ура, правильно!!!</string>
-    <string name="quest_direction_wrong_answer_message">Не правильно!!!</string>
     <string name="quest_direction_empty_answer_message">Проведи!!!</string>
     <string name="quest_coins_solution_title">Сколько рублей в стопке монет?</string>
     <string name="quest_coins_unknown_member_title">Какой монеты не хватает, если в стопке %1$d рублей?</string>
@@ -164,7 +162,7 @@
     <string name="quest_choice_unknown_member_title">Выберите %1$s</string>
     <string name="quest_mismatch_unknown_member_title">Найди лишнее</string>
     <string name="quest_current_season_unknown_member_title">Выберите текущее время года</string>
-    <string name="quest_colors_unknown_member_title">Выберите %1$s %2$s</string>
+    <string name="quest_colors_unknown_member_title">Выберите %1$s</string>
     <string name="quest_direction_unknown_member_title">Выберите %1$s</string>
     <string name="quest_text_camouflage_title">Составте слово идя по спирале и выберая каждую $1%s-ую букву</string>
     <string name="clock_formatter">HH:mm</string>

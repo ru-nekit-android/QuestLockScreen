@@ -130,15 +130,15 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "delayedPlay": true,
+          "delayedPlay": false,
           "enabled": true
         },
         //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
-          "delayedPlay": false,
+          "delayedPlay": true,
           "reward": 10,
-          "enabled": false
+          "enabled": true
         }
       ]
     }

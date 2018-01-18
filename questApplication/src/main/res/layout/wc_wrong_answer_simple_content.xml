@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/WrongAnswer.ContentContainer.Simple">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/container_title"
+        style="@style/WrongAnswer.TitleContainer.Simple">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_title"
+            style="@style/WrongAnswer.Title.Simple" />
+
+    </android.support.v7.widget.CardView>
+
+</RelativeLayout>

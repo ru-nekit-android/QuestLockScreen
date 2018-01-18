@@ -2,7 +2,7 @@ package ru.nekit.android.qls.quest.answer.common;
 
 import android.support.annotation.NonNull;
 
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.Quest;
 
 public class QuestAnswerChecker<T> implements IAnswerChecker<T> {
 

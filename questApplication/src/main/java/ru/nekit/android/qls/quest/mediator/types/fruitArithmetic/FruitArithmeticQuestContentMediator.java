@@ -19,14 +19,14 @@ import android.widget.LinearLayout.LayoutParams;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.content.AbstractQuestContentMediator;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.EQUAL;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.MINUS;
-import static ru.nekit.android.qls.quest.resourceLibrary.SimpleQuestVisualResource.PLUS;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.EQUAL;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.MINUS;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.PLUS;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 
@@ -72,7 +72,7 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
     private Drawable getFruitImageDrawable(@NonNull QuestContext questContext,
                                            int visualRepresentationId) {
         return ContextCompat.getDrawable(questContext,
-                mQuestResourceLibrary.getVisualResourceItem(visualRepresentationId)
+                mQuestResourceLibrary.getVisualQuestResource(visualRepresentationId)
                         .getDrawableResourceId());
     }
 
@@ -160,9 +160,9 @@ public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMed
                     index = 0;
                 }
                 marginTop = Math.min(2, index) * baseSize / 4;
-                if (visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(MINUS)
-                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(PLUS)
-                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceItemId(EQUAL)) {
+                if (visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceId(MINUS)
+                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceId(PLUS)
+                        || visualRepresentationId == mQuestResourceLibrary.getQuestVisualResourceId(EQUAL)) {
 
                     marginRight = 0;
                     marginLeft = 0;

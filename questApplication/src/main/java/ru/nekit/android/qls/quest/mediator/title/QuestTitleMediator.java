@@ -9,24 +9,27 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import ru.nekit.android.qls.R;
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.model.DirectionModel;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.model.TrafficLightModel;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.common.ILocalizedStringQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 import ru.nekit.android.qls.quest.types.TextQuest;
 import ru.nekit.android.qls.quest.types.TimeQuest;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
+import ru.nekit.android.qls.utils.MathUtils;
 import ru.nekit.android.qls.utils.ViewHolder;
 
 import static java.lang.String.format;
-import static ru.nekit.android.qls.R.string.go;
 import static ru.nekit.android.qls.R.string.greater;
 import static ru.nekit.android.qls.R.string.less;
 import static ru.nekit.android.qls.R.string.maximum;
@@ -34,7 +37,6 @@ import static ru.nekit.android.qls.R.string.minimum;
 import static ru.nekit.android.qls.R.string.quest_choice_unknown_member_title;
 import static ru.nekit.android.qls.R.string.quest_coins_solution_title;
 import static ru.nekit.android.qls.R.string.quest_coins_unknown_member_title;
-import static ru.nekit.android.qls.R.string.quest_colors_unknown_member_title;
 import static ru.nekit.android.qls.R.string.quest_current_season_unknown_member_title;
 import static ru.nekit.android.qls.R.string.quest_current_time_unknown_member_title;
 import static ru.nekit.android.qls.R.string.quest_direction_unknown_member_title;
@@ -54,8 +56,7 @@ import static ru.nekit.android.qls.R.string.quest_time_comparison_title;
 import static ru.nekit.android.qls.R.string.quest_time_unknown_member_title;
 import static ru.nekit.android.qls.R.string.quest_traffic_light_solution_title;
 import static ru.nekit.android.qls.R.string.unknown_side;
-import static ru.nekit.android.qls.R.string.wait;
-import static ru.nekit.android.qls.quest.common.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
+import static ru.nekit.android.qls.quest.resources.common.IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT;
 
 public class QuestTitleMediator implements IQuestTitleMediator {
 
@@ -185,8 +186,11 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                         case SOLUTION:
 
+                            TrafficLightModel[] trafficLightModels =
+                                    MathUtils.shuffleArray(TrafficLightModel.values());
                             mTitleText = format(getString(quest_traffic_light_solution_title),
-                                    getString(wait), getString(go));
+                                    trafficLightModels[0].getName(mQuestContext),
+                                    trafficLightModels[1].getName(mQuestContext).toLowerCase());
 
                             break;
 
@@ -258,9 +262,9 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                         case UNKNOWN_MEMBER:
 
                             mTitleText = format(getString(quest_choice_unknown_member_title),
-                                    questResourceLibrary.getVisualResourceItem(
+                                    questResourceLibrary.getVisualQuestResource(
                                             numberSummandQuest.getUnknownMember()).
-                                            getTitle(mQuestContext));
+                                            getName(mQuestContext));
 
                             break;
 
@@ -283,20 +287,28 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                 case COLORS:
 
-                    VisualRepresentationalNumberSummandQuest visualRepresentationalNumberSummandQuest
+                    VisualRepresentationalNumberSummandQuest colorQuest
                             = (VisualRepresentationalNumberSummandQuest) mQuest;
-                    int unknownIndex = visualRepresentationalNumberSummandQuest.unknownMemberIndex;
-                    mTitleText = format(getString(quest_colors_unknown_member_title),
-                            ColorModel.getById(visualRepresentationalNumberSummandQuest.leftNode[unknownIndex]).getTitle(questContext),
-                            questResourceLibrary.getVisualResourceItem(visualRepresentationalNumberSummandQuest.getVisualRepresentationList().get(unknownIndex)).getTitle(questContext)
-                    );
-
+                    IVisualQuestResourceHolder vqrh = questResourceLibrary.getVisualQuestResource(
+                            colorQuest.getVisualRepresentationList().get(colorQuest.unknownMemberIndex));
+                    ColorModel colorModel = ColorModel.getById(colorQuest.getUnknownMember());
+                    String splitString = "%s %s";
+                    mTitleText = format(mQuestContext.getString(R.string.quest_colors_unknown_member_title),
+                            (vqrh instanceof ILocalizedStringQuestResourceHolder ?
+                                    mQuestContext.getQuestResourceLibrary().declineAdjectiveByNoun(
+                                            mQuestContext,
+                                            colorModel.getName(mQuestContext),
+                                            splitString,
+                                            ((ILocalizedStringQuestResourceHolder) vqrh).getLocalStringResource())
+                                    :
+                                    format(splitString, colorModel.getName(mQuestContext),
+                                            vqrh.getName(mQuestContext))).toLowerCase());
                     break;
 
                 case DIRECTION:
 
                     mTitleText = format(getString(quest_direction_unknown_member_title),
-                            DirectionModel.fromOrdinal(numberSummandQuest.getAnswer()).getTitle(questContext));
+                            DirectionModel.fromOrdinal(numberSummandQuest.getAnswer()).getName(questContext).toLowerCase());
 
                     break;
             }
@@ -306,7 +318,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                     textQuest.questionStringArray[0].length());
         }
         mViewHolder.titleView.setText(mTitleText);
-        mViewHolder.view.setVisibility(View.VISIBLE);
+        //mViewHolder.view.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -327,7 +339,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
     @Override
     public boolean onAnswer(@NonNull AnswerType answerType) {
         if (answerType == AnswerType.RIGHT) {
-            mViewHolder.view.setVisibility(View.INVISIBLE);
+            //mViewHolder.view.setVisibility(View.INVISIBLE);
         }
         return true;
     }

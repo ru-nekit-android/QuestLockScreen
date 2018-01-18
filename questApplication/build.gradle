@@ -10,8 +10,8 @@ android {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 9
-        versionName "1.2831"
+        versionCode 10
+        versionName "1.284"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true

@@ -9,18 +9,18 @@ import com.google.gson.JsonObject;
 import java.util.Collections;
 import java.util.List;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator.Flag;
-import ru.nekit.android.qls.quest.resourceLibrary.IVisualResource;
+import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
 import ru.nekit.android.qls.utils.Callable;
 
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.ANSWER_VARIANTS;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_COUNT;
 import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_MIN_AND_MAX_VALUES;
-import static ru.nekit.android.qls.quest.resourceLibrary.VisualResourceGroup.FRUIT;
+import static ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection.FRUIT;
 
 public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
 
@@ -114,17 +114,17 @@ public class FruitArithmeticQuestTrainingProgramRule extends AbstractQuestTraini
             );
         } else if (questionType == QuestionType.COMPARISON) {
             memberCount = Math.max(VALUE_DEFAULT_MEMBER_COUNT_FOR_COMPARISON, memberCount);
-            List<IVisualResource> visualResourceItemList =
+            List<IVisualQuestResourceHolder> visualResourceItemList =
                     questContext.getQuestResourceLibrary().getVisualResourceItemsByGroup(FRUIT);
             answerVariants = Math.min(Math.max(VALUE_DEFAULT_ANSWER_VARIANTS_FOR_COMPARISON,
                     answerVariants),
                     visualResourceItemList.size());
             Collections.shuffle(visualResourceItemList);
             generator.setAvailableMemberValues(visualResourceItemList.subList(0, answerVariants),
-                    new Callable<IVisualResource, Integer>() {
+                    new Callable<IVisualQuestResourceHolder, Integer>() {
                         @Override
-                        public Integer call(IVisualResource value) {
-                            return questContext.getQuestResourceLibrary().getQuestVisualResourceItemId(value);
+                        public Integer call(IVisualQuestResourceHolder value) {
+                            return questContext.getQuestResourceLibrary().getQuestVisualResourceId(value);
                         }
                     });
         }

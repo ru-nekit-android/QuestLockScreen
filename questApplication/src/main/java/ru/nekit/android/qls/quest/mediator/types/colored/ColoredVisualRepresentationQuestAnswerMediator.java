@@ -9,32 +9,32 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
-import ru.nekit.android.qls.quest.common.PrimaryAndSecondaryColor;
 import ru.nekit.android.qls.quest.mediator.answer.AbstractListableQuestAnswerMediator;
-import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResource;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.struct.PairColorStruct;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.quest.window.AnswerWindow;
 
 public class ColoredVisualRepresentationQuestAnswerMediator
-        extends AbstractListableQuestAnswerMediator<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>,
+        extends AbstractListableQuestAnswerMediator<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>,
         ColoredVisualRepresentationQuestAdapter> {
 
-    private List<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>> mDataList;
+    private List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> mDataList;
 
     @NonNull
     @Override
-    protected List<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>> getListData() {
+    protected List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> getListData() {
         mDataList = new ArrayList<>();
         final int length = getQuest().getVisualRepresentationList().size();
         QuestResourceLibrary questResourceLibrary = mQuestContext.getQuestResourceLibrary();
         for (int i = 0; i < length; i++) {
-            IColoredVisualResource coloredVisualResource = (IColoredVisualResource)
-                    questResourceLibrary.getVisualResourceItem(getQuest().
+            IColorfullVisualQuestResourceHolder coloredVisualResource = (IColorfullVisualQuestResourceHolder)
+                    questResourceLibrary.getVisualQuestResource(getQuest().
                             getVisualRepresentationList().get(i));
-            PrimaryAndSecondaryColor primaryAndSecondaryColor =
-                    new PrimaryAndSecondaryColor(getQuest().leftNode[i], getQuest().rightNode[i]);
-            mDataList.add(new Pair<>(coloredVisualResource, primaryAndSecondaryColor));
+            PairColorStruct pairColorStruct =
+                    new PairColorStruct(getQuest().leftNode[i], getQuest().rightNode[i]);
+            mDataList.add(new Pair<>(coloredVisualResource, pairColorStruct));
         }
         return mDataList;
     }
@@ -45,8 +45,8 @@ public class ColoredVisualRepresentationQuestAnswerMediator
 
     @NonNull
     @Override
-    protected ColoredVisualRepresentationQuestAdapter getListAdapter(List<Pair<IColoredVisualResource,
-            PrimaryAndSecondaryColor>> listData) {
+    protected ColoredVisualRepresentationQuestAdapter getListAdapter(List<Pair<IColorfullVisualQuestResourceHolder,
+            PairColorStruct>> listData) {
         return new ColoredVisualRepresentationQuestAdapter(mQuestContext, listData, this);
     }
 
@@ -86,15 +86,15 @@ public class ColoredVisualRepresentationQuestAnswerMediator
     @Override
     public boolean onAnswer(@NonNull AnswerType answerType) {
         if (answerType == AnswerType.RIGHT) {
-            Pair<IColoredVisualResource, PrimaryAndSecondaryColor> item =
+            Pair<IColorfullVisualQuestResourceHolder, PairColorStruct> item =
                     mDataList.get(getQuest().unknownMemberIndex);
             mDataList.clear();
             mDataList.add(item);
             updateListAdapter(false);
             mListView.requestLayout();
-            new AnswerWindow.Builder(mQuestContext, AnswerWindow.Variant.RIGHT).
-                    setContent(R.layout.wc_right_answer_simple).
-                    setToolContent(R.layout.wc_right_answer_tool).
+            new AnswerWindow.Builder(mQuestContext, AnswerWindow.Type.RIGHT).
+                    setContent(R.layout.wc_right_answer_simple_content).
+                    setToolContent(R.layout.wc_right_answer_tool_simple_content).
                     setStyle(R.style.Window_RightAnswer_Simple).
                     create().
                     open();

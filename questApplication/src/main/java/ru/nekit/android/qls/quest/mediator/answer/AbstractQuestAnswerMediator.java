@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
 import ru.nekit.android.qls.quest.answer.common.IAnswerCallback;
 import ru.nekit.android.qls.quest.answer.common.IAnswerChecker;
-import ru.nekit.android.qls.quest.common.Quest;
 
 public abstract class AbstractQuestAnswerMediator implements IQuestAnswerMediator {
 

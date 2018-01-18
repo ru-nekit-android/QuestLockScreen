@@ -36,7 +36,6 @@ open class ComplexityConverter : PropertyConverter<ktComplexity, String> {
     }
 
     override fun convertToDatabaseValue(entityProperty: ktComplexity): String {
-        Enum
         return entityProperty.name
     }
 }

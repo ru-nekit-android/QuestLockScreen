@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import ru.nekit.android.qls.quest.ITitleable;
+import ru.nekit.android.qls.quest.INameHolder;
 import ru.nekit.android.shared.R;
 
-public enum QuestTrainingProgramComplexity implements ITitleable {
+public enum QuestTrainingProgramComplexity implements INameHolder {
 
     HARD(R.string.complexity_hard),
     NORMAL(R.string.complexity_normal),
@@ -20,7 +20,8 @@ public enum QuestTrainingProgramComplexity implements ITitleable {
         this.titleId = titleId;
     }
 
-    public String getTitle(@NonNull Context context) {
+    @NonNull
+    public String getName(@NonNull Context context) {
         return context.getResources().getString(titleId);
     }
 

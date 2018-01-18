@@ -7,9 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.ITitleable;
+import ru.nekit.android.qls.quest.INameHolder;
 
-public enum ColorModel implements ITitleable {
+public enum ColorModel implements INameHolder {
 
     WHITE(R.color.white, R.string.color_white),
     BLACK(R.color.black, R.string.color_black),
@@ -39,8 +39,9 @@ public enum ColorModel implements ITitleable {
         return colorResId;
     }
 
-    public String getTitle(@NonNull Context context) {
-        return context.getResources().getString(titleResId);
+    @NonNull
+    public String getName(@NonNull Context context) {
+        return context.getString(titleResId);
     }
 
     public int getId() {

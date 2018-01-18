@@ -9,7 +9,6 @@ import ru.nekit.android.qls.quest.answer.MetricsQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.SimpleExampleAnswerChecker;
 import ru.nekit.android.qls.quest.answer.TrafficLightQuestAnswerChecker;
 import ru.nekit.android.qls.quest.answer.common.QuestAnswerChecker;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.mediator.answer.ButtonsQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.content.EmptyQuestContentMediator;
 import ru.nekit.android.qls.quest.mediator.title.QuestTitleMediator;

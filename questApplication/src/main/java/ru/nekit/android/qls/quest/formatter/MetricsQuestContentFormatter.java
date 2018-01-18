@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 

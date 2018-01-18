@@ -21,7 +21,6 @@ import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
 import ru.nekit.android.qls.quest.answer.common.IAnswerChecker;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.mediator.IQuestMediator;
 import ru.nekit.android.qls.quest.mediator.answer.ButtonsQuestAnswerMediator;
 import ru.nekit.android.qls.quest.mediator.answer.IButtonsQuestAnswerMediator;

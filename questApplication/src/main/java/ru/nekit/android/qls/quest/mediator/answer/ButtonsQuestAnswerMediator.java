@@ -13,6 +13,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.common.IQuestAnswerVariantAdapter;
+import ru.nekit.android.qls.utils.MathUtils;
 
 public class ButtonsQuestAnswerMediator extends AbstractQuestAnswerMediator
         implements View.OnClickListener, IButtonsQuestAnswerMediator {
@@ -64,9 +65,16 @@ public class ButtonsQuestAnswerMediator extends AbstractQuestAnswerMediator
         return mQuestContext.createButton();
     }
 
-    @SuppressWarnings("unchecked")
     protected void fillButtonListWithAvailableVariants() {
+        fillButtonListWithAvailableVariants(false);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected void fillButtonListWithAvailableVariants(boolean shuffle) {
         Object[] availableVariants = mQuest.getAvailableAnswerVariants();
+        if (shuffle) {
+            availableVariants = MathUtils.shuffleArray(availableVariants);
+        }
         if (availableVariants != null) {
             for (Object variant : availableVariants) {
                 String label = mButtonListAdapter == null ? variant.toString() :

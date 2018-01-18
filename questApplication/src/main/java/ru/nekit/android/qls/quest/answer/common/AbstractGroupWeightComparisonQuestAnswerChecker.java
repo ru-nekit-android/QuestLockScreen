@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ru.nekit.android.qls.quest.common.IGroupWeightComparisonQuest;
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.Quest;
+import ru.nekit.android.qls.quest.resources.common.IGroupWeightComparisonQuest;
 
 public abstract class AbstractGroupWeightComparisonQuestAnswerChecker<T>
         implements IAnswerChecker<T> {

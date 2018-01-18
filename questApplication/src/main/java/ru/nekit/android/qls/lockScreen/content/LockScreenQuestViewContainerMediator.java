@@ -110,7 +110,7 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
                 mQuestContext.getResources().getDimensionPixelSize(R.dimen.quest_series_size), false);
         questSeriesSpan.setSpan(sizeSpan, 0, questSeriesString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String questName = mQuestContext.getQuest().getQuestType().getTitle(mQuestContext);
+        String questName = mQuestContext.getQuest().getQuestType().getName(mQuestContext);
         mViewHolder.titleView.setText(questName);
         mViewHolder.titleViewRight.setText(questSeriesString);
     }
@@ -235,7 +235,7 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
 
                 @Nullable
                 String windowName = intent.getStringExtra(Window.VALUE_WINDOW_NAME);
-                if (windowName != null && windowName.equals(AnswerWindow.Variant.RIGHT.getName())) {
+                if (windowName != null && windowName.equals(AnswerWindow.Type.RIGHT.getName())) {
                     mTransitionChoreograph.goCurrentTransition();
                 } else {
                     if (mTransitionChoreograph.getCurrentTransition() == QUEST) {
@@ -264,7 +264,7 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
                     public void run() {
 
                         //TODO: make right answer content holder with logic
-                        ViewHolder contentHolder = new ViewHolder(mQuestContext, R.layout.wc_right_answer);
+                        ViewHolder contentViewHolder = new ViewHolder(mQuestContext, R.layout.wc_right_answer_content);
                         QuestHistoryItem.Pair questHistoryPair = mQuestContext.getQuestHistoryPair();
                         SimpleDateFormat dateFormat = new SimpleDateFormat(mQuestContext.getString(R.string.right_answer_timer_formatter),
                                 Locale.getDefault());
@@ -281,10 +281,10 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
                             textBuilder.append(String.format(mQuestContext.getString(R.string.right_answer_series_length_update_formatter),
                                     questHistoryPair.globalQuestHistory.rightAnswerSeries));
                         }
-                        ((TextView) contentHolder.view.findViewById(R.id.tv_title)).setText(textBuilder.toString());
-                        new AnswerWindow.Builder(mQuestContext, AnswerWindow.Variant.RIGHT).
-                                setContent(contentHolder).
-                                setToolContent(R.layout.wc_right_answer_tool).
+                        ((TextView) contentViewHolder.view.findViewById(R.id.tv_title)).setText(textBuilder.toString());
+                        new AnswerWindow.Builder(mQuestContext, AnswerWindow.Type.RIGHT).
+                                setContent(contentViewHolder).
+                                setToolContent(R.layout.wc_right_answer_tool_simple_content).
                                 create().open();
                     }
                 });
@@ -296,9 +296,13 @@ public class LockScreenQuestViewContainerMediator extends AbstractLockScreenCont
                 KeyboardHost.hideKeyboard(mQuestContext, mViewHolder.rootContainer, new Runnable() {
                     @Override
                     public void run() {
-                        new AnswerWindow.Builder(mQuestContext, AnswerWindow.Variant.WRONG).
-                                setContent(R.layout.wc_wrong_answer_content).
-                                setToolContent(R.layout.wc_wrong_answer_tool).
+
+                        ViewHolder contentViewHolder = new ViewHolder(mQuestContext,
+                                R.layout.wc_wrong_answer_content);
+                        ((TextView) contentViewHolder.view.findViewById(R.id.tv_title)).setText(mQuestContext.getString(R.string.title_wrong_answer));
+                        new AnswerWindow.Builder(mQuestContext, AnswerWindow.Type.WRONG).
+                                setContent(contentViewHolder).
+                                setToolContent(R.layout.wc_wrong_answer_tool_simple_content).
                                 create().open();
                     }
                 });

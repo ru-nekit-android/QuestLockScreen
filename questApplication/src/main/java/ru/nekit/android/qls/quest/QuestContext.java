@@ -21,7 +21,6 @@ import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.pupil.PupilManager;
 import ru.nekit.android.qls.quest.answer.common.IAnswerCallback;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.history.QuestHistoryItem;
 import ru.nekit.android.qls.quest.persistance.QuestSaver;
 import ru.nekit.android.qls.quest.persistance.QuestStatisticsSaver;
@@ -29,7 +28,7 @@ import ru.nekit.android.qls.quest.qtp.AppropriateQuestTrainingProgramRuleWrapper
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
 import ru.nekit.android.qls.quest.qtp.QuestTrainingProgramLevel;
 import ru.nekit.android.qls.quest.qtp.rule.AbstractQuestTrainingProgramRule;
-import ru.nekit.android.qls.quest.resourceLibrary.QuestResourceLibrary;
+import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.statistics.BaseStatistics;
 import ru.nekit.android.qls.quest.statistics.PupilStatistics;
 import ru.nekit.android.qls.quest.statistics.QuestStatistics;
@@ -38,6 +37,7 @@ import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 import ru.nekit.android.qls.quest.types.TimeQuest;
+import ru.nekit.android.qls.quest.window.AnswerWindow;
 import ru.nekit.android.qls.utils.MathUtils;
 import ru.nekit.android.qls.utils.RobotoTypefaceUtil;
 import ru.nekit.android.qls.utils.TimeUtils;
@@ -564,6 +564,15 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         resetSessionTimer();
         removeQuestState(PAUSED);
         mEventBus.sendEvent(EVENT_QUEST_RESUME);
+    }
+
+    public void openAnswerWindow(AnswerWindow.Type type, int style, int content, int toolContent) {
+        new AnswerWindow.Builder(this, type).
+                setStyle(style).
+                setContent(content).
+                setToolContent(toolContent).
+                create().
+                open();
     }
 
     //onCreate (view builder) -> attach -> start -> play/pause/resume -> stop

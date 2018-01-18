@@ -2,12 +2,11 @@ package ru.nekit.android.qls.quest;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 
 import ru.nekit.android.shared.R;
 
-public enum QuestionType implements ITitleable {
+public enum QuestionType implements INameHolder {
 
     SOLUTION(R.string.question_solution_title),
     UNKNOWN_MEMBER(R.string.question_unknown_member_title),
@@ -22,8 +21,8 @@ public enum QuestionType implements ITitleable {
         mTitleResourceId = titleResourceId;
     }
 
-    @Nullable
-    public String getTitle(@NonNull Context context) {
+    @NonNull
+    public String getName(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
 

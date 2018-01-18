@@ -5,7 +5,7 @@ import android.text.InputType;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.math.MathematicalOperation;
 import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
 import ru.nekit.android.qls.utils.MathUtils;

@@ -2,8 +2,8 @@ package ru.nekit.android.qls.quest.answer;
 
 import android.support.annotation.NonNull;
 
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.answer.common.QuestAnswerChecker;
-import ru.nekit.android.qls.quest.common.Quest;
 import ru.nekit.android.qls.quest.model.CoinModel;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 

@@ -1,16 +1,16 @@
-package ru.nekit.android.qls.quest.resourceLibrary;
+package ru.nekit.android.qls.quest.resources.struct;
 
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 
-public class ColoredVisualResource {
+public class ColorfullQuestVisualResourceStruct {
 
     @DrawableRes
     public final int drawableResourceId;
     @NonNull
     public ColorType colorType;
 
-    ColoredVisualResource(@DrawableRes int drawableResourceId, @NonNull ColorType colorType) {
+    public ColorfullQuestVisualResourceStruct(@DrawableRes int drawableResourceId, @NonNull ColorType colorType) {
         this.drawableResourceId = drawableResourceId;
         this.colorType = colorType;
     }

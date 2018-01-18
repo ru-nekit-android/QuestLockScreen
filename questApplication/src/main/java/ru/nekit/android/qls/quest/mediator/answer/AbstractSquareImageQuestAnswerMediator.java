@@ -20,7 +20,7 @@ public abstract class AbstractSquareImageQuestAnswerMediator
         List<Integer> imageResourceIds = new ArrayList<>();
         for (Integer dataItem : listData) {
             imageResourceIds.add(mQuestContext.getQuestResourceLibrary().
-                    getVisualResourceItem(dataItem).getDrawableResourceId());
+                    getVisualQuestResource(dataItem).getDrawableResourceId());
         }
         return new SquareImageAdapter(getListItemLayoutResId(), listData, imageResourceIds,
                 this);

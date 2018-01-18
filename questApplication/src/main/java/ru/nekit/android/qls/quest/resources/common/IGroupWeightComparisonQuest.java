@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.common;
+package ru.nekit.android.qls.quest.resources.common;
 
 public interface IGroupWeightComparisonQuest {
 

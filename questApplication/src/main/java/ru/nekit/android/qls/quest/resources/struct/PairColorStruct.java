@@ -1,21 +1,21 @@
-package ru.nekit.android.qls.quest.common;
+package ru.nekit.android.qls.quest.resources.struct;
 
 import android.support.annotation.NonNull;
 import android.util.Pair;
 
 import ru.nekit.android.qls.quest.model.ColorModel;
 
-public class PrimaryAndSecondaryColor {
+public class PairColorStruct {
 
     private Pair<ColorModel, ColorModel> mData;
 
-    public PrimaryAndSecondaryColor(@NonNull ColorModel primaryColor,
-                                    @NonNull ColorModel secondaryColor) {
+    public PairColorStruct(@NonNull ColorModel primaryColor,
+                           @NonNull ColorModel secondaryColor) {
         mData = new Pair<>(primaryColor, secondaryColor);
     }
 
-    public PrimaryAndSecondaryColor(int primaryId,
-                                    int secondaryId) {
+    public PairColorStruct(int primaryId,
+                           int secondaryId) {
         mData = new Pair<>(ColorModel.getById(primaryId), ColorModel.getById(secondaryId));
     }
 

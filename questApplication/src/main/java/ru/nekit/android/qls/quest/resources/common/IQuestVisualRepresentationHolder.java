@@ -1,11 +1,11 @@
-package ru.nekit.android.qls.quest.common;
+package ru.nekit.android.qls.quest.resources.common;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public interface IQuestVisualRepresentation {
+public interface IQuestVisualRepresentationHolder {
 
     @Nullable
     List<Integer> getVisualRepresentationList();

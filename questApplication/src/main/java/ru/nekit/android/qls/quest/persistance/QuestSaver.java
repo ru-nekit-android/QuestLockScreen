@@ -11,7 +11,7 @@ import com.google.gson.JsonParser;
 
 import ru.nekit.android.qls.PreferencesUtil;
 import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.quest.common.Quest;
+import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.types.CurrentTimeQuest;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;

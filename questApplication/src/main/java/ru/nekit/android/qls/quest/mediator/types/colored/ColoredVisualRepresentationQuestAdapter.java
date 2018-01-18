@@ -17,13 +17,13 @@ import java.util.List;
 
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.common.PrimaryAndSecondaryColor;
 import ru.nekit.android.qls.quest.mediator.adapter.SquareItemAdapter;
-import ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResource;
-import ru.nekit.android.qls.quest.resourceLibrary.IColoredVisualResource;
+import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct;
+import ru.nekit.android.qls.quest.resources.struct.PairColorStruct;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static ru.nekit.android.qls.quest.resourceLibrary.ColoredVisualResource.ColorType.NONE;
+import static ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct.ColorType.NONE;
 
 public class ColoredVisualRepresentationQuestAdapter
         extends SquareItemAdapter<ColoredVisualRepresentationQuestAdapter.ViewHolder> {
@@ -33,10 +33,10 @@ public class ColoredVisualRepresentationQuestAdapter
     @NonNull
     private final View.OnClickListener mClickListener;
     @NonNull
-    private final List<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>> mListData;
+    private final List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> mListData;
 
     ColoredVisualRepresentationQuestAdapter(@NonNull QuestContext questContext,
-                                            @NonNull List<Pair<IColoredVisualResource, PrimaryAndSecondaryColor>> listData,
+                                            @NonNull List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> listData,
                                             @NonNull View.OnClickListener clickListener) {
         mQuestContext = questContext;
         mListData = listData;
@@ -58,20 +58,20 @@ public class ColoredVisualRepresentationQuestAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Resources resources = mQuestContext.getResources();
-        Pair<IColoredVisualResource, PrimaryAndSecondaryColor> item
+        Pair<IColorfullVisualQuestResourceHolder, PairColorStruct> item
                 = mListData.get(position);
-        for (ColoredVisualResource coloredVisualResource : item.first.getColoredVisualResourceList()) {
-            int drawableResourceId = coloredVisualResource.drawableResourceId;
+        for (ColorfullQuestVisualResourceStruct colorfullQuestVisualResourceStruct : item.first.getColoredVisualResourceList()) {
+            int drawableResourceId = colorfullQuestVisualResourceStruct.drawableResourceId;
             if (drawableResourceId != 0) {
                 AppCompatImageView imageView = new AppCompatImageView(mQuestContext);
-                Drawable drawable = resources.getDrawable(coloredVisualResource.drawableResourceId);
-                if (coloredVisualResource.colorType != NONE) {
+                Drawable drawable = resources.getDrawable(colorfullQuestVisualResourceStruct.drawableResourceId);
+                if (colorfullQuestVisualResourceStruct.colorType != NONE) {
                     drawable = drawable.mutate();
                     DrawableCompat.wrap(drawable);
-                    PrimaryAndSecondaryColor coloredItem = item.second;
+                    PairColorStruct coloredItem = item.second;
                     @ColorInt
                     int color = 0;
-                    switch (coloredVisualResource.colorType) {
+                    switch (colorfullQuestVisualResourceStruct.colorType) {
 
                         case PRIMARY:
 

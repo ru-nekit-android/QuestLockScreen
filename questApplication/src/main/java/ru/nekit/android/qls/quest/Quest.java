@@ -1,10 +1,7 @@
-package ru.nekit.android.qls.quest.common;
+package ru.nekit.android.qls.quest;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-
-import ru.nekit.android.qls.quest.QuestType;
-import ru.nekit.android.qls.quest.QuestionType;
 
 
 public abstract class Quest<AnswerType> {

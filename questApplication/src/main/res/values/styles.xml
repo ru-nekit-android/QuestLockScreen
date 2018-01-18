@@ -185,11 +185,53 @@
         <item name="android:background">@color/green</item>
     </style>
 
+    <style name="RightAnswer" />
+
+    <style name="RightAnswer.ContentContainer.Simple" />
+
+    <style name="RightAnswer.ContentContainer">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="RightAnswer.TitleContainer">
+        <item name="cardBackgroundColor">@color/green</item>
+        <item name="cardCornerRadius">@dimen/base_corner_radius</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="RightAnswer.TitleContainer.Simple" />
+
+    <style name="RightAnswer.Title.Simple" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/base_gap</item>
+        <item name="android:text">@string/title_right_answer_simple</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
     <style name="WrongAnswer.ToolContainer" parent="ToolContainer">
         <item name="android:background">@color/red</item>
     </style>
 
-    <style name="RightAnswerMessage" parent="TextAppearance">
+    <style name="RightAnswer.Title" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_margin">@dimen/base_gap</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="RightAnswer.Text" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left</item>
@@ -199,7 +241,34 @@
         <item name="android:background">@drawable/background_message_green</item>
     </style>
 
-    <style name="WrongAnswerMessage" parent="TextAppearance">
+    <style name="WrongAnswer.ContentContainer.Simple" parent="RightAnswer.ContentContainer.Simple">
+        <item name="cardBackgroundColor">@color/red</item>
+    </style>
+
+    <style name="WrongAnswer.TitleContainer.Simple" parent="RightAnswer.TitleContainer.Simple">
+        <item name="cardBackgroundColor">@color/red</item>
+    </style>
+
+    <style name="WrongAnswer.TitleContainer" parent="WrongAnswer.TitleContainer.Simple">
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="WrongAnswer.Title.Simple" parent="RightAnswer.Title.Simple">
+        <item name="android:text">@string/title_wrong_answer</item>
+    </style>
+
+    <style name="WrongAnswer.Title" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/base_gap</item>
+    </style>
+
+    <style name="WrongAnswer.Text" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left</item>
@@ -219,8 +288,6 @@
     <style name="LockScreen.SupportContent.Content">
         <!--<item name="android:background">#22222222</item>-->
     </style>
-
-    AbstractQuestuest part-->
 
     <style name="Quest" parent="TextAppearance">
         <item name="answerButtonVisible">true</item>
@@ -244,9 +311,9 @@
     </style>
 
     <style name="Quest.TitleContainer">
-        <item name="android:layout_marginLeft">@dimen/base_gap</item>
-        <item name="android:layout_marginRight">@dimen/base_gap</item>
-        <item name="android:layout_marginTop">@dimen/base_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
         <item name="android:layout_alignParentTop">true</item>
     </style>
 
@@ -271,7 +338,7 @@
         <item name="backgroundColorStart">@color/lock_screen_background_color</item>
         <item name="backgroundColorEnd">#aaffffff</item>
         <item name="dimAmount">0.5</item>
-        <item name="animationDuration">800</item>
+        <item name="animationDuration">400</item>
     </style>
 
     <style name="Window.Title" parent="TextAppearance">
@@ -281,7 +348,7 @@
     </style>
 
     <style name="Window.Menu">
-        <item name="backgroundColorStart">#00ffffff</item>
+        <item name="backgroundColorStart">#aaffffff</item>
         <item name="backgroundColorEnd">#aaffffff</item>
         <item name="openPosition">POSITION_TOP_LEFT</item>
         <item name="closePosition">POSITION_BOTTOM_RIGHT</item>
@@ -316,7 +383,7 @@
         <item name="closePosition">POSITION_BOTTOM_RIGHT</item>
     </style>
 
-    <style name="Window.PupilStatistics.ContentContainer"></style>
+    <style name="Window.PupilStatistics.ContentContainer" />
 
     <style name="Window.PupilStatistics.BookTitleButton" parent="FloatingActionButton">
 
@@ -375,47 +442,39 @@
 
     <style name="Window.RightAnswer">
         <item name="backgroundColorStart">@color/transparent</item>
-        <item name="backgroundColorEnd">#aaFFFFFF</item>
+        <item name="backgroundColorEnd">#33FFFFFF</item>
         <item name="animationDuration">400</item>
         <item name="openPosition">
             POSITION_MIDDLE_CENTER
         </item>
         <item name="closePosition">
-            POSITION_MIDDLE_CENTER
+            POSITION_BOTTOM_RIGHT
         </item>
     </style>
 
     <style name="Window.RightAnswer.Simple">
-        <item name="dimAmount">0</item>
-        <item name="animationDuration">0</item>
-        <item name="backgroundColorEnd">@color/transparent</item>
+        <item name="dimAmount">.1</item>
+        <item name="backgroundColorStart">#11FFFFFF</item>
+        <item name="backgroundColorEnd">#11FFFFFF</item>
     </style>
 
     <style name="Window.WrongAnswer">
         <item name="backgroundColorEnd">#33FFFFFF</item>
-        <item name="animationDuration">200</item>
-        <item name="dimAmount">.5</item>
-        <item name="openPosition">
-            POSITION_MIDDLE_CENTER
-        </item>
-        <item name="closePosition">
-            POSITION_MIDDLE_CENTER
-        </item>
-    </style>
-
-    <style name="Window.WrongAnswer.Simple">
+        <item name="backgroundColorStart">#33FFFFFF</item>
+        <item name="animationDuration">400</item>
         <item name="dimAmount">0</item>
-        <item name="animationDuration">0</item>
-        <item name="backgroundColorEnd">@color/transparent</item>
-    </style>
-
-    <style name="Window.Advert">
-        <item name="backgroundColorEnd">@color/white</item>
-        <item name="openPosition">POSITION_BOTTOM_CENTER
+        <item name="openPosition">
+            POSITION_BOTTOM_CENTER
         </item>
         <item name="closePosition">
             POSITION_BOTTOM_CENTER
         </item>
+    </style>
+
+    <style name="Window.WrongAnswer.Simple" parent="Window.WrongAnswer">
+        <item name="dimAmount">.1</item>
+        <item name="animationDuration">400</item>
+        <item name="backgroundColorEnd">@color/transparent</item>
     </style>
 
     <style name="Quest.Title" parent="TextAppearance">
@@ -502,12 +561,14 @@
     <style name="Quest.TrafficLight" />
 
     <style name="Quest.TrafficLight.Button">
-        <item name="android:textSize">24sp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:textAllCaps">true</item>
         <item name="textAllCaps">true</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
         <item name="fontFamily">roboto</item>
-        <item name="textWeight">ultra_bold</item>
+        <item name="textWeight">bold</item>
         <item name="textStyle">normal</item>
     </style>
 
