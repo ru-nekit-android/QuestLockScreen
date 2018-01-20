@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="AutoResizeTextView">
+    <declare-styleable name="AutofitTextView">
         <attr name="minTextSize" format="dimension" />
-        <attr name="maxTextSize" format="dimension" />
-        <attr name="threshold" format="float" />
+        <attr name="precision" format="float" />
+        <attr name="sizeToFit" format="boolean" />
     </declare-styleable>
 
 </resources>

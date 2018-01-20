@@ -1,0 +1,735 @@
+<resources>
+
+    <style name="MainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:buttonStyle">@style/Button</item>-->
+        <!--<item name="buttonStyle">@style/Button</item>-->
+        <item name="android:imageButtonStyle">@style/ImageButton</item>
+        <item name="imageButtonStyle">@style/ImageButton</item>
+    </style>
+
+    <style name="EditText" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ems">10</item>
+    </style>
+
+    <style name="AnswerInput" parent="EditText">
+        <item name="android:textSize">22sp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="UnlockPasswordInput" parent="EditText">
+        <item name="android:inputType">numberPassword</item>
+    </style>
+
+
+    <style name="Button.AlternativeAnswer">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">thin</item>
+        <item name="textStyle">normal</item>
+    </style>
+
+    <style name="ImageButton">
+        <!--<item name="backgroundTint">@color/transparent</item>-->
+    </style>
+
+    <!--Lock Screen part-->
+
+    <style name="TitleContainer">
+        <item name="android:layout_height">@dimen/title_container_height</item>
+    </style>
+
+    <style name="MenuButton">
+        <item name="srcCompat">@drawable/ic_menu_white_36px</item>
+        <item name="android:text">@string/label_unlock</item>
+    </style>
+
+    <style name="FloatingActionButton">
+        <item name="borderWidth">0dp</item>
+        <item name="fabSize">normal</item>
+        <item name="useCompatPadding">false</item>
+        <item name="backgroundTint">@color/green</item>
+    </style>
+
+    <style name="FloatingActionButton.Menu">
+        <item name="android:layout_height">40dp</item>
+        <!--<item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_gap</item>
+        <item name="android:layout_marginBottom">@dimen/base_gap</item>-->
+    </style>
+
+    <style name="PhoneButton" parent="FloatingActionButton.Menu">
+        <item name="android:text">@string/label_phone</item>
+        <item name="srcCompat">@drawable/ic_phone_white</item>
+        <item name="android:background">@drawable/background_button_green_left</item>
+    </style>
+
+    <style name="UnlockButton" parent="FloatingActionButton.Menu">
+        <item name="android:text">@string/label_unlock</item>
+        <item name="srcCompat">@drawable/ic_lock_open_white</item>
+        <item name="android:background">@drawable/background_button_green_right</item>
+    </style>
+
+    <style name="CloseButton" parent="FloatingActionButton">
+        <item name="srcCompat">@drawable/ic_close_white_24dp</item>
+        <item name="android:layout_marginBottom">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_gap</item>
+    </style>
+
+    <style name="NavigationPrevButton" parent="FloatingActionButton.Menu">
+        <item name="srcCompat">@drawable/ic_navigate_before_48px</item>
+        <item name="android:background">@drawable/background_button_green_left</item>
+    </style>
+
+    <style name="NavigationNextButton" parent="FloatingActionButton.Menu">
+        <item name="srcCompat">@drawable/ic_navigate_next_48px</item>
+        <item name="android:background">@drawable/background_button_green_right</item>
+    </style>
+
+    <!-- LockScreen -->
+
+    <style name="LockScreen" />
+
+    <style name="LockScreen.ContainerRoot">
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="LockScreen.Container">
+        <item name="android:background">@color/lock_screen_background_color</item>
+    </style>
+
+    <style name="LockScreen.ContentContainer" />
+
+    <style name="LockScreen.TitleContainer" parent="TitleContainer" />
+
+    <!--Status Bar-->
+
+    <style name="LockScreen.StatusBar" />
+
+    <style name="LockScreen.StatusBar.Container">
+        <item name="android:background">@color/green_dark</item>
+    </style>
+
+    <style name="LockScreen.StatusBar.ClockView" parent="TextAppearance">
+        <item name="textWeight">light</item>
+        <item name="textStyle">normal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingRight">10dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="LockScreen.StatusBar.TimerView" parent="TextAppearance">
+        <item name="textWeight">light</item>
+        <item name="textStyle">normal</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="LockScreen.QuestContent" />
+
+    <style name="LockScreen.QuestContent.Container" />
+
+    <style name="LockScreen.QuestContent.DelayedPlay" parent="TextAppearance">
+        <item name="android:gravity">center</item>
+        <item name="textStyle">normal</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+        <item name="android:padding">@dimen/base_semi_gap</item>
+        <item name="android:background">@color/green</item>
+    </style>
+
+    <style name="LockScreen.QuestContent.TitleContainer">
+        <item name="android:paddingLeft">@dimen/base_gap</item>
+        <item name="android:paddingTop">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_gap</item>
+        <item name="android:paddingBottom">@dimen/base_semi_gap</item>
+        <item name="android:background">@color/green</item>
+        <item name="android:layout_height">@dimen/title_container_height</item>
+    </style>
+
+    <style name="LockScreen.QuestContent.Title" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="LockScreen.QuestContent.TitleRight" parent="TextAppearance">
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_marginLeft">10dp</item>
+    </style>
+
+    <style name="LockScreen.Window">
+        <item name="dimAmount">.4</item>
+        <item name="animationDuration">400</item>
+    </style>
+
+    <!--Support Content-->
+
+    <style name="LockScreen.SupportContent" />
+
+    <style name="LockScreen.SupportContent.Title">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="RightAnswer.ToolContainer" parent="ToolContainer">
+        <item name="android:background">@color/green</item>
+    </style>
+
+    <style name="RightAnswer" />
+
+    <style name="RightAnswer.ContentContainer.Simple" />
+
+    <style name="RightAnswer.ContentContainer">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="RightAnswer.TitleContainer">
+        <item name="cardBackgroundColor">@color/green</item>
+        <item name="cardCornerRadius">@dimen/base_corner_radius</item>
+        <item name="cardElevation">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="RightAnswer.TitleContainer.Simple" />
+
+    <style name="RightAnswer.Title.Simple" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/base_gap</item>
+        <item name="android:text">@string/title_right_answer_simple</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="WrongAnswer.ToolContainer" parent="ToolContainer">
+        <item name="android:background">@color/red</item>
+    </style>
+
+    <style name="RightAnswer.Title" parent="TextAppearance">
+        <item name="android:singleLine">false</item>
+        <item name="android:textSize">18sp</item>
+        <item name="minTextSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_margin">@dimen/base_gap</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="RightAnswer.Text" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginTop">@dimen/base_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_gap</item>
+        <item name="android:background">@drawable/background_message_green</item>
+    </style>
+
+    <style name="WrongAnswer.ContentContainer.Simple" parent="RightAnswer.ContentContainer.Simple">
+        <item name="cardBackgroundColor">@color/red</item>
+    </style>
+
+    <style name="WrongAnswer.TitleContainer.Simple" parent="RightAnswer.TitleContainer.Simple">
+        <item name="cardBackgroundColor">@color/red</item>
+    </style>
+
+    <style name="WrongAnswer.TitleContainer" parent="WrongAnswer.TitleContainer.Simple">
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="WrongAnswer.Title.Simple" parent="RightAnswer.Title.Simple">
+        <item name="android:text">@string/title_wrong_answer</item>
+    </style>
+
+    <style name="WrongAnswer.Title" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/base_gap</item>
+    </style>
+
+    <style name="WrongAnswer.Text" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">left</item>
+        <item name="android:layout_marginTop">@dimen/base_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_gap</item>
+        <item name="android:background">@drawable/background_message_red</item>
+    </style>
+
+    <style name="LockScreen.SupportContent.TitleContainer">
+        <item name="android:padding">@dimen/base_semi_gap</item>
+        <item name="android:background">@color/green</item>
+    </style>
+
+    <style name="LockScreen.SupportContent.ContentContainer" />
+
+    <style name="LockScreen.SupportContent.Content">
+        <!--<item name="android:background">#22222222</item>-->
+    </style>
+
+    <style name="Quest" parent="TextAppearance">
+        <item name="answerButtonVisible">true</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Quest.AnswerButton" parent="@style/ImageButton">
+        <item name="android:text">@string/label_answer</item>
+        <item name="srcCompat">@drawable/ic_chevron_right_white_36dp</item>
+    </style>
+
+    <style name="Quest.ContentContainer">
+        <item name="android:layout_margin">@dimen/base_gap</item>
+    </style>
+
+    <style name="Quest.AnswerInputContainer">
+        <item name="android:gravity">center</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:background">@color/green</item>
+    </style>
+
+    <style name="Quest.TitleContainer">
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <style name="Quest.AnswerContainer">
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
+
+    <style name="Quest.AlternativeAnswerContainer">
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_gap</item>
+        <item name="android:layout_marginBottom">@dimen/base_gap</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="Quest.AnswerInput" parent="@style/AnswerInput">
+        <item name="android:textColor">@color/white</item>
+        <item name="backgroundTint">@color/white</item>
+    </style>
+
+    <style name="Window">
+        <item name="backgroundColorStart">@color/lock_screen_background_color</item>
+        <item name="backgroundColorEnd">#AAFFFFFF</item>
+        <item name="dimAmount">0.5</item>
+        <item name="animationDuration">400</item>
+    </style>
+
+    <style name="Window.Title" parent="TextAppearance">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="Window.Menu">
+        <item name="backgroundColorStart">#AAFFFFFF</item>
+        <item name="backgroundColorEnd">#AAFFFFFF</item>
+        <item name="openPosition">POSITION_TOP_LEFT</item>
+        <item name="closePosition">POSITION_BOTTOM_RIGHT</item>
+    </style>
+
+    <style name="Window.Menu.Phone" />
+
+    <style name="Window.Menu.Unlock" />
+
+    <style name="Window.Menu.Unlock.ContentContainer" />
+
+    <style name="Window.Menu.Phone.ContentContainer">
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="Window.Menu.Phone.ContactList">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Window.Menu.TitleContainer" parent="TitleContainer">
+        <item name="android:background">@color/green</item>
+        <item name="android:paddingLeft">@dimen/base_gap</item>
+    </style>
+
+    <style name="Window.Menu.ContentContainer" />
+
+    <style name="Window.PupilStatistics">
+        <item name="backgroundColorStart">#00FFFFFF</item>
+        <item name="backgroundColorEnd">#AAFFFFFF</item>
+        <item name="openPosition">POSITION_TOP_RIGHT</item>
+        <item name="closePosition">POSITION_BOTTOM_RIGHT</item>
+    </style>
+
+    <style name="Window.PupilStatistics.ContentContainer" />
+
+    <style name="Window.PupilStatistics.BookTitleButton" parent="FloatingActionButton" />
+
+    <style name="Window.PupilStatistics.BookContentButton" parent="FloatingActionButton" />
+
+    <style name="Window.PupilStatistics.BookTitle" />
+
+    <style name="Window.PupilStatistics.BookContent" />
+
+    <style name="Window.PupilStatistics.BookContent.View">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:cropToPadding">true</item>
+        <item name="android:scaleType">fitStart</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="Window.PupilStatistics.BookTitle.View">
+        <item name="android:adjustViewBounds">true</item>
+        <item name="android:cropToPadding">true</item>
+        <item name="android:scaleType">fitStart</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
+    <style name="Window.PupilStatistics.BookContent.Text" parent="TextAppearance">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">light</item>
+        <item name="textStyle">italic</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Window.PupilStatistics.BookTitle.Title" parent="TextAppearance">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+
+    <style name="Window.PupilStatistics.BookTitle.Name" parent="TextAppearance">
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">false</item>
+        <item name="android:textSize">80sp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+        <item name="textWeight">ultra_bold</item>
+        <item name="textStyle">italic</item>
+        <item name="minTextSize">30sp</item>
+    </style>
+
+    <!---->
+
+    <style name="Window.RightAnswer">
+        <item name="backgroundColorStart">@color/transparent</item>
+        <item name="backgroundColorEnd">#33FFFFFF</item>
+        <item name="animationDuration">400</item>
+        <item name="openPosition">
+            POSITION_MIDDLE_CENTER
+        </item>
+        <item name="closePosition">
+            POSITION_BOTTOM_RIGHT
+        </item>
+    </style>
+
+    <style name="Window.RightAnswer.Simple" />
+
+    <style name="Window.WrongAnswer">
+        <item name="openPosition">
+            POSITION_BOTTOM_CENTER
+        </item>
+        <item name="closePosition">
+            POSITION_BOTTOM_CENTER
+        </item>
+    </style>
+
+    <style name="Window.WrongAnswer.Simple" parent="Window.WrongAnswer">
+        <item name="dimAmount">.1</item>
+        <item name="animationDuration">400</item>
+        <item name="backgroundColorEnd">@color/transparent</item>
+    </style>
+
+    <style name="Quest.Title" parent="TextAppearance">
+        <item name="android:maxLines">2</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textSize">18sp</item>
+        <item name="minTextSize">14sp</item>
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Quest.TitleContentContainer">
+        <item name="cardBackgroundColor">@color/green</item>
+        <item name="cardCornerRadius">@dimen/base_corner_radius</item>
+        <item name="cardElevation">0dp</item>
+        <item name="cardUseCompatPadding">false</item>
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="Quest.SimpleExample">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="Quest.SimpleExample.LeftSide">
+        <item name="android:gravity">right|center</item>
+    </style>
+
+    <style name="Quest.SimpleExample.AnswerInput">
+        <item name="android:background">@null</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="Quest.SimpleExample.RightSide">
+        <item name="android:gravity">right|center</item>
+    </style>
+
+    <style name="Quest.Time" />
+
+    <style name="Quest.Time.ContentContainer">
+        <item name="cardCornerRadius">@dimen/base_corner_radius</item>
+    </style>
+
+    <style name="Quest.Time.Content" />
+
+    <style name="Quest.Time.Content.Background">
+        <item name="android:padding">@dimen/base_gap</item>
+    </style>
+
+    <style name="Quest.Choice" />
+
+    <style name="Quest.Choice.ContentContainer">
+        <!--<item name="cardCornerRadius">@dimen/base_corner_radius</item>-->
+        <item name="cardCornerRadius">0dp</item>
+        <item name="cardUseCompatPadding">false</item>
+        <item name="cardPreventCornerOverlap">false</item>
+    </style>
+
+    <style name="Quest.Choice.Content" />
+
+    <style name="Quest.Choice.Content.Background">
+        <item name="android:padding">@dimen/base_gap</item>
+    </style>
+
+    <style name="Quest.Perimeter">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Quest.Perimeter.A_Side">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Quest.Perimeter.B_Side">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingRight">4dp</item>
+    </style>
+
+    <style name="Quest.Perimeter.Figure">
+        <!--<item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>-->
+        <item name="android:background">@drawable/perimeter_figure_background</item>
+    </style>
+
+    <style name="Quest.TrafficLight" />
+
+    <style name="Quest.TrafficLight.Button">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="textAllCaps">true</item>
+        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">bold</item>
+        <item name="textStyle">normal</item>
+    </style>
+
+    <style name="Quest.TrafficLight.ContentContainer" />
+
+    <style name="Quest.FruitArithmetic" />
+
+    <style name="Quest.FruitArithmetic.ItemList" />
+
+    <style name="Quest.FruitArithmetic.ItemList.ContentContainer" />
+
+    <style name="Quest.FruitArithmetic.Button">
+        <item name="android:textSize">20sp</item>
+        <item name="minTextSize">12sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:lines">1</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="textAllCaps">true</item>
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">bold</item>
+        <item name="textStyle">normal</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Quest.Coin" />
+
+    <style name="Quest.Coin.Button">
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="Quest.Coin.Button.Background">
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@color/transparent</item>
+    </style>
+
+    <style name="Quest.Coin.NominationLabel" parent="TextAppearance">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">light</item>
+        <item name="android:layout_centerInParent">true</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="PupilPoints" parent="TextAppearance">
+        <item name="textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <style name="PupilLevel" parent="TextAppearance">
+        <item name="fontFamily">roboto</item>
+        <item name="textWeight">light</item>
+        <item name="textStyle">normal</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="PupilLevelProgress" parent="TextAppearance">
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginBottom">3dp</item>
+        <item name="cpv_barColor">@color/green</item>
+        <item name="cpv_barWidth">3dp</item>
+        <item name="cpv_innerContourSize">0dp</item>
+        <item name="cpv_maxValue">100</item>
+        <item name="cpv_outerContourSize">0dp</item>
+        <item name="cpv_rimColor">@color/white</item>
+        <item name="cpv_rimWidth">5dp</item>
+        <item name="cpv_showUnit">false</item>
+        <item name="cpv_spinColor">@color/green</item>
+        <item name="cpv_textColor">@color/transparent</item>
+    </style>
+
+    <style name="ProgressPoints" parent="TextAppearance">
+        <item name="textStyle">normal</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_alignParentTop">true</item>
+    </style>
+
+    <!-- Allow Contacts list Item for modification and read only types -->
+
+    <style name="AllowContact" />
+
+    <style name="AllowContact.Read" />
+
+    <style name="AllowContact.Read.InformationField" parent="TextAppearance">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="AllowContact.Read.Title" parent="TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="AllowContact.Read.Information" parent="TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="AllowContact.Read.Container">
+        <item name="android:layout_margin">4dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="elevation">4dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <!--modification-->
+
+    <style name="AllowContact.Modification">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="AllowContact.Modification.ContactList">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="AllowContact.Modification.Container">
+        <item name="android:layout_margin">@dimen/base_semi_gap</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="elevation">4dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="AllowContact.Modification.Title" parent="TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="AllowContact.Modification.Information" parent="TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_semi_gap</item>
+    </style>
+
+    <style name="AllowContact.Modification.ActionButton">
+        <item name="srcCompat">@drawable/ic_delete_forever_red</item>
+        <item name="android:background">@color/white</item>
+    </style>
+
+    <style name="AllowContact.Read.ActionButton">
+        <item name="srcCompat">@drawable/ic_phone_white</item>
+        <item name="android:tint">@color/green</item>
+    </style>
+
+    <style name="UnlockSecretView">
+        <item name="android:layout_centerInParent">true</item>
+        <item name="normalStateColor">@color/green</item>
+        <item name="correctStateColor">@color/black</item>
+        <item name="wrongStateColor">@color/red</item>
+        <item name="aspectRatio">square</item>
+        <item name="aspectRatioEnabled">true</item>
+    </style>
+
+    <style name="GenerateQRCode" parent="TextAppearance">
+        <item name="android:textSize">24sp</item>
+    </style>
+
+</resources>

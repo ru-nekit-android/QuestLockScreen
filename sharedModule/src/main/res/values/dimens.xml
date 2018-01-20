@@ -3,6 +3,7 @@
     <dimen name="base_corner_radius">8dp</dimen>
     <dimen name="big_corner_radius">24dp</dimen>
     <dimen name="base_semi_gap">8dp</dimen>
+    <dimen name="line_weight">1dp</dimen>
 
     <!--boy-->
     <dimen name="boy_boots_top">312dp</dimen>
