@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -41,8 +40,8 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static android.widget.RelativeLayout.ABOVE;
 import static android.widget.RelativeLayout.BELOW;
-import static ru.nekit.android.qls.lockScreen.content.LockScreenQuestViewContainerMediator.ACTION_SHOW_RIGHT_ANSWER_WINDOW;
-import static ru.nekit.android.qls.lockScreen.content.LockScreenQuestViewContainerMediator.ACTION_SHOW_WRONG_ANSWER_WINDOW;
+import static ru.nekit.android.qls.lockScreen.content.LockScreenQuestViewMediator.ACTION_SHOW_RIGHT_ANSWER_WINDOW;
+import static ru.nekit.android.qls.lockScreen.content.LockScreenQuestViewMediator.ACTION_SHOW_WRONG_ANSWER_WINDOW;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.DELAYED_PLAY;
 import static ru.nekit.android.qls.quest.QuestContext.QuestState.PLAYED;
 import static ru.nekit.android.qls.quest.QuestContextEvent.EVENT_EMPTY_ANSWER;
@@ -545,7 +544,7 @@ public class QuestMediatorFacade implements View.OnClickListener, IQuestMediator
         @NonNull
         final EditText defaultAnswerInput;
 
-        QuestViewHolder(@NonNull Context context) {
+        QuestViewHolder(@NonNull android.content.Context context) {
             super(context, R.layout.layout_quest_view);
             rootContainer = (ViewGroup) view.findViewById(R.id.container_root);
             titleContainer = (ViewGroup) view.findViewById(R.id.container_title);

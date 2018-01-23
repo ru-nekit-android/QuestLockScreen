@@ -6,7 +6,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -67,9 +66,8 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
     public static final String PUPIL_BIND_OK = "pupil_bind_ok";
     public static final String EVENT_OUTGOING_CALL = "eventOutgoingCall";
-
     public static final String ACTION_HIDE_LOCK_SCREEN_VIEW = "action_hide_lock_screen_view";
-
+    private static final String TAG = LockScreenService.class.getName();
     private static final String NAME_RESTORE_AFTER_INCOMING_CALL_ENDED = "restore_after_incoming_call_end";
     private static final String NAME_RESTORE_AFTER_OUTGOING_CALL_ENDED = "restore_after_outgoing_call_end";
 
@@ -85,6 +83,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
     private Handler mWorkHandler;
     private Runnable mWorkRunnable;
+
     private StartLimiterStatistics mStartLimiterStatistics;
 
     private LockScreenStartType mStartType;
@@ -166,7 +165,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
         super.onStartCommand(intent, flags, startId);
         mStartId = startId;
         mStartType = LockScreenStartType.fromOrdinal(intent.getIntExtra(LockScreenStartType.NAME, 0));
-        Context context = getApplicationContext();
+        android.content.Context context = getApplicationContext();
         if (mNotificationManager == null) {
             mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         }
@@ -198,8 +197,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
             if (!setupWizardIsComplete) {
                 startForeground(buildNotificationForSetupWizard(R.string.notification_setup_wizard));
             }
-        }
-        if (mStartType == SETUP_WIZARD) {
+        } else if (mStartType == SETUP_WIZARD) {
             if (setupWizardIsComplete) {
                 startForeground(buildNotificationForCurrentPupil(R.string.notification_let_play));
             } else {
@@ -214,7 +212,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
             });
         } else {
             if (mQuestContext == null) {
-                mQuestContext = new QuestContext(context, mEventBus, R.style.MainTheme);
+                mQuestContext = QuestContext.createInstance(context, mEventBus, R.style.MainTheme);
             }
             initMessageChannel();
             if (setupWizardIsComplete) {
@@ -245,12 +243,12 @@ public class LockScreenService extends Service implements MessageGateway.Message
         if (null != mKeyManager) {
             mKeyManager = null;
         }
-        mKeyManager = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+        mKeyManager = (KeyguardManager) getSystemService(android.content.Context.KEYGUARD_SERVICE);
         if (null != mKeyManager) {
             if (null != mKeyLock) {
                 mKeyLock = null;
             }
-            mKeyLock = mKeyManager.newKeyguardLock(Context.KEYGUARD_SERVICE);
+            mKeyLock = mKeyManager.newKeyguardLock(android.content.Context.KEYGUARD_SERVICE);
         }
     }
 
@@ -295,7 +293,7 @@ public class LockScreenService extends Service implements MessageGateway.Message
 
     //exclude SILENCE START LOCK SCREEN MODE
     private void createLockScreenView(@NonNull LockScreenStartType startType) {
-        final Context context = getApplicationContext();
+        final android.content.Context context = getApplicationContext();
         if (startType == EXPLICIT || startType == ON_NOTIFICATION_CLICK) {
             mStartType = startType;
         }
@@ -362,14 +360,14 @@ public class LockScreenService extends Service implements MessageGateway.Message
     }
 
     private PendingIntent getContentIntentForPupil() {
-        Context context = getApplicationContext();
+        android.content.Context context = getApplicationContext();
         return PendingIntent.getService(context, 0,
                 LockScreen.getActivationIntent(context, ON_NOTIFICATION_CLICK),
                 PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getContentIntentForSetupWizard() {
-        Context context = getApplicationContext();
+        android.content.Context context = getApplicationContext();
         return PendingIntent.getActivity(context, 0,
                 getQuestSetupWizard().getStartIntent(false),
                 PendingIntent.FLAG_UPDATE_CURRENT);
@@ -491,6 +489,6 @@ public class LockScreenService extends Service implements MessageGateway.Message
     @NonNull
     @Override
     public String getEventBusName() {
-        return getClass().getName();
+        return TAG;
     }
 }

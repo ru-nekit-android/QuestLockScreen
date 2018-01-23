@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?><!--Container-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--Title-->
+    <RelativeLayout
+        android:id="@+id/container_title"
+        style="@style/LockScreen.QuestView.TitleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.devspark.robototextview.widget.RobotoTextView
+            android:id="@+id/tv_title"
+            style="@style/LockScreen.SupportContent.Title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_menu"
+            style="@style/MenuButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <!--Content-->
+    <RelativeLayout
+        android:id="@+id/container_content"
+        style="@style/LockScreen.IntroductionContent.ContentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/content"
+            style="@style/LockScreen.IntroductionContent.Content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/container_tool" />
+
+        <RelativeLayout
+            android:id="@+id/container_tool"
+            style="@style/ToolContainer"
+            android:layout_alignParentBottom="true">
+
+            <com.devspark.robototextview.widget.RobotoButton
+                android:id="@+id/btn_start"
+                style="@style/NextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/label_start_quest" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -24,7 +24,9 @@ public class SettingsFragment extends QuestSetupWizardFragment implements View.O
             getActivity().finish();
         }
     };
-    private Button mSaveQuestSeriesLength, mShowBindParentControl, mAllowContacts;
+    private Button mSaveQuestSeriesLength,
+    //mShowBindParentControl,
+    mAllowContacts;
     private EditText mQuestSeriesLengthInput;
 
     public static SettingsFragment getInstance() {
@@ -34,7 +36,7 @@ public class SettingsFragment extends QuestSetupWizardFragment implements View.O
     @Override
     protected void onSetupStart(@NonNull View view) {
         mSaveQuestSeriesLength = (Button) view.findViewById(R.id.btn_quest_series_length_save);
-        mShowBindParentControl = (Button) view.findViewById(R.id.btn_bind_parent_control);
+        //  mShowBindParentControl = (Button) view.findViewById(R.id.btn_bind_parent_control);
         mAllowContacts = (Button) view.findViewById(R.id.btn_allow_contacts);
         mAllowContacts.setVisibility(getSetupWizard().phoneIsAvailable() ? View.VISIBLE : View.GONE);
         mQuestSeriesLengthInput = (EditText) view.findViewById(R.id.input_quest_series_length);
@@ -44,7 +46,7 @@ public class SettingsFragment extends QuestSetupWizardFragment implements View.O
         getContext().registerReceiver(mBroadcastReceiver, intentFilter);
         setAltButtonText(R.string.label_stop_lock);
         mSaveQuestSeriesLength.setOnClickListener(this);
-        mShowBindParentControl.setOnClickListener(this);
+        //   mShowBindParentControl.setOnClickListener(this);
         mAllowContacts.setOnClickListener(this);
         setAltButtonVisibility(getSetupWizard().lockScreenIsActive());
         setUnconditionedNextAction(true);
@@ -54,7 +56,7 @@ public class SettingsFragment extends QuestSetupWizardFragment implements View.O
     public void onDestroy() {
         KeyboardHost.hideKeyboard(getContext(), mQuestSeriesLengthInput);
         mSaveQuestSeriesLength.setOnClickListener(null);
-        mShowBindParentControl.setOnClickListener(null);
+        //mShowBindParentControl.setOnClickListener(null);
         mAllowContacts.setOnClickListener(null);
         getContext().unregisterReceiver(mBroadcastReceiver);
         super.onDestroy();
@@ -78,9 +80,10 @@ public class SettingsFragment extends QuestSetupWizardFragment implements View.O
 
     @Override
     public void onClick(View view) {
-        if (view == mShowBindParentControl) {
+       /*if (view == mShowBindParentControl) {
             showSetupWizardStep(QuestSetupWizardStep.BIND_PARENT_CONTROL);
-        } else if (view == mAllowContacts) {
+        } else */
+        if (view == mAllowContacts) {
             showSetupWizardStep(QuestSetupWizardStep.SETUP_ALLOW_CONTACTS);
         } else if (view == mSaveQuestSeriesLength) {
             int questSeriesLength = Math.max(CONST.QUEST_SERIES_LENGTH_BY_DEFAULT,

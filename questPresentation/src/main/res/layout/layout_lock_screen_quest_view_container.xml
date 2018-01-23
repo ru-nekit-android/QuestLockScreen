@@ -10,40 +10,39 @@
     <!--Title-->
     <RelativeLayout
         android:id="@+id/container_title"
-        style="@style/LockScreen.QuestContent.TitleContainer"
-        android:layout_width="match_parent"
-        android:animateLayoutChanges="true">
+        style="@style/LockScreen.QuestView.TitleContainer"
+        android:layout_width="match_parent">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <ru.nekit.android.qls.widget.AutofitTextView
             android:id="@+id/tv_title"
-            style="@style/LockScreen.QuestContent.Title"
+            style="@style/LockScreen.QuestView.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true" />
 
         <com.devspark.robototextview.widget.RobotoTextView
             android:id="@+id/tv_message_right"
-            style="@style/LockScreen.QuestContent.TitleRight"
+            style="@style/LockScreen.QuestView.Title.Right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@id/tv_title"
             android:layout_alignBottom="@+id/tv_title"
             android:layout_toEndOf="@+id/tv_title"
-            android:layout_toLeftOf="@+id/container_statistics"
+            android:layout_toLeftOf="@+id/btn_menu"
             android:layout_toRightOf="@+id/tv_title" />
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/btn_menu"
             style="@style/MenuButton"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true" />
 
         <RelativeLayout
             android:id="@+id/container_statistics"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true">
+            android:layout_height="match_parent">
 
             <at.grabner.circleprogress.CircleProgressView
                 android:id="@+id/pupil_progress"
@@ -93,7 +92,7 @@
 
                 <com.devspark.robototextview.widget.RobotoTextView
                     android:id="@+id/tv_delayed_play"
-                    style="@style/LockScreen.QuestContent.DelayedPlay"
+                    style="@style/LockScreen.QuestView.DelayedPlay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/title_delayed_start" />
@@ -104,7 +103,7 @@
 
         <ViewSwitcher
             android:id="@+id/container_content_quest"
-            style="@style/LockScreen.QuestContent.Container"
+            style="@style/LockScreen.QuestView.Container"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

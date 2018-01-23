@@ -40,10 +40,12 @@
 
     </style>
 
-    <style name="SetupWizard.QTPComplexity"></style>
+    <style name="SetupWizard.QTPComplexity" />
 
     <style name="ToolContainer">
         <item name="android:background">@color/green</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
     </style>
 
     <style name="ToolButtonContainer" />
@@ -59,6 +61,7 @@
 
     <style name="ShowNoMore" parent="ToolContainer.Button">
         <item name="buttonTint">@color/white</item>
+        <item name="android:visibility">gone</item>
         <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
         <item name="android:gravity">left|center_vertical</item>
     </style>
@@ -97,5 +100,13 @@
     <style name="AltButton" parent="ToolContainer.Button">
         <item name="android:gravity">left|center_vertical</item>
     </style>
+
+    <style name="Window">
+        <item name="backgroundColorStart">@color/lock_screen_background_color</item>
+        <item name="backgroundColorEnd">#AAFFFFFF</item>
+        <item name="dimAmount">0</item>
+        <item name="animationDuration">400</item>
+    </style>
+
 
 </resources>

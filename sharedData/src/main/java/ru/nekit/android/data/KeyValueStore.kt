@@ -3,7 +3,7 @@ package ru.nekit.android.data
 import android.content.SharedPreferences
 import ru.nekit.android.domain.repository.IKeyValueStore
 
-abstract class KeyValueStore<Value>(private val sharedPreferences: SharedPreferences) : IKeyValueStore<String, Value> {
+abstract class KeyValueStore<Type>(private val sharedPreferences: SharedPreferences) : IKeyValueStore<String, Type> {
     override fun contains(key: String): Boolean = sharedPreferences.contains(key)
 }
 

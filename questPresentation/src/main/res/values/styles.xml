@@ -42,8 +42,9 @@
     </style>
 
     <style name="MenuButton">
-        <item name="srcCompat">@drawable/ic_menu_white_36px</item>
+        <item name="srcCompat">@drawable/ic_menu_white_36pd</item>
         <item name="android:text">@string/label_unlock</item>
+        <item name="android:background">@color/white</item>
     </style>
 
     <style name="FloatingActionButton">
@@ -53,39 +54,26 @@
         <item name="backgroundTint">@color/green</item>
     </style>
 
+    <style name="FloatingActionButton.Mini">
+        <item name="fabSize">mini</item>
+    </style>
+
     <style name="FloatingActionButton.Menu">
-        <item name="android:layout_height">40dp</item>
-        <!--<item name="android:layout_marginRight">@dimen/base_semi_gap</item>
-        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
-        <item name="android:layout_marginTop">@dimen/base_gap</item>
-        <item name="android:layout_marginBottom">@dimen/base_gap</item>-->
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="PhoneButton" parent="FloatingActionButton.Menu">
-        <item name="android:text">@string/label_phone</item>
-        <item name="srcCompat">@drawable/ic_phone_white</item>
-        <item name="android:background">@drawable/background_button_green_left</item>
-    </style>
-
-    <style name="UnlockButton" parent="FloatingActionButton.Menu">
-        <item name="android:text">@string/label_unlock</item>
-        <item name="srcCompat">@drawable/ic_lock_open_white</item>
-        <item name="android:background">@drawable/background_button_green_right</item>
-    </style>
-
-    <style name="CloseButton" parent="FloatingActionButton">
-        <item name="srcCompat">@drawable/ic_close_white_24dp</item>
-        <item name="android:layout_marginBottom">@dimen/base_gap</item>
-        <item name="android:layout_marginRight">@dimen/base_gap</item>
+    <style name="CloseButton">
+        <item name="android:background">@color/white</item>
+        <item name="srcCompat">@drawable/ic_close</item>
     </style>
 
     <style name="NavigationPrevButton" parent="FloatingActionButton.Menu">
-        <item name="srcCompat">@drawable/ic_navigate_before_48px</item>
+        <item name="srcCompat">@drawable/ic_navigate_before_48dp</item>
         <item name="android:background">@drawable/background_button_green_left</item>
     </style>
 
     <style name="NavigationNextButton" parent="FloatingActionButton.Menu">
-        <item name="srcCompat">@drawable/ic_navigate_next_48px</item>
+        <item name="srcCompat">@drawable/ic_navigate_next_48dp</item>
         <item name="android:background">@drawable/background_button_green_right</item>
     </style>
 
@@ -129,11 +117,11 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="LockScreen.QuestContent" />
+    <style name="LockScreen.QuestView" />
 
-    <style name="LockScreen.QuestContent.Container" />
+    <style name="LockScreen.QuestView.Container" />
 
-    <style name="LockScreen.QuestContent.DelayedPlay" parent="TextAppearance">
+    <style name="LockScreen.QuestView.DelayedPlay" parent="TextAppearance">
         <item name="android:gravity">center</item>
         <item name="textStyle">normal</item>
         <item name="android:textColor">@color/white</item>
@@ -143,7 +131,7 @@
         <item name="android:background">@color/green</item>
     </style>
 
-    <style name="LockScreen.QuestContent.TitleContainer">
+    <style name="LockScreen.QuestView.TitleContainer">
         <item name="android:paddingLeft">@dimen/base_gap</item>
         <item name="android:paddingTop">@dimen/base_semi_gap</item>
         <item name="android:paddingRight">@dimen/base_gap</item>
@@ -152,21 +140,34 @@
         <item name="android:layout_height">@dimen/title_container_height</item>
     </style>
 
-    <style name="LockScreen.QuestContent.Title" parent="TextAppearance">
+    <style name="LockScreen.QuestView.Title" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="LockScreen.QuestContent.TitleRight" parent="TextAppearance">
+    <style name="LockScreen.QuestView.Title.Right" parent="TextAppearance">
         <item name="android:textSize">10sp</item>
+        <item name="android:gravity">left</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:layout_marginLeft">10dp</item>
     </style>
 
     <style name="LockScreen.Window">
-        <item name="dimAmount">.4</item>
+        <item name="dimAmount">0</item>
         <item name="animationDuration">400</item>
+    </style>
+
+    <style name="LockScreen.IntroductionContent" />
+
+    <style name="LockScreen.IntroductionContent.ContentContainer" />
+
+    <style name="LockScreen.IntroductionContent.Content" />
+
+    <style name="LockScreen.IntroductionContent.Title">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <!--Support Content-->
@@ -198,9 +199,9 @@
         <item name="cardElevation">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginLeft">@dimen/base_semi_gap</item>
-        <item name="android:layout_marginRight">@dimen/base_semi_gap</item>
-        <item name="android:layout_marginTop">@dimen/base_semi_gap</item>
+        <item name="android:layout_marginLeft">@dimen/base_gap</item>
+        <item name="android:layout_marginRight">@dimen/base_gap</item>
+        <item name="android:layout_marginTop">@dimen/base_gap</item>
         <item name="cardUseCompatPadding">false</item>
     </style>
 
@@ -334,12 +335,6 @@
         <item name="backgroundTint">@color/white</item>
     </style>
 
-    <style name="Window">
-        <item name="backgroundColorStart">@color/lock_screen_background_color</item>
-        <item name="backgroundColorEnd">#AAFFFFFF</item>
-        <item name="dimAmount">0.5</item>
-        <item name="animationDuration">400</item>
-    </style>
 
     <style name="Window.Title" parent="TextAppearance">
         <item name="android:textSize">24sp</item>
@@ -348,10 +343,11 @@
     </style>
 
     <style name="Window.Menu">
-        <item name="backgroundColorStart">#AAFFFFFF</item>
-        <item name="backgroundColorEnd">#AAFFFFFF</item>
-        <item name="openPosition">POSITION_TOP_LEFT</item>
-        <item name="closePosition">POSITION_BOTTOM_RIGHT</item>
+        <item name="dimAmount">0</item>
+        <item name="backgroundColorStart">#77FFFFFF</item>
+        <item name="backgroundColorEnd">#77FFFFFF</item>
+        <item name="openPosition">POSITION_TOP_RIGHT</item>
+        <item name="closePosition">POSITION_TOP_RIGHT</item>
     </style>
 
     <style name="Window.Menu.Phone" />
@@ -372,6 +368,9 @@
     <style name="Window.Menu.TitleContainer" parent="TitleContainer">
         <item name="android:background">@color/green</item>
         <item name="android:paddingLeft">@dimen/base_gap</item>
+        <item name="android:paddingTop">@dimen/base_semi_gap</item>
+        <item name="android:paddingRight">@dimen/base_gap</item>
+        <item name="android:paddingBottom">@dimen/base_semi_gap</item>
     </style>
 
     <style name="Window.Menu.ContentContainer" />
@@ -437,13 +436,13 @@
 
     <style name="Window.RightAnswer">
         <item name="backgroundColorStart">@color/transparent</item>
-        <item name="backgroundColorEnd">#33FFFFFF</item>
+        <item name="backgroundColorEnd">#77FFFFFF</item>
         <item name="animationDuration">400</item>
         <item name="openPosition">
-            POSITION_MIDDLE_CENTER
+            POSITION_BOTTOM_CENTER
         </item>
         <item name="closePosition">
-            POSITION_BOTTOM_RIGHT
+            POSITION_BOTTOM_CENTER
         </item>
     </style>
 
@@ -459,14 +458,14 @@
     </style>
 
     <style name="Window.WrongAnswer.Simple" parent="Window.WrongAnswer">
-        <item name="dimAmount">.1</item>
+        <item name="dimAmount">0</item>
         <item name="animationDuration">400</item>
         <item name="backgroundColorEnd">@color/transparent</item>
     </style>
 
     <style name="Quest.Title" parent="TextAppearance">
-        <item name="android:maxLines">2</item>
-        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:singleLine">false</item>
         <item name="android:textSize">18sp</item>
         <item name="minTextSize">14sp</item>
         <item name="android:layout_margin">@dimen/base_semi_gap</item>
@@ -715,7 +714,7 @@
     </style>
 
     <style name="AllowContact.Read.ActionButton">
-        <item name="srcCompat">@drawable/ic_phone_white</item>
+        <item name="srcCompat">@drawable/ic_phone_36dp</item>
         <item name="android:tint">@color/green</item>
     </style>
 

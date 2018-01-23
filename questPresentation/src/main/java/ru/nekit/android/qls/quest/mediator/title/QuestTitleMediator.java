@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest.mediator.title;
 
-import android.content.Context;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
@@ -390,7 +389,7 @@ public class QuestTitleMediator implements IQuestTitleMediator {
         @NonNull
         final TextView titleView;
 
-        QuestTitleViewHolder(@NonNull Context context) {
+        QuestTitleViewHolder(@NonNull android.content.Context context) {
             super(context, R.layout.layout_quest_title);
             titleView = (TextView) view.findViewById(R.id.tv_title);
         }

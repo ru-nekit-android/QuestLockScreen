@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
 
 android {
+
     compileSdkVersion 26
     buildToolsVersion '27.0.1'
 
@@ -10,18 +11,20 @@ android {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 11
-        versionName "1.285"
+        versionCode 13
+        versionName "1.287"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
@@ -31,7 +34,7 @@ android {
         compile.exclude group: 'org.jetbrains', module: 'annotations'
     }
 
-    lintOptions{
+    lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
@@ -42,7 +45,9 @@ android.applicationVariants.all { variant ->
         File fonts = file("$variant.mergeAssets.outputDir/fonts")
         if (fonts.exists()) {
             for (File file : fonts.listFiles()) {
-                if (file.getName().contains("RobotoSlab") || file.getName().contains("RobotoCondensed") || file.getName().contains("RobotoMono")) {
+                if (file.getName().contains("RobotoSlab") ||
+                        file.getName().contains("RobotoCondensed") ||
+                        file.getName().contains("RobotoMono")) {
                     println("delete " + file.getName() + " font")
                     file.delete()
                 }
@@ -53,21 +58,17 @@ android.applicationVariants.all { variant ->
 
 dependencies {
     compile 'com.android.support:multidex:1.0.2'
-    compile('io.github.ozodrukh:CircularReveal:2.0.1@aar') {
-        transitive = true
-    }
     compile 'io.github.jakob-grabner:Circle-Progress-View:v1.3'
     compile 'com.github.christophesmet:android_maskable_layout:v1.1.0'
     compile 'com.andrognito.patternlockview:patternlockview:1.0.0'
     compile 'com.github.pwittchen:swipe:0.1.0'
     compile 'com.google.firebase:firebase-ads:11.4.2'
-    //compile 'com.google.android.gms:play-services:11.4.2'
-    //compile 'me.grantland:autofittextview:0.2.1'
     compile project(':sharedModule')
     compile project(':questData')
     compile files('libs/edm.jar')
     compile files('libs/license.jar')
 }
+
 repositories {
     mavenCentral()
 }

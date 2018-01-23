@@ -42,7 +42,8 @@
     <string name="title_setup_pupil_sex">Выберите пол ученика</string>
     <string name="pupil_name_title">Имя ученика</string>
     <string name="pupil_sex_title">Пол</string>
-    <string name="pupil_name_hint">Имя</string>
+    <string name="hint_pupil_name">Имя</string>
+    <string name="hint_quest_series_length">Количество заданий за раз</string>
     <string name="pupil_secret_title">Секрет</string>
     <string name="complexity_title">Сложность</string>
     <string name="pupil_statistics">Статистика</string>
@@ -99,7 +100,7 @@
     <string name="label_set_unlock_secret">Установить секрет</string>
     <string name="label_reset_unlock_secret">Сбросить</string>
     <string name="congratulation_for_right_answer">Правильно ответил!!!</string>
-    <string name="right_answer_best_time_update_formatter">Улучшили время: %1$s</string>
+    <string name="right_answer_best_time_update_formatter">Ты улучшил время!\nПредыдущий рекорд: %1$s</string>
     <string name="right_answer_series_length_update_formatter">Улучшили череду правильных ответов: %1$d</string>
     <string name="right_answer_time_formatter">Время ответа: %1$s</string>
     <string name="wrong_answer">Неправильный ответ!!!</string>
@@ -178,5 +179,6 @@
     <string name="label_play_one_more_time">Еще раз</string>
     <string name="title_setup_wizard_admin_request">Запросить права администратора</string>
     <string name="text_device_admin_request_explanation">Click on Activate button to protect your application from uninstalling!</string>
-
+    <string name="label_voice_record">Запись голоса</string>
+    <string name="label_start_quest">Приступить</string>
 </resources>

@@ -2,4 +2,6 @@
     <string name="admob_app_id">ca-app-pub-9028944105026522~9170175648</string>
     <string name="admob_ad_id">ca-app-pub-9028944105026522/2601732014</string>
     <string name="elm_license_key">539207263409E9B9550860779E0FAA8D012A1F4C65190D5D6F54BD1C2DB568863D810D200A98F197A3104A31839B65AA1CB287041411F3A9FAE00C76A404C69C</string>
+    <string name="title_pupil_statistics">Статистика ученика</string>
+
 </resources>

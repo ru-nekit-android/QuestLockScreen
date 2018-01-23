@@ -4,9 +4,9 @@
     style="@style/Window.Menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="ru.nekit.android.qls.quest.window.MenuWindowContentViewHolder">
+    tools:showIn="MenuWindowContentViewHolder">
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/container_title"
         style="@style/Window.Menu.TitleContainer"
         android:layout_width="match_parent">
@@ -15,9 +15,19 @@
             android:id="@+id/tv_title"
             style="@style/Window.Title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/btn_close"
+            android:layout_toStartOf="@+id/btn_close" />
 
-    </FrameLayout>
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_close"
+            style="@style/CloseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
     <ViewSwitcher
         android:id="@+id/container_content"
@@ -29,37 +39,9 @@
 
     <LinearLayout
         android:id="@+id/container_button"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/btn_close"
-        android:layout_alignTop="@+id/btn_close"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/btn_phone"
-            style="@style/PhoneButton"
-            android:layout_width="wrap_content" />
-
-        <android.support.v4.widget.Space
-            android:layout_width="1dp"
-            android:layout_height="match_parent" />
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/btn_unlock"
-            style="@style/UnlockButton"
-            android:layout_width="wrap_content" />
-
-    </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btn_close"
-        style="@style/CloseButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/ToolContainer"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal" />
 
 </RelativeLayout>

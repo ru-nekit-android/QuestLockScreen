@@ -4,4 +4,4 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:text="@string/cancel"
-    app:srcCompat="@drawable/ic_close_black" />
+    app:srcCompat="@drawable/ic_close" />

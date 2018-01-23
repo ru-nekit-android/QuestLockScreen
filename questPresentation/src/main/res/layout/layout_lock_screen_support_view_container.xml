@@ -5,10 +5,9 @@
     android:orientation="vertical">
 
     <!--Title-->
-
     <RelativeLayout
         android:id="@+id/container_title"
-        style="@style/LockScreen.QuestContent.TitleContainer"
+        style="@style/LockScreen.QuestView.TitleContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -40,24 +39,15 @@
             style="@style/ToolContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <com.devspark.robototextview.widget.RobotoCheckBox
-                android:id="@+id/check_show_no_more"
-                style="@style/ShowNoMore"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/label_show_no_more" />
+            android:layout_alignParentBottom="true"
+            android:gravity="center_vertical">
 
             <com.devspark.robototextview.widget.RobotoButton
                 android:id="@+id/btn_ok"
-                style="@style/NextButton"
-                android:layout_width="wrap_content"
+                style="@style/ToolContainer.Button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:text="@string/label_next" />
+                android:text="@string/label_ok" />
         </RelativeLayout>
 
     </RelativeLayout>

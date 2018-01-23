@@ -4,7 +4,7 @@
     style="@style/Window.PupilStatistics.ContentContainer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="ru.nekit.android.qls.quest.window.PupilStatisticsWindowContentViewHolder">
+    tools:showIn="PupilStatisticsWindowContentViewHolder">
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_close"

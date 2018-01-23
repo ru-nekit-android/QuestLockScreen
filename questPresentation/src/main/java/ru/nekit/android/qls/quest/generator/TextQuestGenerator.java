@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.quest.generator;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
@@ -30,7 +29,7 @@ public class TextQuestGenerator implements IQuestGenerator {
         mQuest = new TextQuest(questionType);
     }
 
-    private String makeNoisePattern(@NonNull Context context,
+    private String makeNoisePattern(@NonNull android.content.Context context,
                                     @StringRes int supportCharsResourceIds[],
                                     int charCountBefore, int charCountAfter) {
         StringBuilder noisePattern = new StringBuilder();

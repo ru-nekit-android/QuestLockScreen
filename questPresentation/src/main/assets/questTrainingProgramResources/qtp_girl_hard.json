@@ -6,7 +6,7 @@
   "complexity": "HARD",
   "levels": [
     {
-      "delayedPlay": false,
+      "delayedPlay": true,
       "name": "name_level_0",
       "description": "Прокачай героя",
       "pointsWeight": 10000,
@@ -17,18 +17,16 @@
           "questType": "монеты",
           "memberCount": 6,
           "questionTypes": [
-            //"unknown_member",
+            "unknown_member",
             "solution"
           ],
           "enabled": true,
-          "reward": 10,
-          "delayedPlay": true
+          "reward": 10
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": true,
-          "delayedPlay": true
+          "enabled": true
         },
         //ВРЕМЯ
         {
@@ -39,8 +37,7 @@
           ],
           "enabled": true,
           "memberCount": 4,
-          "accuracy": 10,
-          "delayedPlay": true
+          "accuracy": 10
         },
         //ВРЕМЯ
         {
@@ -51,31 +48,27 @@
           ],
           "enabled": true,
           "memberCount": 4,
-          "accuracy": 10,
-          "delayedPlay": true
+          "accuracy": 10
         },
         //ТЕКУЩЕЕ_ВРЕМЯ
         {
           "questType": "текущее_время",
           "reward": 10,
           "enabled": true,
-          "delayedPlay": true,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": true,
-          "delayedPlay": true
+          "enabled": true
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
           "enabled": true,
-          "memberCount": 4,
-          "delayedPlay": true
+          "memberCount": 4
         },
         //ВЫБОР
         {
@@ -86,7 +79,6 @@
             "berry",
             "pomum"
           ],
-          "delayedPlay": true,
           "enabled": true
         },
         //ЛИШНИЙ
@@ -98,7 +90,6 @@
             "berry",
             "pomum"
           ],
-          "delayedPlay": true,
           "enabled": true
         },
         //ФРУКТЫ
@@ -119,7 +110,6 @@
               5
             ]
           ],
-          "delayedPlay": true,
           "enabled": true
         },
         //ФРУКТЫ
@@ -130,13 +120,11 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "delayedPlay": false,
           "enabled": true
         },
         //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
-          "delayedPlay": true,
           "reward": 10,
           "enabled": true
         }

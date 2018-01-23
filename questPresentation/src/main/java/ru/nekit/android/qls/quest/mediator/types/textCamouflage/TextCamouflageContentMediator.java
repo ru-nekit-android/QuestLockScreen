@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.mediator.types.textCamouflage;
 
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -187,7 +186,7 @@ public class TextCamouflageContentMediator extends AbstractQuestContentMediator 
         private Paint paint;
         private List<Point> pointList;
 
-        public TextCamouflageContainer(@NonNull Context context) {
+        public TextCamouflageContainer(@NonNull android.content.Context context) {
             super(context);
             setWillNotDraw(false);
             paint = new Paint();

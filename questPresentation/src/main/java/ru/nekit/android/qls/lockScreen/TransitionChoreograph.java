@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.lockScreen;
 
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
@@ -30,19 +29,18 @@ public class TransitionChoreograph implements EventBus.IEventHandler {
     private static final String ADVERT_COUNTDOWN_NAME = "advert";
     private static final String QUEST_SERIES_COUNTDOWN_NAME = "quest_series";
     private static final String ADVERT_IS_SHOWN = "advert_is_shown";
-    private static final String INTRODUCTION_IS_SHOWN = "introduction_is_shown";
-
     @NonNull
     private final QuestContext mQuestContext;
     @NonNull
     private final CountdownCounter mAdvertCounter;
     @NonNull
     private final CountdownCounter mQuestSeriesCounter;
+    private boolean mIntroductionIsShown = false;
     private boolean mLevelUp;
     @NonNull
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(android.content.Context context, Intent intent) {
             switch (intent.getAction()) {
 
                 case QuestContextEvent.EVENT_RIGHT_ANSWER:
@@ -64,6 +62,7 @@ public class TransitionChoreograph implements EventBus.IEventHandler {
             }
         }
     };
+
 
     TransitionChoreograph(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
@@ -119,8 +118,8 @@ public class TransitionChoreograph implements EventBus.IEventHandler {
 
     Transition generateNextTransition() {
         if (mQuestContext.getSettingsStorage().introductionIsPresented()
-                && !introductionIsShown()) {
-            introductionIsShown(true);
+                && !mIntroductionIsShown) {
+            mIntroductionIsShown = true;
             return INTRODUCTION;
         }
         if (mQuestSeriesCounter.zeroIsReached()) {
@@ -145,7 +144,7 @@ public class TransitionChoreograph implements EventBus.IEventHandler {
     }
 
     void reset() {
-        introductionIsShown(false);
+        mIntroductionIsShown = false;
         advertIsShown(false);
         mQuestSeriesCounter.reset();
         saveTransition(NAME_PREVIOUS_TRANSITION, null);
@@ -155,14 +154,6 @@ public class TransitionChoreograph implements EventBus.IEventHandler {
     public void goNextTransition() {
         saveCurrentTransition(generateNextTransition());
         goCurrentTransition();
-    }
-
-    private void introductionIsShown(boolean value) {
-        SettingsStorage.setBoolean(INTRODUCTION_IS_SHOWN, value);
-    }
-
-    private boolean introductionIsShown() {
-        return SettingsStorage.getBoolean(INTRODUCTION_IS_SHOWN);
     }
 
     private void advertIsShown(boolean value) {

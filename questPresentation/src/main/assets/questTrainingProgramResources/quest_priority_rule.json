@@ -4,15 +4,7 @@
     "questionTypes": [
       "ALL"
     ],
-    "startPriority": 10,
-    "wrongAnswerPriority": 3
-  },
-  {
-    "questType": "TEXT_CAMOUFLAGE",
-    "questionTypes": [
-      "ALL"
-    ],
-    "startPriority": 1,
+    "startPriority": 3,
     "wrongAnswerPriority": 3
   }
 ]

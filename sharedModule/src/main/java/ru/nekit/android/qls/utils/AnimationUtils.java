@@ -14,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
+import ru.nekit.android.shared.R;
+
 public class AnimationUtils {
 
     public static ValueAnimator getColorAnimator(@NonNull Context context, @ColorRes int startColor,
@@ -79,5 +81,15 @@ public class AnimationUtils {
             }
         });
         return colorAnimation;
+    }
+
+    public static void fadeAnimation(@NonNull Context context, @Nullable View view, boolean fadeOut) {
+        if (view != null) {
+            if (!fadeOut) {
+                view.setAlpha(0);
+            }
+            view.animate().alpha(fadeOut ? 0 : 1).setDuration(
+                    context.getResources().getInteger(R.integer.short_animation_duration));
+        }
     }
 }

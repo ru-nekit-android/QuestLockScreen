@@ -7,8 +7,8 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
 import ru.nekit.android.qls.quest.mediator.answer.QuestSwipeAnswerMediator;
-import ru.nekit.android.qls.quest.window.AnswerWindow.Type;
 import ru.nekit.android.qls.utils.AnimationUtils;
+import ru.nekit.android.qls.window.AnswerWindow.Type;
 
 
 public class DirectionQuestAnswerMediator extends QuestSwipeAnswerMediator {

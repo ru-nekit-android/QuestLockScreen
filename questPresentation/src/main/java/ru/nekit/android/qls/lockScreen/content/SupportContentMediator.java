@@ -1,14 +1,12 @@
 package ru.nekit.android.qls.lockScreen.content;
 
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -18,11 +16,13 @@ import com.google.android.gms.ads.MobileAds;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.lockScreen.TransitionChoreograph;
+import ru.nekit.android.qls.lockScreen.content.common.BaseLockScreenContentMediator;
+import ru.nekit.android.qls.lockScreen.content.common.ILockScreenContentViewHolder;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.utils.ViewHolder;
 
-public class SupportContentMediator extends AbstractLockScreenContentMediator
-        implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class SupportContentMediator extends BaseLockScreenContentMediator
+        implements View.OnClickListener {
 
     @NonNull
     private final QuestContext mQuestContext;
@@ -39,12 +39,11 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
         mSettingsStorage = new SettingsStorage();
         mViewHolder = new LockScreenSupportViewContentHolder(questContext);
         mViewHolder.okButton.setOnClickListener(this);
-        mViewHolder.showNoMore.setOnCheckedChangeListener(this);
     }
 
     @NonNull
     @Override
-    public ILockScreenContentContainerViewHolder getContentContainerViewHolder() {
+    public ILockScreenContentViewHolder getViewHolder() {
         return mViewHolder;
     }
 
@@ -71,7 +70,7 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
                     MobileAds.initialize(mQuestContext,
                             mQuestContext.getString(R.string.admob_app_id));
                     title = mQuestContext.getString(R.string.title_advert);
-                    mAdView = (AdView) ((LayoutInflater) mQuestContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.sc_advertise_layout, null);
+                    mAdView = (AdView) ((LayoutInflater) mQuestContext.getSystemService(android.content.Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.sc_advertise_layout, null);
                     mViewHolder.content.addView(mAdView);
                     AdRequest adRequest = new AdRequest.Builder().build();
                     mAdView.loadAd(adRequest);
@@ -84,26 +83,12 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
 
                     break;
 
-                case INTRODUCTION:
-
-                    title = mQuestContext.getString(R.string.title_introduction);
-                    setShowNoMoreVisibility(true);
-                    mViewHolder.showNoMore.setChecked(!mSettingsStorage.introductionIsPresented());
-
-                    break;
-
             }
         }
         mViewHolder.titleView.setText(title);
     }
 
     private void setDefaultSettingsForTools() {
-        setShowNoMoreVisibility(false);
-        mViewHolder.okButton.setText(mQuestContext.getString(R.string.label_ok));
-    }
-
-    private void setShowNoMoreVisibility(boolean visibility) {
-        mViewHolder.showNoMore.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -113,16 +98,8 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
         }
     }
 
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        TransitionChoreograph.Transition transition = mTransitionChoreograph.getCurrentTransition();
-        if (transition == TransitionChoreograph.Transition.INTRODUCTION) {
-            mSettingsStorage.setIntroductionIsPresented(!isChecked);
-        }
-    }
-
     private static class LockScreenSupportViewContentHolder extends ViewHolder
-            implements ILockScreenContentContainerViewHolder {
+            implements ILockScreenContentViewHolder {
 
         Button okButton;
         View contentContainer, titleContainer;
@@ -130,7 +107,7 @@ public class SupportContentMediator extends AbstractLockScreenContentMediator
         CheckBox showNoMore;
         TextView titleView;
 
-        LockScreenSupportViewContentHolder(@NonNull Context context) {
+        LockScreenSupportViewContentHolder(@NonNull android.content.Context context) {
             super(context, R.layout.layout_lock_screen_support_view_container);
             titleContainer = view.findViewById(R.id.container_title);
             content = (ViewGroup) view.findViewById(R.id.content);

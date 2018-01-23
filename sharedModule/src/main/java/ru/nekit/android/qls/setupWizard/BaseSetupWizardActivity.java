@@ -102,7 +102,7 @@ public abstract class BaseSetupWizardActivity extends FragmentActivity implement
 
     protected void replaceFragment(@NonNull BaseSetupWizardFragment fragment) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        //fragmentTransaction.setCustomAnimations(R.anim.slide_in_short, R.anim.slide_out_short);
+        //fragmentTransaction.setCustomAnimations(R.anim.slide_horizontal_in_short, R.anim.slide_horizontal_out_short);
         //fragmentTransaction.disallowAddToBackStack();
         //fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         if (fragment.addToBackStack()) {

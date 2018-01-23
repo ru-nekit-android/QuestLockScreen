@@ -24,11 +24,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText
+            <com.devspark.robototextview.widget.RobotoEditText
                 android:id="@+id/input_pupil_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/pupil_name_hint"
+                android:hint="@string/hint_pupil_name"
                 android:inputType="textPersonName" />
 
         </android.support.design.widget.TextInputLayout>

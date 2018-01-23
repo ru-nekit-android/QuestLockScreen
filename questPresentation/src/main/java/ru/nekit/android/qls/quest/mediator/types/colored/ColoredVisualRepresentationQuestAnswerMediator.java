@@ -14,7 +14,7 @@ import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
 import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
 import ru.nekit.android.qls.quest.resources.struct.PairColorStruct;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
-import ru.nekit.android.qls.quest.window.AnswerWindow;
+import ru.nekit.android.qls.window.AnswerWindow;
 
 public class ColoredVisualRepresentationQuestAnswerMediator
         extends AbstractListableQuestAnswerMediator<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>,

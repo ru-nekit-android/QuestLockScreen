@@ -37,12 +37,12 @@ import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.MetricsQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
 import ru.nekit.android.qls.quest.types.TimeQuest;
-import ru.nekit.android.qls.quest.window.AnswerWindow;
 import ru.nekit.android.qls.utils.MathUtils;
 import ru.nekit.android.qls.utils.RobotoTypefaceUtil;
 import ru.nekit.android.qls.utils.TimeUtils;
 import ru.nekit.android.qls.utils.Vibrate;
 import ru.nekit.android.qls.utils.ViewHolder;
+import ru.nekit.android.qls.window.AnswerWindow;
 
 import static android.content.Intent.ACTION_SCREEN_ON;
 import static android.content.IntentFilter.SYSTEM_HIGH_PRIORITY;
@@ -75,6 +75,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     public static final String NAME_SESSION_TIME = "sessionTime";
     public static final String NAME_QUEST_STATE = "quest.quest_state_0";
 
+    private static QuestContext mInstance;
     @NonNull
     private final EventBus mEventBus;
     private Pupil mPupil;
@@ -100,7 +101,9 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
     };
     private QuestResourceLibrary mQuestResourceLibrary;
 
-    public QuestContext(@NonNull Context context, @NonNull EventBus eventBus, @StyleRes int themeResourceId) {
+    private QuestContext(@NonNull Context context,
+                         @NonNull EventBus eventBus,
+                         @StyleRes int themeResourceId) {
         super(context, themeResourceId);
         mEventBus = eventBus;
         mQuestSaver = new QuestSaver();
@@ -118,6 +121,17 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus.handleEvent(this, ACTION_SCREEN_ON, SYSTEM_HIGH_PRIORITY);
         //WARNING!!! only for test
         mQuestSaver.reset();
+    }
+
+    public static QuestContext getInstance() {
+        return mInstance;
+    }
+
+    public static QuestContext createInstance(@NonNull Context context,
+                                              @NonNull EventBus eventBus,
+                                              @StyleRes int themeResourceId) {
+        mInstance = new QuestContext(context, eventBus, themeResourceId);
+        return getInstance();
     }
 
     //Quest state functional
@@ -219,17 +233,13 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             rightAnswerSeriesLengthUpdated = rightAnswerSeries > 1 &&
                     rightAnswerSeries > statistics.rightAnswerSeries;
             statistics.rightAnswerSeries = rightAnswerSeries;
-            long bestAnswerTime = Math.min(sessionTime, statistics.bestAnswerTime);
-            bestTimeUpdated = statistics != mPupilStatistics &&
-                    bestAnswerTime < statistics.bestAnswerTime &&
-                    statistics.bestAnswerTime != Long.MAX_VALUE;
-            long prevBestAnswerTime = statistics.bestAnswerTime;
-            statistics.bestAnswerTime = bestAnswerTime;
-            statistics.worseAnswerTime = Math.max(sessionTime, statistics.worseAnswerTime);
-            if (bestTimeUpdated) {
+            if (sessionTime < statistics.bestAnswerTime && statistics != mPupilStatistics &&
+                    statistics.bestAnswerTime != Long.MAX_VALUE) {
                 historyItem.recordType |= RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD;
-                historyItem.prevBestAnswerTime = prevBestAnswerTime;
+                historyItem.prevBestAnswerTime = statistics.bestAnswerTime;
+                statistics.bestAnswerTime = sessionTime;
             }
+            statistics.worseAnswerTime = Math.max(sessionTime, statistics.worseAnswerTime);
             if (rightAnswerSeriesLengthUpdated) {
                 historyItem.recordType |= RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD;
             }

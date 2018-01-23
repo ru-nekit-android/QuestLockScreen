@@ -19,8 +19,6 @@
     <FrameLayout
         android:id="@+id/container_tool"
         style="@style/ToolContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true">
 
         <RelativeLayout

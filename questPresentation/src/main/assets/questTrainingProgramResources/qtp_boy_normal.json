@@ -17,21 +17,16 @@
           "questType": "монеты",
           "memberCount": 6,
           "questionTypes": [
-            //"unknown_member",
+            "unknown_member",
             "solution"
           ],
-          "enabled": false,
+          "enabled": true,
           "reward": 10
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": false
-          /*,
-            "difficultBy": [
-              "text",
-              "color"
-            ]*/
+          "enabled": true
         },
         //ВРЕМЯ
         {
@@ -40,7 +35,7 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -51,7 +46,7 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -59,20 +54,20 @@
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": false
+          "enabled": true
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4
         },
         //ВЫБОР
@@ -84,7 +79,7 @@
             "berry",
             "pomum"
           ],
-          "enabled": false
+          "enabled": true
         },
         //ЛИШНИЙ
         {
@@ -95,7 +90,7 @@
             "berry",
             "pomum"
           ],
-          "enabled": false
+          "enabled": true
         },
         //ФРУКТЫ
         {
@@ -125,13 +120,13 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "enabled": false
+          "enabled": true
         },
         //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
           "reward": 10,
-          "enabled": false
+          "enabled": true
         }
       ]
     }

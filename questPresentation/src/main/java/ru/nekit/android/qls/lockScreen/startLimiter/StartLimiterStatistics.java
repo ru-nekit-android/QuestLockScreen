@@ -6,10 +6,6 @@ import android.support.annotation.NonNull;
 import ru.nekit.android.qls.PreferencesUtil;
 import ru.nekit.android.qls.utils.TimeUtils;
 
-/**
- * Created by nekit on 11.03.17.
- */
-
 public class StartLimiterStatistics {
 
     private static final String SCREEN_OFF_TIME = "screen_off_time";
