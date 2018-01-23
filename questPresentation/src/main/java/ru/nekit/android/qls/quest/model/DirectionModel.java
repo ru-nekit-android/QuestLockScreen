@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.INameHolder;
+import ru.nekit.android.qls.quest.IStringHolder;
 
-public enum DirectionModel implements INameHolder {
+public enum DirectionModel implements IStringHolder {
 
     UP(R.string.quest_direction_title_up),
     RIGHT(R.string.quest_direction_title_right),
@@ -26,7 +26,7 @@ public enum DirectionModel implements INameHolder {
     }
 
     @NonNull
-    public String getName(@NonNull Context context) {
+    public String getString(@NonNull Context context) {
         return context.getResources().getString(titleResId);
     }
 }

@@ -46,8 +46,8 @@ public class PupilStatisticsFormatter {
         List<String> stringList = new ArrayList<>();
         for (QuestStatistics item : pupilStatistics.questStatistics) {
             stringList.add(String.format("Статистика для %s (%s):\n%s",
-                    item.questType.getName(context),
-                    item.questionType.getName(context),
+                    item.questType.getString(context),
+                    item.questionType.getString(context),
                     questStatisticsFormat(item)
             ));
         }

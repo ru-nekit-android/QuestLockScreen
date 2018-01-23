@@ -10,10 +10,10 @@ import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.collections.ColorResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.VisualResourceGroupCollection;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.utils.MathUtils;
 
@@ -25,7 +25,7 @@ public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuest
     public Quest makeQuest(@NonNull QuestContext questContext,
                            @NonNull QuestionType questionType) {
         //TODO: exclude default colors
-        ColorModel[] allColors = ColorModel.values();
+        ColorResourceCollection[] allColors = ColorResourceCollection.values();
         memberCount = Math.min(Math.max(memberCount, VALUE_DEFAULT_MEMBER_COUNT), allColors.length);
         QuestResourceLibrary questResourceLibrary = questContext.getQuestResourceLibrary();
         VisualRepresentationalNumberSummandQuest quest = new VisualRepresentationalNumberSummandQuest();
@@ -34,33 +34,33 @@ public class ColoredVisualRepresentationQuestTrainingRule extends HasMemberQuest
         quest.leftNode = new int[memberCount];
         quest.rightNode = new int[memberCount];
         List<Integer> questVisualRepresentationList = new ArrayList<>();
-        ColorModel[] targetColors = Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount);
+        ColorResourceCollection[] targetColors = Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount);
         int i = 0;
-        IVisualQuestResourceHolder questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
-                getVisualResourceItemsByGroup(VisualQuestResourceGroupCollection.CHILDREN_TOY));//questContext.getPupil().sex == PupilSex.BOY ? BOY : GIRL));
+        IVisualResourceHolder questVisualResourceItem = MathUtils.randItem(questResourceLibrary.
+                getVisualResourceItemsByGroup(VisualResourceGroupCollection.CHILDREN_TOY));//questContext.getPupil().sex == PupilSex.BOY ? BOY : GIRL));
         for (; i < memberCount; i++) {
             quest.leftNode[i] = targetColors[i].getId();
             quest.rightNode[i] = -1;
             questVisualRepresentationList.add(questResourceLibrary.getQuestVisualResourceId(questVisualResourceItem));
         }
         quest.unknownMemberIndex = MathUtils.randLength(memberCount);
-        List<ColorModel> secondaryColors = new ArrayList<>(Arrays.asList(Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount)));
+        List<ColorResourceCollection> secondaryColors = new ArrayList<>(Arrays.asList(Arrays.copyOf(MathUtils.shuffleArray(allColors), memberCount)));
 
         for (i = 0; i < memberCount; i++) {
-            ColorModel colorModel;
+            ColorResourceCollection colorResourceCollection;
             do {
-                colorModel = MathUtils.randItem(secondaryColors);
-                if (i == memberCount - 1 && quest.leftNode[i] == colorModel.getId()) {
+                colorResourceCollection = MathUtils.randItem(secondaryColors);
+                if (i == memberCount - 1 && quest.leftNode[i] == colorResourceCollection.getId()) {
                     //swap
-                    int colorModelId = colorModel.getId();
-                    colorModel = ColorModel.getById(quest.rightNode[i - 1]);
+                    int colorModelId = colorResourceCollection.getId();
+                    colorResourceCollection = ColorResourceCollection.getById(quest.rightNode[i - 1]);
                     quest.rightNode[i - 1] = colorModelId;
                     break;
                 }
             }
-            while (quest.leftNode[i] == colorModel.getId());
-            quest.rightNode[i] = colorModel.getId();
-            secondaryColors.remove(colorModel);
+            while (quest.leftNode[i] == colorResourceCollection.getId());
+            quest.rightNode[i] = colorResourceCollection.getId();
+            secondaryColors.remove(colorResourceCollection);
         }
         quest.setVisualRepresentationList(questVisualRepresentationList);
         return quest;

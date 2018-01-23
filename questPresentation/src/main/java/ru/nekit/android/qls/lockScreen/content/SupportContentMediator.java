@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -14,7 +13,6 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.SettingsStorage;
 import ru.nekit.android.qls.lockScreen.TransitionChoreograph;
 import ru.nekit.android.qls.lockScreen.content.common.BaseLockScreenContentMediator;
 import ru.nekit.android.qls.lockScreen.content.common.ILockScreenContentViewHolder;
@@ -28,15 +26,12 @@ public class SupportContentMediator extends BaseLockScreenContentMediator
     private final QuestContext mQuestContext;
     @NonNull
     private final LockScreenSupportViewContentHolder mViewHolder;
-    @NonNull
-    private final SettingsStorage mSettingsStorage;
 
     @NonNull
     private AdView mAdView;
 
     public SupportContentMediator(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
-        mSettingsStorage = new SettingsStorage();
         mViewHolder = new LockScreenSupportViewContentHolder(questContext);
         mViewHolder.okButton.setOnClickListener(this);
     }
@@ -104,7 +99,6 @@ public class SupportContentMediator extends BaseLockScreenContentMediator
         Button okButton;
         View contentContainer, titleContainer;
         ViewGroup content, toolContainer;
-        CheckBox showNoMore;
         TextView titleView;
 
         LockScreenSupportViewContentHolder(@NonNull android.content.Context context) {
@@ -112,7 +106,6 @@ public class SupportContentMediator extends BaseLockScreenContentMediator
             titleContainer = view.findViewById(R.id.container_title);
             content = (ViewGroup) view.findViewById(R.id.content);
             toolContainer = (ViewGroup) view.findViewById(R.id.container_tool);
-            showNoMore = (CheckBox) view.findViewById(R.id.check_show_no_more);
             titleView = (TextView) view.findViewById(R.id.tv_title);
             contentContainer = view.findViewById(R.id.container_content);
             okButton = (Button) contentContainer.findViewById(R.id.btn_ok);

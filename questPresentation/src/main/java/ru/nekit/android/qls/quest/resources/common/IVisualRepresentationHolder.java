@@ -5,7 +5,7 @@ import android.support.annotation.Nullable;
 
 import java.util.List;
 
-public interface IQuestVisualRepresentationHolder {
+public interface IVisualRepresentationHolder {
 
     @Nullable
     List<Integer> getVisualRepresentationList();

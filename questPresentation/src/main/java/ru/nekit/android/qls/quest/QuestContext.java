@@ -108,7 +108,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
         mEventBus = eventBus;
         mQuestSaver = new QuestSaver();
         mSettingsStorage = new SettingsStorage();
-        mQuestResourceLibrary = new QuestResourceLibrary(context);
+        mQuestResourceLibrary = new QuestResourceLibrary(this);
         mQuestStatisticsSaver = new QuestStatisticsSaver();
         PupilManager pupilManager = new PupilManager();
         mPupil = pupilManager.getCurrentPupil();

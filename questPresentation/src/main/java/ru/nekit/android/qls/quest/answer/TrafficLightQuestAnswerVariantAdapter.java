@@ -12,7 +12,7 @@ public class TrafficLightQuestAnswerVariantAdapter implements IQuestAnswerVarian
     @Override
     @Nullable
     public String adapt(@NonNull Context context, @NonNull Integer answerVariant) {
-        return TrafficLightModel.fromOrdinal(answerVariant).getName(context);
+        return TrafficLightModel.fromOrdinal(answerVariant).getString(context);
     }
 
 

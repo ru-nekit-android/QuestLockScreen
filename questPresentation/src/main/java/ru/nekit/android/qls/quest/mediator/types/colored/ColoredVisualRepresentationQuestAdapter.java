@@ -18,7 +18,7 @@ import java.util.List;
 import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.mediator.adapter.SquareItemAdapter;
-import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IColorfullVisualResourceHolder;
 import ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct;
 import ru.nekit.android.qls.quest.resources.struct.PairColorStruct;
 
@@ -33,10 +33,10 @@ public class ColoredVisualRepresentationQuestAdapter
     @NonNull
     private final View.OnClickListener mClickListener;
     @NonNull
-    private final List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> mListData;
+    private final List<Pair<IColorfullVisualResourceHolder, PairColorStruct>> mListData;
 
     ColoredVisualRepresentationQuestAdapter(@NonNull QuestContext questContext,
-                                            @NonNull List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> listData,
+                                            @NonNull List<Pair<IColorfullVisualResourceHolder, PairColorStruct>> listData,
                                             @NonNull View.OnClickListener clickListener) {
         mQuestContext = questContext;
         mListData = listData;
@@ -58,7 +58,7 @@ public class ColoredVisualRepresentationQuestAdapter
     public void onBindViewHolder(final ViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         Resources resources = mQuestContext.getResources();
-        Pair<IColorfullVisualQuestResourceHolder, PairColorStruct> item
+        Pair<IColorfullVisualResourceHolder, PairColorStruct> item
                 = mListData.get(position);
         for (ColorfullQuestVisualResourceStruct colorfullQuestVisualResourceStruct : item.first.getColoredVisualResourceList()) {
             int drawableResourceId = colorfullQuestVisualResourceStruct.drawableResourceId;

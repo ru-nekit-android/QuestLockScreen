@@ -145,7 +145,7 @@ public class MessageGateway {
                 out.nullValue();
                 return;
             }
-            out.value(value.getName());
+            out.value(value.getString());
         }
 
         @Override

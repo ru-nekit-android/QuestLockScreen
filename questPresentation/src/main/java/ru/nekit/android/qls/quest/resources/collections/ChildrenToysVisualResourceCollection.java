@@ -9,8 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
-import ru.nekit.android.qls.quest.resources.common.ILocalizedStringQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IColorfullVisualResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.ILocalizedNounStringResourceHolder;
 import ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct;
 
 import static ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct.ColorType.NONE;
@@ -19,17 +19,17 @@ import static ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualRe
 import static ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct.ColorType.SECONDARY;
 import static ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct.ColorType.SECONDARY_INVERSE;
 
-public enum ChildrenToysVisualQuestResourceCollection implements
-        IColorfullVisualQuestResourceHolder, ILocalizedStringQuestResourceHolder {
+public enum ChildrenToysVisualResourceCollection implements
+        IColorfullVisualResourceHolder, ILocalizedNounStringResourceHolder {
 
     CAR(Arrays.asList(
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_car_background, PRIMARY),
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_car_content, NONE),
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_car_foreground, SECONDARY)),
             R.drawable.qvri_car,
-            LocalizedStringResourceCollection.CAR,
-            VisualQuestResourceGroupCollection.BOY,
-            VisualQuestResourceGroupCollection.CHILDREN_TOY),
+            LocalizedNounStringResourceCollection.CAR,
+            VisualResourceGroupCollection.BOY,
+            VisualResourceGroupCollection.CHILDREN_TOY),
 
     DOLL_BOOTS(Arrays.asList(
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_background, NONE),
@@ -38,9 +38,9 @@ public enum ChildrenToysVisualQuestResourceCollection implements
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_blouse, SECONDARY_INVERSE),
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_foreground, NONE)),
             R.drawable.qvri_girl,
-            LocalizedStringResourceCollection.BOOTS,
-            VisualQuestResourceGroupCollection.GIRL,
-            VisualQuestResourceGroupCollection.CHILDREN_TOY),
+            LocalizedNounStringResourceCollection.BOOTS,
+            VisualResourceGroupCollection.GIRL,
+            VisualResourceGroupCollection.CHILDREN_TOY),
 
     DOLL_SKIRT(Arrays.asList(
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_background, NONE),
@@ -49,9 +49,9 @@ public enum ChildrenToysVisualQuestResourceCollection implements
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_blouse, SECONDARY_INVERSE),
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_foreground, NONE)),
             R.drawable.qvri_girl,
-            LocalizedStringResourceCollection.DOLL_SKIRT,
-            VisualQuestResourceGroupCollection.GIRL,
-            VisualQuestResourceGroupCollection.CHILDREN_TOY),
+            LocalizedNounStringResourceCollection.DOLL_SKIRT,
+            VisualResourceGroupCollection.GIRL,
+            VisualResourceGroupCollection.CHILDREN_TOY),
 
     DOLL_BLOUSE(Arrays.asList(
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_background, NONE),
@@ -60,25 +60,25 @@ public enum ChildrenToysVisualQuestResourceCollection implements
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_blouse, PRIMARY),
             new ColorfullQuestVisualResourceStruct(R.drawable.qvri_doll_foreground, NONE)),
             R.drawable.qvri_girl,
-            LocalizedStringResourceCollection.DOLL_BLOUSE,
-            VisualQuestResourceGroupCollection.GIRL,
-            VisualQuestResourceGroupCollection.CHILDREN_TOY);
+            LocalizedNounStringResourceCollection.DOLL_BLOUSE,
+            VisualResourceGroupCollection.GIRL,
+            VisualResourceGroupCollection.CHILDREN_TOY);
 
     private final List<ColorfullQuestVisualResourceStruct> mColorfullQuestVisualResourceStructList;
     @DrawableRes
     private int mSourceDrawableResourceId;
     @Nullable
-    private VisualQuestResourceGroupCollection[] mGroups;
+    private VisualResourceGroupCollection[] mGroups;
     @NonNull
-    private LocalizedStringResourceCollection mLocalizedStringResourceCollection;
+    private LocalizedNounStringResourceCollection mLocalizedNounStringResourceCollection;
 
-    ChildrenToysVisualQuestResourceCollection(@NonNull List<ColorfullQuestVisualResourceStruct> colorfullQuestVisualResourceStructList,
-                                              @DrawableRes int sourceDrawableResourceId,
-                                              @NonNull LocalizedStringResourceCollection localizedStringResourceCollection,
-                                              @Nullable VisualQuestResourceGroupCollection... groups) {
+    ChildrenToysVisualResourceCollection(@NonNull List<ColorfullQuestVisualResourceStruct> colorfullQuestVisualResourceStructList,
+                                         @DrawableRes int sourceDrawableResourceId,
+                                         @NonNull LocalizedNounStringResourceCollection localizedNounStringResourceCollection,
+                                         @Nullable VisualResourceGroupCollection... groups) {
         mColorfullQuestVisualResourceStructList = colorfullQuestVisualResourceStructList;
         mSourceDrawableResourceId = sourceDrawableResourceId;
-        mLocalizedStringResourceCollection = localizedStringResourceCollection;
+        mLocalizedNounStringResourceCollection = localizedNounStringResourceCollection;
         mGroups = groups;
     }
 
@@ -86,18 +86,18 @@ public enum ChildrenToysVisualQuestResourceCollection implements
         return ordinal();
     }
 
-    @NonNull
-    public LocalizedStringResourceCollection getLocalStringResource() {
-        return mLocalizedStringResourceCollection;
+    @Nullable
+    public LocalizedNounStringResourceCollection getLocalStringResource() {
+        return mLocalizedNounStringResourceCollection;
     }
 
     @NonNull
-    public String getName(@NonNull Context context) {
-        return mLocalizedStringResourceCollection.getName(context);
+    public String getString(@NonNull Context context) {
+        return mLocalizedNounStringResourceCollection.getString(context);
     }
 
     @Nullable
-    public VisualQuestResourceGroupCollection[] getGroups() {
+    public VisualResourceGroupCollection[] getGroups() {
         return mGroups;
     }
 

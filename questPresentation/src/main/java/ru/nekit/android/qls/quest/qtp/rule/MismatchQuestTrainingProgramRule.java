@@ -9,8 +9,8 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.QuestType;
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.collections.VisualResourceGroupCollection;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 
 import static ru.nekit.android.qls.utils.MathUtils.randListLength;
 
@@ -44,17 +44,17 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
             @NonNull QuestResourceLibrary questResourceLibrary) {
         List<Integer> questVisualRepresentationList =
                 super.getQuestVisualRepresentationList(questResourceLibrary);
-        VisualQuestResourceGroupCollection mismatchGroup = null;
-        List<VisualQuestResourceGroupCollection> questVisualQuestResourceGroupCollections =
-                Arrays.asList(VisualQuestResourceGroupCollection.values());
-        Collections.shuffle(questVisualQuestResourceGroupCollections);
-        for (VisualQuestResourceGroupCollection group : questVisualQuestResourceGroupCollections) {
+        VisualResourceGroupCollection mismatchGroup = null;
+        List<VisualResourceGroupCollection> questVisualResourceGroupCollection =
+                Arrays.asList(VisualResourceGroupCollection.values());
+        Collections.shuffle(questVisualResourceGroupCollection);
+        for (VisualResourceGroupCollection group : questVisualResourceGroupCollection) {
             if (!group.hasParent(targetGroup) && !targetGroup.hasParent(group)) {
                 mismatchGroup = group;
                 break;
             }
         }
-        List<IVisualQuestResourceHolder> mismatchQVRItemIdList =
+        List<IVisualResourceHolder> mismatchQVRItemIdList =
                 mismatchGroup.getVisualResourceItems(questResourceLibrary);
         unknownMemberIndex = randListLength(questVisualRepresentationList);
         questVisualRepresentationList.add(unknownMemberIndex,

@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.resources;
 
 
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.support.annotation.NonNull;
 
@@ -16,11 +15,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import ru.nekit.android.qls.quest.resources.collections.ChildrenToysVisualQuestResourceCollection;
-import ru.nekit.android.qls.quest.resources.collections.LocalizedStringResourceCollection;
-import ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection;
-import ru.nekit.android.qls.quest.resources.collections.VisualQuestResourceGroupCollection;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.IStringHolder;
+import ru.nekit.android.qls.quest.QuestContext;
+import ru.nekit.android.qls.quest.resources.collections.ChildrenToysVisualResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.LocalizedAdjectiveStringResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.LocalizedNounStringResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.SimpleVisualResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.VisualResourceGroupCollection;
+import ru.nekit.android.qls.quest.resources.common.ILocalizedAdjectiveStringResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.ILocalizedNounStringResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 import ru.nekit.android.qls.utils.Declension;
 
 public class QuestResourceLibrary {
@@ -29,25 +33,25 @@ public class QuestResourceLibrary {
     private static final String TEXT_CAMOUFLAGE_DICTIONARY_FILE = "textCamouflageDictionary.txt";
 
     private static final Class[] LIBRARY = new Class[]{
-            SimpleQuestVisualQuestResourceCollection.class,
-            ChildrenToysVisualQuestResourceCollection.class
+            SimpleVisualResourceCollection.class,
+            ChildrenToysVisualResourceCollection.class
     };
 
     @NonNull
-    private final Context mContext;
-    private final List<IVisualQuestResourceHolder> mQuestVisualQuestResourceList;
+    private final QuestContext mQuestContext;
+    private final List<IVisualResourceHolder> mQuestVisualQuestResourceList;
 
     @SuppressWarnings("unchecked")
-    public QuestResourceLibrary(@NonNull Context context) {
-        mContext = context;
+    public QuestResourceLibrary(@NonNull QuestContext questContext) {
+        mQuestContext = questContext;
         mQuestVisualQuestResourceList = new ArrayList<>();
         for (Class libraryClass : LIBRARY) {
-            IVisualQuestResourceHolder[] questVisualResourceItems = null;
+            IVisualResourceHolder[] questVisualResourceItems = null;
             if (libraryClass.isEnum()) {
                 try {
                     Method method = libraryClass.getMethod("values");
                     try {
-                        questVisualResourceItems = (IVisualQuestResourceHolder[]) method.invoke(null);
+                        questVisualResourceItems = (IVisualResourceHolder[]) method.invoke(null);
                     } catch (IllegalAccessException exp) {
                         exp.printStackTrace();
                     } catch (InvocationTargetException exp) {
@@ -63,7 +67,7 @@ public class QuestResourceLibrary {
 
     @NonNull
     public List<String> getWordList(int wordLength) {
-        AssetManager assetManager = mContext.getAssets();
+        AssetManager assetManager = mQuestContext.getAssets();
         String textCamouflageDictionaryPath = TEXT_QUEST_FOLDER +
                 "/" +
                 TEXT_CAMOUFLAGE_DICTIONARY_FILE;
@@ -88,12 +92,12 @@ public class QuestResourceLibrary {
     }
 
     @NonNull
-    public List<IVisualQuestResourceHolder> getVisualResourceItemsByGroup(VisualQuestResourceGroupCollection group) {
-        List<IVisualQuestResourceHolder> questVisualResourceItems = new ArrayList<>();
-        for (IVisualQuestResourceHolder questVisualResourceItem : mQuestVisualQuestResourceList) {
-            VisualQuestResourceGroupCollection[] groups = questVisualResourceItem.getGroups();
+    public List<IVisualResourceHolder> getVisualResourceItemsByGroup(VisualResourceGroupCollection group) {
+        List<IVisualResourceHolder> questVisualResourceItems = new ArrayList<>();
+        for (IVisualResourceHolder questVisualResourceItem : mQuestVisualQuestResourceList) {
+            VisualResourceGroupCollection[] groups = questVisualResourceItem.getGroups();
             if (groups != null) {
-                for (VisualQuestResourceGroupCollection groupItem : groups) {
+                for (VisualResourceGroupCollection groupItem : groups) {
                     if (groupItem.hasParent(group)) {
                         questVisualResourceItems.add(questVisualResourceItem);
                     }
@@ -103,42 +107,97 @@ public class QuestResourceLibrary {
         return questVisualResourceItems;
     }
 
-    public List<IVisualQuestResourceHolder> getVisualQuestResourceList() {
+    public List<IVisualResourceHolder> getVisualQuestResourceList() {
         return mQuestVisualQuestResourceList;
     }
 
-    public int getQuestVisualResourceId(@NonNull IVisualQuestResourceHolder questVisualResourceItem) {
+    public int getQuestVisualResourceId(@NonNull IVisualResourceHolder questVisualResourceItem) {
         return mQuestVisualQuestResourceList.indexOf(questVisualResourceItem);
     }
 
     @NonNull
-    public IVisualQuestResourceHolder getVisualQuestResource(int id) {
+    public IVisualResourceHolder getVisualQuestResource(int id) {
         return mQuestVisualQuestResourceList.get(id);
     }
 
-    public String declineAdjectiveByNoun(
-            @NonNull Context context,
-            @NonNull String adjectiveBase,
-            @NonNull String format,
-            @NonNull LocalizedStringResourceCollection localizedStringResourceCollection) {
-        return declineAdjectiveByNoun(adjectiveBase,
-                localizedStringResourceCollection.getName(context),
-                format,
-                localizedStringResourceCollection.getGender(),
-                localizedStringResourceCollection.getIsPlural()
-        );
+    @NonNull
+    private String declineAdjectiveByNoun(
+            @NonNull LocalizedAdjectiveStringResourceCollection adjectiveBase,
+            @NonNull LocalizedNounStringResourceCollection localizedNounStringResourceCollection,
+            @NonNull String format
+    ) {
+        return localizedNounStringResourceCollection.hasOwnRule() ?
+                String.format(format,
+                        adjectiveBase,
+                        localizedNounStringResourceCollection.getOwnRule()[0]
+                )
+                :
+                declineAdjectiveByNoun(
+                        adjectiveBase.getString(mQuestContext),
+                        localizedNounStringResourceCollection.getString(mQuestContext),
+                        format,
+                        localizedNounStringResourceCollection.getGender(),
+                        localizedNounStringResourceCollection.getIsPlural()
+                );
     }
 
+    @NonNull
     private String declineAdjectiveByNoun(
             @NonNull String adjectiveBase,
             @NonNull String nounBase,
             @NonNull String format,
             @NonNull Declension.Gender gender,
-            boolean isPlural) {
+            boolean isPlural
+    ) {
+        return Declension.declineAdjectiveByNoun(adjectiveBase, nounBase, format,
+                gender, isPlural);
+    }
+
+    public String localizeNounStringResourceIfNeed(
+            @NonNull IStringHolder noun
+    ) {
         if (Locale.getDefault().getLanguage().equals("ru")) {
-            return Declension.declineAdjectiveByNoun(adjectiveBase, nounBase, format,
-                    gender, isPlural);
+            if (noun instanceof ILocalizedNounStringResourceHolder) {
+                LocalizedNounStringResourceCollection localizedNounStringResourceCollection =
+                        ((ILocalizedNounStringResourceHolder) noun).getLocalStringResource();
+                if (localizedNounStringResourceCollection != null) {
+                    return localizedNounStringResourceCollection.hasOwnRule() ?
+                            String.format("%s%s",
+                                    localizedNounStringResourceCollection.getString(mQuestContext),
+                                    localizedNounStringResourceCollection.getOwnRule()[0]
+                            )
+                            :
+                            Declension.declineNoun(localizedNounStringResourceCollection.getString(mQuestContext),
+                                    localizedNounStringResourceCollection.getGender(),
+                                    localizedNounStringResourceCollection.getIsPlural());
+                }
+            }
         }
-        return String.format(format, adjectiveBase, nounBase);
+        return noun.getString(mQuestContext);
+    }
+
+    @NonNull
+    public String localizeAdjectiveAndNounStringResourceIfNeed(
+            @NonNull IStringHolder adjective,
+            @NonNull IStringHolder noun,
+            @NonNull String formatString
+    ) {
+        if (Locale.getDefault().getLanguage().equals("ru")) {
+            if (adjective instanceof ILocalizedAdjectiveStringResourceHolder &&
+                    noun instanceof ILocalizedNounStringResourceHolder) {
+                LocalizedAdjectiveStringResourceCollection localizedAdjectiveStringResourceCollection =
+                        ((ILocalizedAdjectiveStringResourceHolder) adjective).getLocalStringResource();
+                LocalizedNounStringResourceCollection localizedNounStringResourceCollection =
+                        ((ILocalizedNounStringResourceHolder) noun).getLocalStringResource();
+                if (localizedAdjectiveStringResourceCollection != null &&
+                        localizedNounStringResourceCollection != null) {
+                    return declineAdjectiveByNoun(
+                            localizedAdjectiveStringResourceCollection,
+                            localizedNounStringResourceCollection,
+                            formatString);
+                }
+            }
+        }
+        return String.format(formatString, adjective.getString(mQuestContext), noun.getString(mQuestContext));
     }
 }

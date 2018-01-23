@@ -6,10 +6,10 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.nekit.android.qls.quest.resources.common.IQuestVisualRepresentationHolder;
+import ru.nekit.android.qls.quest.resources.common.IVisualRepresentationHolder;
 
 public class VisualRepresentationalNumberSummandQuest extends NumberSummandQuest
-        implements IQuestVisualRepresentationHolder {
+        implements IVisualRepresentationHolder {
 
     @Nullable
     List<Integer> mVisualRepresentationList;

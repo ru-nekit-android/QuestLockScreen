@@ -6,7 +6,7 @@ import android.support.annotation.StringRes;
 
 import ru.nekit.android.shared.R;
 
-public enum QuestionType implements INameHolder {
+public enum QuestionType implements IStringHolder {
 
     SOLUTION(R.string.question_solution_title),
     UNKNOWN_MEMBER(R.string.question_unknown_member_title),
@@ -22,7 +22,7 @@ public enum QuestionType implements INameHolder {
     }
 
     @NonNull
-    public String getName(@NonNull Context context) {
+    public String getString(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
 

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 
 public class QuestVisualRepresentationList {
 
@@ -25,7 +25,7 @@ public class QuestVisualRepresentationList {
         return mIdsList;
     }
 
-    public void add(@NonNull IVisualQuestResourceHolder questVisualResourceItem) {
+    public void add(@NonNull IVisualResourceHolder questVisualResourceItem) {
         add(mQuestResourceLibrary.getQuestVisualResourceId(questVisualResourceItem));
     }
 

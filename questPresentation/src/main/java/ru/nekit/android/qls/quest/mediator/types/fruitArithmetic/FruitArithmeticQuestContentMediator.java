@@ -24,9 +24,9 @@ import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
-import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.EQUAL;
-import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.MINUS;
-import static ru.nekit.android.qls.quest.resources.collections.SimpleQuestVisualQuestResourceCollection.PLUS;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleVisualResourceCollection.EQUAL;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleVisualResourceCollection.MINUS;
+import static ru.nekit.android.qls.quest.resources.collections.SimpleVisualResourceCollection.PLUS;
 
 public class FruitArithmeticQuestContentMediator extends AbstractQuestContentMediator {
 

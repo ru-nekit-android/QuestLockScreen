@@ -4,7 +4,7 @@ import java.util.List;
 
 import ru.nekit.android.qls.quest.resources.struct.ColorfullQuestVisualResourceStruct;
 
-public interface IColorfullVisualQuestResourceHolder extends IVisualQuestResourceHolder {
+public interface IColorfullVisualResourceHolder extends IVisualResourceHolder {
 
     List<ColorfullQuestVisualResourceStruct> getColoredVisualResourceList();
 

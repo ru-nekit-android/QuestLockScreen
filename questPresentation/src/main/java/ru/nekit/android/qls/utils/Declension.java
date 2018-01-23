@@ -10,11 +10,11 @@ public class Declension {
                                                 @NonNull Gender gender,
                                                 boolean isPlural) {
         return String.format(format, declineAdjective(adjectiveBase, gender, isPlural),
-                declineNoun(nounBase, isPlural));
+                declineNoun(nounBase, gender, isPlural));
     }
 
-    private static String declineNoun(@NonNull String base, boolean isPlural) {
-        return base + (isPlural ? "и" : "у");
+    public static String declineNoun(@NonNull String base, @NonNull Gender gender, boolean isPlural) {
+        return base + (gender == Gender.NEUTER ? "о" : (isPlural ? "и" : "у"));
     }
 
     private static String declineAdjective(@NonNull String base, @NonNull Gender gender, boolean isPlural) {

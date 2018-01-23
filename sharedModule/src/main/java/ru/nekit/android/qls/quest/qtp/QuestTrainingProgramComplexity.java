@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 
-import ru.nekit.android.qls.quest.INameHolder;
+import ru.nekit.android.qls.quest.IStringHolder;
 import ru.nekit.android.shared.R;
 
-public enum QuestTrainingProgramComplexity implements INameHolder {
+public enum QuestTrainingProgramComplexity implements IStringHolder {
 
     HARD(R.string.complexity_hard),
     NORMAL(R.string.complexity_normal),
@@ -21,7 +21,7 @@ public enum QuestTrainingProgramComplexity implements INameHolder {
     }
 
     @NonNull
-    public String getName(@NonNull Context context) {
+    public String getString(@NonNull Context context) {
         return context.getResources().getString(titleId);
     }
 

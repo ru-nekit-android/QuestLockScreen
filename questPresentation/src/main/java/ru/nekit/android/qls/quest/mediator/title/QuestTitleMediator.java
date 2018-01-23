@@ -13,12 +13,11 @@ import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
 import ru.nekit.android.qls.quest.model.CoinModel;
-import ru.nekit.android.qls.quest.model.ColorModel;
 import ru.nekit.android.qls.quest.model.DirectionModel;
 import ru.nekit.android.qls.quest.model.TrafficLightModel;
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.common.ILocalizedStringQuestResourceHolder;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.collections.ColorResourceCollection;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 import ru.nekit.android.qls.quest.types.FruitArithmeticQuest;
 import ru.nekit.android.qls.quest.types.NumberSummandQuest;
 import ru.nekit.android.qls.quest.types.PerimeterQuest;
@@ -187,8 +186,8 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                             TrafficLightModel[] trafficLightModels =
                                     MathUtils.shuffleArray(TrafficLightModel.values());
                             mText = format(getString(quest_traffic_light_solution_title),
-                                    trafficLightModels[0].getName(mQuestContext),
-                                    trafficLightModels[1].getName(mQuestContext));
+                                    trafficLightModels[0].getString(mQuestContext),
+                                    trafficLightModels[1].getString(mQuestContext));
 
                             break;
 
@@ -260,9 +259,9 @@ public class QuestTitleMediator implements IQuestTitleMediator {
                         case UNKNOWN_MEMBER:
 
                             mText = format(getString(quest_choice_unknown_member_title),
-                                    questResourceLibrary.getVisualQuestResource(
-                                            numberSummandQuest.getUnknownMember()).
-                                            getName(mQuestContext));
+                                    questResourceLibrary.localizeNounStringResourceIfNeed(
+                                            questResourceLibrary.getVisualQuestResource(
+                                                    numberSummandQuest.getUnknownMember())));
 
                             break;
 
@@ -287,26 +286,19 @@ public class QuestTitleMediator implements IQuestTitleMediator {
 
                     VisualRepresentationalNumberSummandQuest colorQuest
                             = (VisualRepresentationalNumberSummandQuest) mQuest;
-                    IVisualQuestResourceHolder vqrh = questResourceLibrary.getVisualQuestResource(
+                    IVisualResourceHolder vqrh = questResourceLibrary.getVisualQuestResource(
                             colorQuest.getVisualRepresentationList().get(colorQuest.unknownMemberIndex));
-                    ColorModel colorModel = ColorModel.getById(colorQuest.getUnknownMember());
-                    String splitString = "%s %s";
+                    ColorResourceCollection colorResourceCollection = ColorResourceCollection.getById(colorQuest.getUnknownMember());
+                    String formatString = "%s %s";
                     mText = format(getString(R.string.quest_colors_unknown_member_title),
-                            (vqrh instanceof ILocalizedStringQuestResourceHolder ?
-                                    mQuestContext.getQuestResourceLibrary().declineAdjectiveByNoun(
-                                            mQuestContext,
-                                            colorModel.getName(mQuestContext),
-                                            splitString,
-                                            ((ILocalizedStringQuestResourceHolder) vqrh).getLocalStringResource())
-                                    :
-                                    format(splitString, colorModel.getName(mQuestContext),
-                                            vqrh.getName(mQuestContext))));
+                            mQuestContext.getQuestResourceLibrary().localizeAdjectiveAndNounStringResourceIfNeed(colorResourceCollection, vqrh, formatString));
+
                     break;
 
                 case DIRECTION:
 
                     mText = format(getString(quest_direction_unknown_member_title),
-                            DirectionModel.fromOrdinal(numberSummandQuest.getAnswer()).getName(questContext));
+                            DirectionModel.fromOrdinal(numberSummandQuest.getAnswer()).getString(questContext));
 
                     break;
             }

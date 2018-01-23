@@ -11,7 +11,7 @@ import static ru.nekit.android.qls.quest.QuestionType.COMPARISON;
 import static ru.nekit.android.qls.quest.QuestionType.SOLUTION;
 import static ru.nekit.android.qls.quest.QuestionType.UNKNOWN_MEMBER;
 
-public enum QuestType implements INameHolder {
+public enum QuestType implements IStringHolder {
 
     //16 variants
     SIMPLE_EXAMPLE(QuestionType.values(),
@@ -136,7 +136,7 @@ public enum QuestType implements INameHolder {
     }
 
     @NonNull
-    public String getName(@NonNull Context context) {
+    public String getString(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
 }

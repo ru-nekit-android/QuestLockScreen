@@ -278,7 +278,7 @@ public class MenuWindowMediator extends QuestWindowMediator
                     PupilAvatarViewBuilder.build(mQuestContext, pupil,
                             contentViewHolder.pupilAvatarContainer);
                     contentViewHolder.titleTextView.setText(String.format("%s\n%s\n%s", pupil.name,
-                            pupil.complexity.getName(mQuestContext),
+                            pupil.complexity.getString(mQuestContext),
                             mQuestContext.getQTPLevel().getName()));
                     contentViewHolder.nameTextView.setText(R.string.book_title_name);
                     mCurrentContentHolder = contentViewHolder;

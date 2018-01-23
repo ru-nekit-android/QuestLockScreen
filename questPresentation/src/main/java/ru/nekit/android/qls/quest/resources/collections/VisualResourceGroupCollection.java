@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.INameHolder;
+import ru.nekit.android.qls.quest.IStringHolder;
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.common.IVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IVisualResourceHolder;
 
-public enum VisualQuestResourceGroupCollection implements INameHolder {
+public enum VisualResourceGroupCollection implements IStringHolder {
 
     CHOICE(R.string.qvrg_choice_title),
     FRUIT(R.string.qvrg_fruit_title),
@@ -29,14 +29,14 @@ public enum VisualQuestResourceGroupCollection implements INameHolder {
     @StringRes
     private int mTitleResourceId;
     @Nullable
-    private VisualQuestResourceGroupCollection[] mParents;
+    private VisualResourceGroupCollection[] mParents;
 
-    VisualQuestResourceGroupCollection(@StringRes int titleResourceId, @Nullable VisualQuestResourceGroupCollection... parents) {
+    VisualResourceGroupCollection(@StringRes int titleResourceId, @Nullable VisualResourceGroupCollection... parents) {
         mTitleResourceId = titleResourceId;
         mParents = parents;
     }
 
-    public static VisualQuestResourceGroupCollection getGroup(int id) {
+    public static VisualResourceGroupCollection getGroup(int id) {
         return values()[id];
     }
 
@@ -46,21 +46,21 @@ public enum VisualQuestResourceGroupCollection implements INameHolder {
 
     @NonNull
     @Override
-    public String getName(@NonNull Context context) {
+    public String getString(@NonNull Context context) {
         return context.getString(mTitleResourceId);
     }
 
     @Nullable
-    public VisualQuestResourceGroupCollection[] getParents() {
+    public VisualResourceGroupCollection[] getParents() {
         return mParents;
     }
 
-    public List<VisualQuestResourceGroupCollection> getChildren() {
-        List<VisualQuestResourceGroupCollection> children = new ArrayList<>();
-        for (VisualQuestResourceGroupCollection group : values()) {
-            VisualQuestResourceGroupCollection[] parents = group.getParents();
+    public List<VisualResourceGroupCollection> getChildren() {
+        List<VisualResourceGroupCollection> children = new ArrayList<>();
+        for (VisualResourceGroupCollection group : values()) {
+            VisualResourceGroupCollection[] parents = group.getParents();
             if (parents != null) {
-                for (VisualQuestResourceGroupCollection parentItem : parents) {
+                for (VisualResourceGroupCollection parentItem : parents) {
                     if (parentItem == this) {
                         children.add(group);
                     }
@@ -70,11 +70,11 @@ public enum VisualQuestResourceGroupCollection implements INameHolder {
         return children;
     }
 
-    public List<IVisualQuestResourceHolder> getVisualResourceItems(@NonNull QuestResourceLibrary questResourceLibrary) {
-        List<IVisualQuestResourceHolder> result = new ArrayList<>();
-        for (IVisualQuestResourceHolder visualResourceModel : questResourceLibrary.getVisualQuestResourceList()) {
+    public List<IVisualResourceHolder> getVisualResourceItems(@NonNull QuestResourceLibrary questResourceLibrary) {
+        List<IVisualResourceHolder> result = new ArrayList<>();
+        for (IVisualResourceHolder visualResourceModel : questResourceLibrary.getVisualQuestResourceList()) {
             if (visualResourceModel.getGroups() != null) {
-                for (VisualQuestResourceGroupCollection group : visualResourceModel.getGroups()) {
+                for (VisualResourceGroupCollection group : visualResourceModel.getGroups()) {
                     if (group.hasParent(this)) {
                         result.add(visualResourceModel);
                     }
@@ -84,12 +84,12 @@ public enum VisualQuestResourceGroupCollection implements INameHolder {
         return result;
     }
 
-    public boolean hasParent(VisualQuestResourceGroupCollection group) {
+    public boolean hasParent(VisualResourceGroupCollection group) {
         boolean result = this == group;
         if (!result) {
-            VisualQuestResourceGroupCollection[] parents = getParents();
+            VisualResourceGroupCollection[] parents = getParents();
             if (parents != null) {
-                for (VisualQuestResourceGroupCollection parentItem : parents) {
+                for (VisualResourceGroupCollection parentItem : parents) {
                     result = parentItem.hasParent(group);
                     if (result) {
                         break;

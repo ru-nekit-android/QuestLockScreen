@@ -122,7 +122,7 @@ public class LockScreenQuestViewMediator extends BaseLockScreenContentMediator
                 mQuestContext.getResources().getDimensionPixelSize(R.dimen.quest_series_size), false);
         questSeriesSpan.setSpan(sizeSpan, 0, questSeriesString.length(),
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String questName = mQuestContext.getQuest().getQuestType().getName(mQuestContext);
+        String questName = mQuestContext.getQuest().getQuestType().getString(mQuestContext);
         mViewHolder.titleView.setText(questName);
         mViewHolder.titleViewRight.setText(questSeriesString);
     }

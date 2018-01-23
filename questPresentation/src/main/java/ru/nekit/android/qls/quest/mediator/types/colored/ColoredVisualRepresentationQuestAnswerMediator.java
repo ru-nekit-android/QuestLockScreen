@@ -11,25 +11,25 @@ import ru.nekit.android.qls.R;
 import ru.nekit.android.qls.quest.answer.common.AnswerType;
 import ru.nekit.android.qls.quest.mediator.answer.AbstractListableQuestAnswerMediator;
 import ru.nekit.android.qls.quest.resources.QuestResourceLibrary;
-import ru.nekit.android.qls.quest.resources.common.IColorfullVisualQuestResourceHolder;
+import ru.nekit.android.qls.quest.resources.common.IColorfullVisualResourceHolder;
 import ru.nekit.android.qls.quest.resources.struct.PairColorStruct;
 import ru.nekit.android.qls.quest.types.VisualRepresentationalNumberSummandQuest;
 import ru.nekit.android.qls.window.AnswerWindow;
 
 public class ColoredVisualRepresentationQuestAnswerMediator
-        extends AbstractListableQuestAnswerMediator<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>,
+        extends AbstractListableQuestAnswerMediator<Pair<IColorfullVisualResourceHolder, PairColorStruct>,
         ColoredVisualRepresentationQuestAdapter> {
 
-    private List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> mDataList;
+    private List<Pair<IColorfullVisualResourceHolder, PairColorStruct>> mDataList;
 
     @NonNull
     @Override
-    protected List<Pair<IColorfullVisualQuestResourceHolder, PairColorStruct>> getListData() {
+    protected List<Pair<IColorfullVisualResourceHolder, PairColorStruct>> getListData() {
         mDataList = new ArrayList<>();
         final int length = getQuest().getVisualRepresentationList().size();
         QuestResourceLibrary questResourceLibrary = mQuestContext.getQuestResourceLibrary();
         for (int i = 0; i < length; i++) {
-            IColorfullVisualQuestResourceHolder coloredVisualResource = (IColorfullVisualQuestResourceHolder)
+            IColorfullVisualResourceHolder coloredVisualResource = (IColorfullVisualResourceHolder)
                     questResourceLibrary.getVisualQuestResource(getQuest().
                             getVisualRepresentationList().get(i));
             PairColorStruct pairColorStruct =
@@ -45,7 +45,7 @@ public class ColoredVisualRepresentationQuestAnswerMediator
 
     @NonNull
     @Override
-    protected ColoredVisualRepresentationQuestAdapter getListAdapter(List<Pair<IColorfullVisualQuestResourceHolder,
+    protected ColoredVisualRepresentationQuestAdapter getListAdapter(List<Pair<IColorfullVisualResourceHolder,
             PairColorStruct>> listData) {
         return new ColoredVisualRepresentationQuestAdapter(mQuestContext, listData, this);
     }
@@ -86,7 +86,7 @@ public class ColoredVisualRepresentationQuestAnswerMediator
     @Override
     public boolean onAnswer(@NonNull AnswerType answerType) {
         if (answerType == AnswerType.RIGHT) {
-            Pair<IColorfullVisualQuestResourceHolder, PairColorStruct> item =
+            Pair<IColorfullVisualResourceHolder, PairColorStruct> item =
                     mDataList.get(getQuest().unknownMemberIndex);
             mDataList.clear();
             mDataList.add(item);

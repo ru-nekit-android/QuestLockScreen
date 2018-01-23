@@ -162,7 +162,7 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                     PupilAvatarViewBuilder.build(mQuestContext, pupil,
                             contentViewHolder.pupilAvatarContainer);
                     contentViewHolder.titleTextView.setText(String.format("%s\n%s\n%s", pupil.name,
-                            pupil.complexity.getName(mQuestContext),
+                            pupil.complexity.getString(mQuestContext),
                             mQuestContext.getQTPLevel().getName()));
                     contentViewHolder.nameTextView.setText(R.string.book_title_name);
                     mCurrentContentHolder = contentViewHolder;
@@ -206,8 +206,8 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                     for (QuestStatistics statistics : pupilStatistics.questStatistics) {
                         textContent.append(String.format(
                                 mQuestContext.getString(R.string.pupil_statistics_item_formatter),
-                                statistics.questType.getName(mQuestContext),
-                                statistics.questionType.getName(mQuestContext),
+                                statistics.questType.getString(mQuestContext),
+                                statistics.questionType.getString(mQuestContext),
                                 statistics.rightAnswerCount,
                                 statistics.wrongAnswerCount,
                                 dateFormat.format(statistics.bestAnswerTime),
