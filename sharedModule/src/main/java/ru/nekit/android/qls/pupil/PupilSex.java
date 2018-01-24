@@ -21,6 +21,6 @@ public enum PupilSex implements IStringHolder {
     @NonNull
     @Override
     public String getString(@NonNull Context context) {
-        return context.getResources().getString(mTitleResourceId);
+        return context.getString(mTitleResourceId);
     }
 }

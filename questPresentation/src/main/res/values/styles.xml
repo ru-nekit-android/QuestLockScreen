@@ -44,7 +44,7 @@
     <style name="MenuButton">
         <item name="srcCompat">@drawable/ic_menu_white_36pd</item>
         <item name="android:text">@string/label_unlock</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:mDrawableResourceId">@color/white</item>
     </style>
 
     <style name="FloatingActionButton">
@@ -63,18 +63,18 @@
     </style>
 
     <style name="CloseButton">
-        <item name="android:background">@color/white</item>
+        <item name="android:mDrawableResourceId">@color/white</item>
         <item name="srcCompat">@drawable/ic_close</item>
     </style>
 
     <style name="NavigationPrevButton" parent="FloatingActionButton.Menu">
         <item name="srcCompat">@drawable/ic_navigate_before_48dp</item>
-        <item name="android:background">@drawable/background_button_green_left</item>
+        <item name="android:mDrawableResourceId">@drawable/background_button_green_left</item>
     </style>
 
     <style name="NavigationNextButton" parent="FloatingActionButton.Menu">
         <item name="srcCompat">@drawable/ic_navigate_next_48dp</item>
-        <item name="android:background">@drawable/background_button_green_right</item>
+        <item name="android:mDrawableResourceId">@drawable/background_button_green_right</item>
     </style>
 
     <!-- LockScreen -->
@@ -86,7 +86,7 @@
     </style>
 
     <style name="LockScreen.Container">
-        <item name="android:background">@color/lock_screen_background_color</item>
+        <item name="android:mDrawableResourceId">@color/lock_screen_background_color</item>
     </style>
 
     <style name="LockScreen.ContentContainer" />
@@ -98,7 +98,7 @@
     <style name="LockScreen.StatusBar" />
 
     <style name="LockScreen.StatusBar.Container">
-        <item name="android:background">@color/green_dark</item>
+        <item name="android:mDrawableResourceId">@color/green_dark</item>
     </style>
 
     <style name="LockScreen.StatusBar.ClockView" parent="TextAppearance">
@@ -128,7 +128,7 @@
         <item name="android:textSize">14sp</item>
         <item name="android:layout_margin">@dimen/base_semi_gap</item>
         <item name="android:padding">@dimen/base_semi_gap</item>
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
     </style>
 
     <style name="LockScreen.QuestView.TitleContainer">
@@ -136,7 +136,7 @@
         <item name="android:paddingTop">@dimen/base_semi_gap</item>
         <item name="android:paddingRight">@dimen/base_gap</item>
         <item name="android:paddingBottom">@dimen/base_semi_gap</item>
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
         <item name="android:layout_height">@dimen/title_container_height</item>
     </style>
 
@@ -181,7 +181,7 @@
     </style>
 
     <style name="RightAnswer.ToolContainer" parent="ToolContainer">
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
     </style>
 
     <style name="RightAnswer" />
@@ -218,7 +218,7 @@
     </style>
 
     <style name="WrongAnswer.ToolContainer" parent="ToolContainer">
-        <item name="android:background">@color/red</item>
+        <item name="android:mDrawableResourceId">@color/red</item>
     </style>
 
     <style name="RightAnswer.Title" parent="TextAppearance">
@@ -239,7 +239,7 @@
         <item name="android:layout_marginTop">@dimen/base_gap</item>
         <item name="android:layout_marginLeft">@dimen/base_gap</item>
         <item name="android:layout_marginRight">@dimen/base_gap</item>
-        <item name="android:background">@drawable/background_message_green</item>
+        <item name="android:mDrawableResourceId">@drawable/background_message_green</item>
     </style>
 
     <style name="WrongAnswer.ContentContainer.Simple" parent="RightAnswer.ContentContainer.Simple">
@@ -276,18 +276,18 @@
         <item name="android:layout_marginTop">@dimen/base_gap</item>
         <item name="android:layout_marginLeft">@dimen/base_gap</item>
         <item name="android:layout_marginRight">@dimen/base_gap</item>
-        <item name="android:background">@drawable/background_message_red</item>
+        <item name="android:mDrawableResourceId">@drawable/background_message_red</item>
     </style>
 
     <style name="LockScreen.SupportContent.TitleContainer">
         <item name="android:padding">@dimen/base_semi_gap</item>
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
     </style>
 
     <style name="LockScreen.SupportContent.ContentContainer" />
 
     <style name="LockScreen.SupportContent.Content">
-        <!--<item name="android:background">#22222222</item>-->
+        <!--<item name="andrmDrawableResourceIdound">#22222222</item>-->
     </style>
 
     <style name="Quest" parent="TextAppearance">
@@ -308,7 +308,7 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingRight">@dimen/base_semi_gap</item>
         <item name="android:paddingLeft">@dimen/base_semi_gap</item>
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
     </style>
 
     <style name="Quest.TitleContainer">
@@ -366,7 +366,7 @@
     </style>
 
     <style name="Window.Menu.TitleContainer" parent="TitleContainer">
-        <item name="android:background">@color/green</item>
+        <item name="android:mDrawableResourceId">@color/green</item>
         <item name="android:paddingLeft">@dimen/base_gap</item>
         <item name="android:paddingTop">@dimen/base_semi_gap</item>
         <item name="android:paddingRight">@dimen/base_gap</item>
@@ -492,7 +492,7 @@
     </style>
 
     <style name="Quest.SimpleExample.AnswerInput">
-        <item name="android:background">@null</item>
+        <item name="android:mDrawableResourceId">@null</item>
         <item name="android:textColorHint">@color/black</item>
         <item name="android:gravity">right</item>
     </style>
@@ -545,7 +545,7 @@
     <style name="Quest.Perimeter.Figure">
         <!--<item name="android:layout_width">100dp</item>
         <item name="android:layout_height">100dp</item>-->
-        <item name="android:background">@drawable/perimeter_figure_background</item>
+        <item name="android:mDrawableResourceId">@drawable/perimeter_figure_background</item>
     </style>
 
     <style name="Quest.TrafficLight" />
@@ -593,7 +593,7 @@
 
     <style name="Quest.Coin.Button.Background">
         <item name="android:padding">5dp</item>
-        <item name="android:background">@color/transparent</item>
+        <item name="android:mDrawableResourceId">@color/transparent</item>
     </style>
 
     <style name="Quest.Coin.NominationLabel" parent="TextAppearance">
@@ -710,7 +710,7 @@
 
     <style name="AllowContact.Modification.ActionButton">
         <item name="srcCompat">@drawable/ic_delete_forever_red</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:mDrawableResourceId">@color/white</item>
     </style>
 
     <style name="AllowContact.Read.ActionButton">

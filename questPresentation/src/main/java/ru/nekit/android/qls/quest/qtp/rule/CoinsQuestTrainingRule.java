@@ -6,7 +6,7 @@ import ru.nekit.android.qls.quest.Quest;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.QuestionType;
 import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
-import ru.nekit.android.qls.quest.model.CoinModel;
+import ru.nekit.android.qls.quest.resources.collections.CoinVisualResourceCollection;
 import ru.nekit.android.qls.utils.Callable;
 
 public class CoinsQuestTrainingRule extends HasMemberQuestTrainingProgramRule {
@@ -16,9 +16,9 @@ public class CoinsQuestTrainingRule extends HasMemberQuestTrainingProgramRule {
                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(memberCount, 0);
-        generator.setAvailableMemberValues(CoinModel.values(), new Callable<CoinModel, Integer>() {
+        generator.setAvailableMemberValues(CoinVisualResourceCollection.values(), new Callable<CoinVisualResourceCollection, Integer>() {
             @Override
-            public Integer call(CoinModel value) {
+            public Integer call(CoinVisualResourceCollection value) {
                 return value.getId();
             }
         });

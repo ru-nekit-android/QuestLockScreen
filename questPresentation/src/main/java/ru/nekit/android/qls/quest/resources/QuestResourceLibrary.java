@@ -18,6 +18,7 @@ import java.util.Locale;
 import ru.nekit.android.qls.quest.IStringHolder;
 import ru.nekit.android.qls.quest.QuestContext;
 import ru.nekit.android.qls.quest.resources.collections.ChildrenToysVisualResourceCollection;
+import ru.nekit.android.qls.quest.resources.collections.CoinVisualResourceCollection;
 import ru.nekit.android.qls.quest.resources.collections.LocalizedAdjectiveStringResourceCollection;
 import ru.nekit.android.qls.quest.resources.collections.LocalizedNounStringResourceCollection;
 import ru.nekit.android.qls.quest.resources.collections.SimpleVisualResourceCollection;
@@ -32,9 +33,10 @@ public class QuestResourceLibrary {
     private static final String TEXT_QUEST_FOLDER = "textQuestResources";
     private static final String TEXT_CAMOUFLAGE_DICTIONARY_FILE = "textCamouflageDictionary.txt";
 
-    private static final Class[] LIBRARY = new Class[]{
+    private static final Class[] VISUAL_LIBRARY = new Class[]{
             SimpleVisualResourceCollection.class,
-            ChildrenToysVisualResourceCollection.class
+            ChildrenToysVisualResourceCollection.class,
+            CoinVisualResourceCollection.class
     };
 
     @NonNull
@@ -45,7 +47,7 @@ public class QuestResourceLibrary {
     public QuestResourceLibrary(@NonNull QuestContext questContext) {
         mQuestContext = questContext;
         mQuestVisualQuestResourceList = new ArrayList<>();
-        for (Class libraryClass : LIBRARY) {
+        for (Class libraryClass : VISUAL_LIBRARY) {
             IVisualResourceHolder[] questVisualResourceItems = null;
             if (libraryClass.isEnum()) {
                 try {

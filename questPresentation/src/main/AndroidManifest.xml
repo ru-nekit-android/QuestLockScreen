@@ -66,13 +66,13 @@
         com.samsung.sec.android.clockpackage.alarm.NOTIFY_ALARM_CHANGE:
         -->
 
-        <receiver
+        <!--<receiver
             android:name=".deviceAdminSupport.samsung.EnterpriseLicenseReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="edm.intent.action.license.status" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
         <receiver android:name=".lockScreen.receiver.AlarmClockReceiver">
             <intent-filter android:priority="1000">

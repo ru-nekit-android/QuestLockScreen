@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/selector_item">
+        android:mDrawableResourceId="@drawable/selector_item">
 
         <com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout
             android:id="@+id/container_pupil_avatar_mask"

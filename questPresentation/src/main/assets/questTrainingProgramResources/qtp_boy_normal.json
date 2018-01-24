@@ -67,7 +67,7 @@
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": true,
+          "enabled": false,
           "memberCount": 4
         },
         //ВЫБОР
@@ -79,7 +79,7 @@
             "berry",
             "pomum"
           ],
-          "enabled": true
+          "enabled": false
         },
         //ЛИШНИЙ
         {
@@ -88,9 +88,10 @@
           "types": [
             "seasons",
             "berry",
-            "pomum"
+            "pomum",
+            "coins"
           ],
-          "enabled": false
+          "enabled": true
         },
         //ФРУКТЫ
         {

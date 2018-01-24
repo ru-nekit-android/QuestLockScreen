@@ -22,7 +22,7 @@ public enum QuestTrainingProgramComplexity implements IStringHolder {
 
     @NonNull
     public String getString(@NonNull Context context) {
-        return context.getResources().getString(titleId);
+        return context.getString(titleId);
     }
 
 }

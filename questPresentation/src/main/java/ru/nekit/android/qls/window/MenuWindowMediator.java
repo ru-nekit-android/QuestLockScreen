@@ -285,7 +285,7 @@ public class MenuWindowMediator extends QuestWindowMediator
 
                     break;
             }
-            mWindowContent.titleView.setText(mQuestContext.getResources().getString(titleResID));
+            mWindowContent.titleView.setText(mQuestContext.getString(titleResID));
             for (int i = 0; i < mWindowContent.buttonContainer.getChildCount(); i++) {
                 AppCompatImageButton button = (AppCompatImageButton) mWindowContent.buttonContainer.getChildAt(i);
                 Step stepOfButton = (Step) button.getTag();

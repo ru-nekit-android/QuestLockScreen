@@ -114,6 +114,7 @@ public class ChoiceQuestTrainingProgramRule extends AbstractQuestTrainingProgram
         return quest;
     }
 
+    @NonNull
     VisualResourceGroupCollection getTargetGroup() {
         return VisualResourceGroupCollection.getGroup(MathUtils.randItem(types));
     }

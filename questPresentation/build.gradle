@@ -11,8 +11,8 @@ android {
         applicationId 'ru.nekit.android.qls'
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 14
-        versionName "1.288"
+        versionCode 15
+        versionName "1.289"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -65,8 +65,8 @@ dependencies {
     compile 'com.google.firebase:firebase-ads:11.4.2'
     compile project(':sharedModule')
     compile project(':questData')
-    compile files('libs/edm.jar')
-    compile files('libs/license.jar')
+    /*compile files('libs/edm.jar')
+    compile files('libs/license.jar')*/
 }
 
 repositories {

@@ -48,14 +48,17 @@ public class MismatchQuestTrainingProgramRule extends ChoiceQuestTrainingProgram
         List<VisualResourceGroupCollection> questVisualResourceGroupCollection =
                 Arrays.asList(VisualResourceGroupCollection.values());
         Collections.shuffle(questVisualResourceGroupCollection);
-        for (VisualResourceGroupCollection group : questVisualResourceGroupCollection) {
-            if (!group.hasParent(targetGroup) && !targetGroup.hasParent(group)) {
-                mismatchGroup = group;
-                break;
+        List<IVisualResourceHolder> mismatchQVRItemIdList;
+        do {
+            for (VisualResourceGroupCollection group : questVisualResourceGroupCollection) {
+                if (!group.hasParent(targetGroup) && !targetGroup.hasParent(group)) {
+                    mismatchGroup = group;
+                    break;
+                }
             }
-        }
-        List<IVisualResourceHolder> mismatchQVRItemIdList =
-                mismatchGroup.getVisualResourceItems(questResourceLibrary);
+            mismatchQVRItemIdList =
+                    mismatchGroup.getVisualResourceItems(questResourceLibrary);
+        } while (mismatchQVRItemIdList == null || mismatchQVRItemIdList.size() == 0);
         unknownMemberIndex = randListLength(questVisualRepresentationList);
         questVisualRepresentationList.add(unknownMemberIndex,
                 questResourceLibrary.getQuestVisualResourceId(

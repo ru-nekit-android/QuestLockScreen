@@ -224,7 +224,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
                                                 boolean isRightAnswer,
                                                 long sessionTime) {
         if (isRightAnswer) {
-            boolean rightAnswerSeriesLengthUpdated, bestTimeUpdated;
+            boolean rightAnswerSeriesLengthUpdated;
             statistics.rightAnswerCount++;
             statistics.rightAnswerSummandTime += sessionTime;
             statistics.rightAnswerSeriesCounter++;
@@ -259,10 +259,10 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
             //award for right answer quest obtain from quest training program rule
             AbstractQuestTrainingProgramRule rule = getQTPRule();
             QuestHistoryItem questHistoryItem = createQuestHistoryItem(true, sessionTime);
-            QuestHistoryItem globalQuestHistoryItem = createQuestHistoryItem(true, sessionTime);
+            QuestHistoryItem globalHistoryItem = createQuestHistoryItem(true, sessionTime);
             updateStatisticsAndHistoryItem(getQuestStatistics(), questHistoryItem,
                     true, sessionTime);
-            updateStatisticsAndHistoryItem(mPupilStatistics, globalQuestHistoryItem, true,
+            updateStatisticsAndHistoryItem(mPupilStatistics, globalHistoryItem, true,
                     sessionTime);
             if (rule != null) {
                 mPupilStatistics.score += rule.getReward() * levelBeforeReward.getPointsMultiplier();
@@ -273,7 +273,7 @@ public class QuestContext extends ContextThemeWrapper implements IAnswerCallback
                 mEventBus.sendEvent(EVENT_LEVEL_UP);
                 questHistoryItem.isLevelUp = true;
             }
-            mQuestHistoryPair = new QuestHistoryItem.Pair(globalQuestHistoryItem, questHistoryItem);
+            mQuestHistoryPair = new QuestHistoryItem.Pair(globalHistoryItem, questHistoryItem);
             mEventBus.sendEvent(EVENT_RIGHT_ANSWER);
             //detachView
             destroyTicTac();

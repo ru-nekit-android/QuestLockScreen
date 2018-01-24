@@ -33,19 +33,19 @@
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/base_semi_gap"
             android:layout_toRightOf="@id/tv_session_time"
-            android:background="@color/red">
+            android:mDrawableResourceId="@color/red">
 
             <View
                 android:id="@+id/progress_worst_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/green" />
+                android:mDrawableResourceId="@color/green" />
 
             <View
                 android:id="@+id/progress_best_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/gold" />
+                android:mDrawableResourceId="@color/gold" />
 
             <View
                 android:id="@+id/progress_session_time"
@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
-                android:background="@color/white" />
+                android:mDrawableResourceId="@color/white" />
 
         </RelativeLayout>
 

@@ -21,6 +21,7 @@ public enum VisualResourceGroupCollection implements IStringHolder {
     BERRY(R.string.qvrg_berry_title, FRUIT, CHOICE),
     POMUM(R.string.qvrg_pomum_title, FRUIT, CHOICE),
     SEASONS(R.string.qvrg_seasons_title, CHOICE),
+    COINS(R.string.qvrg_coins_title, CHOICE),
     SEX(R.string.qvrg_sex_title),
     GIRL(R.string.qvrg_girl_title, SEX),
     BOY(R.string.qvrg_boy_title, SEX),

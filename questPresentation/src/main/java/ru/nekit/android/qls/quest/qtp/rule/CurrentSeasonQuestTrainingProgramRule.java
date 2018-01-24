@@ -34,6 +34,7 @@ public class CurrentSeasonQuestTrainingProgramRule extends ChoiceQuestTrainingPr
         super(in);
     }
 
+    @NonNull
     @Override
     VisualResourceGroupCollection getTargetGroup() {
         return VisualResourceGroupCollection.SEASONS;

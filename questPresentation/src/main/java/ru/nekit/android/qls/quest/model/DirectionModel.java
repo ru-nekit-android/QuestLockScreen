@@ -27,6 +27,6 @@ public enum DirectionModel implements IStringHolder {
 
     @NonNull
     public String getString(@NonNull Context context) {
-        return context.getResources().getString(titleResId);
+        return context.getString(titleResId);
     }
 }

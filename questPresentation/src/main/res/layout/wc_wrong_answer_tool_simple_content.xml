@@ -3,7 +3,7 @@
     android:id="@+id/container_tool"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/red">
+    android:mDrawableResourceId="@color/red">
 
     <com.devspark.robototextview.widget.RobotoButton
         android:id="@+id/btn_ok"
