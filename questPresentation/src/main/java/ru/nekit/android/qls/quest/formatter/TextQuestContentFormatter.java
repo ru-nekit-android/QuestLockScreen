@@ -8,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.Quest;
-import ru.nekit.android.qls.quest.math.MathematicalSignComparison;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.domain.model.math.MathematicalSignComparison;
+import ru.nekit.android.qls.domain.model.quest.NumberSummandQuest;
+import ru.nekit.android.qls.domain.model.quest.Quest;
 
-import static ru.nekit.android.qls.quest.math.MathematicalOperation.ADDITION;
-import static ru.nekit.android.qls.quest.math.MathematicalOperation.SUBTRACTION;
+import static ru.nekit.android.qls.domain.model.math.MathematicalOperation.ADDITION;
+import static ru.nekit.android.qls.domain.model.math.MathematicalOperation.SUBTRACTION;
 
 public class TextQuestContentFormatter implements IQuestTextContentFormatter {
 
@@ -46,14 +46,14 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
 
             case COMPARISON:
 
-                for (int value : numberSummandQuest.leftNode) {
+                for (int value : numberSummandQuest.getLeftNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
                 stringList.remove(0);
                 stringList.add(missingCharacter);
                 index = stringList.size();
-                for (int value : numberSummandQuest.rightNode) {
+                for (int value : numberSummandQuest.getRightNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
@@ -64,7 +64,7 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
 
             case SOLUTION:
 
-                for (int value : numberSummandQuest.leftNode) {
+                for (int value : numberSummandQuest.getLeftNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
@@ -77,15 +77,15 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
 
             case UNKNOWN_OPERATION:
 
-                for (int value : numberSummandQuest.leftNode) {
+                for (int value : numberSummandQuest.getLeftNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
                 stringList.remove(0);
-                stringList.set(numberSummandQuest.unknownOperatorIndex * 2 + 1, missingCharacter);
+                stringList.set(numberSummandQuest.getUnknownOperatorIndex() * 2 + 1, missingCharacter);
                 stringList.add(MathematicalSignComparison.EQUAL.toString());
                 int length = stringList.size();
-                for (int value : numberSummandQuest.rightNode) {
+                for (int value : numberSummandQuest.getRightNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
@@ -96,8 +96,8 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
 
             case UNKNOWN_MEMBER:
 
-                for (int i = 0; i <= numberSummandQuest.unknownMemberIndex; i++) {
-                    int value = numberSummandQuest.leftNode[i];
+                for (int i = 0; i <= numberSummandQuest.getUnknownMemberIndex(); i++) {
+                    int value = numberSummandQuest.getLeftNode()[i];
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
@@ -109,15 +109,15 @@ public class TextQuestContentFormatter implements IQuestTextContentFormatter {
                 resultStringArray[0] = TextUtils.join(joinCharacter, stringList);
                 stringList.clear();
                 stringList.add("");
-                for (int i = numberSummandQuest.unknownMemberIndex + 1;
-                     i < numberSummandQuest.leftNode.length; i++) {
-                    int value = numberSummandQuest.leftNode[i];
+                for (int i = numberSummandQuest.getUnknownMemberIndex() + 1;
+                     i < numberSummandQuest.getLeftNode().length; i++) {
+                    int value = numberSummandQuest.getLeftNode()[i];
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }
                 stringList.add(MathematicalSignComparison.EQUAL.toString());
                 index = stringList.size();
-                for (int value : numberSummandQuest.rightNode) {
+                for (int value : numberSummandQuest.getRightNode()) {
                     stringList.add(getSignForValue(value));
                     stringList.add(getValue(value));
                 }

@@ -31,7 +31,7 @@
 
         </com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/Window.PupilStatistics.BookTitle.Title"
             android:layout_width="0dp"

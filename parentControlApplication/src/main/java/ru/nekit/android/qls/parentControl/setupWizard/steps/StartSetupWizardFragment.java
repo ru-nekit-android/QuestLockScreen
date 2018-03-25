@@ -1,5 +1,6 @@
 package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
@@ -12,6 +13,7 @@ public class StartSetupWizardFragment extends ParentControlSetupWizardFragment {
         return new StartSetupWizardFragment();
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.sw_setup_start;
@@ -19,7 +21,7 @@ public class StartSetupWizardFragment extends ParentControlSetupWizardFragment {
 
     @Override
     protected void onSetupStart(@NonNull View view) {
-        setNextButtonText(getSetupWizard().setupIsStarted() ?
+        setNextButtonText(getSetupWizard().setupIsStart() ?
                 R.string.label_setup_wizard_continue : R.string.label_start_setup_wizard);
     }
 }

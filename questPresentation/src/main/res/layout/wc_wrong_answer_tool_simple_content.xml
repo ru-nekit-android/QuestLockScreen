@@ -3,9 +3,9 @@
     android:id="@+id/container_tool"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:mDrawableResourceId="@color/red">
+    android:background="@color/red">
 
-    <com.devspark.robototextview.widget.RobotoButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_ok"
         style="@style/ToolContainer.Button"
         android:layout_width="match_parent"

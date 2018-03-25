@@ -1,8 +1,12 @@
 package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import org.jetbrains.annotations.NotNull;
+
+import io.reactivex.Single;
 import ru.nekit.android.qls.parentControl.R;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizard;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizardFragment;
@@ -14,6 +18,7 @@ public class PurchasesFragment extends ParentControlSetupWizardFragment {
         return new PurchasesFragment();
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.sw_magazine;
@@ -25,8 +30,9 @@ public class PurchasesFragment extends ParentControlSetupWizardFragment {
 
     }
 
+    @NotNull
     @Override
-    protected boolean nextAction() {
+    protected Single<Boolean> nextAction() {
         showSetupWizardStep(ParentControlSetupWizard.WizardStep.ACQUIRE_PRESENT);
         return false;
     }

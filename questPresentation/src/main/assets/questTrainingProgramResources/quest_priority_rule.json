@@ -4,7 +4,7 @@
     "questionTypes": [
       "ALL"
     ],
-    "startPriority": 3,
-    "wrongAnswerPriority": 3
+    "startPriority": 1,
+    "wrongAnswerPriority": 1
   }
 ]

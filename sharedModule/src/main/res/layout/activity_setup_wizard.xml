@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.devspark.robototextview.widget.RobotoButton
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_alt"
                 style="@style/AltButton"
                 android:layout_width="wrap_content"
@@ -35,7 +35,7 @@
                 android:layout_centerVertical="true"
                 android:visibility="gone" />
 
-            <com.devspark.robototextview.widget.RobotoButton
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_next"
                 style="@style/NextButton"
                 android:layout_width="wrap_content"

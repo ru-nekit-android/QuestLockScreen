@@ -6,4 +6,11 @@ data class Optional<out T>(val data: T? = null) {
         return data == null
     }
 
+    fun isNotEmpty(): Boolean {
+        return data != null
+    }
+
+    val nonNullData: T
+        get() = data!!
+
 }

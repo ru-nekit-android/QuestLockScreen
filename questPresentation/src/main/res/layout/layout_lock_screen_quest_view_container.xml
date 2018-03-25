@@ -13,23 +13,33 @@
         style="@style/LockScreen.QuestView.TitleContainer"
         android:layout_width="match_parent">
 
-        <ru.nekit.android.qls.widget.AutofitTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/LockScreen.QuestView.Title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-
-        <com.devspark.robototextview.widget.RobotoTextView
-            android:id="@+id/tv_message_right"
-            style="@style/LockScreen.QuestView.Title.Right"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBaseline="@id/tv_title"
-            android:layout_alignBottom="@+id/tv_title"
-            android:layout_toEndOf="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/tv_message_secondary"
+            android:layout_toEndOf="@+id/container_statistics"
             android:layout_toLeftOf="@+id/btn_menu"
-            android:layout_toRightOf="@+id/tv_title" />
+            android:layout_toRightOf="@+id/container_statistics"
+            android:layout_toStartOf="@+id/btn_menu"
+            android:singleLine="true"
+            app:autoSizeMaxTextSize="20sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeStepGranularity="1px"
+            app:autoSizeTextType="uniform" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_message_secondary"
+            style="@style/LockScreen.QuestView.Title.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/container_statistics"
+            android:layout_toLeftOf="@+id/btn_menu"
+            android:layout_toRightOf="@+id/container_statistics"
+            android:layout_toStartOf="@+id/btn_menu" />
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/btn_menu"
@@ -42,7 +52,8 @@
         <RelativeLayout
             android:id="@+id/container_statistics"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true">
 
             <at.grabner.circleprogress.CircleProgressView
                 android:id="@+id/pupil_progress"
@@ -50,7 +61,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
 
-            <com.devspark.robototextview.widget.RobotoTextView
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/tv_pupil_level"
                 style="@style/PupilLevel"
                 android:layout_width="0dp"
@@ -90,7 +101,7 @@
                     android:layout_height="64dp"
                     app:srcCompat="@drawable/ic_play" />
 
-                <com.devspark.robototextview.widget.RobotoTextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_delayed_play"
                     style="@style/LockScreen.QuestView.DelayedPlay"
                     android:layout_width="wrap_content"

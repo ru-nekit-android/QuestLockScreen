@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
 import android.content.res.Resources;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,7 @@ public class AcquirePresentFragment extends BaseSetupWizardFragment {
         }
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.acquire_fragment;

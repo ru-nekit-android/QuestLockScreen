@@ -5,7 +5,7 @@
 
     <TableRow>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/field_figure_side_a"
             style="@style/Quest.Perimeter.A_Side"
             android:layout_width="match_parent"
@@ -15,7 +15,7 @@
 
     <TableRow>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/field_figure_side_b"
             style="@style/Quest.Perimeter.B_Side"
             android:layout_width="wrap_content"

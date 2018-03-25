@@ -10,7 +10,6 @@ import android.support.v4.content.ContextCompat;
 
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.parentControl.ParentControlService;
-import ru.nekit.android.qls.pupil.Pupil;
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard;
 import ru.nekit.android.qls.setupWizard.ISetupWizardStep;
 
@@ -48,9 +47,9 @@ public class ParentControlSetupWizard extends BaseSetupWizard {
         return intent;
     }
 
-    private boolean readContactsPermissionIsGranted() {
+    public boolean readContactsPermissionIsGranted() {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
-                || ContextCompat.checkSelfPermission(mContext, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
+                || ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     private WizardStep getNextStepForAllPermission() {
@@ -69,7 +68,7 @@ public class ParentControlSetupWizard extends BaseSetupWizard {
                 return stepForAllPermission;
             }
         } else {
-            if (mCurrentStep == null) {
+            if (getCurrentStep() == null) {
                 return START;
             }
             WizardStep stepForAllPermission = getNextStepForAllPermission();
@@ -80,18 +79,13 @@ public class ParentControlSetupWizard extends BaseSetupWizard {
         return PURCHASES;
     }
 
-    @Override
-    protected String getName() {
-        return NAME;
-    }
-
     public void setCurrentSetupStep(ISetupWizardStep value) {
         if (value == PUPIL_LIST) {
             completeSetupWizard();
         } else if (value != START) {
             startSetupWizard();
         }
-        this.mCurrentStep = value;
+        this.setCurrentStep(value);
     }
 
     public int getQuestSeriesLength() {

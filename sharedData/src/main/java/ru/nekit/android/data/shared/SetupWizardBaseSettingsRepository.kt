@@ -1,33 +1,40 @@
 package ru.nekit.android.data.shared
 
 import android.content.SharedPreferences
-import ru.nekit.android.data.IntKeyValueStore
-import ru.nekit.android.data.StringKeyValueStore
-import ru.nekit.android.domain.shared.repository.ISetupWizardBaseSettingsRepository
+import ru.nekit.android.data.BooleanKeyValueStore
+import ru.nekit.android.data.StringKeyIntValueStore
+import ru.nekit.android.qls.shared.repository.ISetupWizardSettingsRepository
 
-open class SetupWizardBaseSettingsRepository(sharedPreferences: SharedPreferences) : ISetupWizardBaseSettingsRepository {
+open class SetupWizardBaseSettingsRepository(sharedPreferences: SharedPreferences) : ISetupWizardSettingsRepository {
 
-    protected val stringStore: StringKeyValueStore = StringKeyValueStore(sharedPreferences)
-    protected val intStore: IntKeyValueStore = IntKeyValueStore(sharedPreferences)
+    private val intStore: StringKeyIntValueStore = StringKeyIntValueStore(sharedPreferences)
+    private val booleanStore: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
 
     companion object {
-        private val SETUP_IS_STARTED = "setup_wizard.is_started"
-        private val SETUP_IS_COMPLETED = "setup_wizard.is_completed"
+        val SETUP_IS_START = "setup_wizard.is_start"
+        val SETUP_IS_COMPLETE = "setup_wizard.is_complete"
+        val QUEST_SERIES_LENGTH = "setup_wizard.quest_series_length"
+
+        private fun createParameter(prefix: String, name: String): String {
+            return String.format("%s_%s", prefix, name)
+        }
     }
 
-    override fun setupWizardIsStarted(): Boolean {
-        return intStore.get(SETUP_IS_STARTED) == 1
-    }
+    override fun setupWizardIsStart(prefix: String): Boolean =
+            booleanStore.get(createParameter(prefix, SETUP_IS_START))
 
-    override fun setupWizardIsCompleted(prefix: String): Boolean {
-        return intStore.get(SETUP_IS_COMPLETED) == 1
-    }
+    override fun setupWizardIsComplete(prefix: String): Boolean =
+            booleanStore.get(createParameter(prefix, SETUP_IS_COMPLETE))
 
-    override fun completeSetupWizard() {
-        intStore.put(SETUP_IS_COMPLETED, 1)
-    }
+    override fun completeSetupWizard(prefix: String, value: Boolean) =
+            booleanStore.put(createParameter(prefix, SETUP_IS_COMPLETE), value)
 
-    override fun startSetupWizard() {
-        intStore.put(SETUP_IS_STARTED, 1)
-    }
+    override fun startSetupWizard(prefix: String, value: Boolean) =
+            booleanStore.put(createParameter(prefix, SETUP_IS_START), value)
+
+    override fun getQuestSeriesLength(): Int = intStore.get(QUEST_SERIES_LENGTH)
+
+    override fun setQuestSeriesLength(value: Int) =
+            intStore.put(QUEST_SERIES_LENGTH, value)
+
 }

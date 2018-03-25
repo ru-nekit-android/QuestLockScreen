@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="@dimen/base_gap" />
+        android:layout_margin="@dimen/big_gap" />
 
 </android.support.v7.widget.CardView>

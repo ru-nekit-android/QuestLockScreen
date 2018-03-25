@@ -8,17 +8,15 @@
         android:id="@+id/view_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_below="@+id/container_title"
-        android:padding="@dimen/base_gap"
-        app:srcCompat="@drawable/right_answer" />
+        android:padding="@dimen/big_gap"
+        app:srcCompat="@drawable/wrong_answer" />
 
     <android.support.v7.widget.CardView
         android:id="@+id/container_title"
         style="@style/WrongAnswer.TitleContainer">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/WrongAnswer.Title" />
 

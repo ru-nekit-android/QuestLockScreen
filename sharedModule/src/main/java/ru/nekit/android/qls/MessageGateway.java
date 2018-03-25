@@ -1,26 +1,8 @@
 package ru.nekit.android.qls;
 
-import android.support.annotation.NonNull;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.pubnub.api.Callback;
-import com.pubnub.api.Pubnub;
-import com.pubnub.api.PubnubError;
-import com.pubnub.api.PubnubException;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import ru.nekit.android.qls.quest.TypedMessage;
-import ru.nekit.android.qls.quest.history.QuestHistoryItem;
-
-import static ru.nekit.android.qls.InternalCommand.NAME_COMMAND;
-import static ru.nekit.android.qls.InternalCommand.NAME_DATA;
-
 public class MessageGateway {
 
-    private static final String PUBLISH_KEY = "pub-c-f61c0f10-8955-4181-bad1-e646eae3635f";
+    /*private static final String PUBLISH_KEY = "pub-c-f61c0f10-8955-4181-bad1-e646eae3635f";
     private static final String SUBSCRIBE_KEY = "sub-c-989025f0-66c1-11e7-b6db-02ee2ddab7fe";
 
     private Gson gson;
@@ -137,7 +119,7 @@ public class MessageGateway {
 
     }
 
-    /*class ClassTypeAdapter extends TypeAdapter<Class<?>> {
+    class ClassTypeAdapter extends TypeAdapter<Class<?>> {
 
         @Override
         public void write(JsonWriter out, Class<?> value) throws IOException {

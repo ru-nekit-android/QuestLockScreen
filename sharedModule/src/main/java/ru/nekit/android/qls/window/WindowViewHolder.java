@@ -13,8 +13,8 @@ class WindowViewHolder extends ViewHolder {
 
     WindowViewHolder(@NonNull Context context) {
         super(context, R.layout.layout_window);
-        rootContainer = (ViewGroup) view.findViewById(R.id.container_root);
-        contentContainer = (ViewGroup) view.findViewById(R.id.container_content);
+        rootContainer = (ViewGroup) getView().findViewById(R.id.container_root);
+        contentContainer = (ViewGroup) getView().findViewById(R.id.container_content);
     }
 
     public void destroy() {

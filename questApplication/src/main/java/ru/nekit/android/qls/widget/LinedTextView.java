@@ -6,11 +6,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 
-import com.devspark.robototextview.widget.RobotoTextView;
 
 import ru.nekit.android.qls.R;
 
-public class LinedTextView extends RobotoTextView {
+public class LinedTextView extends AppCompatTextView {
 
     private Rect mRect;
     private Paint mPaint;

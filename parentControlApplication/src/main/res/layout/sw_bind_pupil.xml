@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/SetupWizard.Title"
         android:layout_width="match_parent"

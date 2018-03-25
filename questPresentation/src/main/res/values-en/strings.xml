@@ -169,7 +169,7 @@
     <string name="quest_direction_unknown_member_title">Проведите пальцев %1$s</string>
     <string name="quest_text_camouflage_title">Составте слово идя по спирале и выберая каждую $1%s-ую букву</string>
     <string name="clock_formatter">HH:mm</string>
-    <string name="quest_session_formatter">mm:ss</string>
+    <string name="quest_timer_formatter">mm:ss</string>
     <string name="title_advert">Реклама</string>
     <string name="title_new_level">Новый уровень</string>
     <string name="title_introduction">Приветствие</string>

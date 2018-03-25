@@ -2,6 +2,7 @@ package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,20 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+import io.reactivex.Single;
 import ru.nekit.android.qls.EventBus;
 import ru.nekit.android.qls.parentControl.ParentControlService;
 import ru.nekit.android.qls.parentControl.R;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizard;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizardFragment;
-import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.pupil.PupilManager;
-import ru.nekit.android.qls.pupil.PupilSex;
 import ru.nekit.android.qls.pupil.avatar.PupilAvatarViewBuilder;
 
 import static ru.nekit.android.shared.R.dimen;
@@ -69,6 +70,7 @@ public class PupilListFragment extends ParentControlSetupWizardFragment
         mEventBus.handleEvents(this, ParentControlService.EVENT_BIND_PUPIL);
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.sw_pupil_list;
@@ -78,8 +80,9 @@ public class PupilListFragment extends ParentControlSetupWizardFragment
         showSetupWizardStep(ParentControlSetupWizard.WizardStep.PUPIL_INFORMATION, pupilUuid);
     }
 
+    @NotNull
     @Override
-    protected boolean nextAction() {
+    protected Single<Boolean> nextAction() {
         showSetupWizardStep(ParentControlSetupWizard.WizardStep.BIND_PUPIL);
         return false;
     }
@@ -178,7 +181,7 @@ public class PupilListFragment extends ParentControlSetupWizardFragment
                     showPupil(pupil.getUuid());
                 }
             });
-            PupilAvatarViewBuilder.build(getContext(), pupil, itemHolder.pupilAvatarContainer);
+            PupilAvatarViewBuilder.INSTANCE.build(getContext(), pupil, itemHolder.pupilAvatarContainer);
             boolean hasAvatar = itemHolder.pupilAvatarContainer.getChildCount() > 0;
             itemHolder.pupilAvatarMaskContainer.setVisibility(
                     hasAvatar ? View.VISIBLE : View.GONE);

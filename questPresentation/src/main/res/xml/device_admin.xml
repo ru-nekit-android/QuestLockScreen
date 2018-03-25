@@ -2,7 +2,7 @@
     <uses-policies>
         <!--<limit-password />
         <watch-login />
-        <reset-password />
+     cleareset-password />
         <force-lock />
         <wipe-data />
         <expire-password />

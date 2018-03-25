@@ -1,21 +1,9 @@
 package ru.nekit.android.qls.quest.qtp.rule;
 
-import android.os.Parcel;
-import android.support.annotation.NonNull;
+public class SimpleExampleQuestTrainingProgramRule {
+}
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
-import ru.nekit.android.qls.quest.Quest;
-import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.QuestionType;
-import ru.nekit.android.qls.quest.generator.NumberSummandQuestGenerator;
-
-import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.FLAGS;
-import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_COUNTS;
-import static ru.nekit.android.qls.quest.qtp.QuestTrainingProgram.Dictionary.MEMBER_MIN_AND_MAX_VALUES;
-
-public class SimpleExampleQuestTrainingProgramRule extends AbstractQuestTrainingProgramRule {
+/* extends IQuestCreator {
 
     public static final Creator<SimpleExampleQuestTrainingProgramRule> CREATOR
             = new Creator<SimpleExampleQuestTrainingProgramRule>() {
@@ -60,11 +48,11 @@ public class SimpleExampleQuestTrainingProgramRule extends AbstractQuestTraining
     }
 
     @Override
-    public void parse(Gson gson, JsonObject object) {
-        super.parse(gson, object);
-        memberCounts = gson.fromJson(object.get(MEMBER_COUNTS), int[].class);
-        memberMinAndMaxValues = gson.fromJson(object.get(MEMBER_MIN_AND_MAX_VALUES), int[][].class);
-        NumberSummandQuestGenerator.Flag[] flags = gson.fromJson(object.get(FLAGS),
+    public void from(Gson gson, JsonObject object) {
+        super.from(gson, object);
+        memberCounts = gson.fromJson(object.restoreQuest(MEMBER_COUNTS), int[].class);
+        memberMinAndMaxValues = gson.fromJson(object.restoreQuest(MEMBER_MIN_AND_MAX_VALUES), int[][].class);
+        NumberSummandQuestGenerator.Flag[] flags = gson.fromJson(object.restoreQuest(FLAGS),
                 NumberSummandQuestGenerator.Flag[].class);
         this.flags = 0;
         for (NumberSummandQuestGenerator.Flag item : flags) {
@@ -73,7 +61,7 @@ public class SimpleExampleQuestTrainingProgramRule extends AbstractQuestTraining
     }
 
     @Override
-    public Quest makeQuest(@NonNull QuestContext questContext,
+    public Quest create(@NonNull QuestContext questContext,
                            @NonNull QuestionType questionType) {
         NumberSummandQuestGenerator generator = new NumberSummandQuestGenerator(questionType);
         generator.setMemberCounts(memberCounts);
@@ -81,4 +69,4 @@ public class SimpleExampleQuestTrainingProgramRule extends AbstractQuestTraining
         generator.setFlags(flags);
         return generator.generate();
     }
-}
+}*/

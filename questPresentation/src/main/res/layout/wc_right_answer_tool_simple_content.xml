@@ -3,7 +3,7 @@
     android:id="@+id/container_tool"
     style="@style/ToolContainer">
 
-    <com.devspark.robototextview.widget.RobotoButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_ok"
         style="@style/ToolContainer.Button"
         android:layout_width="match_parent"

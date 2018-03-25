@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="ru.nekit.android.qls.setupWizard.view.PhoneContactsFragment">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/SetupWizard.Title"
         android:layout_height="wrap_content"

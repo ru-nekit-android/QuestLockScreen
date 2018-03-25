@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Маленький гений</string>
     <string name="explicit_start">Включить</string>
     <string name="label_answer">Ответить</string>
@@ -40,8 +39,14 @@
     <string name="title_pupil_set_name">Выберите имя ученика</string>
     <string name="title_pupil_set_qtp_complexity">Выберите сложность</string>
     <string name="title_setup_pupil_sex">Выберите пол ученика</string>
+    <string name="pupil_name_title">Имя ученика</string>
+    <string name="pupil_sex_title">Пол</string>
     <string name="hint_pupil_name">Имя</string>
     <string name="hint_quest_series_length">Количество заданий за раз</string>
+    <string name="pupil_secret_title">Секрет</string>
+    <string name="complexity_title">Сложность</string>
+    <string name="pupil_statistics">Статистика</string>
+    <string name="phoneContacts">Разрешенные контакты</string>
     <string name="cancel">Отмена</string>
     <string name="hint_unlock_password">Пароль</string>
     <string name="title_enter_unlock_secret">Введите пароль</string>
@@ -63,6 +68,7 @@
     <string name="title_allow_contacts">Разрешеннные контакты для исходящих звонков</string>
     <string name="title_phone">Телефон</string>
     <string name="label_pick_contact">Добавить контакт</string>
+    <string name="label_save_contacts">Сохранить контакты</string>
     <string name="label_allow_contacts">Контакты</string>
     <string name="label_stop_lock">Остановить</string>
     <string name="title_wrong_answer">Попробуй еще раз</string>
@@ -72,6 +78,7 @@
     <string name="text_quest_support_chars_number">1234567890</string>
     <string name="qvri_orange_title">Апельсин</string>
     <string name="qvrg_fruit_title">Фрукты</string>
+    <string name="qvrg_clock_face_title">Циферблат</string>
     <string name="qvrg_berry_title">Ягода</string>
     <string name="qvrg_pomum_title">Плод</string>
     <string name="qvri_strawberry_title">Клубник</string>
@@ -88,10 +95,6 @@
     <string name="qvri_summer_title">Лет</string>
     <string name="qvri_spring_title">Весн</string>
     <string name="qvri_winter_title">Зим</string>
-    <string name="qvri_coin_one_title">1</string>
-    <string name="qvri_coin_two_title">2</string>
-    <string name="qvri_coin_five_title">5</string>
-    <string name="qvri_coin_ten_title">10</string>
     <string name="qvrg_seasons_title">Сезоны</string>
     <string name="label_set_unlock_secret">Установить секрет</string>
     <string name="label_reset_unlock_secret">Сбросить</string>
@@ -104,7 +107,7 @@
     <string name="pupil_statistics_count_played_games_formatter">Количество попыток: %1$d.\n\n</string>
     <string name="pupil_statistics_item_formatter">Название задания: %1$s (%2$s).\nКоличество правильных/неправильных ответов: %3$d/%4$d\nЛучшее/худшее время ответа: %5$s/%6$s\n\n</string>
     <string name="qvri_pineapple_title">Ананас</string>
-    <string name="qvri_blackberry_title">Ежевик</string>
+    <string name="qvri_blackberry_title">Ежевика</string>
     <string name="quest_name_formatter">%1$s (%2$s)</string>
     <string name="label_bind_parent_control">Привязать родителя</string>
     <string name="title_bind_parent_control">Привязать родителя</string>
@@ -127,6 +130,8 @@
     <string name="qvrg_boy_title">Мальчик</string>
     <string name="qvrg_sex_title">Пол</string>
     <string name="qvri_car_title">Машин</string>
+    <string name="qvri_doll_title">Кукл</string>
+    <string name="color_default">По умолчанию</string>
     <string name="qvrg_children_toy_title">Детская игрушка</string>
     <string name="qvri_doll_boots_title">Ботиночк</string>
     <string name="qvri_doll_skirt_title">Юбк</string>
@@ -137,6 +142,7 @@
     <string name="quest_direction_title_right">Вправо</string>
     <string name="quest_direction_title_up">Вверх</string>
     <string name="right_answer_timer_formatter">mm:ss.SSS</string>
+    <string name="quest_direction_empty_answer_message">Проведи!!!</string>
     <string name="quest_coins_solution_title">Сколько рублей в стопке монет?</string>
     <string name="quest_coins_unknown_member_title">Какой монеты не хватает, если в стопке %1$d рублей?</string>
     <string name="quest_simple_example_unknown_member_title">Найдите неизвестный член!</string>
@@ -150,19 +156,19 @@
     <string name="quest_traffic_light_solution_title">%1$s или %2$s</string>
     <string name="quest_fruit_arithmetic_solution_title">Фруктовая арифметика</string>
     <string name="quest_fruit_arithmetic_comparison_title">Фруктовая арифметика: каких фруктов  %1$s?</string>
-    <string name="quest_time_unknown_member_title">Выбери циферблат, на которых изображено %1$s</string>
-    <string name="quest_time_comparison_title">Выбери циферблат, на которых изображено %1$s время</string>
+    <string name="quest_time_unknown_member_title">Выберите циферблат, на которых изображено %1$s</string>
+    <string name="quest_time_comparison_title">Выберите циферблат, на которых изображено %1$s время</string>
     <string name="maximum">максимальное</string>
     <string name="minimum">минимальное</string>
-    <string name="quest_current_time_unknown_member_title">Выбери циферблат с текущем временем</string>
-    <string name="quest_choice_unknown_member_title">Выбери %1$s</string>
+    <string name="quest_current_time_unknown_member_title">Выберите циферблат с текущем временем</string>
+    <string name="quest_choice_unknown_member_title">Выберите %1$s</string>
     <string name="quest_mismatch_unknown_member_title">Найди лишнее</string>
-    <string name="quest_current_season_unknown_member_title">Выбери текущее время года</string>
-    <string name="quest_colors_unknown_member_title">Выбери %1$s</string>
+    <string name="quest_current_season_unknown_member_title">Выберите текущее время года</string>
+    <string name="quest_colors_unknown_member_title">Выберите %1$s</string>
     <string name="quest_direction_unknown_member_title">Проведите пальцев %1$s</string>
     <string name="quest_text_camouflage_title">Составте слово идя по спирале и выберая каждую $1%s-ую букву</string>
     <string name="clock_formatter">HH:mm</string>
-    <string name="quest_session_formatter">mm:ss</string>
+    <string name="quest_timer_formatter">mm:ss</string>
     <string name="title_advert">Реклама</string>
     <string name="title_new_level">Новый уровень</string>
     <string name="title_introduction">Приветствие</string>
@@ -174,4 +180,15 @@
     <string name="text_device_admin_request_explanation">Click on Activate button to protect your application from uninstalling!</string>
     <string name="label_voice_record">Запись голоса</string>
     <string name="label_start_quest">Приступить</string>
+    <string name="title_pupil_statistics">Статистика ученика</string>
+    <string name="qvrg_coins_title">Монеты</string>
+    <string name="title_setup_voice_message">Запись голосового сообщения</string>
+    <string name="title_setup_voice_message_for_right_answer">Для правильного ответа</string>
+    <string name="title_setup_voice_message_for_wrong_answer">Для неправильного ответа</string>
+    <string name="label_back">Назад</string>
+    <string name="qvri_coin_one_title">1</string>
+    <string name="qvri_coin_two_title">2</string>
+    <string name="qvri_coin_five_title">5</string>
+    <string name="qvri_coin_ten_title">10</string>
+
 </resources>

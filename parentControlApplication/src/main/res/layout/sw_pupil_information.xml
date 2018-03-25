@@ -5,13 +5,13 @@
     android:layout_height="match_parent"
     tools:context="ru.nekit.android.qls.parentControl.setupWizard.steps.PupilInformationFragment">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <TextView
         android:id="@+id/tv_title"
         style="@style/SetupWizard.Title"
         android:layout_height="wrap_content"
         android:text="@string/title_pupil_information" />
 
-    <com.devspark.robototextview.widget.RobotoButton
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_pupil_unbind"
         style="@style/Button.Red"
         android:layout_width="match_parent"

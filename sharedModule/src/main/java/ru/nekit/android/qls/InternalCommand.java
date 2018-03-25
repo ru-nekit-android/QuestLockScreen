@@ -4,7 +4,7 @@ package ru.nekit.android.qls;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import ru.nekit.android.qls.pupil.Pupil;
+import ru.nekit.android.qls.shared.model.Pupil;
 
 public class InternalCommand {
 

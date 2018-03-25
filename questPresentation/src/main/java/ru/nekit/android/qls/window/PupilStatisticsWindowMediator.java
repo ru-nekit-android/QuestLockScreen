@@ -1,33 +1,9 @@
 package ru.nekit.android.qls.window;
 
-import android.content.Intent;
-import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.view.animation.BounceInterpolator;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+public class PupilStatisticsWindowMediator {
+}
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import ru.nekit.android.qls.EventBus;
-import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.pupil.PupilSex;
-import ru.nekit.android.qls.pupil.avatar.PupilAvatarViewBuilder;
-import ru.nekit.android.qls.quest.QuestContext;
-import ru.nekit.android.qls.quest.qtp.QuestTrainingProgram;
-import ru.nekit.android.qls.quest.qtp.QuestTrainingProgramLevel;
-import ru.nekit.android.qls.quest.statistics.PupilStatistics;
-import ru.nekit.android.qls.quest.statistics.QuestStatistics;
-import ru.nekit.android.qls.utils.ViewHolder;
-import ru.nekit.android.qls.window.common.QuestWindow;
-import ru.nekit.android.qls.window.common.QuestWindowMediator;
-
-public class PupilStatisticsWindowMediator extends QuestWindowMediator implements View.OnClickListener,
+        /*extends QuestWindowMediator implements View.OnClickListener,
         EventBus.IEventHandler {
 
     private static PupilStatisticsWindowMediator instance;
@@ -41,7 +17,7 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
 
                 @Override
                 public void onGlobalLayout() {
-                    Resources resources = mQuestContext.getResources();
+                    Resources resources = getQuestContext().getResources();
                     if (mCurrentStep == Step.TITLE) {
                         PupilStatisticsTitleViewHolder contentHolder =
                                 (PupilStatisticsTitleViewHolder) mCurrentContentHolder;
@@ -64,7 +40,7 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                                 resources.getDimensionPixelSize(R.dimen.book_title_avatar_height));
                         ViewGroup.LayoutParams pupilAvatarContainerLayoutParams =
                                 contentHolder.pupilAvatarContainer.getLayoutParams();
-                        float pupilAvatarScale = mQuestContext.getPupil().sex == PupilSex.BOY ?
+                        float pupilAvatarScale = getQuestContext().pupil().getSex() == PupilSex.BOY ?
                                 (float) resources.getDimensionPixelSize(ru.nekit.android.shared.R.dimen.boy_avatar_height) /
                                         resources.getDimensionPixelSize(ru.nekit.android.shared.R.dimen.boy_avatar_width)
                                 :
@@ -100,16 +76,16 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                         MenuWindowMediator.PupilStatisticsContentViewHolder contentHolder =
                                 (MenuWindowMediator.PupilStatisticsContentViewHolder) mCurrentContentHolder;
                         RelativeLayout.LayoutParams scrollerLayoutParams =
-                                (RelativeLayout.LayoutParams) contentHolder.scroller.getLayoutParams();
+                                (RelativeLayout.LayoutParams) contentHolder.getScroller().getLayoutParams();
                         int[] margin = new int[]{
                                 resources.getDimensionPixelSize(R.dimen.book_content_left),
                                 resources.getDimensionPixelSize(R.dimen.book_content_top),
                                 resources.getDimensionPixelSize(R.dimen.book_content_right),
                                 resources.getDimensionPixelSize(R.dimen.book_content_bottom)
                         };
-                        float bookXScale = ((float) contentHolder.backgroundImage.getWidth()) /
+                        float bookXScale = ((float) contentHolder.getBackgroundImage().getWidth()) /
                                 resources.getDimensionPixelSize(R.dimen.book_content_width);
-                        float bookYScale = ((float) contentHolder.backgroundImage.getHeight()) /
+                        float bookYScale = ((float) contentHolder.getBackgroundImage().getHeight()) /
                                 resources.getDimensionPixelSize(R.dimen.book_content_height);
                         scrollerLayoutParams.setMargins((int) (margin[0] * bookXScale),
                                 (int) (margin[1] * bookYScale),
@@ -117,14 +93,14 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                                 (int) (margin[3] * bookYScale));
                         scrollerLayoutParams.width = (int) ((resources.getDimensionPixelSize(R.dimen.book_content_width) -
                                 margin[0] - margin[2]) * bookXScale);
-                        contentHolder.scroller.requestLayout();
+                        contentHolder.getScroller().requestLayout();
                     }
                 }
             };
 
     private PupilStatisticsWindowMediator(@NonNull QuestContext questContext) {
         super(questContext);
-        questContext.getEventBus().handleEvents(this, QuestWindow.EVENT_WINDOW_OPENED);
+        questContext.getEventSender().handleEvents(this, QuestWindow.Companion.getEVENT_WINDOW_OPENED());
     }
 
     public static void openWindow(@NonNull QuestContext questContext) {
@@ -135,7 +111,7 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
 
     @Override
     protected WindowContentViewHolder createWindowContent() {
-        mWindowContent = new PupilStatisticsWindowContentViewHolder(mQuestContext);
+        mWindowContent = new PupilStatisticsWindowContentViewHolder(getQuestContext());
         mWindowContent.bookContent.setOnClickListener(this);
         mWindowContent.bookTitle.setOnClickListener(this);
         setStep(Step.TITLE);
@@ -153,17 +129,17 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                 case TITLE: {
 
                     PupilStatisticsTitleViewHolder contentViewHolder =
-                            new PupilStatisticsTitleViewHolder(mQuestContext);
+                            new PupilStatisticsTitleViewHolder(getQuestContext());
                     contentViewHolder.backgroundImage.setImageResource(
-                            mQuestContext.getPupil().sex == PupilSex.BOY ?
+                            getQuestContext().pupil().getSex() == PupilSex.BOY ?
                                     R.drawable.book_title_boy :
                                     R.drawable.book_title_girl);
-                    Pupil pupil = mQuestContext.getPupil();
-                    PupilAvatarViewBuilder.build(mQuestContext, pupil,
+                    ktPupil pupil = getQuestContext().pupil();
+                    PupilAvatarViewBuilder.INSTANCE.build(getQuestContext(), pupil,
                             contentViewHolder.pupilAvatarContainer);
-                    contentViewHolder.titleTextView.setText(String.format("%s\n%s\n%s", pupil.name,
-                            pupil.complexity.getString(mQuestContext),
-                            mQuestContext.getQTPLevel().getName()));
+                    contentViewHolder.titleTextView.setText(String.format("%s\n%s\n%s", pupil.getName(),
+                            pupil.getComplexity().name(),
+                            getQuestContext().getQTPLevel().getName()));
                     contentViewHolder.nameTextView.setText(R.string.book_title_name);
                     mCurrentContentHolder = contentViewHolder;
                 }
@@ -172,13 +148,13 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
 
                 case CONTENT:
 
-                    mCurrentContentHolder = new MenuWindowMediator.PupilStatisticsContentViewHolder(mQuestContext);
+                    mCurrentContentHolder = new MenuWindowMediator.PupilStatisticsContentViewHolder(getQuestContext());
                     MenuWindowMediator.PupilStatisticsContentViewHolder contentViewHolder =
                             (MenuWindowMediator.PupilStatisticsContentViewHolder) mCurrentContentHolder;
-                    PupilStatistics pupilStatistics = mQuestContext.getPupilStatistics();
-                    int score = pupilStatistics.score;
-                    QuestTrainingProgram qtp = mQuestContext.getQuestTrainingProgram();
-                    QuestTrainingProgramLevel currentLevel = mQuestContext.getQTPLevel();
+                    PupilStatistics listenPupilStatistics = getQuestContext().getPupilStatistics();
+                    int score = listenPupilStatistics.score;
+                    QuestTrainingProgram qtp = getQuestContext().getQuestTrainingProgram();
+                    QuestTrainingProgramLevel currentLevel = getQuestContext().getQTPLevel();
                     int scoreOnLevel;
                     if (currentLevel.getIndex() == 0) {
                         scoreOnLevel = score;
@@ -187,34 +163,34 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
                                 qtp.getLevelByIndex(currentLevel.getIndex() - 1);
                         scoreOnLevel = score - qtp.getLevelAllPoints(previousLevel);
                     }
-                    contentViewHolder.backgroundImage.setImageResource(
-                            mQuestContext.getPupil().sex == PupilSex.BOY ?
+                    contentViewHolder.getBackgroundImage().setImageResource(
+                            getQuestContext().pupil().getSex() == PupilSex.BOY ?
                                     R.drawable.book_content_boy :
                                     R.drawable.book_content_girl);
                     StringBuilder textContent = new StringBuilder(String.format(
-                            mQuestContext.getString(R.string.pupil_statistics_level_and_score_formatter),
-                            currentLevel.toString(),
+                            getQuestContext().getString(R.string.pupil_statistics_level_and_score_formatter),
+                            currentLevel.to(),
                             currentLevel.getDescription(),
                             scoreOnLevel,
                             currentLevel.getPointsWeight()
                     ));
                     textContent.append(String.format(
-                            mQuestContext.getString(R.string.pupil_statistics_count_played_games_formatter),
-                            pupilStatistics.rightAnswerCount + pupilStatistics.wrongAnswerCount));
+                            getQuestContext().getString(R.string.pupil_statistics_count_played_games_formatter),
+                            listenPupilStatistics.rightAnswerCount + listenPupilStatistics.wrongAnswerCount));
                     SimpleDateFormat dateFormat = new SimpleDateFormat("mm:ss",
                             Locale.getDefault());
-                    for (QuestStatistics statistics : pupilStatistics.questStatistics) {
+                    for (QuestStatistics statistics : listenPupilStatistics.questStatistics) {
                         textContent.append(String.format(
-                                mQuestContext.getString(R.string.pupil_statistics_item_formatter),
-                                statistics.questType.getString(mQuestContext),
-                                statistics.questionType.getString(mQuestContext),
+                                getQuestContext().getString(R.string.pupil_statistics_item_formatter),
+                                statistics.questType.getString(getQuestContext()),
+                                statistics.questionType.getString(getQuestContext()),
                                 statistics.rightAnswerCount,
                                 statistics.wrongAnswerCount,
                                 dateFormat.format(statistics.bestAnswerTime),
                                 dateFormat.format(statistics.worseAnswerTime)
                         ));
                     }
-                    contentViewHolder.contentTextView.setText(textContent.toString());
+                    contentViewHolder.getContentTextView().setText(textContent.to());
 
                     break;
             }
@@ -234,10 +210,10 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
 
     @Override
     protected void destroy() {
-        mWindowContent.view.getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
+        mWindowContent.getView().getViewTreeObserver().removeOnGlobalLayoutListener(mOnGlobalLayoutListener);
         mWindowContent.bookContent.setOnClickListener(null);
         mWindowContent.bookTitle.setOnClickListener(null);
-        mQuestContext.getEventBus().stopHandleEvents(this);
+        getQuestContext().getEventSender().stopHandleEvents(this);
         instance = null;
     }
 
@@ -260,7 +236,7 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
     }
 
     private void switchToContent(@NonNull ViewHolder contentHolder) {
-        View content = contentHolder.view;
+        View content = contentHolder.getView();
         boolean isFirstContent = mWindowContent.contentContainer.getChildCount() == 0;
         mWindowContent.contentContainer.removeAllViews();
         mWindowContent.contentContainer.addView(content);
@@ -284,14 +260,14 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
         if (action != null) {
             switch (action) {
 
-                case QuestWindow.EVENT_WINDOW_OPENED:
+                case QuestWindow.Companion.getEVENT_WINDOW_OPENED():
 
-                    View view = mCurrentContentHolder.view;
+                    View view = mCurrentContentHolder.getView();
                     view.setVisibility(View.VISIBLE);
                     view.setScaleX(0.1f);
                     view.setScaleY(0.1f);
                     view.animate().scaleX(1).scaleY(1).setInterpolator(new BounceInterpolator())
-                            .setDuration(mQuestContext.getResources().getInteger(R.integer.long_animation_duration));
+                            .setDuration(getQuestContext().getResources().getInteger(R.integer.long_animation_duration));
 
                     break;
             }
@@ -310,4 +286,4 @@ public class PupilStatisticsWindowMediator extends QuestWindowMediator implement
         CONTENT
 
     }
-}
+}*/

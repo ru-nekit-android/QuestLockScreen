@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_clock"
         style="@style/LockScreen.StatusBar.ClockView"
         android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@id/tv_clock">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_session_time"
             style="@style/LockScreen.StatusBar.TimerView"
             android:layout_width="wrap_content"
@@ -31,21 +31,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_margin="@dimen/base_semi_gap"
+            android:layout_margin="@dimen/normal_gap"
             android:layout_toRightOf="@id/tv_session_time"
-            android:mDrawableResourceId="@color/red">
+            android:background="@color/red">
 
             <View
                 android:id="@+id/progress_worst_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:mDrawableResourceId="@color/green" />
+                android:background="@color/green" />
 
             <View
                 android:id="@+id/progress_best_time"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:mDrawableResourceId="@color/gold" />
+                android:background="@color/gold" />
 
             <View
                 android:id="@+id/progress_session_time"
@@ -53,7 +53,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginBottom="2dp"
                 android:layout_marginTop="2dp"
-                android:mDrawableResourceId="@color/white" />
+                android:background="@color/white" />
 
         </RelativeLayout>
 

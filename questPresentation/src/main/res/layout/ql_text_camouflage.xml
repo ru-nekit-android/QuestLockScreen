@@ -7,8 +7,8 @@
         android:id="@+id/grid_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/base_semi_gap"
-        android:paddingStart="@dimen/base_semi_gap"
+        android:paddingEnd="@dimen/normal_gap"
+        android:paddingStart="@dimen/normal_gap"
         android:scrollbars="none"
         android:visibility="gone" />
 

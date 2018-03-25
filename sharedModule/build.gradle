@@ -1,15 +1,16 @@
 apply plugin: "com.android.library"
+apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '27.0.1'
+
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        resValue "string", "tray__authority", "ru.nekit.android.qls"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -25,24 +26,27 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile 'net.grandcentrix.tray:tray:0.11.1'
-    compile('io.github.ozodrukh:CircularReveal:2.0.1@aar') {
+    implementation(deps.circularReveal) {
         transitive = true
     }
-    compile('com.android.support:appcompat-v7:25.4.0') {
+    api deps.support.design
+    implementation deps.support.cardview
+    implementation deps.support.recyclerView
+    api(deps.support.appCompat) {
         exclude group: "com.google.android", module: "support-v4"
     }
-    compile 'com.android.support:design:25.4.0'
-    compile 'com.github.johnkil.android-robototextview:robototextview:3.0.0'
-    compile 'com.android.support:cardview-v7:25.4.0'
-    compile 'com.android.support:recyclerview-v7:25.4.0'
-    compile 'com.pubnub:pubnub-android:3.7.5'
-    compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.google.zxing:core:3.3.0'
+    api deps.rx.binding
+    implementation deps.pubnub
+    api deps.zxing
+
+    api project(':sharedData')
+}
+repositories {
+    mavenCentral()
 }

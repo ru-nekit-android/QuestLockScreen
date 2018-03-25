@@ -2,6 +2,7 @@ package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
@@ -10,8 +11,6 @@ import ru.nekit.android.qls.parentControl.ParentControlService;
 import ru.nekit.android.qls.parentControl.R;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizard;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizardFragment;
-import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.pupil.PupilManager;
 
 public class PupilInformationFragment
         extends ParentControlSetupWizardFragment implements View.OnClickListener {
@@ -43,6 +42,7 @@ public class PupilInformationFragment
         showSetupWizardStep(ParentControlSetupWizard.WizardStep.PUPIL_LIST);
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.sw_pupil_information;

@@ -11,7 +11,7 @@
         style="@style/Window.Menu.TitleContainer"
         android:layout_width="match_parent">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/Window.Title"
             android:layout_width="match_parent"

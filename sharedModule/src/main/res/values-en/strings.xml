@@ -41,5 +41,5 @@
     <string name="quest_colors_title">Цвета</string>
     <string name="quest_direction_synonym">направление</string>
     <string name="quest_direction_title">Направление</string>
-    <string name="phone_contact_formatter">%1$s (%2$s)</string>
+    <string name="phone_contact_formatter">%1$disposable (%2$disposable)</string>
 </resources>

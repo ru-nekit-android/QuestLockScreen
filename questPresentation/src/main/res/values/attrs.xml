@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="TextStyle">
-        <attr name="fontFamily" />
-        <attr name="textWeight" />
-        <attr name="textStyle" />
-    </declare-styleable>
 
     <attr name="animationDuration" format="integer" />
     <attr name="dimAmount" format="float" />

@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:mDrawableResourceId="@drawable/selector_item">
+        android:background="@drawable/selector_item">
 
         <com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout
             android:id="@+id/container_pupil_avatar_mask"
@@ -21,7 +21,7 @@
 
         </com.christophesmet.android.views.maskableframelayout.MaskableFrameLayout>
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_item_title"
             style="@style/PupilList.Item.Title"
             android:layout_width="wrap_content"

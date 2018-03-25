@@ -1,5 +1,6 @@
 package ru.nekit.android.qls.parentControl.setupWizard.steps;
 
+import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ public class BindPupilFragment
         mScannerView.startCamera();
     }
 
+    @LayoutRes
     @Override
     protected int getLayoutId() {
         return R.layout.sw_bind_pupil;

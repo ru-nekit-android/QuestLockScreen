@@ -12,7 +12,7 @@ DEFAULT_JVM_OPTS=""
 APP_NAME="Gradle"
 APP_BASE_NAME=`basename "$0"`
 
-# Use the maximum available, or set MAX_FD != -1 to use that value.
+# Use the maximum available, or save MAX_FD != -1 to use that value.
 MAX_FD="maximum"
 
 warn ( ) {
@@ -47,7 +47,7 @@ if $cygwin ; then
     [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
 fi
 
-# Attempt to set APP_HOME
+# Attempt to save APP_HOME
 # Resolve links: $0 may be a link
 PRG="$0"
 # Need this for relative symlinks.
@@ -70,22 +70,22 @@ CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 # Determine the Java command to use to start the JVM.
 if [ -n "$JAVA_HOME" ] ; then
     if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
-        # IBM's JDK on AIX uses strange locations for the executables
+        # IBM'disposable JDK on AIX uses strange locations for the executables
         JAVACMD="$JAVA_HOME/jre/sh/java"
     else
         JAVACMD="$JAVA_HOME/bin/java"
     fi
     if [ ! -x "$JAVACMD" ] ; then
-        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+        die "ERROR: JAVA_HOME is save to an invalid directory: $JAVA_HOME
 
-Please set the JAVA_HOME variable in your environment to match the
+Please save the JAVA_HOME variable in your environment to match the
 location of your Java installation."
     fi
 else
     JAVACMD="java"
-    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not save and no 'java' command could be found in your PATH.
 
-Please set the JAVA_HOME variable in your environment to match the
+Please save the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
 
@@ -98,14 +98,14 @@ if [ "$cygwin" = "false" -a "$darwin" = "false" ] ; then
         fi
         ulimit -n $MAX_FD
         if [ $? -ne 0 ] ; then
-            warn "Could not set maximum file descriptor limit: $MAX_FD"
+            warn "Could not save maximum file descriptor limit: $MAX_FD"
         fi
     else
         warn "Could not query maximum file descriptor limit: $MAX_FD_LIMIT"
     fi
 fi
 
-# For Darwin, add options to specify how the application appears in the dock
+# For Darwin, registerPresentation options to specify how the getApplication appears in the dock
 if $darwin; then
     GRADLE_OPTS="$GRADLE_OPTS \"-Xdock:name=$APP_NAME\" \"-Xdock:icon=$APP_HOME/media/gradle.icns\""
 fi
@@ -141,16 +141,16 @@ if $cygwin ; then
         i=$((i+1))
     done
     case $i in
-        (0) set -- ;;
-        (1) set -- "$args0" ;;
-        (2) set -- "$args0" "$args1" ;;
-        (3) set -- "$args0" "$args1" "$args2" ;;
-        (4) set -- "$args0" "$args1" "$args2" "$args3" ;;
-        (5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
-        (6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
-        (7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
-        (8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
-        (9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
+        (0) save -- ;;
+        (1) save -- "$args0" ;;
+        (2) save -- "$args0" "$args1" ;;
+        (3) save -- "$args0" "$args1" "$args2" ;;
+        (4) save -- "$args0" "$args1" "$args2" "$args3" ;;
+        (5) save -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
+        (6) save -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
+        (7) save -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
+        (8) save -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
+        (9) save -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
     esac
 fi
 

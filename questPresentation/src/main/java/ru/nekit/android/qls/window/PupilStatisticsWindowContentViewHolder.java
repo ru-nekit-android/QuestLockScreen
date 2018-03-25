@@ -16,9 +16,9 @@ class PupilStatisticsWindowContentViewHolder extends WindowContentViewHolder {
 
     PupilStatisticsWindowContentViewHolder(@NonNull Context context) {
         super(context, R.layout.wc_pupil_statistics);
-        contentContainer = (ViewSwitcher) view.findViewById(R.id.container_content);
-        bookTitle = view.findViewById(R.id.btn_book_title);
-        bookContent = view.findViewById(R.id.btn_book_content);
+        contentContainer = (ViewSwitcher) getView().findViewById(R.id.container_content);
+        bookTitle = getView().findViewById(R.id.btn_book_title);
+        bookContent = getView().findViewById(R.id.btn_book_content);
     }
 
 }

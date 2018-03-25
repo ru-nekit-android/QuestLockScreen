@@ -4,7 +4,7 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
 
-    <application
+    <getApplication
         android:name=".ParentControlApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -30,6 +30,6 @@
         </activity>
 
 
-    </application>
+    </getApplication>
 
 </manifest>

@@ -7,9 +7,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/base_gap">
+        android:padding="@dimen/big_gap">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/AllowContact.Read.Title"
             android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_toLeftOf="@+id/btn_action" />
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_information"
             style="@style/AllowContact.Read.Information"
             android:layout_width="wrap_content"

@@ -20,21 +20,21 @@ public class RevealAnimator {
                                              int duration,
                                              boolean reverse) {
         final Animator animator;
-        RevealPoint revealPoint = RevealPoint.getRevealPoint(context, position);
+        RevealPoint revealPoint = RevealPoint.Companion.getRevealPoint(context, position);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             animator =
                     ViewAnimationUtils.createCircularReveal(view,
                             revealPoint.x,
                             revealPoint.y,
-                            reverse ? revealPoint.radius : 0,
-                            reverse ? 0 : revealPoint.radius);
+                            reverse ? revealPoint.getRadius() : 0,
+                            reverse ? 0 : revealPoint.getRadius());
         } else {
             animator =
                     android.view.ViewAnimationUtils.createCircularReveal(view,
                             revealPoint.x,
                             revealPoint.y,
-                            reverse ? revealPoint.radius : 0,
-                            reverse ? 0 : revealPoint.radius);
+                            reverse ? revealPoint.getRadius() : 0,
+                            reverse ? 0 : revealPoint.getRadius());
         }
         animator.setInterpolator(
                 timeInterpolator == null ? new AccelerateDecelerateInterpolator() : timeInterpolator);

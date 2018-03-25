@@ -23,8 +23,8 @@
         android:layout_alignTop="@+id/btn_close"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/base_semi_gap"
-        android:paddingTop="@dimen/base_semi_gap">
+        android:paddingBottom="@dimen/normal_gap"
+        android:paddingTop="@dimen/normal_gap">
 
         <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/btn_book_title"

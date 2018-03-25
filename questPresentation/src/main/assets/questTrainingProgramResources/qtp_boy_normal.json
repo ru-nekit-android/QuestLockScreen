@@ -1,9 +1,19 @@
 {
-  "version": 1.28,
+  "version": 1.333,
   "name": "example",
   "description": "example",
   "sex": "BOY",
   "complexity": "NORMAL",
+  "priorityRules": [
+    {
+      "questType": "TRAFFIC_LIGHT",
+      "questionTypes": [
+        "ALL"
+      ],
+      "startPriority": 1,
+      "wrongAnswerPriority": 1
+    }
+  ],
   "levels": [
     {
       "delayedPlay": true,
@@ -20,13 +30,13 @@
             "unknown_member",
             "solution"
           ],
-          "enabled": false,
+          "enabled": true,
           "reward": 10
         },
         //СВЕТОФОР
         {
           "questType": "светофор",
-          "enabled": false
+          "enabled": true
         },
         //ВРЕМЯ
         {
@@ -35,7 +45,7 @@
           "questionTypes": [
             "unknown_member"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -46,7 +56,7 @@
           "questionTypes": [
             "comparison"
           ],
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4,
           "accuracy": 10
         },
@@ -54,20 +64,20 @@
         {
           "questType": "текущее_время",
           "reward": 10,
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4
         },
         //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
-          "enabled": false
+          "enabled": true
         },
         //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
-          "enabled": false,
+          "enabled": true,
           "memberCount": 4
         },
         //ВЫБОР
@@ -79,7 +89,7 @@
             "berry",
             "pomum"
           ],
-          "enabled": false
+          "enabled": true
         },
         //ЛИШНИЙ
         {
@@ -111,7 +121,7 @@
               5
             ]
           ],
-          "enabled": false
+          "enabled": true
         },
         //ФРУКТЫ
         {
@@ -121,13 +131,33 @@
           ],
           "answerVariants": 2,
           "memberCount": 20,
-          "enabled": false
+          "enabled": true
         },
         //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
           "reward": 10,
-          "enabled": false
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "delayedPlay": true,
+      "name": "name_level_1",
+      "description": "Прокачай героя",
+      "pointsWeight": 10000,
+      "pointsMultiplier": 1.0,
+      "quests": [
+        //МОНЕТЫ
+        {
+          "questType": "монеты",
+          "memberCount": 6,
+          "questionTypes": [
+            "unknown_member",
+            "solution"
+          ],
+          "enabled": true,
+          "reward": 10
         }
       ]
     }

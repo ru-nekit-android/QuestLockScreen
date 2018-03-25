@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/LockScreen.SupportContent.Title"
             android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical">
 
-            <com.devspark.robototextview.widget.RobotoButton
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/btn_ok"
                 style="@style/ToolContainer.Button"
                 android:layout_width="match_parent"

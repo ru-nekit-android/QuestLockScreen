@@ -5,12 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-
-import com.devspark.robototextview.widget.RobotoTextView;
+import android.widget.TextView;
 
 import ru.nekit.android.shared.R;
 
-public class LinedTextView extends RobotoTextView {
+public class LinedTextView extends TextView {
 
     private Rect mRect;
     private Paint mPaint;

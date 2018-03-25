@@ -1,1 +1,1 @@
-include ':questPresentation', ':sharedModule', ':parentControlApplication',  ':questDomain', ':questData', ':sharedDomain', ':parentControlDomain', ':sharedData'
+include ':questPresentation', ':sharedModule', /*':parentControlApplication',*/  ':questDomain', ':questData', ':sharedDomain', ':parentControlDomain', ':sharedData'

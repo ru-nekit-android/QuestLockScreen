@@ -3,7 +3,8 @@
 
     <integer name="long_animation_duration">800</integer>
     <integer name="short_animation_duration">400</integer>
+    <integer name="small_animation_duration">100</integer>
     <integer name="quest_delayed_start_animation_duration">300</integer>
-    <integer name="hide_keyboard_delay">100</integer>
-    <integer name="show_keyboard_delay">100</integer>
+    <integer name="keyboard_delay">100</integer>
+    <integer name="vibration_delay">100</integer>
 </resources>

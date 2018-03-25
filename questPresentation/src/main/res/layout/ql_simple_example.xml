@@ -4,21 +4,22 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_left_side"
         style="@style/Quest.SimpleExample.LeftSide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.devspark.robototextview.widget.RobotoEditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/alternative_answer_input"
         style="@style/Quest.SimpleExample.AnswerInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/right_side_view"
         style="@style/Quest.SimpleExample.RightSide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </LinearLayout>

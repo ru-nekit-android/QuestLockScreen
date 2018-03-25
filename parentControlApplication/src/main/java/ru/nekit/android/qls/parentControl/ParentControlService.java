@@ -23,10 +23,8 @@ import ru.nekit.android.qls.InternalCommand;
 import ru.nekit.android.qls.MessageChannel;
 import ru.nekit.android.qls.MessageGateway;
 import ru.nekit.android.qls.parentControl.setupWizard.ParentControlSetupWizard;
-import ru.nekit.android.qls.pupil.Pupil;
-import ru.nekit.android.qls.pupil.PupilManager;
 import ru.nekit.android.qls.quest.TypedMessage;
-import ru.nekit.android.qls.utils.TimeUtils;
+import ru.nekit.android.utils.TimeUtils;
 
 public class ParentControlService extends Service
         implements MessageGateway.MessageListener {

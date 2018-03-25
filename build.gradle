@@ -1,7 +1,63 @@
 buildscript {
 
-    ext.kotlinVersion = '1.2.0'
-    ext.objectboxVersion = '1.4.0'
+    ext.versions = [
+            'buildTools'    : '27.0.1',
+            'compileSdk'    : 26,
+            'minSdk'        : 16,
+            'targetSdk'     : 26,
+            'supportLibrary': '27.1.0',
+            'multidex'      : '1.0.2',
+            'kotlin'        : '1.2.21',
+            'objectbox'     : '1.4.1'
+    ]
+
+    ext.deps = [
+
+            'kotlin'         : [
+                    'stdlib': [
+                            'common': "org.jetbrains.kotlin:kotlin-stdlib-common:${versions.kotlin}",
+                            'jdk'   : "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}",
+                    ]
+            ],
+            'support'        : [
+                    'multidex'    : "com.android.support:multidex:${versions.multidex}",
+                    'annotations' : "com.android.support:support-annotations:${versions.supportLibrary}",
+                    'compat'      : "com.android.support:support-compat:${versions.supportLibrary}",
+                    'recyclerView': "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+                    'cardview'    : "com.android.support:cardview-v7:${versions.supportLibrary}",
+                    'appCompat'   : "com.android.support:appcompat-v7:${versions.supportLibrary}",
+                    'design'      : "com.android.support:design:${versions.supportLibrary}"
+            ],
+            'pubnub'         : 'com.pubnub:pubnub-android:3.7.5',
+            'zxing'          : 'com.google.zxing:core:3.3.0',
+            'circleProgress' : 'io.github.jakob-grabner:Circle-Progress-View:v1.3',
+            'maskableLayout' : 'com.github.christophesmet:android_maskable_layout:v1.1.0',
+            'patternLockView': 'com.andrognito.patternlockview:patternlockview:1.0.0',
+            'swipe'          : 'com.github.pwittchen:swipe:0.1.0',
+            'circularReveal' : 'io.github.ozodrukh:CircularReveal:2.0.1@aar',
+            'gson'           : 'com.google.code.gson:gson:2.8.2',
+            'firebase'       : [
+                    'ads': 'com.google.firebase:firebase-ads:11.4.2'
+            ],
+            'rx'             : [
+                    'java'      : 'io.reactivex.rxjava2:rxjava:2.1.10',
+                    'kotlin'    : 'io.reactivex.rxjava2:rxkotlin:2.0.0',
+                    'android'   : 'io.reactivex.rxjava2:rxandroid:2.0.1',
+                    //not use
+                    'objectBox' : 'io.objectbox:objectbox-rxjava:0.9.8',
+                    //not use
+                    'relay'     : 'com.jakewharton.rxrelay2:rxrelay:2.0.0',
+                    'bus'       : 'com.github.anadea:rxbus:1.0.1',
+                    'binding'   : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1',
+                    'extensions': "com.github.akarnokd:rxjava2-extensions:0.18.7"
+            ],
+            objectBox        : [
+                    //not use
+                    'android': 'io.objectbox:objectbox-android:{versions.objectbox}',
+                    //not use
+                    'kotlin' : 'io.objectbox:objectbox-kotlin:{versions.objectbox}'
+            ]
+    ]
 
     repositories {
         jcenter()
@@ -11,9 +67,8 @@ buildscript {
 
     dependencies {
         classpath "com.android.tools.build:gradle:3.0.1"
-        //classpath "com.google.gms:google-services:3.1.2"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "io.objectbox:objectbox-gradle-plugin:$objectboxVersion"
+        classpath "io.objectbox:objectbox-gradle-plugin:${versions.objectbox}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 }
 

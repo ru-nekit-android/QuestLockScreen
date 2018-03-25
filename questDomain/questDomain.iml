@@ -34,7 +34,7 @@
       </configuration>
     </facet>
   </component>
-  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/build/classes/java/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/java/test" />
     <exclude-output />
@@ -52,9 +52,14 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="sharedDomain" exported="" />
     <orderEntry type="module" module-name="sharedDomain" exported="" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="rxjava-2.1.7" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="kotlin-stdlib-1.2.0" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="reactive-streams-1.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="rxbus-1.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="rxjava2-extensions-0.18.7" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="rxandroid-2.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="rxjava-2.1.10" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="kotlin-stdlib-1.2.21" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="annotations-12.0" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="reactive-streams-1.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="support-annotations-25.1.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="annotations-13.0" level="project" />
   </component>
 </module>

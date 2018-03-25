@@ -6,7 +6,7 @@
         android:id="@+id/container_title"
         style="@style/WrongAnswer.TitleContainer.Simple">
 
-        <com.devspark.robototextview.widget.RobotoTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
             style="@style/WrongAnswer.Title.Simple" />
 

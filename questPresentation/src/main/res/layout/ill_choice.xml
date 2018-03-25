@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_content"
+    style="@style/Quest.Choice.Content.Background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        style="@style/Quest.Choice.Content.Background"
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/view_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/view_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true" />
-
-    </RelativeLayout>
+</RelativeLayout>
 

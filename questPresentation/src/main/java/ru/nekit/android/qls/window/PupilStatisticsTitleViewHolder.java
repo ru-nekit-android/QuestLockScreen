@@ -20,10 +20,10 @@ class PupilStatisticsTitleViewHolder extends ViewHolder {
 
     PupilStatisticsTitleViewHolder(@NonNull Context context) {
         super(context, R.layout.wsc_pupil_statistics_title);
-        backgroundImage = (AppCompatImageView) view.findViewById(R.id.view_book_title);
-        titleTextView = (TextView) view.findViewById(R.id.tv_title);
-        nameTextView = (TextView) view.findViewById(R.id.tv_name);
-        pupilAvatarMaskContainer = (ViewGroup) view.findViewById(R.id.container_pupil_avatar_mask);
-        pupilAvatarContainer = (ViewGroup) view.findViewById(R.id.container_pupil_avatar);
+        backgroundImage = (AppCompatImageView) getView().findViewById(R.id.view_book_title);
+        titleTextView = (TextView) getView().findViewById(R.id.tv_title);
+        nameTextView = (TextView) getView().findViewById(R.id.tv_name);
+        pupilAvatarMaskContainer = (ViewGroup) getView().findViewById(R.id.container_pupil_avatar_mask);
+        pupilAvatarContainer = (ViewGroup) getView().findViewById(R.id.container_pupil_avatar);
     }
 }

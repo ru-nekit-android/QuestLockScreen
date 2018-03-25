@@ -1,6 +1,7 @@
 package ru.nekit.android.qls.deviceAdminSupport.samsung;
 
 //import android.app.enterprise.license.EnterpriseLicenseManager;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;

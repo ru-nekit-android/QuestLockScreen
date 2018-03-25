@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.devspark.robototextview.widget.RobotoEditText
+            <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/input_answer_default"
                 style="@style/Quest.AnswerInput"
                 android:layout_width="0dp"

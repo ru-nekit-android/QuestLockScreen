@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.nekit.android.qls.R;
-import ru.nekit.android.qls.quest.Quest;
-import ru.nekit.android.qls.quest.types.MetricsQuest;
-import ru.nekit.android.qls.quest.types.NumberSummandQuest;
+import ru.nekit.android.qls.domain.model.quest.MetricsQuest;
+import ru.nekit.android.qls.domain.model.quest.NumberSummandQuest;
+import ru.nekit.android.qls.domain.model.quest.Quest;
 
 public class MetricsQuestContentFormatter implements IQuestTextContentFormatter {
 
@@ -27,7 +27,7 @@ public class MetricsQuestContentFormatter implements IQuestTextContentFormatter 
 
     private List<String> toStringList(int[] array) {
         List<String> stringList = new ArrayList<>();
-        for (int i = 0; i < MetricsQuest.METRICS_ITEM_COUNT; i++) {
+        for (int i = 0; i < MetricsQuest.Companion.getMETRICS_ITEM_COUNT(); i++) {
             int value = array[i];
             if (value != 0) {
                 stringList.add(String.valueOf(value));
@@ -47,15 +47,15 @@ public class MetricsQuestContentFormatter implements IQuestTextContentFormatter 
 
             case COMPARISON:
 
-                stringList.addAll(toStringList(numberSummandQuest.leftNode));
+                stringList.addAll(toStringList(numberSummandQuest.getLeftNode()));
                 stringList.add(missingCharacter);
-                stringList.addAll(toStringList(numberSummandQuest.rightNode));
+                stringList.addAll(toStringList(numberSummandQuest.getRightNode()));
 
                 break;
 
             case SOLUTION:
 
-                stringList.addAll(toStringList(numberSummandQuest.leftNode));
+                stringList.addAll(toStringList(numberSummandQuest.getLeftNode()));
 
                 break;
         }

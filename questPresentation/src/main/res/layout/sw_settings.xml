@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="ru.nekit.android.qls.setupWizard.view.SettingsFragment">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/SetupWizard.Title"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true">
 
-            <com.devspark.robototextview.widget.RobotoEditText
+            <android.support.design.widget.TextInputEditText
                 android:id="@+id/input_quest_series_length"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <com.devspark.robototextview.widget.RobotoButton
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_quest_series_length_save"
             style="@style/Button"
             android:layout_width="wrap_content"
@@ -51,21 +51,22 @@
         android:layout_alignParentBottom="true"
         android:orientation="vertical">
 
-        <!--<com.devspark.robototextview.widget.RobotoButton
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_voice_record"
             style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_voice_record" />-->
+            android:text="@string/label_voice_record" />
 
-        <!--<com.devspark.robototextview.widget.RobotoButton
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_bind_parent_control"
             style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_bind_parent_control" />-->
+            android:text="@string/label_bind_parent_control"
+            android:visibility="gone" />
 
-        <com.devspark.robototextview.widget.RobotoButton
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_allow_contacts"
             style="@style/Button"
             android:layout_width="match_parent"

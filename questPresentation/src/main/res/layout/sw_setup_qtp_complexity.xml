@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="ru.nekit.android.qls.setupWizard.view.SetupQTPComplexityFragment">
 
-    <com.devspark.robototextview.widget.RobotoTextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/SetupWizard.Title"
         android:layout_height="wrap_content"
@@ -24,21 +24,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.devspark.robototextview.widget.RobotoRadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/complexity_easy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/complexity_easy" />
 
-            <com.devspark.robototextview.widget.RobotoRadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/complexity_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/complexity_normal" />
 
-            <com.devspark.robototextview.widget.RobotoRadioButton
+            <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/complexity_hard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
