@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="quest_time_synonym">время</string>
+    <string name="quest_fruit_arithmetic_synonym">фрукты</string>
+    <string name="quest_choice_synonym">выбор</string>
+    <string name="quest_coins_synonym">монеты</string>
+    <string name="quest_traffic_light_synonym">светофор</string>
+    <string name="quest_mismatch_synonym">лишний</string>
+    <string name="quest_current_time_synonym">текущее_время</string>
+    <string name="quest_current_season_synonym">текущий_сезон</string>
+    <string name="quest_colors_synonym">цвета</string>
+    <string name="quest_direction_synonym">направление</string>
+
+</resources>
