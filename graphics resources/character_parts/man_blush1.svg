@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 177 337" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <circle cx="117.452" cy="94.74" fill="url(#gradient-7)" r="9.893"
+            transform="matrix(1, 0, 0, 1.000001, 2.140994, 5.35292)" />
+        <circle cx="310.884" cy="159.849" fill="url(#gradient-6)" r="9.893"
+            transform="matrix(0.999994, 0, 0, 1, -260.469177, -59.755993)" />
+    </g>
+    <radialGradient cx="379.4348" cy="160.8411"
+        gradientTransform="matrix(1.000002, 0, 0, 0.999995, -261.983078, -66.099941)"
+        gradientUnits="userSpaceOnUse" id="gradient-7" r="9.8931">
+        <stop style="stop-color:#F37E5D" offset="0" />
+        <stop style="stop-color:#E6B480" offset="1" />
+    </radialGradient>
+    <radialGradient cx="310.8836" cy="159.8486"
+        gradientTransform="matrix(1.000006, 0, 0, 1, -0.00201, 0)" gradientUnits="userSpaceOnUse"
+        id="gradient-6" r="9.8931">
+        <stop style="stop-color:#F37E5D" offset="0" />
+        <stop style="stop-color:#E6B480" offset="1" />
+    </radialGradient>
+</svg>

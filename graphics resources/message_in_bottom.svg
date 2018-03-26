@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 251 41" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <pattern height="20" id="pattern-0" patternUnits="userSpaceOnUse" viewBox="0 0 100 100"
+            width="20" x="0" y="0">
+            <path style="fill: black;" d="M 0 0 L 50 0 L 50 100 L 0 100 Z" />
+        </pattern>
+    </defs>
+    <path
+        d="M 250.326 0 L 0 0 C 0 9.645 7.819 17.465 17.465 17.465 L 185.826 17.465 C 187.275 25.632 186.264 32.484 175.014 40.751 C 175.014 40.751 197.678 38.271 195.514 17.465 L 232.861 17.465 C 242.506 17.465 250.326 9.646 250.326 0 Z"
+        fill="#43B64A" stroke-miterlimit="10" stroke-width="2" />
+    <path style="stroke: black; fill: none;" d="M 2.951 2.269 Z" />
+</svg>

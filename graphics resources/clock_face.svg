@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 136 136" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <style id="bx-google-fonts">@import
+            url(https://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic,500,500italic,700,700italic,900,900italic);
+        </style>
+    </defs>
+    <g transform="matrix(1, 0, 0, 1, -2095.587402, -321.081543)" />
+    <g transform="matrix(1, 0, 0, 1, -2095.469238, -324.108551)">
+        <g>
+            <circle style="fill: none;" cx="2163.274" cy="391.815" r="65.247" stroke="#FF1F20"
+                stroke-miterlimit="10" stroke-width="5" />
+        </g>
+        <circle cx="2163.274" cy="391.815" fill="#231F20" r="3.667" />
+    </g>
+    <text style="font-size: 22.3px; white-space: pre;" x="87.404" y="31.587">1</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="107.404" y="54.087">2</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="115.904" y="77.087">3</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="108.404" y="103.087">4</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="87.904" y="120.087">5</text>
+    <text style="font-size: 22.3px; white-space: pre;"
+        transform="matrix(0.999989, 0, 0, 1, 60.160759, 128.087387)" x="0" y="0">6
+    </text>
+    <text style="font-size: 22.3px; white-space: pre;" x="34.404" y="120.087">7</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="14.904" y="103.087">8</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="7.669" y="77.095">9</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="13.404" y="54.087">10</text>
+    <text style="font-size: 22.3px; white-space: pre;" x="28.904" y="31.587">11</text>
+    <text style="font-size: 22.3px; white-space: pre;"
+        transform="matrix(0.999995, 0, 0, 1, 53.902946, 22.587376)" x="0" y="0">12
+    </text>
+</svg>

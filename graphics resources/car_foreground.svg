@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg id="svg2" version="1.1" viewBox="0 0 111 50" xmlns="http://www.w3.org/2000/svg">
+    <defs id="defs6">
+        <linearGradient gradientTransform="matrix(0,8.9399061,-8.9399061,0,124.90447,592.0976)"
+            gradientUnits="userSpaceOnUse" id="linearGradient2308" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop2310" offset="0" />
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop2312" offset="1" />
+        </linearGradient>
+        <linearGradient gradientTransform="matrix(0,-13.274903,13.274903,0,134.25114,602.64343)"
+            gradientUnits="userSpaceOnUse" id="linearGradient2592" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop2594" offset="0" />
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop2596" offset="1" />
+        </linearGradient>
+        <radialGradient cx="0" cy="0"
+            gradientTransform="matrix(-43.534275,0,0,-1.5633415,89.63903,570.43579)"
+            gradientUnits="userSpaceOnUse" id="radialGradient2650" r="1" spreadMethod="pad">
+            <stop style="stop-opacity:0.82258335;stop-color:#ffffff" id="stop2652" offset="0" />
+            <stop style="stop-opacity:0.82258335;stop-color:#ffffff" id="stop2654"
+                offset="0.7737" />
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop2656" offset="1" />
+        </radialGradient>
+        <linearGradient gradientTransform="matrix(0,8.9399061,-8.9399061,0,117.17867,580.27722)"
+            gradientUnits="userSpaceOnUse" id="linearGradient2756" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop2758" offset="0" />
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop2760" offset="1" />
+        </linearGradient>
+        <linearGradient gradientTransform="matrix(0,8.9399061,-8.9399061,0,76.862579,580.27722)"
+            gradientUnits="userSpaceOnUse" id="linearGradient2990" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop2992" offset="0" />
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop2994" offset="1" />
+        </linearGradient>
+        <linearGradient gradientTransform="matrix(-10.075322,0,0,-10.075322,119.42628,581.29413)"
+            gradientUnits="userSpaceOnUse" id="linearGradient3060" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop3062" offset="0" />
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop3064" offset="1" />
+        </linearGradient>
+        <linearGradient gradientTransform="matrix(-10.075322,0,0,-10.075322,76.886368,581.29413)"
+            gradientUnits="userSpaceOnUse" id="linearGradient3106" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop3108" offset="0" />
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop3110" offset="1" />
+        </linearGradient>
+        <linearGradient gradientTransform="matrix(-27.225538,0,0,-27.225538,103.99093,581.20905)"
+            gradientUnits="userSpaceOnUse" id="linearGradient3160" spreadMethod="pad" x1="0" x2="1"
+            y1="0" y2="0">
+            <stop style="stop-opacity:1;stop-color:#ffffff" id="stop3162" offset="0" />
+            <stop style="stop-opacity:0;stop-color:#ffffff" id="stop3164" offset="1" />
+        </linearGradient>
+    </defs>
+    <g id="g10" transform="matrix(1.25,0,0,-1.25,0,1073.6225)">
+        <g id="g2826" transform="matrix(1, 0, 0, 1, -46.105, 250.227142)">
+            <g id="g2828">
+                <g id="g2834">
+                    <g id="g2836">
+                        <path style="stroke: none; fill: rgb(255, 255, 255);"
+                            d="m 87.06,605.797 0,-13.272 15.059,0 c 0,0 -0.836,5.965 -3.233,9.528 l 0,0 c -2.248,3.343 -7.319,3.821 -10.032,3.821 l 0,0 c -1.086,0 -1.794,-0.077 -1.794,-0.077"
+                            id="path2844" />
+                    </g>
+                </g>
+            </g>
+        </g>
+        <g id="g2846" transform="matrix(1, 0, 0, 1, -46.105, 250.227142)">
+            <g id="g2848">
+                <g id="g2854">
+                    <g id="g2856">
+                        <path style="stroke: none; fill: rgb(255, 255, 255);"
+                            d="m 71.065,601.118 c -2.978,-3.063 -3.318,-8.763 -3.318,-8.763 l 0,0 17.612,0 0,13.357 c -5.871,-0.511 -11.316,-1.531 -14.294,-4.594"
+                            id="path2864" />
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

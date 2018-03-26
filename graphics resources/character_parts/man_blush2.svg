@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 177 337" xmlns="http://www.w3.org/2000/svg">
+    <g>
+        <radialGradient cx="315.2164" cy="544.5469"
+            gradientTransform="matrix(0.265201, -0.964195, 1.311498, 0.360695, -752.927224, 254.201162)"
+            gradientUnits="userSpaceOnUse" id="SVGID_19_" r="9.8931">
+            <stop style="stop-color:#F37E5D" offset="0" />
+            <stop style="stop-color:#E6B480" offset="1" />
+        </radialGradient>
+        <radialGradient cx="336.4731" cy="597.816"
+            gradientTransform="matrix(-0.2947, -0.955598, 1.299802, -0.4008, -558.806384, 707.898851)"
+            gradientUnits="userSpaceOnUse" id="SVGID_20_" r="9.8931">
+            <stop style="stop-color:#F37E5D" offset="0" />
+            <stop style="stop-color:#E6B480" offset="1" />
+        </radialGradient>
+        <g transform="matrix(1, 0, 0, 1, 3.460123, -46.711662)">
+            <path
+                d="M 47.452 137.147 C 54.618 139.118 59.252 144.986 57.803 150.254 C 56.354 155.522 49.371 158.195 42.205 156.225 C 35.039 154.254 30.405 148.386 31.854 143.118 C 33.303 137.849 40.286 135.176 47.452 137.147 Z"
+                fill="url(#SVGID_19_)" />
+            <path
+                d="M 116.163 137.3 C 123.265 135.11 130.327 137.567 131.937 142.789 C 133.547 148.01 129.095 154.018 121.993 156.208 C 114.891 158.398 107.829 155.941 106.219 150.719 C 104.61 145.498 109.061 139.49 116.163 137.3 Z"
+                fill="url(#SVGID_20_)" />
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 344 56" xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="M 344 0 L 0 0 C 0 13.255 10.745 24 24 24 L 299.683 24 C 301.674 35.224 308.514 56 331.872 56 C 331.872 56 313.257 52.591 310.283 24 L 320 24 C 333.255 24 344 13.255 344 0 Z"
+        fill="#43B64A" stroke-miterlimit="10" stroke-width="2" />
+</svg>
