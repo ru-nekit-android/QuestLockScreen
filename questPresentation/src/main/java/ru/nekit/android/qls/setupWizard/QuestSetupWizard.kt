@@ -9,6 +9,7 @@ import android.os.Build
 import android.provider.Settings
 import io.reactivex.Completable
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
 import ru.nekit.android.domain.interactor.use
@@ -43,7 +44,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
         get() = GetCurrentPupilUseCase(application,
                 application.getDefaultSchedulerProvider()).build()
 
-    fun phoneContacts(body: (MutableList<PhoneContact>) -> Unit) =
+    fun phoneContacts(body: (MutableList<PhoneContact>) -> Unit): Disposable =
             phoneContacts.subscribe { it ->
                 body(it)
             }
@@ -102,7 +103,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
     }
 
     fun setPupilName(name: String): Single<Boolean> =
-            updatePupilParameter(Function<Pupil, Unit> { value -> value.name = name })
+            updatePupilParameter(Function { value -> value.name = name })
 
     fun setPupilSex(sex: PupilSex): Single<Boolean> =
             updatePupilParameter(Function { value -> value.sex = sex })
@@ -322,15 +323,15 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
 
     internal object StepFlag {
 
-        val SETUP_WIZARD_PARENT = 1
-        val SETTINGS_PARENT = 2
-        val CAN_BE_RESET_AFTER_SET = 4
+        const val SETUP_WIZARD_PARENT = 1
+        const val SETTINGS_PARENT = 2
+        const val CAN_BE_RESET_AFTER_SET = 4
 
     }
 
     companion object : SingletonHolder<QuestSetupWizard, QuestLockScreenApplication>(::QuestSetupWizard) {
 
-        private val NAME = "questSetupWizard"
+        private const val NAME = "questSetupWizard"
 
     }
 }
