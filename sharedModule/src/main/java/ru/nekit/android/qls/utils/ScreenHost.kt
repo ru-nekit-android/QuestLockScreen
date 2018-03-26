@@ -2,26 +2,26 @@ package ru.nekit.android.qls.utils
 
 import android.content.Context
 import android.graphics.Point
-import android.hardware.display.DisplayManager
 import android.os.Build
 import android.os.PowerManager
-import android.view.Display
 import android.view.WindowManager
 
 object ScreenHost {
 
     fun isScreenOn(context: Context): Boolean {
+        val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+            /*val dm = context.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
             var screenOn = false
             for (display in dm.displays) {
                 if (display.state != Display.STATE_OFF) {
                     screenOn = true
                 }
             }
-            screenOn
+            screenOn*/
+            pm.isInteractive
         } else {
-            val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+            @Suppress("DEPRECATION")
             pm.isScreenOn
         }
     }
