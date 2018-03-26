@@ -8,6 +8,6 @@ import ru.nekit.android.qls.lockScreen.LockScreen
 
 class AlarmClockReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
-        LockScreen.hide(context)
+        LockScreen.hide()
     }
 }

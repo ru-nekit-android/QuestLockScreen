@@ -219,32 +219,91 @@ fun <T> ParameterlessSingleUseCase<T>.use(
     execute(disposable)
 }
 
-fun useCompletableUseCase(schedulerProvider: ISchedulerProvider?, actionBody: () -> Unit, useBody: () -> Unit) =
-        completableUseCase(schedulerProvider, actionBody).use(useBody)
+fun emptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
+                            body: () -> Completable) =
+        object : ParameterlessCompletableUseCase(schedulerProvider) {
+            override fun build(): Completable = body()
+        }
 
-fun completableUseCase(schedulerProvider: ISchedulerProvider?, body: () -> Unit) =
+fun buildEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
+                                 body: () -> Completable) =
+        emptyCompletableUseCase(schedulerProvider, body).build()
+
+fun useEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
+                               body: () -> Completable) =
+        emptyCompletableUseCase(schedulerProvider, body).use()
+
+fun useEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
+                               body: () -> Completable, useBody: () -> Unit) =
+        emptyCompletableUseCase(schedulerProvider, body).use(useBody)
+
+fun <T> emptySingleUseCase(schedulerProvider: ISchedulerProvider?,
+                           body: () -> Single<T>) =
+        object : ParameterlessSingleUseCase<T>(schedulerProvider) {
+            override fun build(): Single<T> = body()
+        }
+
+fun <T> buildEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
+                                body: () -> Single<T>) =
+        emptySingleUseCase(schedulerProvider, body).build()
+
+fun <T> useEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
+                              body: () -> Single<T>) =
+        emptySingleUseCase(schedulerProvider, body).use()
+
+fun <T> useEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
+                              body: () -> Single<T>, useBody: (T) -> Unit) =
+        emptySingleUseCase(schedulerProvider, body).use(useBody)
+
+fun <T> completableUseCase(schedulerProvider: ISchedulerProvider?,
+                           body: () -> Completable) =
+        object : CompletableUseCase<T>(schedulerProvider) {
+            override fun build(parameter: T): Completable = body()
+        }
+
+fun <T> buildCompletableUseCase(parameter: T, schedulerProvider: ISchedulerProvider?,
+                                body: () -> Completable) =
+        completableUseCase<T>(schedulerProvider, body).build(parameter)
+
+fun <T> useCompletableUseCase(parameter: T, schedulerProvider: ISchedulerProvider?,
+                              body: () -> Completable,
+                              useBody: () -> Unit) =
+        completableUseCase<T>(schedulerProvider, body).use(parameter, useBody)
+
+fun completableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
+                                   body: () -> Unit) =
         object : ParameterlessCompletableUseCase(schedulerProvider) {
             override fun build(): Completable = Completable.fromRunnable(body)
         }
 
-fun useCompletableUseCase(schedulerProvider: ISchedulerProvider?, actionBody: () -> Unit) =
-        completableUseCase(schedulerProvider, actionBody).use()
+fun useCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
+                                      actionBody: () -> Unit,
+                                      useBody: () -> Unit) =
+        completableUseCaseFromRunnable(schedulerProvider, actionBody).use(useBody)
 
-fun predicatedUseSingleUseCase(schedulerProvider: ISchedulerProvider?, predicateBody: () -> Boolean, useBody: () -> Unit) =
-        object : ParameterlessSingleUseCase<Boolean>(schedulerProvider) {
-            override fun build(): Single<Boolean> = Single.fromCallable(predicateBody)
-        }.use { if (it) useBody() }
+fun useCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
+                                      actionBody: () -> Unit) =
+        completableUseCaseFromRunnable(schedulerProvider, actionBody).use()
 
-fun <T> useSingleUseCase(schedulerProvider: ISchedulerProvider?, actionBody: () -> T, useBody: (T) -> Unit) =
-        object : ParameterlessSingleUseCase<T>(schedulerProvider) {
-            override fun build(): Single<T> = Single.fromCallable(actionBody)
+fun buildCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
+                                        actionBody: () -> Unit) =
+        completableUseCaseFromRunnable(schedulerProvider, actionBody).build()
 
-        }.use { useBody(it) }
+fun predicatedUseSingleUseCase(schedulerProvider: ISchedulerProvider?,
+                               predicateBody: () -> Boolean,
+                               useBody: () -> Unit) =
+        singleUseCaseFromCallable(schedulerProvider, predicateBody).use { if (it) useBody() }
 
-fun <T> singleUseCase(schedulerProvider: ISchedulerProvider?, actionBody: () -> T) =
+fun <T> singleUseCaseFromCallable(schedulerProvider: ISchedulerProvider?, actionBody: () -> T) =
         object : ParameterlessSingleUseCase<T>(schedulerProvider) {
             override fun build(): Single<T> = Single.fromCallable(actionBody)
         }
+
+fun <T> useSingleUseCaseFromCallable(schedulerProvider: ISchedulerProvider?,
+                                     actionBody: () -> T,
+                                     useBody: (T) -> Unit) =
+        singleUseCaseFromCallable(schedulerProvider, actionBody).use(useBody)
+
 
 fun <T, P> SingleUseCase<T, P>.use(parameter: P, bodySuccess: (T) -> Unit) = use(parameter, bodySuccess, {})
 

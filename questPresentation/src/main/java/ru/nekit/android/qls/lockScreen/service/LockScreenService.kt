@@ -17,7 +17,7 @@ import android.support.annotation.StringRes
 import android.support.v4.app.NotificationCompat
 import ru.nekit.android.domain.event.IEvent
 import ru.nekit.android.domain.interactor.use
-import ru.nekit.android.domain.interactor.useCompletableUseCase
+import ru.nekit.android.domain.interactor.useCompletableUseCaseFromRunnable
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.LockScreenStartType
@@ -25,7 +25,6 @@ import ru.nekit.android.qls.domain.model.LockScreenStartType.*
 import ru.nekit.android.qls.domain.useCases.GetCurrentPupilUseCase
 import ru.nekit.android.qls.domain.useCases.GetPhoneContactByIdUseCase
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
-import ru.nekit.android.qls.domain.useCases.LockScreenUseCases.LockScreenEvent.ACTION_HIDE
 import ru.nekit.android.qls.eventBus.IEventListener
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.lockScreen.LockScreenContentMediator
@@ -45,7 +44,7 @@ class LockScreenService : Service() {
 
     private val screenOffEventHandler = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            questContext?.stopQuest {}
+            questContext?.stopQuest()
             if (lockScreenContentMediator == null) {
                 showLockScreen(ON_SCREEN_OFF)
             }
@@ -80,20 +79,17 @@ class LockScreenService : Service() {
             when (it) {
                 INCOMING_CALL_START -> {
                     if (lockScreenContentMediator != null)
-                        LockScreenUseCases.startIncomingCall(questApplication,
-                                questApplication.getDefaultSchedulerProvider()) {
+                        LockScreenUseCases.startIncomingCall {
                             hideLockScreen()
                         }
                 }
                 INCOMING_CALL_COMPLETE ->
                     if (lockScreenContentMediator == null)
-                        LockScreenUseCases.stopIncomingCall(questApplication,
-                                questApplication.getDefaultSchedulerProvider()) {
+                        LockScreenUseCases.stopIncomingCall {
                             showLockScreen(ON_INCOME_CALL_COMPLETE)
                         }
                 OUTGOING_CALL_COMPLETE -> {
-                    LockScreenUseCases.stopOutgoingCall(questApplication,
-                            questApplication.getDefaultSchedulerProvider()) {
+                    LockScreenUseCases.stopOutgoingCall {
                         showLockScreen(ON_OUTGOING_CALL_COMPLETE)
                     }
                 }
@@ -103,8 +99,7 @@ class LockScreenService : Service() {
         }
         eventListener.listen(this, OutgoingCall::class.java) {
             if (setupWizard.callPhonePermissionIsGranted()) {
-                LockScreenUseCases.startOutgoingCall(questApplication,
-                        questApplication.getDefaultSchedulerProvider()) {
+                LockScreenUseCases.startOutgoingCall {
                     GetPhoneContactByIdUseCase(questApplication,
                             questApplication.getDefaultSchedulerProvider()).use(it.contactId) {
                         if (it.isNotEmpty()) {
@@ -182,46 +177,41 @@ class LockScreenService : Service() {
 
     //exclude SILENCE START LOCK SCREEN MODE
     private fun showLockScreen(startType: LockScreenStartType) {
-        LockScreenUseCases.showLockScreen(questApplication, questApplication.getTimeProvider(),
-                questApplication.getDefaultSchedulerProvider()).use(startType) {
-            if (it) {
-                if (PhoneUtils.isPhoneIdle(application)) {
-                    sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
-                    if (setupWizard.allPermissionsIsGranted()) {
-
-                        QuestContext(questApplication, R.style.MainTheme).let {
-                            questContext = it
-                            it.eventListener.listen(it, LockScreenUseCases.LockScreenEvent::class.java) {
-                                if (it == ACTION_HIDE)
-                                    hideLockScreen()
-                            }
-                            it.createQuestTrainingProgram {
-                                LockScreenContentMediator(it).apply {
-                                    lockScreenContentMediator = this
-                                    attachView()
-                                }
-                            }
-                            buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
-                                startForeground(notification)
+        LockScreenUseCases.showLockScreen(startType) {
+            if (PhoneUtils.isPhoneIdle(application)) {
+                sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
+                if (setupWizard.allPermissionsIsGranted()) {
+                    QuestContext(questApplication, R.style.MainTheme).let {
+                        questContext = it
+                        eventListener.listen(it, LockScreenUseCases.LockScreenHideEvent::class.java) {
+                            hideLockScreen()
+                        }
+                        it.createQuestTrainingProgram {
+                            LockScreenContentMediator(it).apply {
+                                lockScreenContentMediator = this
+                                attachView()
                             }
                         }
-
-                    } else {
-                        setupWizard.start()
+                        buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
+                            startForeground(notification)
+                        }
                     }
+
+                } else {
+                    setupWizard.start()
                 }
             }
         }
     }
 
     private fun hideLockScreen() {
-        lockScreenContentMediator?.apply {
-            deactivate()
-            detachView()
-        }
         questContext?.apply {
             eventListener.stopListen(this)
             destroy()
+        }
+        lockScreenContentMediator?.apply {
+            deactivate()
+            detachView()
         }
         questContext = null
         lockScreenContentMediator = null
@@ -233,7 +223,7 @@ class LockScreenService : Service() {
             }
 
     private fun buildNotificationForSetupWizard(@StringRes textResId: Int, body: (Notification) -> Unit): Unit =
-            useCompletableUseCase(questApplication.getDefaultSchedulerProvider(), {}) {
+            useCompletableUseCaseFromRunnable(questApplication.getDefaultSchedulerProvider(), {}) {
                 body(createNotificationBuilder(getString(R.string.title_notification_setup_wizard),
                         getString(textResId), contentIntentForSetupWizard).setAutoCancel(true).build())
             }

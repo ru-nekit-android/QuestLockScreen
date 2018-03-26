@@ -21,11 +21,13 @@ import ru.nekit.android.qls.data.repository.*
 import ru.nekit.android.qls.data.repository.store.QuestStore
 import ru.nekit.android.qls.domain.model.StatisticPeriodType
 import ru.nekit.android.qls.domain.model.StatisticPeriodType.*
+import ru.nekit.android.qls.domain.providers.IDependenciesProvider
 import ru.nekit.android.qls.domain.providers.IEventSender
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.*
 import ru.nekit.android.qls.domain.useCases.IUUIDProvider
+import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
 import ru.nekit.android.qls.eventBus.EventListener
 import ru.nekit.android.qls.eventBus.IEventListener
 import ru.nekit.android.qls.eventBus.RxEventBus
@@ -56,26 +58,32 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     private lateinit var mQuestRepository: IQuestRepository
     private lateinit var mQuestHistoryCriteriaRepository: QuestHistoryCriteriaRepository
 
-    //event bus support
     private var rxEventBus: RxEventBus = RxEventBus.getInstance(RxBus())
     private val eventSender: IEventSender = object : IEventSender {
         override fun send(event: IEvent) = rxEventBus.post(event)
     }
     private val eventListener: IEventListener = EventListener(rxEventBus)
 
-    private val mSchedulerProvider: ISchedulerProvider = object : ISchedulerProvider {
+    private val mDefaultSchedulerProvider: ISchedulerProvider = object : ISchedulerProvider {
         override fun computation(): Scheduler = Schedulers.computation()
         override fun ui(): Scheduler = AndroidSchedulers.mainThread()
     }
 
     override fun getQuestParams(): IQuestParams = object : IQuestParams {
-
         override val delayedPlayDelay: Long
             get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
     }
 
-    override fun onCreate() {
-        super.onCreate()
+    private fun injectDependencies(value: IDependenciesProvider) {
+        value.apply {
+            repository = this@QuestLockScreenApplication
+            schedulerProvider = getDefaultSchedulerProvider()
+            timeProvider = getTimeProvider()
+            eventSender = getEventSender()
+        }
+    }
+
+    private fun initDependencies() {
         boxStore = MyObjectBox.builder().androidContext(this).build()
         mCurrentPupilRepository = CurrentPupilRepository(getSharedPreferences())
         mRewardRepository = RewardRepository(getSharedPreferences("rewards"))
@@ -99,6 +107,17 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
         mQuestResourceRepository = QuestResourceRepository(this)
         mQuestRepository = QuestRepository(this, mQuestStore, boxStore)
         mQuestHistoryCriteriaRepository = QuestHistoryCriteriaRepository()
+    }
+
+    private fun injectDependencies() {
+        injectDependencies(LockScreenUseCases)
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        initDependencies()
+        injectDependencies()
 
         val clear = false
         if (clear) {
@@ -147,7 +166,7 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     override fun getQuestHistoryCriteriaRepository(): IQuestHistoryCriteriaRepository = mQuestHistoryCriteriaRepository
 
     fun getSharedPreferences(name: String = "my"): SharedPreferences = getSharedPreferences(name, Context.MODE_PRIVATE)
-    fun getDefaultSchedulerProvider(): ISchedulerProvider = mSchedulerProvider
+    fun getDefaultSchedulerProvider(): ISchedulerProvider = mDefaultSchedulerProvider
     fun getEventSender(): IEventSender = eventSender
     fun getEventListener(): IEventListener = eventListener
     override fun getQuestResourceRepository() = mQuestResourceRepository
@@ -157,28 +176,6 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
         super.attachBaseContext(base)
         MultiDex.install(this)
     }
-
-/*val kodein = Kodein {
-    constant("SharedPreferencesName") with "my"
-    constant("SharedPreferencesMode") with Context.MODE_PRIVATE
-    bind<Context>() with singleton { this@QuestLockScreenApplication }
-    bind<Printer>() with factory { value: Int -> Printer(value) }
-    bind<SharedPreferences>() with singleton { getSharedPreferences(instance("SharedPreferencesName"), instance("SharedPreferencesMode")) }
-    bind<SharedPreferences>() with multiton { name: String -> getSharedPreferences(name, instance("SharedPreferencesMode")) }
-    bind<IRepositoryHolder>() with singleton { this@QuestLockScreenApplication }
-    bind<ISchedulerProvider>("defaultScheduler") with singleton {
-        object : ISchedulerProvider {
-            override fun computation(): Scheduler = Schedulers.io()
-            override fun ui(): Scheduler = AndroidSchedulers.mainThread()
-        }
-    }
-    bind<ISchedulerProvider>() with singleton {
-        instance<ISchedulerProvider>("defaultScheduler")
-    }
-    bind<QuestTrainingProgramLevel>() with provider {
-        GetCurrentQuestTrainingProgramLevelUseCase(instance(), instance()).build().blockingGet()
-    }
-}*/
 
 }
 

@@ -14,7 +14,6 @@ import ru.nekit.android.qls.domain.answerChecker.*
 import ru.nekit.android.qls.domain.answerChecker.common.IAnswerChecker
 import ru.nekit.android.qls.domain.answerChecker.common.QuestAnswerChecker
 import ru.nekit.android.qls.domain.model.*
-import ru.nekit.android.qls.domain.model.LockScreenStartType.EXPLICIT
 import ru.nekit.android.qls.domain.model.QuestState.*
 import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD
 import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD
@@ -37,8 +36,7 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
     override fun build(parameter: AnswerParameter): Completable =
             Single.zip(GetCurrentQuestStatisticsReportUseCase(repository)
                     .build(),
-                    LockScreenUseCases.getLastStartType(repository)
-                            .build(),
+                    LockScreenUseCases.getLastStartType(),
                     BiFunction<QuestStatisticsReport,
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, startTypeOptional ->
@@ -97,7 +95,7 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
                                                 RewardHolder.getAndNotify(null, repository, scheduler)
                                             }.doIfOrComplete { rewards.isNotEmpty() })
                                         }.concatWith(
-                                                LockScreenUseCases.updateLastStartType(repository).build(EXPLICIT)
+                                                LockScreenUseCases.updateLastStartType()
                                         )
                                 )
                         )
@@ -109,7 +107,7 @@ private class UpdateStatisticsReportOnWrongAnswerUseCase(private val repository:
         CompletableUseCase<AnswerParameter>(scheduler) {
     override fun build(parameter: AnswerParameter): Completable =
             Single.zip(GetCurrentQuestStatisticsReportUseCase(repository).build(),
-                    LockScreenUseCases.getLastStartType(repository).build(),
+                    LockScreenUseCases.getLastStartType(),
                     BiFunction<QuestStatisticsReport,
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, lockScreenStartTypeOptional ->

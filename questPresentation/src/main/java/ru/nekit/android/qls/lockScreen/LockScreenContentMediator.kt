@@ -69,7 +69,7 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
 
         override fun onAnimationEnd(animation: Animator) {
             animation.removeAllListeners()
-            LockScreen.hide(questContext)
+            LockScreen.hide()
         }
 
         override fun onAnimationCancel(animation: Animator) {

@@ -7,89 +7,87 @@ import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.*
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.LockScreenStartType
-import ru.nekit.android.qls.domain.model.LockScreenStartType.ON_NOTIFICATION_CLICK
-import ru.nekit.android.qls.domain.model.LockScreenStartType.SETUP_WIZARD
+import ru.nekit.android.qls.domain.model.LockScreenStartType.*
+import ru.nekit.android.qls.domain.providers.IDependenciesProvider
 import ru.nekit.android.qls.domain.providers.IEventSender
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
-import ru.nekit.android.utils.toSingle
+import ru.nekit.android.utils.doIfOrComplete
 
-object LockScreenUseCases {
+object LockScreenUseCases : IDependenciesProvider {
 
-    class start(private val repository: IRepositoryHolder,
-                scheduler: ISchedulerProvider? = null) :
-            CompletableUseCase<LockScreenStartType>(scheduler) {
-        override fun build(parameter: LockScreenStartType): Completable =
-                saveStartType(repository).build(parameter).concatWith(
+    override lateinit var repository: IRepositoryHolder
+    override lateinit var schedulerProvider: ISchedulerProvider
+    override lateinit var timeProvider: ITimeProvider
+    override lateinit var eventSender: IEventSender
+
+    private val lockScreenRepository
+        get() = repository.getLockScreenRepository()
+
+    fun start(parameter: LockScreenStartType, useBody: () -> Unit) =
+            useCompletableUseCase(parameter, schedulerProvider, {
+                saveStartType(parameter).concatWith(
                         Completable.fromRunnable {
                             if (parameter != SETUP_WIZARD)
-                                switchOn(repository)
+                                switchOn()
                         })
-    }
+            }, useBody)
 
-    class showLockScreen(private val repository: IRepositoryHolder,
-                         private val timeProvider: ITimeProvider,
-                         scheduler: ISchedulerProvider? = null) : SingleUseCase<Boolean, LockScreenStartType>(scheduler) {
-        override fun build(parameter: LockScreenStartType): Single<Boolean> =
-                //true - show
-                GetLastHistoryUseCase(repository).build().map { historyOpt ->
-                    if (parameter != SETUP_WIZARD) {
-                        if (parameter == ON_NOTIFICATION_CLICK) {
-                            true
-                        } else
+    fun showLockScreen(parameter: LockScreenStartType,
+                       useBody: () -> Unit) =
+            useCompletableUseCase(parameter, schedulerProvider, {
+                if (parameter != SETUP_WIZARD)
+                    GetLastHistoryUseCase(repository).build().map { historyOpt ->
+                        if (parameter == ON_NOTIFICATION_CLICK || parameter == EXPLICIT) true
+                        else
                             if (repository.getQuestSetupWizardSettingRepository().skipAfterRightAnswer)
                                 if (historyOpt.isNotEmpty())
                                     timeProvider.getCurrentTime() - historyOpt.nonNullData.timeStamp >
                                             repository.getQuestSetupWizardSettingRepository().timeForSkipAfterRightAnswer
+                                else true
+                            else true
+                    }.flatMapCompletable { show ->
+                                if (show)
+                                    saveStartType(parameter)
                                 else
-                                    true
-                            else
-                                true
-                    } else
-                        false
-                }.flatMap {
-                            if (it)
-                                saveStartType(repository).build(parameter).toSingleDefault(true)
-                            else
-                                false.toSingle()
-                        }
+                                    Completable.never()
+                            }
+                else
+                    Completable.never()
+            }, useBody)
+
+    private fun switchOn() = completableUseCaseFromRunnable(schedulerProvider) {
+        lockScreenRepository.switchOn(true)
     }
 
-    fun switchOn(repository: IRepositoryHolder,
-                 scheduler: ISchedulerProvider? = null) = completableUseCase(scheduler) {
-        repository.getLockScreenRepository().switchOn(true)
+    fun switchOff() = buildCompletableUseCaseFromRunnable(schedulerProvider) {
+        lockScreenRepository.switchOn(false)
+        sendHideEvent(eventSender)
     }
 
-    fun switchOff(repository: IRepositoryHolder,
-                  eventSender: IEventSender,
-                  scheduler: ISchedulerProvider? = null) = completableUseCase(scheduler) {
-        repository.getLockScreenRepository().switchOn(false)
-        LockScreenHelper.hide(eventSender)
-    }
-
-    fun hide(eventSender: IEventSender, scheduler: ISchedulerProvider? = null) = useCompletableUseCase(scheduler, {
+    fun hide() = useCompletableUseCaseFromRunnable(schedulerProvider, {
         SessionTimer.stop()
-        LockScreenHelper.hide(eventSender)
+        sendHideEvent(eventSender)
     })
 
-    fun isSwitchedOn(repository: IRepositoryHolder, scheduler: ISchedulerProvider? = null) =
-            singleUseCase(scheduler) {
-                repository.getLockScreenRepository().isSwitchedOn()
+    fun isSwitchedOn() =
+            singleUseCaseFromCallable(schedulerProvider) {
+                lockScreenRepository.isSwitchedOn()
             }
 
-    fun startIncomingCall(repository: IRepositoryHolder, scheduler: ISchedulerProvider?, body: () -> Unit) =
-            useCompletableUseCase(scheduler, {
-                repository.getLockScreenRepository().incomeCallInProcess(true)
+    fun startIncomingCall(body: () -> Unit) =
+            useCompletableUseCaseFromRunnable(schedulerProvider, {
+                lockScreenRepository.incomeCallInProcess(true)
             }, body)
 
-    fun startOutgoingCall(repository: IRepositoryHolder, scheduler: ISchedulerProvider?, body: () -> Unit) =
-            useCompletableUseCase(scheduler, {
-                repository.getLockScreenRepository().outgoingCallInProcess(true)
+    fun startOutgoingCall(body: () -> Unit) =
+            useCompletableUseCaseFromRunnable(schedulerProvider, {
+                lockScreenRepository.outgoingCallInProcess(true)
             }, body)
 
-    fun stopIncomingCall(repository: IRepositoryHolder, scheduler: ISchedulerProvider, body: () -> Unit) =
-            predicatedUseSingleUseCase(scheduler, {
-                repository.getLockScreenRepository().let {
+    fun stopIncomingCall(body: () -> Unit) =
+            predicatedUseSingleUseCase(schedulerProvider, {
+                lockScreenRepository.let {
                     it.incomeCallInProcess().let { result ->
                         if (result)
                             it.incomeCallInProcess(false)
@@ -98,9 +96,9 @@ object LockScreenUseCases {
                 }
             }, body)
 
-    fun stopOutgoingCall(repository: IRepositoryHolder, scheduler: ISchedulerProvider, body: () -> Unit) =
-            predicatedUseSingleUseCase(scheduler, {
-                repository.getLockScreenRepository().let {
+    fun stopOutgoingCall(body: () -> Unit) =
+            predicatedUseSingleUseCase(schedulerProvider, {
+                lockScreenRepository.let {
                     it.outgoingCallInProcess().let { result ->
                         if (result)
                             it.outgoingCallInProcess(false)
@@ -109,47 +107,33 @@ object LockScreenUseCases {
                 }
             }, body)
 
-    class saveStartType(private val repository: IRepositoryHolder,
-                        scheduler: ISchedulerProvider? = null) :
-            CompletableUseCase<LockScreenStartType>(scheduler) {
-
-        override fun build(parameter: LockScreenStartType): Completable = Completable.fromCallable {
-            repository.getLockScreenRepository().saveStartType(parameter)
-        }
-
-    }
-
-    class updateLastStartType(private val repository: IRepositoryHolder,
-                              scheduler: ISchedulerProvider? = null) :
-            CompletableUseCase<LockScreenStartType>(scheduler) {
-
-        override fun build(parameter: LockScreenStartType): Completable = getLastStartType(repository).build().flatMapCompletable { lastStartTypeOpt ->
-            if (lastStartTypeOpt.isNotEmpty() && lastStartTypeOpt.data == ON_NOTIFICATION_CLICK)
-                Completable.fromRunnable {
-                    repository.getLockScreenRepository().saveStartType(parameter)
-                }
-            else
-                Completable.complete()
-        }
-    }
-
-    fun getLastStartType(repository: IRepositoryHolder, scheduler: ISchedulerProvider? = null) =
-            singleUseCase(scheduler) {
-                Optional(repository.getLockScreenRepository().getLastStartType())
+    private fun saveStartType(parameter: LockScreenStartType): Completable =
+            buildEmptyCompletableUseCase(schedulerProvider) {
+                lockScreenRepository.saveStartType(parameter)
             }
 
-    object LockScreenHelper {
+    fun getLastStartType(): Single<Optional<LockScreenStartType>> =
+            buildEmptySingleUseCase(schedulerProvider) {
+                lockScreenRepository.getLastStartType()
+            }
 
-        fun hide(eventSender: IEventSender) {
-            eventSender.send(LockScreenEvent.ACTION_HIDE)
-        }
+    fun updateLastStartType(): Completable =
+            buildEmptyCompletableUseCase(schedulerProvider) {
+                getLastStartType().flatMapCompletable { lastStartTypeOpt ->
+                    lockScreenRepository.saveStartType(EXPLICIT).doIfOrComplete {
+                        lastStartTypeOpt.data == ON_NOTIFICATION_CLICK
+                    }
+                }
+            }
+
+
+    private fun sendHideEvent(eventSender: IEventSender) {
+        eventSender.send(LockScreenHideEvent)
     }
 
-    enum class LockScreenEvent : IEvent {
+    object LockScreenHideEvent : IEvent {
 
-        ACTION_HIDE;
-
-        override val eventName: String = "${javaClass.name}::$name"
+        override val eventName: String = javaClass.name
 
     }
 }
