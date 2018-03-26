@@ -150,10 +150,9 @@ class QuestContext constructor(
         body(it)
     }
 
-    fun stopQuest(body: () -> Unit) =
+    fun stopQuest() =
             StopQuestUseCase(repository, schedulerProvider).use {
                 eventSender.send(QUEST_STOP)
-                body()
             }
 
     fun currentLevel(body: (QuestTrainingProgramLevel) -> Unit) =
