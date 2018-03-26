@@ -266,9 +266,9 @@ interface ILockScreenRepository {
 
     fun outgoingCallInProcess(): Boolean
 
-    fun getLastStartType(): LockScreenStartType?
+    fun getLastStartType(): Single<Optional<LockScreenStartType>>
 
-    fun saveStartType(value: LockScreenStartType)
+    fun saveStartType(value: LockScreenStartType): Completable
 
 }
 

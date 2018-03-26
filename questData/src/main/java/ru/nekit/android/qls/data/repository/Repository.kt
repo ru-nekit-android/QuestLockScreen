@@ -1340,6 +1340,7 @@ class QuestStateRepository(sharedPreferences: SharedPreferences) : IQuestStateRe
 class LockScreenRepository(sharedPreferences: SharedPreferences) : ILockScreenRepository {
 
     private val booleanStore: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
+    private val stringStore: ReactiveStringKeyStringValueStore = ReactiveStringKeyStringValueStore(sharedPreferences)
 
     override fun switchOn(value: Boolean) = booleanStore.put(IS_ON, value)
 
@@ -1357,15 +1358,11 @@ class LockScreenRepository(sharedPreferences: SharedPreferences) : ILockScreenRe
     override fun outgoingCallInProcess(): Boolean =
             booleanStore.get(OUTGOING_CALL, false)
 
-    private val store: StringKeyStringValueStore = StringKeyStringValueStore(sharedPreferences)
-
-    override fun getLastStartType(): LockScreenStartType? = store.get(START_TYPE).let {
-        if (it.isEmpty()) null else LockScreenStartType.valueOf(it)
+    override fun getLastStartType(): Single<Optional<LockScreenStartType>> = stringStore.get(START_TYPE).map {
+        Optional(if (it.isEmpty()) null else LockScreenStartType.valueOf(it.nonNullData))
     }
 
-    override fun saveStartType(value: LockScreenStartType) {
-        store.put(START_TYPE, value.name)
-    }
+    override fun saveStartType(value: LockScreenStartType) = stringStore.put(START_TYPE, value.name)
 
     companion object {
 
