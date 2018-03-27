@@ -299,6 +299,17 @@ fun <T> singleUseCaseFromCallable(schedulerProvider: ISchedulerProvider?, action
             override fun build(): Single<T> = Single.fromCallable(actionBody)
         }
 
+fun <T, P> singleUseCase(schedulerProvider: ISchedulerProvider?, actionBody: (P) -> Single<T>) =
+        object : SingleUseCase<T, P>(schedulerProvider) {
+            override fun build(parameter: P): Single<T> = actionBody(parameter)
+        }
+
+fun <T, P> buildSingleUseCase(parameter: P, schedulerProvider: ISchedulerProvider?, actionBody: () -> Single<T>) =
+        object : SingleUseCase<T, P>(schedulerProvider) {
+            override fun build(parameter: P): Single<T> = actionBody()
+        }.build(parameter)
+
+
 fun <T> useSingleUseCaseFromCallable(schedulerProvider: ISchedulerProvider?,
                                      actionBody: () -> T,
                                      useBody: (T) -> Unit) =
