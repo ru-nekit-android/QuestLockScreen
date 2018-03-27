@@ -162,7 +162,6 @@ open class RewardRepository(sharedPreferences: SharedPreferences) : IRewardRepos
                         Completable.fromRunnable { store.put(name(reward), count) }
                     }
 
-
     override fun remove(reward: Reward): Completable =
             getCount(reward).map {
                 it - 1
@@ -557,7 +556,8 @@ class PhoneContactRepository(repository: IRepositoryHolder, boxStore: BoxStore) 
     override fun getByContactId(pupil: Pupil, contactId: Long): Single<Optional<PhoneContact>> =
             pupilRepository.getEntityId(pupil).flatMap { pupilEntityId ->
                 boxSingleUsingWithCallable {
-                    val phoneContactEntity = it.query().equal(PhoneContactEntity_.contactId, contactId).equal(PhoneContactEntity_.pupilId, pupilEntityId).build().findUnique()
+                    val phoneContactEntity = it.query().equal(PhoneContactEntity_.contactId,
+                            contactId).equal(PhoneContactEntity_.pupilId, pupilEntityId).build().findUnique()
                     Optional(phoneContactEntity?.let { Mapper.from(phoneContactEntity) })
                 }
             }
