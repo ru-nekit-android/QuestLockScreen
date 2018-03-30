@@ -2,7 +2,7 @@ package ru.nekit.android.qls.window.common
 
 import android.support.annotation.StyleRes
 import ru.nekit.android.domain.event.IEvent
-import ru.nekit.android.qls.domain.providers.IEventSender
+import ru.nekit.android.domain.event.IEventSender
 
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.window.Window
@@ -30,8 +30,7 @@ open class QuestWindow(context: QuestContext,
     override fun onWindowClosed(window: Window) {
         sendEvent(context.eventSender, CLOSED, window.name)
     }
-},
-        content, styleResId) {
+}, content, styleResId) {
 
     companion object {
         private fun sendEvent(eventSender: IEventSender, event: QuestWindowEvent, windowName: String) {

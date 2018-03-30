@@ -1,111 +1,170 @@
 package ru.nekit.android.qls.window
 
-import android.content.Context
 import android.support.annotation.LayoutRes
 import android.support.annotation.StyleRes
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.View
+import android.widget.TextView
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.getRepresentation
+import ru.nekit.android.qls.domain.model.AnswerType
+import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD
+import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.utils.ViewHolder
-import ru.nekit.android.qls.window.common.QuestWindow
+import ru.nekit.android.qls.window.AnswerWindowType.RIGHT
+import ru.nekit.android.qls.window.AnswerWindowType.WRONG
+import ru.nekit.android.qls.window.common.ContentWithToolQuestWindow
+import ru.nekit.android.utils.ViewHolder
+import java.text.SimpleDateFormat
+import java.util.*
 
-class AnswerWindow private constructor(questContext: QuestContext,
-                                       name: String,
-                                       contentViewHolder: WindowContentViewHolder,
-                                       @StyleRes styleResId: Int) :
-        QuestWindow(questContext, name, contentViewHolder, styleResId) {
+private object AnswerWindow {
 
-    enum class Type {
-
-        RIGHT,
-        WRONG;
-
+    fun open(questContext: QuestContext,
+             type: AnswerWindowType,
+             @StyleRes styleResId: Int,
+             @LayoutRes contentResId: Int,
+             @LayoutRes toolContentResId: Int) {
+        ContentWithToolQuestWindow.Builder(questContext, type.name)
+                .setStyle(styleResId)
+                .setContent(contentResId)
+                .setToolContent(toolContentResId)
+                .create()
+                .open()
     }
 
-    companion object {
-
-        fun open(questContext: QuestContext,
-                 type: AnswerWindow.Type,
-                 @StyleRes styleResId: Int,
-                 @LayoutRes contentResId: Int,
-                 @LayoutRes toolContentResId: Int) {
-            AnswerWindow.Builder(questContext, type).setStyle(styleResId).setContent(contentResId).setToolContent(toolContentResId).create().open()
-        }
-
-        fun open(questContext: QuestContext,
-                 type: AnswerWindow.Type,
-                 @StyleRes style: Int,
-                 content: ViewHolder,
-                 @LayoutRes toolContentResId: Int) {
-            AnswerWindow.Builder(questContext, type).setStyle(style).setContent(content).setToolContent(toolContentResId).create().open()
-        }
+    fun open(questContext: QuestContext,
+             type: AnswerWindowType,
+             @StyleRes styleResId: Int,
+             content: ViewHolder,
+             @LayoutRes toolContentResId: Int) {
+        ContentWithToolQuestWindow.Builder(questContext, type.name)
+                .setStyle(styleResId)
+                .setContent(content)
+                .setToolContent(toolContentResId)
+                .create()
+                .open()
     }
 
+}
 
-    class Builder(private val questContext: QuestContext, private val mType: Type) {
-        private lateinit var window: AnswerWindow
-        private var windowContainer: AnswerWindowContainer? = null
-        private var contentHolder: ViewHolder? = null
-        private var toolContentHolder: ViewHolder? = null
-        @StyleRes
-        private var styleResId = -1
+enum class AnswerWindowType {
 
-        fun setContent(content: ViewHolder): Builder {
-            contentHolder = content
-            return this
-        }
+    RIGHT,
+    WRONG;
 
-        fun setContent(@LayoutRes contentResId: Int): Builder {
-            if (contentResId > 0) {
-                contentHolder = ViewHolder(questContext, contentResId)
-            }
-            return this
-        }
+}
 
-        fun setToolContent(content: ViewHolder): Builder {
-            toolContentHolder = content
-            return this
-        }
+object WrongAnswerWindow {
 
-        fun setToolContent(@LayoutRes toolContentResId: Int): Builder {
-            toolContentHolder = ViewHolder(questContext, toolContentResId)
-            return this
-        }
-
-        fun setStyle(@StyleRes styleResId: Int): Builder {
-            this.styleResId = styleResId
-            return this
-        }
-
-        fun create(): AnswerWindow {
-            windowContainer = AnswerWindowContainer(questContext)
-            if (contentHolder != null) {
-                windowContainer!!.contentContainer.addView(contentHolder!!.view, MATCH_PARENT,
-                        MATCH_PARENT)
-            }
-            if (toolContentHolder != null) {
-                windowContainer!!.toolContainer.addView(toolContentHolder!!.view)
-            }
-            window = AnswerWindow(questContext, mType.name, windowContainer!!,
-                    if (styleResId == -1)
-                        if (mType == Type.RIGHT)
-                            R.style.Window_RightAnswer
-                        else
-                            R.style.Window_WrongAnswer
-                    else
-                        styleResId)
-            return window
-        }
+    fun open(questContext: QuestContext,
+             @StyleRes styleResId: Int,
+             @LayoutRes contentResId: Int,
+             @LayoutRes toolContentResId: Int) {
+        AnswerWindow.open(questContext, WRONG, styleResId, contentResId, toolContentResId)
     }
 
-    private class AnswerWindowContainer internal constructor(context: Context) : WindowContentViewHolder(context, R.layout.wc_answer) {
+    fun openSimple(questContext: QuestContext) {
+        AnswerWindow.open(questContext, WRONG,
+                R.style.Window_WrongAnswer_Simple,
+                ViewHolder(questContext, R.layout.wc_wrong_answer_simple_content).apply {
+                    buildTitle(questContext, view, AnswerType.WRONG)
+                },
+                R.layout.wc_wrong_answer_tool_simple_content)
+    }
 
-        internal val contentContainer: ViewGroup = view.findViewById(R.id.container_content) as ViewGroup
-        internal val toolContainer: ViewGroup = view.findViewById(R.id.container_tool) as ViewGroup
+    fun open(questContext: QuestContext,
+             @StyleRes styleResId: Int,
+             content: ViewHolder,
+             @LayoutRes toolContentResId: Int) {
+        AnswerWindow.open(questContext, WRONG, styleResId, content, toolContentResId)
+    }
 
-        override val closeButtonId
-            get() = R.id.btn_ok
+    fun openDefault(questContext: QuestContext) {
+        WrongAnswerWindow.open(
+                questContext,
+                R.style.Window_WrongAnswer,
+                ViewHolder(questContext, R.layout.wc_wrong_answer_content).apply {
+                    buildTitle(questContext, view, AnswerType.WRONG)
+                },
+                R.layout.wc_wrong_answer_tool_simple_content
+        )
+    }
+}
 
+private fun buildTitle(questContext: QuestContext, view: View, answerType: AnswerType) {
+    (view.findViewById(R.id.tv_title) as TextView).apply {
+        text = answerType.getRepresentation().getRandomString(questContext)
+    }
+}
+
+
+object RightAnswerWindow {
+
+    fun open(questContext: QuestContext,
+             @StyleRes styleResId: Int,
+             @LayoutRes contentResId: Int,
+             @LayoutRes toolContentResId: Int) {
+        AnswerWindow.open(questContext, RIGHT, styleResId, contentResId, toolContentResId)
+    }
+
+    fun openSimple(questContext: QuestContext) {
+        AnswerWindow.open(questContext, RIGHT,
+                R.style.Window_RightAnswer_Simple,
+                ViewHolder(questContext, R.layout.wc_right_answer_simple_content).apply {
+                    buildTitle(questContext, view, AnswerType.RIGHT)
+                },
+                R.layout.wc_right_answer_tool_simple_content)
+    }
+
+    fun open(questContext: QuestContext,
+             @StyleRes styleResId: Int,
+             content: ViewHolder,
+             @LayoutRes toolContentResId: Int) {
+        AnswerWindow.open(questContext, RIGHT, styleResId, content, toolContentResId)
+    }
+
+    fun openDefault(questContext: QuestContext) {
+        questContext.apply {
+            pupil { pupil ->
+                questHistory { questHistory ->
+                    questPreviousHistoryWithBestSessionTime(questHistory!!) { previousHistory ->
+                        questStatisticsReport { report ->
+                            RightAnswerWindow.open(
+                                    this,
+                                    R.style.Window_RightAnswer,
+                                    ViewHolder(this, R.layout.wc_right_answer_content).apply {
+                                        val dateFormat = SimpleDateFormat(
+                                                getString(R.string.right_answer_timer_formatter),
+                                                Locale.getDefault())
+                                        ArrayList<String>().let { list ->
+                                            list.add("${pupil.name}, ${
+                                            AnswerType.RIGHT.getRepresentation().getRandomString(questContext).toLowerCase()
+                                            }")
+                                            list.add(String.format(questContext.getString(R.string.right_answer_time_formatter),
+                                                    dateFormat.format(questHistory.sessionTime)))
+                                            if (previousHistory != null && (questHistory.recordTypes and RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD.value) != 0)
+                                                list.add(String.format(questContext.getString(R.string.right_answer_best_time_update_formatter),
+                                                        dateFormat.format(previousHistory.sessionTime)))
+                                            if ((questHistory.recordTypes and RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD.value) != 0)
+                                                list.add(String.format(getString(R.string.right_answer_series_length_update_formatter),
+                                                        report.rightAnswerSeriesCount))
+                                            if (questHistory.rewards.isNotEmpty()) {
+                                                list.add("Награды: ${questHistory.rewards.size}")
+                                                questHistory.rewards.forEach {
+                                                    list.add(it.getRepresentation().getString(questContext))
+                                                }
+                                            }
+                                            (view.findViewById(R.id.tv_title) as TextView).apply {
+                                                text = list.joinToString("\n")
+                                            }
+                                        }
+                                    },
+                                    R.layout.wc_right_answer_tool_simple_content
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 }
