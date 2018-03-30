@@ -32,9 +32,9 @@ sealed class ReachVariant : IRewardVariant {
 }
 
 sealed class MedalType(val min: Int, val max: Int) {
-    object Gold : MedalType(0, 0)
-    object Silver : MedalType(1, 2)
-    object Bronze : MedalType(3, 5)
+    object Gold : MedalType(0, 1)
+    object Silver : MedalType(2, 3)
+    object Bronze : MedalType(5, 6)
 
     object Values {
         fun get(): List<MedalType> = listOf(Gold, Silver, Bronze)
@@ -43,9 +43,9 @@ sealed class MedalType(val min: Int, val max: Int) {
 
 sealed class AchievementVariant(val count: Int) : IRewardVariant {
 
-    object Newbe : AchievementVariant(2)
+    object Newbe : AchievementVariant(5)
     data class NewbeByQuestAndQuestType(override var questAndQuestionType: QuestAndQuestionType? = null) :
-            AchievementVariant(2), IRewardVariantWithQuestAndQuestionType
+            AchievementVariant(5), IRewardVariantWithQuestAndQuestionType
     //data class PlayedAllOnLevel()
 
     object Values {
@@ -114,7 +114,7 @@ sealed class Reward {
 
         override fun getVariants(): List<IRewardVariant> = listOf(DefaultRewardVariant)
 
-        override fun getAmountForReaching(rewardVariant: IRewardVariant, complexity: Complexity): Int = 2
+        override fun getAmountForReaching(rewardVariant: IRewardVariant, complexity: Complexity): Int = 10
 
         private fun getMedalTypeBy(allAmount: Int, rightAnswerAmount: Int, wrongAnswerAmount: Int): MedalType? =
                 MedalType.Values.get().first {
@@ -203,9 +203,9 @@ sealed class Reward {
                 when (rewardVariant) {
                     RightSeries ->
                         when (complexity) {
-                            HARD -> 4
-                            NORMAL -> 1
-                            EASY -> 2
+                            HARD -> 12
+                            NORMAL -> 10
+                            EASY -> 8
                         }
                     Independence -> 2
                     else -> TODO()
