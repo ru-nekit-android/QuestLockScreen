@@ -101,10 +101,8 @@ object RewardDataConverter {
         if (parts.size > 1)
             reward.variant = when (reward) {
                 is Reward.UnlockKey -> ReachVariant.Values.get().first { it.name() == parts[1] }
-                is Reward.Achievement -> {
-                    val variant = AchievementVariant.Values.get().first { it.name() == parts[1] }
-                    variant
-                }
+                is Reward.Achievement ->
+                    AchievementVariant.Values.get().first { it.name() == parts[1] }
                 else -> null
             }
         if (reward is Reward.Medal) {
