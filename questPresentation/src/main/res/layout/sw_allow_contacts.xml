@@ -19,7 +19,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_phone_contacts"
-            style="@style/AllowContact.Modification.ContactList"
+            style="@style/PhoneContact.Modification.ContactList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

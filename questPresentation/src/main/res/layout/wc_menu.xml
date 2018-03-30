@@ -29,7 +29,7 @@
 
     </RelativeLayout>
 
-    <ViewSwitcher
+    <FrameLayout
         android:id="@+id/container_content"
         style="@style/Window.Menu.ContentContainer"
         android:layout_width="match_parent"

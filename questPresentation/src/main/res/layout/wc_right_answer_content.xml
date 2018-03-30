@@ -3,21 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/RightAnswer.ContentContainer">
 
-    <android.support.v7.widget.AppCompatImageView
+    <!--<android.support.v7.widget.AppCompatImageView
         android:id="@+id/view_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/container_title"
         android:padding="@dimen/big_gap"
-        app:srcCompat="@drawable/right_answer" />
+        app:srcCompat="@drawable/right_answer" />-->
 
     <android.support.v7.widget.CardView
         android:id="@+id/container_title"
         style="@style/RightAnswer.TitleContainer">
 
-        <ru.nekit.android.qls.widget.AutofitTextView
+        <android.support.v7.widget.AppCompatTextView
             android:id="@+id/tv_title"
-            style="@style/RightAnswer.Title" />
+            style="@style/RightAnswer.Title"
+            app:autoSizeMaxTextSize="24sp"
+            app:autoSizeMinTextSize="16sp"
+            app:autoSizeStepGranularity="1px"
+            app:autoSizeTextType="uniform" />
 
     </android.support.v7.widget.CardView>
 

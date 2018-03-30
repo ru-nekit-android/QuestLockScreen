@@ -7,8 +7,7 @@
         android:id="@+id/container_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/container_tool"
-        android:layout_marginTop="@dimen/title_container_height" />
+        android:layout_above="@id/container_tool" />
 
     <FrameLayout
         android:id="@+id/container_tool"
