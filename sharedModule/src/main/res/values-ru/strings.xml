@@ -1,20 +1,4 @@
 <resources>
-    <string name="app_name">PubnubService</string>
-    <string name="question_solution_title">Решение</string>
-    <string name="question_unknown_member_title">Неизвестный член</string>
-    <string name="question_unknown_operator_title">Неизвестный оператор</string>
-    <string name="question_comparison_title">Сравнение</string>
-    <string name="quest_simple_example_title">Простые примеры</string>
-    <string name="quest_time_title">Время</string>
-    <string name="quest_traffic_light_title">Светофор</string>
-    <string name="quest_coins_title">Монетки</string>
-    <string name="quest_metrics_title">Длина</string>
-    <string name="quest_perimeter_title">Периметр</string>
-    <string name="quest_text_name">Текст</string>
-    <string name="quest_text_camouflage_title">Текстовой камуфляж</string>
-    <string name="quest_fruit_arithmetic_title">Фруктовая\nарифметика</string>
-    <string name="quest_choice_title">Сделай выбор</string>
-    <string name="quest_mismatch_title">Лишний</string>
     <string name="label_next">Далее</string>
     <string name="label_ask_for_permission">Запросить</string>
     <string name="pupil_sex_girl_title">Девочка</string>
@@ -22,14 +6,10 @@
     <string name="complexity_easy">Легко</string>
     <string name="complexity_hard">Сложно</string>
     <string name="complexity_normal">Нормально</string>
-    <string name="quest_current_time_title">Текущее время</string>
     <string name="label_ok">Ok</string>
     <string name="label_create">Создать</string>
     <string name="label_yes">Да</string>
     <string name="label_no">Нет</string>
     <string name="title_do_you_really_want_to_delete">Вы действительно хотетите удалить?</string>
-    <string name="quest_current_season_title">Текущее время года</string>
-    <string name="quest_colors_title">Цвета</string>
-    <string name="quest_direction_title">Направление</string>
     <string name="phone_contact_formatter">%1$disposable (%2$disposable)</string>
 </resources>

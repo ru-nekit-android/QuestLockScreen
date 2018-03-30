@@ -42,7 +42,6 @@
 
     <style name="MenuButton">
         <item name="srcCompat">@drawable/ic_menu_white_24pd</item>
-        <item name="android:text">@string/label_unlock</item>
         <item name="android:background">@color/white</item>
     </style>
 
@@ -164,8 +163,6 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    ResourcePresentationport Content-->
-
     <style name="LockScreen.SupportContent" />
 
     <style name="LockScreen.SupportContent.Title">
@@ -193,9 +190,9 @@
         <item name="cardElevation">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_marginLeft">@dimen/big_gap</item>
-        <item name="android:layout_marginRight">@dimen/big_gap</item>
-        <item name="android:layout_marginTop">@dimen/big_gap</item>
+        <item name="android:layout_marginLeft">@dimen/normal_gap</item>
+        <item name="android:layout_marginRight">@dimen/normal_gap</item>
+        <item name="android:layout_marginTop">@dimen/normal_gap</item>
         <item name="cardUseCompatPadding">false</item>
     </style>
 
@@ -206,7 +203,6 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/big_gap</item>
-        <item name="android:text">@string/title_right_answer_simple</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -217,13 +213,11 @@
 
     <style name="RightAnswer.Title" parent="TextAppearance">
         <item name="android:singleLine">false</item>
-        <item name="android:textSize">18sp</item>
-        <item name="minTextSize">14sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left</item>
-        <item name="android:layout_margin">@dimen/big_gap</item>
+        <item name="android:layout_margin">@dimen/normal_gap</item>
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="RightAnswer.Text" parent="TextAppearance">
@@ -250,9 +244,7 @@
         <item name="android:layout_marginTop">@dimen/normal_gap</item>
     </style>
 
-    <style name="WrongAnswer.Title.Simple" parent="RightAnswer.Title.Simple">
-        <item name="android:text">@string/title_wrong_answer</item>
-    </style>
+    <style name="WrongAnswer.Title.Simple" parent="RightAnswer.Title.Simple"/>
 
     <style name="WrongAnswer.Title" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
@@ -305,7 +297,6 @@
     </style>
 
     <style name="Quest.AnswerButton" parent="@style/ImageButton">
-        <item name="android:text">@string/label_answer</item>
         <item name="srcCompat">@drawable/ic_chevron_right_white_36dp</item>
     </style>
 
@@ -357,6 +348,44 @@
         <item name="backgroundColorEnd">#77FFFFFF</item>
         <item name="openPosition">POSITION_TOP_RIGHT</item>
         <item name="closePosition">POSITION_TOP_RIGHT</item>
+    </style>
+
+    <style name="Window.Statistics">
+        <item name="dimAmount">0</item>
+        <item name="backgroundColorStart">#77FFFFFF</item>
+        <item name="backgroundColorEnd">#77FFFFFF</item>
+        <item name="openPosition">POSITION_TOP_LEFT</item>
+        <item name="closePosition">POSITION_TOP_LEFT</item>
+    </style>
+
+    <style name="Window.Statistics.Statistics" />
+
+    <style name="Window.Statistics.Rewards" />
+
+    <style name="Window.Statistics.Gifts" />
+
+    <style name="Window.Statistics.Statistics.ContentContainer">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
+    </style>
+
+    <style name="Window.Statistics.Statistics.List">
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Window.Statistics.Rewards.ContentContainer">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
+    </style>
+
+    <style name="Window.Statistics.Rewards.List">
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Window.Statistics.Gifts.ContentContainer">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
+    </style>
+
+    <style name="Window.Statistics.Gifts.List">
+        <item name="android:scrollbars">vertical</item>
     </style>
 
     <style name="Window.Menu.Phone" />
@@ -633,34 +662,33 @@
         <item name="android:layout_alignParentTop">true</item>
     </style>
 
-    <!-- Allow Contacts lLinkItem for modification createread only types -->
 
-    <style name="AllowContact" />
+    <style name="PhoneContact" />
 
-    <style name="AllowContact.Read" />
+    <style name="PhoneContact.Read" />
 
-    <style name="AllowContact.Read.InformationField" parent="TextAppearance">
+    <style name="PhoneContact.Read.InformationField" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
 
-    <style name="AllowContact.Read.Title" parent="TextAppearance">
+    <style name="PhoneContact.Read.Title" parent="TextAppearance">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
 
-    <style name="AllowContact.Read.Information" parent="TextAppearance">
+    <style name="PhoneContact.Read.Information" parent="TextAppearance">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
 
-    <style name="AllowContact.Read.Container">
+    <style name="PhoneContact.Read.Container">
         <item name="android:layout_margin">4dp</item>
         <item name="cardCornerRadius">0dp</item>
         <item name="elevation">4dp</item>
@@ -668,19 +696,23 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
+    <style name="PhoneContact.Read.ContentContainer">
+        <item name="android:padding">@dimen/big_gap</item>
+    </style>
+
     <!--modification-->
 
-    <style name="AllowContact.Modification">
+    <style name="PhoneContact.Modification">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:scrollbars">vertical</item>
     </style>
 
-    <style name="AllowContact.Modification.ContactList">
+    <style name="PhoneContact.Modification.ContactList">
         <item name="android:layout_centerVertical">true</item>
         <item name="android:scrollbars">vertical</item>
     </style>
 
-    <style name="AllowContact.Modification.Container">
+    <style name="PhoneContact.Modification.Container">
         <item name="android:layout_margin">@dimen/normal_gap</item>
         <item name="cardCornerRadius">0dp</item>
         <item name="elevation">4dp</item>
@@ -688,26 +720,30 @@
         <item name="cardUseCompatPadding">false</item>
     </style>
 
-    <style name="AllowContact.Modification.Title" parent="TextAppearance">
+    <style name="PhoneContact.Modification.Title" parent="TextAppearance">
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
 
-    <style name="AllowContact.Modification.Information" parent="TextAppearance">
+    <style name="PhoneContact.Modification.Information" parent="TextAppearance">
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
 
-    <style name="AllowContact.Modification.ActionButton">
+    <style name="PhoneContact.Modification.ContentContainer">
+        <item name="android:padding">@dimen/big_gap</item>
+    </style>
+
+    <style name="PhoneContact.Modification.ActionButton">
         <item name="srcCompat">@drawable/ic_delete_forever_red</item>
         <item name="android:background">@color/white</item>
     </style>
 
-    <style name="AllowContact.Read.ActionButton">
+    <style name="PhoneContact.Read.ActionButton">
         <item name="srcCompat">@drawable/ic_phone_36dp</item>
         <item name="android:tint">@color/green</item>
     </style>
@@ -724,6 +760,40 @@
     <style name="GenerateQRCode" parent="TextAppearance">
         <item name="android:textSize">24sp</item>
     </style>
+
+    <style name="Statistics" />
+
+    <style name="Statistics.ContactList">
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Statistics.Container">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="elevation">4dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="Statistics.Title" parent="TextAppearance">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/normal_gap</item>
+        <item name="android:paddingRight">@dimen/normal_gap</item>
+    </style>
+
+    <style name="Statistics.Information" parent="TextAppearance">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:paddingLeft">@dimen/normal_gap</item>
+        <item name="android:paddingRight">@dimen/normal_gap</item>
+    </style>
+
+    <style name="Statistics.ContentContainer">
+        <item name="android:padding">@dimen/small_gap</item>
+    </style>
+
 
 
 </resources>

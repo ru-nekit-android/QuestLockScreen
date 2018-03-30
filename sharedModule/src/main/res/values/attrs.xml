@@ -7,7 +7,7 @@
         <attr name="sizeToFit" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="QuestWindowStyle">
+    <declare-styleable name="WindowStyle">
         <attr name="openPosition" format="string" />
         <attr name="closePosition" format="string" />
         <attr name="backgroundColorStart" format="color" />
