@@ -16,7 +16,6 @@ object KeyboardHost {
             val imm = context.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             val token = input.windowToken
             imm.hideSoftInputFromWindow(token, 0)
-            //imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             body()
         }, delay)
     }
