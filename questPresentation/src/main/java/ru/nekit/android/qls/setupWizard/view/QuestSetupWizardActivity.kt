@@ -1,9 +1,9 @@
 package ru.nekit.android.qls.setupWizard.view
 
 import android.os.Bundle
+import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.qls.QuestLockScreenApplication
-import ru.nekit.android.qls.eventBus.IEventListener
-import ru.nekit.android.qls.lockScreen.LockScreenContentMediatorEvent
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorEvent
 import ru.nekit.android.qls.quest.providers.IEventListenerProvider
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardActivity
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep.UNLOCK_SECRET
@@ -22,6 +22,8 @@ class QuestSetupWizardActivity : BaseSetupWizardActivity(), IEventListenerProvid
             if (it == LockScreenContentMediatorEvent.ON_INIT)
                 finish()
         }
+        //val t = Single.just(1).applySchedulers((application as QuestLockScreenApplication).getDefaultSchedulerProvider()).subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread()).blockingGet()
+        //System.out.print(t)
         //eventBus.handleEvents(this, LockScreenService.PUPIL_BIND_OK)
     }
 

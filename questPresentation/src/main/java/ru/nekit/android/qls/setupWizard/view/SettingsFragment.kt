@@ -12,8 +12,8 @@ import ru.nekit.android.qls.domain.useCases.GetQuestSeriesLength
 import ru.nekit.android.qls.domain.useCases.SetQuestSeriesLength
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.*
-import ru.nekit.android.qls.utils.Delay
 import ru.nekit.android.qls.utils.KeyboardHost
+import ru.nekit.android.utils.Delay
 
 
 class SettingsFragment : QuestSetupWizardFragment(), View.OnClickListener {

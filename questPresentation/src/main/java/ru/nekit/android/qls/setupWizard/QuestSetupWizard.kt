@@ -8,9 +8,8 @@ import android.content.Intent.*
 import android.os.Build
 import android.provider.Settings
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
@@ -44,13 +43,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
         get() = GetCurrentPupilUseCase(application,
                 application.getDefaultSchedulerProvider()).build()
 
-    fun phoneContacts(body: (MutableList<PhoneContact>) -> Unit): Disposable =
-            phoneContacts.subscribe { it ->
-                body(it)
-            }
-
-    val phoneContacts: Single<MutableList<PhoneContact>>
-        get() = GetPhoneContactsUseCase(application, application.getDefaultSchedulerProvider()).build()
+    val phoneContacts: Single<List<PhoneContact>> = PhoneContactsUseCases.getPhoneContacts()
 
     private fun overlayPermissionIsSet(): Boolean {
         return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
@@ -120,39 +113,25 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
             ).build(body)
 
 
-    override fun calculateNextStep(): QuestSetupWizardStep {
-        /*Flowable.fromIterable(QuestSetupWizardStep.values().toMutableList()).flatMap {
+    override fun calculateNextStep(): Single<ISetupWizardStep> =
+            Flowable.fromIterable(QuestSetupWizardStep.values().toList()).flatMapSingle { step ->
+                if (setupIsComplete()) {
+                    val flags = step.flags
+                    if (flags and CAN_BE_RESET_AFTER_SET != 0 && flags and SETUP_WIZARD_PARENT != 0)
+                        step.stepIsComplete(this).map { Optional(if (it) null else step) }
+                    else
+                        Optional.just()
 
-            it -> Single.just(it).filter{
-                 val flags = it.flags
-                 flags with CAN_BE_RESET_AFTER_SET != 0 && flags with SETUP_WIZARD_PARENT != 0
-              }.zipWith(it.stepIsComplete(this).toMaybe(), BiFunction{ a:ISetupWizardStep, b:Boolean -> if(!b) a}).toFlowable()
-        }.firstElement()*/
-        val steps = QuestSetupWizardStep.values()
-        if (setupIsComplete()) {
-            for (step in steps) {
-                val flags = step.flags
-                if (flags and CAN_BE_RESET_AFTER_SET != 0 && flags and SETUP_WIZARD_PARENT != 0) {
-                    if (!step.stepIsComplete(this).blockingGet()) {
-                        return step
-                    }
-                }
-            }
-        } else {
-            for (step in steps) {
-                if (currentStep == null) {
-                    return step
-                } else {
-                    if (step.flags and SETUP_WIZARD_PARENT != 0) {
-                        if (!step.stepIsComplete(this).blockingGet()) {
-                            return step
-                        }
-                    }
-                }
-            }
-        }
-        return SETTINGS
-    }
+                } else
+                    if (currentStep == null)
+                        Single.just(Optional(step))
+                    else
+                        if (step.flags and SETUP_WIZARD_PARENT != 0)
+                            step.stepIsComplete(this).map { Optional(if (it) null else step) }
+                        else
+                            Optional.just()
+            }.filter { it.isNotEmpty() }.map { it.nonNullData }.first(SETTINGS).cast(ISetupWizardStep::class.java)
+
 
     override fun getName(): String {
         return NAME
@@ -161,8 +140,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
     override fun needLogin(step: ISetupWizardStep): Single<Boolean> {
         return CheckSessionValidationUseCase(application,
                 application.getTimeProvider(),
-                application.getDefaultSchedulerProvider()).build(SessionType.SETUP_WIZARD).zipWith(step.needLogin().toSingle(),
-                BiFunction { a: Boolean, b: Boolean -> !a && b })
+                application.getDefaultSchedulerProvider()).build(SessionType.SETUP_WIZARD).map { !it && step.needLogin() }
     }
 
     fun commitCurrentSetupStep(value: ISetupWizardStep) {
@@ -289,15 +267,10 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
             }
         },
         SETUP_PHONE_CONTACTS(SETTINGS_PARENT or SETUP_WIZARD_PARENT) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return Single.zip(setupWizard.phoneContacts,
-                        setupWizard.phoneIsAvailable().toSingle(),
-                        BiFunction { a: List<PhoneContact>,
-                                     b: Boolean ->
-                            a.isNotEmpty() && b
-                        }
-                )
-            }
+            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> =
+                    setupWizard.phoneContacts.map {
+                        it.isNotEmpty() && setupWizard.phoneIsAvailable()
+                    }
         },
         VOICE_RECORD(SETTINGS_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {

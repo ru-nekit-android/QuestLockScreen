@@ -12,9 +12,9 @@ import ru.nekit.android.qls.setupWizard.BaseSetupWizard
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep.UNLOCK_SECRET
 import ru.nekit.android.qls.setupWizard.ISetupWizardStep
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.SETUP_UNLOCK_SECRET
-import ru.nekit.android.qls.utils.Delay
 import ru.nekit.android.qls.utils.KeyboardHost
 import ru.nekit.android.qls.utils.Vibrate
+import ru.nekit.android.utils.Delay
 
 class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener {
 
