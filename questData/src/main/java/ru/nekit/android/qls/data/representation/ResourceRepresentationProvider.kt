@@ -1,18 +1,17 @@
-package ru.nekit.android.qls.quest.resources.representation.common
+package ru.nekit.android.qls.data.representation
 
 import android.support.annotation.ColorRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.StringRes
 import ru.nekit.android.qls.data.providers.*
+import ru.nekit.android.qls.data.repository.Declension
+import ru.nekit.android.qls.data.representation.common.ColorfullVisualResourceStruct
+import ru.nekit.android.qls.data.representation.common.IColorfullVisualResourceProvider
+import ru.nekit.android.qls.data.representation.common.ILocalizedAdjectiveStringResourceProvider
+import ru.nekit.android.qls.data.representation.common.ILocalizedNounStringResourceHolder
 import ru.nekit.android.qls.domain.model.resources.*
 import ru.nekit.android.qls.domain.model.resources.common.IRepresentation
 import ru.nekit.android.qls.domain.model.resources.common.IResourceGroupHolder
-import ru.nekit.android.qls.domain.utils.Declension
-import ru.nekit.android.qls.quest.resources.common.IColorfullVisualResourceProvider
-import ru.nekit.android.qls.quest.resources.common.ILocalizedAdjectiveStringResourceProvider
-import ru.nekit.android.qls.quest.resources.common.ILocalizedNounStringResourceHolder
-import ru.nekit.android.qls.quest.resources.representation.getRepresentation
-import ru.nekit.android.qls.quest.resources.struct.ColorfullVisualResourceStruct
 
 open class ResourceRepresentationProvider<in Key : Enum<*>, Value> {
 
@@ -37,7 +36,7 @@ open class ResourceRepresentationProvider<in Key : Enum<*>, Value> {
 open class StringRepresentationProvider<in Key : Enum<*>> : ResourceRepresentationProvider<Key,
         StringRepresentation>() {
 
-    private fun createRepresentation(key: Key, string: String) {
+    protected fun createRepresentation(key: Key, string: String) {
         createRepresentation(key, StringRepresentation(string))
     }
 
@@ -46,11 +45,11 @@ open class StringRepresentationProvider<in Key : Enum<*>> : ResourceRepresentati
 open class StringListRepresentationProvider<in Key : Enum<*>> : ResourceRepresentationProvider<Key,
         StringListRepresentation>() {
 
-    private fun createRepresentation(key: Key, strings: List<String>) {
+    protected fun createRepresentation(key: Key, strings: List<String>) {
         createRepresentation(key, StringListRepresentation(strings))
     }
 
-    private fun createRepresentation(key: Key, string: String) {
+    protected fun createRepresentation(key: Key, string: String) {
         createRepresentation(key, StringListRepresentation(listOf(string)))
     }
 }
@@ -58,9 +57,8 @@ open class StringListRepresentationProvider<in Key : Enum<*>> : ResourceRepresen
 open class StringIdRepresentationProvider<in Key : Enum<*>> : ResourceRepresentationProvider<Key,
         StringIdRepresentation>() {
 
-
-    private fun createRepresentation(key: Key, stringResourceId: Int) {
-        createRepresentation(key, stringResourceId)
+    protected fun createRepresentation(key: Key, stringResourceId: Int) {
+        createRepresentation(key, StringIdRepresentation(stringResourceId))
     }
 
 }
@@ -68,10 +66,13 @@ open class StringIdRepresentationProvider<in Key : Enum<*>> : ResourceRepresenta
 open class StringListIdRepresentationProvider<in Key : Enum<*>> : ResourceRepresentationProvider<Key,
         StringListIdRepresentation>() {
 
-    private fun createRepresentation(key: Key, stringListResourceId: List<Int>) {
-        createRepresentation(key, stringListResourceId)
+    protected fun createRepresentation(key: Key, stringListResourceId: List<Int>) {
+        createRepresentation(key, StringListIdRepresentation(stringListResourceId))
     }
 
+    protected fun createRepresentation(key: Key, vararg stringListResourceId: Int) {
+        createRepresentation(key, stringListResourceId.toList())
+    }
 }
 
 open class StringIdRepresentation

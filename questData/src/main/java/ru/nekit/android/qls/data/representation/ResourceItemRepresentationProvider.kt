@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.resources.representation
+package ru.nekit.android.qls.data.representation
 
 import ru.nekit.android.qls.domain.model.resources.ChildrenToysVisualResourceCollection
 import ru.nekit.android.qls.domain.model.resources.CoinVisualResourceCollection

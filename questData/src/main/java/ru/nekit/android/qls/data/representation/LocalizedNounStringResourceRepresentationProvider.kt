@@ -1,11 +1,9 @@
-package ru.nekit.android.qls.quest.resources.representation
+package ru.nekit.android.qls.data.representation
 
-import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.repository.Declension
+import ru.nekit.android.qls.data.repository.Declension.Gender.*
 import ru.nekit.android.qls.domain.model.resources.LocalizedNounStringResourceCollection
-import ru.nekit.android.qls.domain.utils.Declension
-import ru.nekit.android.qls.domain.utils.Declension.Gender.*
-import ru.nekit.android.qls.quest.resources.representation.common.LocalizedNounStringResourceRepresentation
-import ru.nekit.android.qls.quest.resources.representation.common.ResourceRepresentationProvider
+import ru.nekit.android.questData.R.string.*
 
 object LocalizedNounStringResourceRepresentationProvider : ResourceRepresentationProvider<
         LocalizedNounStringResourceCollection,
@@ -13,65 +11,65 @@ object LocalizedNounStringResourceRepresentationProvider : ResourceRepresentatio
 
     init {
         createRepresentation(LocalizedNounStringResourceCollection.CAR,
-                R.string.qvri_car_title,
+                qvri_car_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.BOOTS,
-                R.string.qvri_doll_boots_title,
+                qvri_doll_boots_title,
                 MALE,
                 true)
-        createRepresentation(LocalizedNounStringResourceCollection.DOLL_SKIRT, R.string.qvri_doll_skirt_title,
+        createRepresentation(LocalizedNounStringResourceCollection.DOLL_SKIRT, qvri_doll_skirt_title,
                 FEMALE,
                 false)
-        createRepresentation(LocalizedNounStringResourceCollection.DOLL_BLOUSE, R.string.qvri_doll_blouse_title,
+        createRepresentation(LocalizedNounStringResourceCollection.DOLL_BLOUSE, qvri_doll_blouse_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.WINTER,
-                R.string.qvri_winter_title,
+                qvri_winter_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.FALL,
-                R.string.qvri_fall_title,
+                qvri_fall_title,
                 FEMALE,
                 false, "ь")
         createRepresentation(LocalizedNounStringResourceCollection.SPRING,
-                R.string.qvri_spring_title,
+                qvri_spring_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.SUMMER,
-                R.string.qvri_summer_title,
+                qvri_summer_title,
                 NEUTER,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.ORANGE,
-                R.string.qvri_orange_title,
+                qvri_orange_title,
                 MALE,
                 false, "")
         createRepresentation(LocalizedNounStringResourceCollection.STRAWBERRY,
-                R.string.qvri_strawberry_title,
+                qvri_strawberry_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.APPLE,
-                R.string.qvri_apple_title,
+                qvri_apple_title,
                 NEUTER,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.PEAR,
-                R.string.qvri_pear_title,
+                qvri_pear_title,
                 FEMALE,
                 false)
         createRepresentation(LocalizedNounStringResourceCollection.CHERRY,
-                R.string.qvri_cherry_title,
+                qvri_cherry_title,
                 FEMALE,
                 false, "ю")
         createRepresentation(LocalizedNounStringResourceCollection.RASPBERRY,
-                R.string.qvri_raspberry_title,
+                qvri_raspberry_title,
                 FEMALE, false)
         createRepresentation(LocalizedNounStringResourceCollection.PINEAPPLE,
-                R.string.qvri_pineapple_title,
+                qvri_pineapple_title,
                 MALE,
                 false,
                 "")
         createRepresentation(LocalizedNounStringResourceCollection.BLACKBERRY,
-                R.string.qvri_blackberry_title,
+                qvri_blackberry_title,
                 FEMALE,
                 false)
     }

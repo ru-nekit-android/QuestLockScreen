@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.quest.resources.struct
+package ru.nekit.android.qls.data.representation.common
 
 import android.support.annotation.DrawableRes
 

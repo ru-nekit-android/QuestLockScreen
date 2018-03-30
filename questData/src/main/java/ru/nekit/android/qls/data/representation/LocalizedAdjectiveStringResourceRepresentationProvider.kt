@@ -1,21 +1,19 @@
-package ru.nekit.android.qls.quest.resources.representation
+package ru.nekit.android.qls.data.representation
 
 import android.support.annotation.StringRes
-import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.resources.LocalizedAdjectiveStringResourceCollection
 import ru.nekit.android.qls.domain.model.resources.LocalizedAdjectiveStringResourceCollection.*
-import ru.nekit.android.qls.quest.resources.representation.common.ResourceRepresentationProvider
-import ru.nekit.android.qls.quest.resources.representation.common.StringIdRepresentation
+import ru.nekit.android.questData.R.string.*
 
 object LocalizedAdjectiveStringResourceRepresentationProvider :
         ResourceRepresentationProvider<LocalizedAdjectiveStringResourceCollection,
                 StringIdRepresentation>() {
 
     init {
-        createRepresentation(WHITE, R.string.color_white)
-        createRepresentation(BLACK, R.string.color_black)
-        createRepresentation(RED, R.string.color_red)
-        createRepresentation(GREEN, R.string.color_green)
+        createRepresentation(WHITE, color_white)
+        createRepresentation(BLACK, color_black)
+        createRepresentation(RED, color_red)
+        createRepresentation(GREEN, color_green)
     }
 
     private fun createRepresentation(key: LocalizedAdjectiveStringResourceCollection,
