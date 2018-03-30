@@ -118,6 +118,10 @@
     <string name="mathematical_operation_multiplication_title">×</string>
     <string name="mathematical_operation_subtraction_title">−</string>
 
+    <string name="mathematical_operation_sign_comparison_less_title">&lt;</string>
+    <string name="mathematical_operation_sign_comparison_greater_title">&gt;</string>
+    <string name="mathematical_operation_sign_comparison_equal_title">=</string>
+
     <string name="reward_default_title"> </string>
     <string name="reward_unlock_key_title">Ключик</string>
     <string name="reward_medal_title">Медаль</string>

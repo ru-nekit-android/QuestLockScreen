@@ -1,14 +1,15 @@
 package ru.nekit.android.qls.data.representation
 
 import ru.nekit.android.qls.domain.model.math.MathematicalSignComparison
+import ru.nekit.android.qls.domain.model.math.MathematicalSignComparison.*
 import ru.nekit.android.questData.R.string.*
 
-object MathematicalOperationSignComparisonRepresentationProviderAsSign : StringRepresentationProvider<MathematicalSignComparison>() {
+object MathematicalOperationSignComparisonRepresentationProviderAsSign : StringIdRepresentationProvider<MathematicalSignComparison>() {
 
     init {
-        createRepresentation(MathematicalSignComparison.EQUAL, "=")
-        createRepresentation(MathematicalSignComparison.GREATER, ">")
-        createRepresentation(MathematicalSignComparison.LESS, "<")
+        createRepresentation(EQUAL, mathematical_operation_sign_comparison_equal_title)
+        createRepresentation(GREATER, mathematical_operation_sign_comparison_greater_title)
+        createRepresentation(LESS, mathematical_operation_sign_comparison_less_title)
     }
 
 }
@@ -16,9 +17,9 @@ object MathematicalOperationSignComparisonRepresentationProviderAsSign : StringR
 object MathematicalOperationSignComparisonRepresentationProviderAsWord : StringIdRepresentationProvider<MathematicalSignComparison>() {
 
     init {
-        createRepresentation(MathematicalSignComparison.EQUAL, equal)
-        createRepresentation(MathematicalSignComparison.GREATER, greater)
-        createRepresentation(MathematicalSignComparison.LESS, less)
+        createRepresentation(EQUAL, equal)
+        createRepresentation(GREATER, greater)
+        createRepresentation(LESS, less)
     }
 
 }

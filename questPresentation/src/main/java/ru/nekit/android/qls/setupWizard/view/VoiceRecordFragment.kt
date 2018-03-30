@@ -66,7 +66,7 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
 
     override fun onClick(view: View) {
         mVoiceCenter.stopRecording()
-        if (view === mRightAnswerVoiceRecordButton) {
+        if (view == mRightAnswerVoiceRecordButton) {
             if (mActiveType == RIGHT) {
                 mRightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
                 mActiveType = null

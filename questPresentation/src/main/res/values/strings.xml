@@ -11,11 +11,6 @@
     <string name="exit">Выход</string>
     <string name="close">Закрыть</string>
     <string name="label_phone">Телефон</string>
-    <string name="less_sign">&lt;</string>
-    <string name="greater_sign">&gt;</string>
-    <string name="equal_sign">=</string>
-    <string name="minus">-</string>
-    <string name="add">+</string>
     <string name="missed_character">…</string>
     <string name="join_character">" "</string>
     <string name="meter_short">м</string>
