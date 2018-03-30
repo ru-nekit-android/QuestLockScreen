@@ -1,3 +1,130 @@
 <resources>
-    <string name="app_name">questDataLayerModule</string>
+
+    <string name="qvri_orange_title">Апельсин</string>
+    <string name="qvri_strawberry_title">Клубник</string>
+    <string name="qvri_plus_title">Плюс</string>
+    <string name="qvri_minus_title">Минус</string>
+    <string name="qvri_equal_title">Равно</string>
+    <string name="qvri_raspberry_title">Малин</string>
+    <string name="qvri_apple_title">Яблок</string>
+    <string name="qvri_cherry_title">Вишн</string>
+    <string name="qvri_pear_title">Груш</string>
+    <string name="qvri_fall_title">Осен</string>
+    <string name="qvri_summer_title">Лет</string>
+    <string name="qvri_spring_title">Весн</string>
+    <string name="qvri_winter_title">Зим</string>
+    <string name="qvri_pineapple_title">Ананас</string>
+    <string name="qvri_blackberry_title">Ежевика</string>
+    <string name="qvri_coin_one_title">1</string>
+    <string name="qvri_coin_two_title">2</string>
+    <string name="qvri_coin_five_title">5</string>
+    <string name="qvri_coin_ten_title">10</string>
+    <string name="qvri_car_title">Машин</string>
+    <string name="qvri_doll_title">Кукл</string>
+    <string name="qvri_doll_boots_title">Ботиночк</string>
+    <string name="qvri_doll_skirt_title">Юбк</string>
+    <string name="qvri_doll_blouse_title">Блузк</string>
+
+    <string name="qvrg_choice_title">Выбор</string>
+    <string name="qvrg_math_operator_title">Математический оператор</string>
+    <string name="qvrg_fruit_title">Фрукты</string>
+    <string name="qvrg_clock_face_title">Циферблат</string>
+    <string name="qvrg_berry_title">Ягода</string>
+    <string name="qvrg_pomum_title">Плод</string>
+    <string name="qvrg_seasons_title">Сезоны</string>
+    <string name="qvrg_girl_title">Девочка</string>
+    <string name="qvrg_boy_title">Мальчик</string>
+    <string name="qvrg_sex_title">Пол</string>
+    <string name="qvrg_children_toy_title">Детская игрушка</string>
+    <string name="qvrg_coins_title">Монеты</string>
+
+    <string name="color_white">Бел</string>
+    <string name="color_black">Черн</string>
+    <string name="color_red">Красн</string>
+    <string name="color_green">Зелен</string>
+    <string name="color_default">По умолчанию</string>
+
+    <string name="question_type_solution_title">Решение</string>
+    <string name="question_type_unknown_member_title">Неизвестный член</string>
+    <string name="question_type_unknown_operator_title">Неизвестный оператор</string>
+    <string name="question_type_comparison_title">Сравнение</string>
+
+    <string name="quest_current_time_unknown_member_title">Выберите циферблат с текущем временем</string>
+    <string name="quest_choice_unknown_member_title">Выберите %1$s</string>
+    <string name="quest_mismatch_unknown_member_title">Найди лишнее</string>
+    <string name="quest_current_season_unknown_member_title">Выберите текущее время года</string>
+    <string name="quest_colors_unknown_member_title">Выберите %1$s</string>
+    <string name="quest_direction_unknown_member_title">Проведите пальцев %1$s</string>
+    <string name="quest_text_camouflage_description">Составте слово идя по спирале и выберая каждую $1%s-ую букву</string>
+    <string name="quest_direction_title_left">Влево</string>
+    <string name="quest_direction_title_down">Вниз</string>
+    <string name="quest_direction_title_right">Вправо</string>
+    <string name="quest_direction_title_up">Вверх</string>
+    <string name="quest_direction_empty_answer_message">Проведи!!!</string>
+    <string name="quest_coins_solution_title">Сколько рублей в стопке монет?</string>
+    <string name="quest_coins_unknown_member_title">Какой монеты не хватает, если в стопке %1$d рублей?</string>
+    <string name="quest_simple_example_unknown_member_title">Найдите неизвестный член!</string>
+    <string name="quest_simple_example_solution_title">Решите пример!</string>
+    <string name="quest_simple_example_comparison_title">Неравенство!</string>
+    <string name="quest_simple_example_unknown_operation_title">Какой знак нужно выбрать, чтобы решить пример!</string>
+    <string name="quest_metrics_solution_title">Сколько в сантиметрах!</string>
+    <string name="quest_metrics_comparison_title">Длинее, равно или короче</string>
+    <string name="quest_perimeter_solution_title">Найдите периметр %1$sа!</string>
+    <string name="quest_perimeter_unknown_member_title">Найдите сторону %1$s, если периметр равен %2$d см.</string>
+    <string name="quest_traffic_light_solution_title">%1$s или %2$s</string>
+    <string name="quest_fruit_arithmetic_solution_title">Фруктовая арифметика</string>
+    <string name="quest_fruit_arithmetic_comparison_title">Фруктовая арифметика: каких фруктов  %1$s?</string>
+    <string name="quest_time_unknown_member_title">Выберите циферблат, на которых изображено %1$s</string>
+    <string name="quest_time_comparison_title">Выберите циферблат, на которых изображено %1$s время</string>
+    <string name="quest_simple_example_title">Простые примеры</string>
+    <string name="quest_current_season_title">Текущее время года</string>
+    <string name="quest_colors_title">Цвета</string>
+    <string name="quest_direction_title">Направление</string>
+    <string name="quest_time_title">Время</string>
+    <string name="quest_traffic_light_title">Светофор</string>
+    <string name="quest_coins_title">Монетки</string>
+    <string name="quest_metrics_title">Длина</string>
+    <string name="quest_perimeter_title">Периметр</string>
+    <string name="quest_text_name">Текст</string>
+    <string name="quest_current_time_title">Текущее время</string>
+    <string name="quest_text_camouflage_title">Текстовой камуфляж</string>
+    <string name="quest_fruit_arithmetic_title">Фруктовая\nарифметика</string>
+    <string name="quest_choice_title">Сделай выбор</string>
+    <string name="quest_mismatch_title">Лишний</string>
+
+    <string name="go">Идти</string>
+    <string name="cross">Переходить</string>
+    <string name="wait">Ждать</string>
+    <string name="stand">Стоять</string>
+    <string name="shorter">Короче</string>
+    <string name="longer">Длиннее</string>
+
+    <string name="less">Меньше</string>
+    <string name="equal">Равно</string>
+    <string name="greater">Больше</string>
+
+    <string name="period_hourly_title">Час</string>
+    <string name="period_daily_title">День</string>
+    <string name="period_weekly_title">Неделя</string>
+    <string name="period_monthly_title">Месяц</string>
+
+    <string name="answer_type_right_title">Правильно</string>
+    <string name="answer_type_right_title2">Правильно ответил!!!</string>
+    <string name="answer_type_wrong_title">Попробуй еще раз</string>
+    <string name="answer_type_wrong_title2">В следующий раз получиться</string>
+
+    <string name="mathematical_operation_addition_title">+</string>
+    <string name="mathematical_operation_division_title">:</string>
+    <string name="mathematical_operation_multiplication_title">×</string>
+    <string name="mathematical_operation_subtraction_title">−</string>
+
+    <string name="reward_default_title"> </string>
+    <string name="reward_unlock_key_title">Ключик</string>
+    <string name="reward_medal_title">Медаль</string>
+    <string name="reward_medal_gold_title">Золотая медаль</string>
+    <string name="reward_medal_silver_title">Серебряная медаль</string>
+    <string name="reward_medal_bronze_title">Бронзова медаль</string>
+    <string name="reward_achievement_newbe_title">Новичок</string>
+    <string name="reward_achievement_newbe_by_quest_and_question_type_title">Новичок по типу задания</string>
+
 </resources>
