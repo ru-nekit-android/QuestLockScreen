@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.domain.quest.creator
+package ru.nekit.android.qls.domain.creator
 
 import ru.nekit.android.qls.domain.model.TimeQuestTrainingProgramRule
 

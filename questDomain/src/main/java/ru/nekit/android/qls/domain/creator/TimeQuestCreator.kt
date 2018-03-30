@@ -1,8 +1,7 @@
-package ru.nekit.android.qls.domain.quest.creator
+package ru.nekit.android.qls.domain.creator
 
 import ru.nekit.android.qls.domain.model.TimeQuestTrainingProgramRule
 import ru.nekit.android.qls.domain.model.quest.NumberSummandQuest
-import ru.nekit.android.qls.domain.quest.creator.common.IQuestCreator
 import ru.nekit.android.qls.domain.quest.generator.NumberSummandQuestGenerator
 import ru.nekit.android.qls.shared.model.QuestionType
 

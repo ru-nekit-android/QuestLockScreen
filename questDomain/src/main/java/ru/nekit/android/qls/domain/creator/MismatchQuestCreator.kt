@@ -1,10 +1,9 @@
-package ru.nekit.android.qls.domain.quest.creator
+package ru.nekit.android.qls.domain.creator
 
 import ru.nekit.android.qls.domain.model.ChoiceQuestTrainingProgramRule
 import ru.nekit.android.qls.domain.model.quest.NumberSummandQuest
 import ru.nekit.android.qls.domain.model.resources.ResourceGroupCollection
 import ru.nekit.android.qls.domain.model.resources.common.IVisualResourceHolder
-import ru.nekit.android.qls.domain.quest.creator.common.IQuestCreator
 import ru.nekit.android.qls.domain.repository.IQuestResourceRepository
 import ru.nekit.android.qls.shared.model.QuestionType
 import ru.nekit.android.utils.MathUtils.randByListLength

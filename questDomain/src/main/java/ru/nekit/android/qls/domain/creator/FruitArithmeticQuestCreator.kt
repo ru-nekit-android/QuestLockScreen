@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.domain.quest.creator
+package ru.nekit.android.qls.domain.creator
 
 import ru.nekit.android.qls.domain.model.FruitArithmeticQuestTrainingProgramRule
 import ru.nekit.android.qls.domain.model.quest.FruitArithmeticQuest
@@ -6,7 +6,6 @@ import ru.nekit.android.qls.domain.model.resources.ResourceGroupCollection.*
 import ru.nekit.android.qls.domain.model.resources.SimpleVisualResourceCollection.*
 import ru.nekit.android.qls.domain.model.resources.common.IGroupWeightComparisonQuest
 import ru.nekit.android.qls.domain.model.resources.common.IVisualResourceHolder
-import ru.nekit.android.qls.domain.quest.creator.common.IQuestCreator
 import ru.nekit.android.qls.domain.quest.generator.NumberSummandQuestGenerator
 import ru.nekit.android.qls.domain.quest.generator.NumberSummandQuestGenerator.Flag.*
 import ru.nekit.android.qls.domain.repository.IQuestResourceRepository

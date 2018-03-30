@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.domain.quest.generator.common
+package ru.nekit.android.qls.domain.quest.generator
 
 import ru.nekit.android.qls.domain.model.quest.Quest
 
