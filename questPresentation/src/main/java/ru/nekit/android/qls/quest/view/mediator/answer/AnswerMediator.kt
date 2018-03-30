@@ -9,7 +9,7 @@ import io.reactivex.subjects.Subject
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.utils.AnimationUtils
+import ru.nekit.android.utils.AnimationUtils
 
 //ver 1.0
 open class AnswerMediator : IAnswerMediator {
@@ -86,9 +86,7 @@ open class AnswerMediator : IAnswerMediator {
 
     override fun updateSize() {}
 
-    override fun onAnswer(answerType: AnswerType): Boolean {
-        return true
-    }
+    override fun onAnswer(answerType: AnswerType): Boolean = true
 
     @CallSuper
     override fun onQuestAttach(rootContentContainer: ViewGroup) {

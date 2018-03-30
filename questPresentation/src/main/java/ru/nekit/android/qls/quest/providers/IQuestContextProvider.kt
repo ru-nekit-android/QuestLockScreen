@@ -1,15 +1,15 @@
 package ru.nekit.android.qls.quest.providers
 
+import ru.nekit.android.domain.event.IEventListener
+import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.event.KeyboardHideAction
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.model.quest.Quest
-import ru.nekit.android.qls.domain.providers.IEventSender
-import ru.nekit.android.qls.eventBus.IEventListener
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.shared.model.Pupil
 
-interface IQuestContextProvider : IQuestWindowProvider, IEventSenderProvider {
+interface IQuestContextProvider : IEventListenerProvider, IEventSenderProvider {
 
     var questContext: QuestContext
 

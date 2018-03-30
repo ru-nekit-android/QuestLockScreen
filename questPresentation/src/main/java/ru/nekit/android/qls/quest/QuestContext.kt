@@ -10,37 +10,40 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import ru.nekit.android.domain.event.IEvent
+import ru.nekit.android.domain.event.IEventListener
+import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.QuestLockScreenApplication
+import ru.nekit.android.qls.data.repository.QuestResourceRepository
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.model.quest.Quest
-import ru.nekit.android.qls.domain.providers.IEventSender
+import ru.nekit.android.qls.domain.providers.IDependenciesProvider
+import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.domain.useCases.*
-import ru.nekit.android.qls.eventBus.IEventListener
 import ru.nekit.android.qls.quest.QuestContextEvent.*
-import ru.nekit.android.qls.quest.resources.QuestResourceRepository
 import ru.nekit.android.qls.shared.model.Pupil
-import ru.nekit.android.qls.utils.Delay
-import ru.nekit.android.qls.utils.IAutoDispose
 import ru.nekit.android.qls.utils.Vibrate
-import java.util.concurrent.TimeUnit
+import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.IAutoDispose
+import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class QuestContext constructor(
         val application: QuestLockScreenApplication,
         @StyleRes themeResourceId: Int) :
-        ContextThemeWrapper(application, themeResourceId), IAutoDispose {
+        ContextThemeWrapper(application, themeResourceId), IAutoDispose, IDependenciesProvider {
+
+    override lateinit var timeProvider: ITimeProvider
+    override lateinit var schedulerProvider: ISchedulerProvider
+    override lateinit var repository: IRepositoryHolder
+    override lateinit var eventSender: IEventSender
+    override lateinit var eventListener: IEventListener
+    override lateinit var screenProvider: IScreenProvider
 
     override var disposable: CompositeDisposable = CompositeDisposable()
     val questResourceRepository: QuestResourceRepository = QuestResourceRepository(this)
-    val eventListener: IEventListener = application.getEventListener()
-    private val screenProvider = application.getScreenProvider()
-    val timeProvider: ITimeProvider = application.getTimeProvider()
-    val schedulerProvider: ISchedulerProvider = application.getDefaultSchedulerProvider()
-    val repository: IRepositoryHolder = application
-    val eventSender: IEventSender = application.getEventSender()
     val questDelayedPlayAnimationDuration: Long = application.getQuestParams().delayedPlayDelay
     val answerCallback = PublishSubject.create<Any>().toSerialized()
 
@@ -62,7 +65,7 @@ class QuestContext constructor(
         })
 
         autoDispose {
-            answerCallback.throttleFirst(1000, TimeUnit.MILLISECONDS)
+            answerCallback.throttleFirst(1000, MILLISECONDS)
                     .flatMapSingle {
                         AnswerCallbackUseCase(repository, timeProvider, schedulerProvider)
                                 .build(it)
@@ -167,7 +170,7 @@ class QuestContext constructor(
             GetBeforeCurrentQuestTrainingProgramLevelAllPointsUseCase(repository, schedulerProvider).use(body)
 
     fun questHistory(body: (QuestHistory?) -> Unit) =
-            GetLastHistoryUseCase(repository, schedulerProvider).use { body(it.data) }
+            QuestStatisticsAndHistoryUseCases.getLastHistory().use { body(it.data) }
 
     fun questStatisticsReport(body: (QuestStatisticsReport) -> Unit) =
             GetCurrentQuestStatisticsReportUseCase(repository).use(body)
@@ -183,34 +186,8 @@ class QuestContext constructor(
             .build(Reward.UnlockKey())
             .subscribe(body)
 
-    private fun statistics(period: StatisticPeriodType, body: (Int, Int, Int) -> Unit) =
-            GetHistoryByStatisticsPeriodType(repository, timeProvider, schedulerProvider).use(period) { history ->
-
-                body(0, 0, 0)
-            }
-
-    private fun rewardStatistics(period: StatisticPeriodType, body: (Int, Map<Reward, Int>) -> Unit) =
-            GetHistoryByStatisticsPeriodType(repository, timeProvider, schedulerProvider).use(period) { history ->
-                val result: HashMap<Reward, Int> = HashMap()
-                var count = 0
-                history.forEach { historyItem ->
-                    if (historyItem.rewards.isNotEmpty()) {
-                        historyItem.rewards.forEach { reward ->
-                            count++
-                            if (result[reward] == null)
-                                result[reward] = 1
-                            else
-                                result[reward] = result[reward]!! + 1
-                        }
-                    }
-                }
-                body(count, result)
-            }
-
-    fun weeklyStatistics(body: (Int, Int, Int) -> Unit) = statistics(StatisticPeriodType.WEEKLY, body)
-
-    fun weeklyRewardStatistics(body: (Int, Map<Reward, Int>) -> Unit) =
-            rewardStatistics(StatisticPeriodType.WEEKLY, body)
+    fun statistics(statisticsPeriodPair: Pair<StatisticsPeriodType, StatisticsPeriodType>, body: (List<Statistics>) -> Unit) =
+            QuestStatisticsAndHistoryUseCases.getStatisticsForPeriod(statisticsPeriodPair).use(body)
 
     fun getRemainingAmountForReaching(body: (List<Pair<Reward, Int>>) -> Unit) =
             GetRemainingAmountForReaching(repository, schedulerProvider).use(body)

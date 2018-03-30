@@ -1,14 +1,13 @@
 package ru.nekit.android.qls.quest.view.mediator.types.direction
 
 import android.view.View
-import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.answer.SwipeAnswerMediator
-import ru.nekit.android.qls.utils.AnimationUtils
-import ru.nekit.android.qls.window.AnswerWindow
-import ru.nekit.android.qls.window.AnswerWindow.Type
+import ru.nekit.android.qls.window.RightAnswerWindow
+import ru.nekit.android.qls.window.WrongAnswerWindow
+import ru.nekit.android.utils.AnimationUtils
 
 //ver 1.0
 class DirectionAnswerMediator : SwipeAnswerMediator() {
@@ -28,20 +27,12 @@ class DirectionAnswerMediator : SwipeAnswerMediator() {
 
     override fun onAnswer(answerType: AnswerType): Boolean {
         when (answerType) {
-            AnswerType.RIGHT -> AnswerWindow.open(questContext, Type.RIGHT,
-                    R.style.Window_RightAnswer_Simple,
-                    R.layout.wc_right_answer_simple_content,
-                    R.layout.wc_right_answer_tool_simple_content)
+            AnswerType.RIGHT -> RightAnswerWindow.openSimple(questContext)
             AnswerType.WRONG -> {
                 AnimationUtils.shake(viewHolder.targetView)
-                AnswerWindow.open(questContext, Type.WRONG,
-                        R.style.Window_WrongAnswer_Simple,
-                        R.layout.wc_wrong_answer_simple_content,
-                        R.layout.wc_wrong_answer_tool_simple_content)
+                WrongAnswerWindow.openSimple(questContext)
             }
-            else -> {
-                AnimationUtils.shake(viewHolder.targetView)
-            }
+            else -> AnimationUtils.shake(viewHolder.targetView)
         }
         return false
     }

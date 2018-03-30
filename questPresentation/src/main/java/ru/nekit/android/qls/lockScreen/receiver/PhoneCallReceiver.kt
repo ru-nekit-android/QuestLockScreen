@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.telephony.TelephonyManager.*
 import ru.nekit.android.domain.event.IEvent
+import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.qls.QuestLockScreenApplication
-import ru.nekit.android.qls.domain.providers.IEventSender
 import java.util.*
 
 class PhoneCallReceiver : BroadcastReceiver() {

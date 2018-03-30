@@ -5,9 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.getDrawableId
 import ru.nekit.android.qls.domain.model.resources.CoinVisualResourceCollection
-import ru.nekit.android.qls.quest.resources.representation.getDrawableId
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 internal class CoinViewHolder(context: Context,

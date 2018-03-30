@@ -9,7 +9,7 @@ import io.reactivex.subjects.Subject
 
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.quest.TimeQuest
-import ru.nekit.android.qls.quest.view.mediator.adapter.SquareItemAdapter
+import ru.nekit.android.qls.quest.view.adapter.SquareItemAdapter
 
 //ver 1.0
 open class TimeAdapter(private val timeListData: List<Int>, answerPublisher: Subject<Any>) :

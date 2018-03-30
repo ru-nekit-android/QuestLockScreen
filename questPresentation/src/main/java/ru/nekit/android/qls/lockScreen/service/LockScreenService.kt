@@ -16,6 +16,7 @@ import android.os.IBinder
 import android.support.annotation.StringRes
 import android.support.v4.app.NotificationCompat
 import ru.nekit.android.domain.event.IEvent
+import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.interactor.useCompletableUseCaseFromRunnable
 import ru.nekit.android.qls.QuestLockScreenApplication
@@ -25,9 +26,8 @@ import ru.nekit.android.qls.domain.model.LockScreenStartType.*
 import ru.nekit.android.qls.domain.useCases.GetCurrentPupilUseCase
 import ru.nekit.android.qls.domain.useCases.GetPhoneContactByIdUseCase
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
-import ru.nekit.android.qls.eventBus.IEventListener
 import ru.nekit.android.qls.lockScreen.LockScreen
-import ru.nekit.android.qls.lockScreen.LockScreenContentMediator
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediator
 import ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver
 import ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver.PhoneEvent.*
 import ru.nekit.android.qls.quest.QuestContext
@@ -144,7 +144,6 @@ class LockScreenService : Service() {
                     }
 
                 else -> {
-
                     if (setupWizardIsComplete) {
                         showLockScreen(startType)
                     }
@@ -178,11 +177,13 @@ class LockScreenService : Service() {
     //exclude SILENCE START LOCK SCREEN MODE
     private fun showLockScreen(startType: LockScreenStartType) {
         LockScreenUseCases.showLockScreen(startType) {
-            if (PhoneUtils.isPhoneIdle(application)) {
-                sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
+            if (PhoneUtils.isPhoneIdle(application)
+                    && !PhoneUtils.pinOrPukCodeRequired(application))
                 if (setupWizard.allPermissionsIsGranted()) {
+                    sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
                     QuestContext(questApplication, R.style.MainTheme).let {
                         questContext = it
+                        questApplication.injectDependencies(it)
                         eventListener.listen(it, LockScreenUseCases.LockScreenHideEvent::class.java) {
                             hideLockScreen()
                         }
@@ -194,13 +195,9 @@ class LockScreenService : Service() {
                         }
                         buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
                             startForeground(notification)
-                        }
                     }
-
-                } else {
-                    setupWizard.start()
                 }
-            }
+                } else setupWizard.start()
         }
     }
 

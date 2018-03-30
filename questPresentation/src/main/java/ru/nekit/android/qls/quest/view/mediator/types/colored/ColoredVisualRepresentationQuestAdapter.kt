@@ -14,12 +14,12 @@ import android.widget.RelativeLayout
 import com.jakewharton.rxbinding2.view.clicks
 import io.reactivex.subjects.Subject
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.common.ColorfullVisualResourceStruct.ColorType.*
+import ru.nekit.android.qls.data.representation.common.IColorfullVisualResourceProvider
+import ru.nekit.android.qls.data.representation.common.PairColorStruct
+import ru.nekit.android.qls.data.representation.getRepresentation
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.resources.common.IColorfullVisualResourceProvider
-import ru.nekit.android.qls.quest.resources.representation.getRepresentation
-import ru.nekit.android.qls.quest.resources.struct.ColorfullVisualResourceStruct.ColorType.*
-import ru.nekit.android.qls.quest.resources.struct.PairColorStruct
-import ru.nekit.android.qls.quest.view.mediator.adapter.SquareItemAdapter
+import ru.nekit.android.qls.quest.view.adapter.SquareItemAdapter
 
 class ColoredVisualRepresentationQuestAdapter internal constructor(private val questContext: QuestContext,
                                                                    private val listData: List<Pair<IColorfullVisualResourceProvider, PairColorStruct>>,

@@ -1,8 +1,8 @@
 package ru.nekit.android.qls.quest.providers
 
 import ru.nekit.android.domain.event.IEvent
-import ru.nekit.android.qls.eventBus.IEventListener
-import ru.nekit.android.qls.utils.IAutoDispose
+import ru.nekit.android.domain.event.IEventListener
+import ru.nekit.android.utils.IAutoDispose
 
 interface IEventListenerProvider : IAutoDispose {
 

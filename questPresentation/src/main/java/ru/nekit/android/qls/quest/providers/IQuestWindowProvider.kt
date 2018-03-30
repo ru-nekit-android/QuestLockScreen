@@ -1,7 +1,7 @@
 package ru.nekit.android.qls.quest.providers
 
-import ru.nekit.android.qls.window.AnswerWindow.Type.RIGHT
-import ru.nekit.android.qls.window.AnswerWindow.Type.WRONG
+import ru.nekit.android.qls.window.AnswerWindowType.RIGHT
+import ru.nekit.android.qls.window.AnswerWindowType.WRONG
 import ru.nekit.android.qls.window.common.QuestWindowEvent
 import ru.nekit.android.qls.window.common.QuestWindowEvent.*
 

@@ -6,7 +6,7 @@ import android.widget.EditText
 import android.widget.TextView
 
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 class SimpleExampleQuestViewHolder internal constructor(context: Context) : ViewHolder(context, R.layout.ql_simple_example) {

@@ -4,7 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 internal class TextCamouflageQuestViewHolder(context: Context) : ViewHolder(context, R.layout.ql_text_camouflage) {
 

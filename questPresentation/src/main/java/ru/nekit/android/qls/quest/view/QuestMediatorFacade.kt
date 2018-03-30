@@ -19,6 +19,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 import ru.nekit.android.domain.event.KeyboardHideAction
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.getAnswerInputType
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.QuestState.DELAYED_PLAY
 import ru.nekit.android.qls.domain.model.QuestState.PLAYED
@@ -26,7 +27,6 @@ import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.QuestContextEvent
 import ru.nekit.android.qls.quest.QuestContextEvent.*
-import ru.nekit.android.qls.quest.providers.getAnswerInputType
 import ru.nekit.android.qls.quest.view.mediator.answer.ButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.answer.IAlternativeAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.answer.IAnswerMediator
@@ -34,8 +34,12 @@ import ru.nekit.android.qls.quest.view.mediator.answer.IButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.content.EmptyQuestContentMediator
 import ru.nekit.android.qls.quest.view.mediator.content.IContentMediator
 import ru.nekit.android.qls.quest.view.mediator.title.ITitleMediator
-import ru.nekit.android.qls.utils.*
+import ru.nekit.android.qls.utils.KeyboardHost
 import ru.nekit.android.qls.utils.KeyboardHost.hideKeyboard
+import ru.nekit.android.qls.utils.throttleClicks
+import ru.nekit.android.utils.AnimationUtils
+import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.ViewHolder
 import java.util.concurrent.TimeUnit
 
 //ver 1.2

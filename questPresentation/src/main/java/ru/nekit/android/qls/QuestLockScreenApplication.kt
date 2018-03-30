@@ -12,27 +12,28 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import ru.nekit.android.data.Counter
 import ru.nekit.android.domain.event.IEvent
+import ru.nekit.android.domain.event.IEventListener
+import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.repository.ICounter
+import ru.nekit.android.eventBus.EventListener
+import ru.nekit.android.eventBus.RxEventBus
 import ru.nekit.android.qls.data.entity.MyObjectBox
 import ru.nekit.android.qls.data.entity.QuestHistoryEntity
 import ru.nekit.android.qls.data.entity.QuestStatisticsReportEntity
 import ru.nekit.android.qls.data.repository.*
 import ru.nekit.android.qls.data.repository.store.QuestStore
-import ru.nekit.android.qls.domain.model.StatisticPeriodType
-import ru.nekit.android.qls.domain.model.StatisticPeriodType.*
+import ru.nekit.android.qls.domain.model.StatisticsPeriodType
+import ru.nekit.android.qls.domain.model.StatisticsPeriodType.*
 import ru.nekit.android.qls.domain.providers.IDependenciesProvider
-import ru.nekit.android.qls.domain.providers.IEventSender
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.*
 import ru.nekit.android.qls.domain.useCases.IUUIDProvider
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
-import ru.nekit.android.qls.eventBus.EventListener
-import ru.nekit.android.qls.eventBus.IEventListener
-import ru.nekit.android.qls.eventBus.RxEventBus
-import ru.nekit.android.qls.quest.resources.QuestResourceRepository
-import ru.nekit.android.qls.utils.ScreenHost
+import ru.nekit.android.qls.domain.useCases.PhoneContactsUseCases
+import ru.nekit.android.qls.domain.useCases.QuestStatisticsAndHistoryUseCases
+import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.TimeUtils
 import java.util.*
 
@@ -74,12 +75,14 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
             get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
     }
 
-    private fun injectDependencies(value: IDependenciesProvider) {
+    fun injectDependencies(value: IDependenciesProvider) {
         value.apply {
             repository = this@QuestLockScreenApplication
             schedulerProvider = getDefaultSchedulerProvider()
             timeProvider = getTimeProvider()
             eventSender = getEventSender()
+            eventListener = getEventListener()
+            screenProvider = getScreenProvider()
         }
     }
 
@@ -111,6 +114,8 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
 
     private fun injectDependencies() {
         injectDependencies(LockScreenUseCases)
+        injectDependencies(QuestStatisticsAndHistoryUseCases)
+        injectDependencies(PhoneContactsUseCases)
     }
 
     override fun onCreate() {
@@ -128,10 +133,24 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     }
 
     fun getTimeProvider() = object : ITimeProvider {
-        override fun getTimestampBy(statisticPeriodType: StatisticPeriodType): Long = when (statisticPeriodType) {
+
+        override fun getPeriodIntervalForPeriod(statisticsPeriodTypePair: Pair<StatisticsPeriodType, StatisticsPeriodType>): List<Pair<Long, Long>> {
+
+            return when (statisticsPeriodTypePair.first) {
+                MONTHLY -> when (statisticsPeriodTypePair.second) {
+                    WEEKLY -> TimeUtils.weekPeriodsForMonth
+                    else -> TODO()
+                }
+                else -> TODO()
+            }
+
+        }
+
+        override fun getTimestampBy(statisticsPeriodType: StatisticsPeriodType): Long = when (statisticsPeriodType) {
             DAILY -> TimeUtils.timestampForStartOfDay
             WEEKLY -> TimeUtils.timestampForStartOfWeek
             MONTHLY -> TimeUtils.timestampForStartOfMonth
+            HOURLY -> getCurrentTime() - getCurrentTime() % 60 * 60 * 1000
         }
 
         override fun getCurrentTime(): Long = TimeUtils.currentTime
@@ -144,7 +163,7 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
 
     override fun getQuestSetupWizardSettingRepository(): IQuestSetupWizardSettingRepository = mQuestSetupWizardSettingRepository
 
-    fun getScreenProvider(): IScreenProvider = object : IScreenProvider {
+    private fun getScreenProvider(): IScreenProvider = object : IScreenProvider {
 
         override fun screenIsOn(): Boolean = ScreenHost.isScreenOn(this@QuestLockScreenApplication)
 

@@ -10,6 +10,7 @@ import android.widget.TextView
 import io.reactivex.disposables.CompositeDisposable
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.getRepresentation
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.Reward
 import ru.nekit.android.qls.domain.model.quest.*
@@ -19,17 +20,16 @@ import ru.nekit.android.qls.domain.model.resources.DirectionResourceCollection
 import ru.nekit.android.qls.domain.model.resources.TrafficLightResourceCollection
 import ru.nekit.android.qls.domain.model.resources.common.IGroupWeightComparisonQuest
 import ru.nekit.android.qls.domain.useCases.ConsumeRewardUseCase
-import ru.nekit.android.qls.lockScreen.LockScreenMediatorAction
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenMediatorAction
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.formatter.TimeFormatter
-import ru.nekit.android.qls.quest.resources.representation.getRepresentation
 import ru.nekit.android.qls.quest.types.PerimeterQuest
 import ru.nekit.android.qls.quest.types.TextQuest
 import ru.nekit.android.qls.shared.model.QuestType
 import ru.nekit.android.qls.shared.model.QuestionType
-import ru.nekit.android.qls.utils.ViewHolder
 import ru.nekit.android.qls.utils.throttleClicks
 import ru.nekit.android.utils.MathUtils
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 class TitleMediator : ITitleMediator {

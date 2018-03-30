@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.ViewGroup
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.resources.CoinVisualResourceCollection
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 internal class CoinButtonViewHolder(context: Context,

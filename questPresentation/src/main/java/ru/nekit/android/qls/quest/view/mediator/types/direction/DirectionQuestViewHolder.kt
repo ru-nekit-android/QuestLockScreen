@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 internal class DirectionQuestViewHolder(context: Context) : ViewHolder(context, R.layout.ql_direction) {

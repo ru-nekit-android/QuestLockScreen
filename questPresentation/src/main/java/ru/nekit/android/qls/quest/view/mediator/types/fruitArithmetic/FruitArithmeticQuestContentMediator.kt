@@ -15,11 +15,11 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.LinearLayout.LayoutParams
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.data.representation.getDrawableRepresentation
 import ru.nekit.android.qls.domain.model.quest.FruitArithmeticQuest
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.domain.model.resources.SimpleVisualResourceCollection.*
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.resources.representation.getDrawableRepresentation
 import ru.nekit.android.qls.quest.view.mediator.content.SimpleContentMediator
 import ru.nekit.android.qls.shared.model.QuestionType.SOLUTION
 

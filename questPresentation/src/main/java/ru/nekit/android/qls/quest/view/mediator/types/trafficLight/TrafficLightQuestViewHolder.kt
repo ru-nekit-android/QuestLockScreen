@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.utils.ViewHolder
+import ru.nekit.android.utils.ViewHolder
 
 //ver 1.0
 internal class TrafficLightQuestViewHolder(context: Context) : ViewHolder(context, R.layout.ql_traffic_light) {
