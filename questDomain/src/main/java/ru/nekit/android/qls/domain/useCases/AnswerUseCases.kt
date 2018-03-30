@@ -185,7 +185,7 @@ class RightAnswerUseCase(private val repository: IRepositoryHolder,
                         }.concatWith(questStateRepository.has(ANSWERED).flatMapCompletable {
                             questStateRepository.replace(PLAYED, ANSWERED).doIfOrNever { !it }
                         })
-                        .concatWith(pupilCompletable(repository) {
+                        .concatWith(pupilAsCompletable(repository) {
                             repository.getQuestRepository().clear(it)
                         })
                         .concatWith(questStateRepository.clear())

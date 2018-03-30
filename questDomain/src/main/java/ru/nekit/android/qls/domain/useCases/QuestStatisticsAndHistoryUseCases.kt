@@ -3,12 +3,12 @@ package ru.nekit.android.qls.domain.useCases
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.CompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
-import ru.nekit.android.domain.interactor.SingleUseCase
+import ru.nekit.android.domain.interactor.*
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.*
-import ru.nekit.android.qls.domain.providers.ITimeProvider
+import ru.nekit.android.qls.domain.model.StatisticsPeriodType.MONTHLY
+import ru.nekit.android.qls.domain.model.StatisticsPeriodType.WEEKLY
+import ru.nekit.android.qls.domain.providers.DependenciesProvider
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 
 class GetCurrentQuestStatisticsReportUseCase(private val repository: IRepositoryHolder,
@@ -32,7 +32,7 @@ class SaveStatisticsReportUseCase(private val repository: IRepositoryHolder,
 ) : CompletableUseCase<QuestStatisticsReport>(scheduler) {
 
     override fun build(parameter: QuestStatisticsReport): Completable =
-            pupilCompletable(repository) {
+            pupilAsCompletable(repository) {
                 repository.getQuestStatisticsReportRepository().save(it, parameter)
             }
 }
@@ -42,7 +42,7 @@ class AddHistoryUseCase(private val repository: IRepositoryHolder,
 ) : CompletableUseCase<QuestHistory>(scheduler) {
 
     override fun build(parameter: QuestHistory): Completable =
-            pupilCompletable(repository) {
+            pupilAsCompletable(repository) {
                 repository.getQuestHistoryRepository().add(it, parameter)
             }
 
@@ -82,19 +82,108 @@ class FetchFirstResultableHistoryByCriteriaListUseCase(private val repository: I
 
 }
 
-class GetLastHistoryUseCase(private val repository: IRepositoryHolder,
-                            scheduler: ISchedulerProvider? = null
-) : ParameterlessSingleUseCase<Optional<QuestHistory>>(scheduler) {
+object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
 
-    override fun build(): Single<Optional<QuestHistory>> =
-            pupil(repository) {
-                repository.getQuestHistoryRepository()
-                        .getLastHistoryByLimit(it, 1)
-                        .map {
-                            Optional(if (it.isNotEmpty()) it[0] else null)
+    private val questHistoryRepository
+        get() = repository.getQuestHistoryRepository()
+
+    fun getLastHistory() = emptySingleUseCase(schedulerProvider) {
+        pupil(repository) {
+            questHistoryRepository
+                    .getLastHistoryByLimit(it, 1)
+                    .map {
+                        Optional(if (it.isNotEmpty()) it[0] else null)
+                    }
+        }
+    }
+
+    private fun getHistoryByStatisticsPeriodType() = singleUseCase<List<QuestHistory>, StatisticsPeriodType>(schedulerProvider) { parameter ->
+        pupil(repository) {
+            repository.getQuestHistoryRepository().getHistoryByPeriod(it,
+                    timeProvider.getTimestampBy(parameter))
+        }
+    }
+
+    fun getStatisticsForMonth() = getStatisticsForPeriod(MONTHLY to WEEKLY)
+
+    fun getStatisticsForPeriod(parameter: Pair<StatisticsPeriodType, StatisticsPeriodType>) =
+            emptySingleUseCase<List<Statistics>>(schedulerProvider) {
+                getHistoryByStatisticsPeriodType().build(parameter.first).map { history ->
+                    val periodIntervals = timeProvider.getPeriodIntervalForPeriod(parameter)
+                    val currentTime = timeProvider.getCurrentTime()
+                    val statisticsByPeriod = ArrayList<Statistics>(periodIntervals.size)
+                    var periodNumber = 0
+                    periodIntervals.forEach { periodInterval ->
+                        val isCurrentPeriod = periodInterval.first <= currentTime &&
+                                periodInterval.second >= currentTime
+                        val isReachedPeriod = periodInterval.first < currentTime
+                        val historyByPeriod = history.filter { it ->
+                            it.timeStamp >= periodInterval.first
+                                    && it.timeStamp < periodInterval.second
                         }
+                        val statisticsByQuestAndQuestionType: MutableMap<QuestAndQuestionType,
+                                StatisticsByQuestAndQuestionType> = HashMap()
+                        historyByPeriod.forEach { history ->
+                            history.questAndQuestionType.let {
+                                if (statisticsByQuestAndQuestionType[it] == null)
+                                    statisticsByQuestAndQuestionType[it] =
+                                            StatisticsByQuestAndQuestionType(ArrayList())
+                                statisticsByQuestAndQuestionType[it]?.history?.add(history)
+                            }
+                        }
+                        var allTime: Long = 0
+                        statisticsByQuestAndQuestionType.keys.forEach {
+                            val statistics = statisticsByQuestAndQuestionType[it]
+                            var time: Long = 0
+                            var bestTime = Long.MAX_VALUE
+                            var worstTime: Long = 0
+                            var rightAnswerCount = 0
+                            statistics?.let {
+                                it.history.filter { it.answerType == AnswerType.RIGHT }.forEach {
+                                    time += it.sessionTime
+                                    worstTime = Math.max(worstTime, it.sessionTime)
+                                    bestTime = Math.min(bestTime, it.sessionTime)
+                                    rightAnswerCount++
+                                }
+                                it.answerCount = it.history.size
+                                it.rightAnswerCount = rightAnswerCount
+                                it.bestAnswerTime = bestTime
+                                it.worseAnswerTime = worstTime
+                                it.averageAnswerTime = time / it.history.size.toLong()
+                            }
+                            allTime += time
+                        }
+                        val allAnswerCount = historyByPeriod.size
+                        statisticsByPeriod.add((if (allAnswerCount > 0) {
+                            val rightAnswerCount = historyByPeriod.filter { it.answerType == AnswerType.RIGHT }.size
+                            val rewardList = historyByPeriod.filter {
+                                it.rewards.isNotEmpty()
+                            }.map { it.rewards }.flatMap { it }
+                            val rewardsMap: HashMap<Reward, Int> = HashMap()
+                            rewardList.forEach { reward ->
+                                if (rewardsMap[reward] == null)
+                                    rewardsMap[reward] = 1
+                                else
+                                    rewardsMap[reward] = rewardsMap[reward]!! + 1
+                            }
+                            Statistics(periodNumber,
+                                    parameter.second,
+                                    periodInterval,
+                                    allAnswerCount,
+                                    rightAnswerCount,
+                                    historyByPeriod,
+                                    statisticsByQuestAndQuestionType,
+                                    allTime / rightAnswerCount.toLong(),
+                                    rewardsMap,
+                                    isCurrentPeriod,
+                                    isReachedPeriod)
+                        } else Statistics(periodNumber, parameter.second, periodInterval,
+                                isCurrentPeriod = isCurrentPeriod)))
+                        periodNumber++
+                    }
+                    statisticsByPeriod.reversed()
+                }
             }
-
 }
 
 class GetPreviousHistoryWithBestSessionTimeUseCase(private val repository: IRepositoryHolder,
@@ -109,24 +198,12 @@ class GetPreviousHistoryWithBestSessionTimeUseCase(private val repository: IRepo
 
 }
 
-class GetHistoryByStatisticsPeriodType(private val repository: IRepositoryHolder,
-                                       private val timeProvider: ITimeProvider,
-                                       scheduler: ISchedulerProvider? = null) :
-        SingleUseCase<List<QuestHistory>, StatisticPeriodType>(scheduler) {
-
-    override fun build(parameter: StatisticPeriodType): Single<List<QuestHistory>> =
-            pupil(repository) {
-                repository.getQuestHistoryRepository().getHistoryByPeriod(it,
-                        timeProvider.getTimestampBy(parameter))
-            }
-}
-
 class UpdateLastHistoryItemUseCase(private val repository: IRepositoryHolder,
                                    scheduler: ISchedulerProvider? = null
 ) : CompletableUseCase<QuestHistory>(scheduler) {
 
     override fun build(parameter: QuestHistory): Completable =
-            pupilCompletable(repository) {
+            pupilAsCompletable(repository) {
                 repository.getQuestHistoryRepository().updateLastHistoryItem(it, parameter)
             }
 

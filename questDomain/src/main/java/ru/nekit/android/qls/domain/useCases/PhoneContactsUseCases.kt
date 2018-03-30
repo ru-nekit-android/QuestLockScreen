@@ -4,25 +4,26 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.CompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
 import ru.nekit.android.domain.interactor.SingleUseCase
+import ru.nekit.android.domain.interactor.buildAsyncEmptySingleUseCase
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.PhoneContact
+import ru.nekit.android.qls.domain.providers.DependenciesProvider
 import ru.nekit.android.qls.domain.repository.IPupilRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.shared.model.Pupil
 
 //TOD: return inmutable list
-class GetPhoneContactsForUserUseCase(private val repository: IRepositoryHolder,
+/*class GetPhoneContactsForUserUseCase(private val repository: IRepositoryHolder,
                                      scheduler: ISchedulerProvider? = null) :
         SingleUseCase<MutableList<PhoneContact>, Pupil>(scheduler) {
 
     override fun build(parameter: Pupil): Single<MutableList<PhoneContact>> =
             repository.getPhoneContactRepository().getAll(parameter).map { it.toMutableList() }
 
-}
+}*/
 
-class GetPhoneContactsUseCase(private val repository: IRepositoryHolder,
+/*class GetPhoneContactsUseCase(private val repository: IRepositoryHolder,
                               scheduler: ISchedulerProvider? = null) :
         ParameterlessSingleUseCase<MutableList<PhoneContact>>(scheduler) {
 
@@ -30,6 +31,23 @@ class GetPhoneContactsUseCase(private val repository: IRepositoryHolder,
             GetCurrentPupilUseCase(repository).build().map { it.data }.flatMap {
                 GetPhoneContactsForUserUseCase(repository).build(it)
             }
+}*/
+
+object PhoneContactsUseCases : DependenciesProvider() {
+
+    private val phoneContactRepository
+        get() = repository.getPhoneContactRepository()
+
+    fun getPhoneContacts(): Single<List<PhoneContact>> = buildAsyncEmptySingleUseCase(null) {
+        pupil(repository) {
+            getPhoneContactsForPupil(it)
+        }
+    }
+
+    private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
+            phoneContactRepository.getAll(pupil)
+
+
 }
 
 class GetPhoneContactByIdUseCase(private val repository: IRepositoryHolder,
@@ -66,13 +84,10 @@ class RemovePhoneContactUseCase(private val repository: IRepositoryHolder,
 
 }
 
-//TODO: IMPLEMENT!!!
-//make phone call
-
 object PhoneContactHelper {
 
     fun buildUseCase(repository: IRepositoryHolder, action: (Pupil) -> Completable): Completable =
-            pupilCompletable(repository) {
+            pupilAsCompletable(repository) {
                 action(it)
             }
 }

@@ -3,23 +3,16 @@ package ru.nekit.android.qls.domain.useCases
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.event.IEvent
-import ru.nekit.android.domain.executor.ISchedulerProvider
+import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.interactor.*
 import ru.nekit.android.domain.model.Optional
+import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.LockScreenStartType
 import ru.nekit.android.qls.domain.model.LockScreenStartType.*
-import ru.nekit.android.qls.domain.providers.IDependenciesProvider
-import ru.nekit.android.qls.domain.providers.IEventSender
-import ru.nekit.android.qls.domain.providers.ITimeProvider
-import ru.nekit.android.qls.domain.repository.IRepositoryHolder
+import ru.nekit.android.qls.domain.providers.DependenciesProvider
 import ru.nekit.android.utils.doIfOrComplete
 
-object LockScreenUseCases : IDependenciesProvider {
-
-    override lateinit var repository: IRepositoryHolder
-    override lateinit var schedulerProvider: ISchedulerProvider
-    override lateinit var timeProvider: ITimeProvider
-    override lateinit var eventSender: IEventSender
+object LockScreenUseCases : DependenciesProvider() {
 
     private val lockScreenRepository
         get() = repository.getLockScreenRepository()
@@ -37,11 +30,12 @@ object LockScreenUseCases : IDependenciesProvider {
                        useBody: () -> Unit) =
             useCompletableUseCase(parameter, schedulerProvider, {
                 if (parameter != SETUP_WIZARD)
-                    GetLastHistoryUseCase(repository).build().map { historyOpt ->
+                    QuestStatisticsAndHistoryUseCases.getLastHistory().build().map { historyOpt ->
                         if (parameter == ON_NOTIFICATION_CLICK || parameter == EXPLICIT) true
                         else
                             if (repository.getQuestSetupWizardSettingRepository().skipAfterRightAnswer)
-                                if (historyOpt.isNotEmpty())
+                                if (historyOpt.isNotEmpty() &&
+                                        historyOpt.nonNullData.answerType == AnswerType.RIGHT)
                                     timeProvider.getCurrentTime() - historyOpt.nonNullData.timeStamp >
                                             repository.getQuestSetupWizardSettingRepository().timeForSkipAfterRightAnswer
                                 else true
@@ -60,7 +54,7 @@ object LockScreenUseCases : IDependenciesProvider {
         lockScreenRepository.switchOn(true)
     }
 
-    fun switchOff() = buildCompletableUseCaseFromRunnable(schedulerProvider) {
+    fun switchOff() = buildCompletableUseCaseFromRunnable {
         lockScreenRepository.switchOn(false)
         sendHideEvent(eventSender)
     }
@@ -108,17 +102,17 @@ object LockScreenUseCases : IDependenciesProvider {
             }, body)
 
     private fun saveStartType(parameter: LockScreenStartType): Completable =
-            buildEmptyCompletableUseCase(schedulerProvider) {
+            buildEmptyCompletableUseCase {
                 lockScreenRepository.saveStartType(parameter)
             }
 
     fun getLastStartType(): Single<Optional<LockScreenStartType>> =
-            buildEmptySingleUseCase(schedulerProvider) {
+            buildEmptySingleUseCase {
                 lockScreenRepository.getLastStartType()
             }
 
     fun updateLastStartType(): Completable =
-            buildEmptyCompletableUseCase(schedulerProvider) {
+            buildEmptyCompletableUseCase {
                 getLastStartType().flatMapCompletable { lastStartTypeOpt ->
                     lockScreenRepository.saveStartType(EXPLICIT).doIfOrComplete {
                         lastStartTypeOpt.data == ON_NOTIFICATION_CLICK

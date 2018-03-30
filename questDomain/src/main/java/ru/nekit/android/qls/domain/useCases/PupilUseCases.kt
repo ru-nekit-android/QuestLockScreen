@@ -66,15 +66,11 @@ class GetCurrentPupilUseCase(private val repository: IRepositoryHolder,
             }
 }
 
-internal fun <T> pupil(repository: IRepositoryHolder,
-                       scheduler: ISchedulerProvider? = null, body: (Pupil) -> Single<T>) =
-        GetCurrentPupilUseCase(repository, scheduler).build().flatMap { body(it.nonNullData) }
+internal fun <T> pupil(repository: IRepositoryHolder, body: (Pupil) -> Single<T>) =
+        GetCurrentPupilUseCase(repository, null).build().map { it.data }.flatMap(body)
 
-internal fun pupilCompletable(repository: IRepositoryHolder,
-                              scheduler: ISchedulerProvider? = null, body: (Pupil) -> Completable) =
-        GetCurrentPupilUseCase(repository, scheduler).build().flatMapCompletable {
-            body(it.nonNullData)
-        }
+internal fun pupilAsCompletable(repository: IRepositoryHolder, body: (Pupil) -> Completable) =
+        GetCurrentPupilUseCase(repository, null).build().map { it.data }.flatMapCompletable(body)
 
 class DropCurrentPupilUseCase(private val repository: IRepositoryHolder,
                               scheduler: ISchedulerProvider? = null) :

@@ -41,7 +41,7 @@ class UpdateCurrentPupilStatisticsUseCase(private val repository: IRepositoryHol
         CompletableUseCase<PupilStatistics>(scheduler) {
 
     override fun build(parameter: PupilStatistics): Completable =
-            pupilCompletable(repository) {
+            pupilAsCompletable(repository) {
                 repository.getPupilStatisticsRepository().update(it, parameter)
             }.doOnComplete {
                 PupilStatisticsHolder.statistics = parameter
