@@ -67,7 +67,6 @@ interface IParameterlessFlowableUseCase<T> : IParameterlessRXExecutable<Disposab
 
 }
 
-
 interface ICompletableUseCase<in P> : IRXExecutable<DisposableCompletableObserver, P> {
 
     fun build(parameter: P): Completable
@@ -110,7 +109,6 @@ abstract class FlowableUseCase<T, in P>(private val schedulerProvider: ISchedule
 
     final override fun buildAsync(parameter: P): Flowable<T> = build(parameter).compose(applySchedulersFlowable<T>(schedulerProvider))
 }
-
 
 abstract class SingleUseCase<T, in P>(private val schedulerProvider: ISchedulerProvider? = null) : RXDisposable(),
         ISingleUseCase<T, P> {
@@ -225,9 +223,11 @@ fun emptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
             override fun build(): Completable = body()
         }
 
-fun buildEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
-                                 body: () -> Completable) =
-        emptyCompletableUseCase(schedulerProvider, body).build()
+fun buildEmptyCompletableUseCase(body: () -> Completable) =
+        emptyCompletableUseCase(null, body).build()
+
+fun buildAsyncEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?, body: () -> Completable) =
+        emptyCompletableUseCase(schedulerProvider, body).buildAsync()
 
 fun useEmptyCompletableUseCase(schedulerProvider: ISchedulerProvider?,
                                body: () -> Completable) =
@@ -243,9 +243,12 @@ fun <T> emptySingleUseCase(schedulerProvider: ISchedulerProvider?,
             override fun build(): Single<T> = body()
         }
 
-fun <T> buildEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
-                                body: () -> Single<T>) =
-        emptySingleUseCase(schedulerProvider, body).build()
+fun <T> buildEmptySingleUseCase(body: () -> Single<T>) =
+        emptySingleUseCase(null, body).build()
+
+fun <T> buildAsyncEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
+                                     body: () -> Single<T>) =
+        emptySingleUseCase(schedulerProvider, body).buildAsync()
 
 fun <T> useEmptySingleUseCase(schedulerProvider: ISchedulerProvider?,
                               body: () -> Single<T>) =
@@ -261,9 +264,12 @@ fun <T> completableUseCase(schedulerProvider: ISchedulerProvider?,
             override fun build(parameter: T): Completable = body()
         }
 
-fun <T> buildCompletableUseCase(parameter: T, schedulerProvider: ISchedulerProvider?,
-                                body: () -> Completable) =
-        completableUseCase<T>(schedulerProvider, body).build(parameter)
+fun <T> buildCompletableUseCase(parameter: T, body: () -> Completable) =
+        completableUseCase<T>(null, body).build(parameter)
+
+fun <T> buildAsyncCompletableUseCase(parameter: T, schedulerProvider: ISchedulerProvider?,
+                                     body: () -> Completable) =
+        completableUseCase<T>(schedulerProvider, body).buildAsync(parameter)
 
 fun <T> useCompletableUseCase(parameter: T, schedulerProvider: ISchedulerProvider?,
                               body: () -> Completable,
@@ -285,9 +291,12 @@ fun useCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
                                       actionBody: () -> Unit) =
         completableUseCaseFromRunnable(schedulerProvider, actionBody).use()
 
-fun buildCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
-                                        actionBody: () -> Unit) =
-        completableUseCaseFromRunnable(schedulerProvider, actionBody).build()
+fun buildCompletableUseCaseFromRunnable(actionBody: () -> Unit) =
+        completableUseCaseFromRunnable(null, actionBody).build()
+
+fun buildAsyncCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
+                                             actionBody: () -> Unit) =
+        completableUseCaseFromRunnable(schedulerProvider, actionBody).buildAsync()
 
 fun predicatedUseSingleUseCase(schedulerProvider: ISchedulerProvider?,
                                predicateBody: () -> Boolean,

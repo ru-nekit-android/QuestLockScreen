@@ -13,8 +13,8 @@ import android.view.ViewGroup
 import android.widget.Button
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import ru.nekit.android.qls.utils.IAutoDispose
 import ru.nekit.android.shared.R
+import ru.nekit.android.utils.IAutoDispose
 import ru.nekit.android.utils.toSingle
 
 abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {

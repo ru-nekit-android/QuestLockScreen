@@ -4,12 +4,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.widget.TextView;
 
 import ru.nekit.android.shared.R;
 
-public class LinedTextView extends TextView {
+public class LinedTextView extends AppCompatTextView {
 
     private Rect mRect;
     private Paint mPaint;

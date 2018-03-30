@@ -43,14 +43,32 @@ data class QuestHistoryCriteria(
 
 data class PupilStatistics(var score: Int)
 
-enum class StatisticPeriodType {
+data class Statistics(
+        val periodNumber: Int,
+        val statisticsPeriodType: StatisticsPeriodType,
+        val periodInterval: Pair<Long, Long>,
+        val answerCount: Int = 0,
+        val rightAnswerCount: Int = 0,
+        val history: List<QuestHistory> = ArrayList(),
+        val statisticsByQuestAndQuestionType: Map<QuestAndQuestionType, StatisticsByQuestAndQuestionType> = HashMap(),
+        var averageAnswerTime: Long = 0,
+        val rewardList: Map<Reward, Int> = HashMap(),
+        val isCurrentPeriod: Boolean = false,
+        val isReachedPeriod: Boolean = false)
 
+data class StatisticsByQuestAndQuestionType(var history: MutableList<QuestHistory>) {
+    var answerCount: Int = 0
+    var rightAnswerCount: Int = -1
+    var bestAnswerTime: Long = -1
+    var averageAnswerTime: Long = -1
+    var worseAnswerTime: Long = -1
+}
+
+enum class StatisticsPeriodType {
+
+    HOURLY,
     DAILY,
     WEEKLY,
     MONTHLY;
-
-    companion object {
-        val DEFAULT = WEEKLY
-    }
 
 }

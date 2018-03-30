@@ -4,8 +4,8 @@ import android.content.Context
 import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.view.View
-import ru.nekit.android.qls.utils.ViewHolder
 import ru.nekit.android.shared.R
+import ru.nekit.android.utils.ViewHolder
 
 open class WindowContentViewHolder(context: Context, @LayoutRes layoutId: Int) : ViewHolder(context, layoutId) {
 

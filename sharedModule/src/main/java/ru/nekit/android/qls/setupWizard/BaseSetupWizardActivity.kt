@@ -9,9 +9,8 @@ import android.widget.Button
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-
-import ru.nekit.android.qls.utils.IAutoDispose
 import ru.nekit.android.shared.R
+import ru.nekit.android.utils.IAutoDispose
 
 abstract class BaseSetupWizardActivity : FragmentActivity(),
         IAutoDispose,

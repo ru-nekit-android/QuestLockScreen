@@ -23,7 +23,7 @@ abstract class BaseSetupWizard(protected val context: Context,
     var currentStep: ISetupWizardStep? = null
 
     internal val nextStep: Single<ISetupWizardStep>
-        get() = Single.just(calculateNextStep()).flatMap { step ->
+        get() = calculateNextStep().flatMap { step ->
             Single.zip(needLogin(step), Single.just(step.needInternetConnection() && !internetIsConnected()),
                     BiFunction { needLogin: Boolean, needInternetConnection: Boolean ->
                         if (needLogin) {
@@ -49,7 +49,7 @@ abstract class BaseSetupWizard(protected val context: Context,
         return true
     }
 
-    protected abstract fun calculateNextStep(): ISetupWizardStep
+    protected abstract fun calculateNextStep(): Single<ISetupWizardStep>
 
     fun setupIsStart(): Boolean {
         return settingsStorage.setupWizardIsStart(getName())

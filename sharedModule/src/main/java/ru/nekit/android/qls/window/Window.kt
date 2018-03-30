@@ -14,10 +14,10 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
-import ru.nekit.android.qls.utils.AnimationUtils
-import ru.nekit.android.qls.utils.RevealAnimator
-import ru.nekit.android.qls.utils.ScreenHost
 import ru.nekit.android.shared.R
+import ru.nekit.android.utils.AnimationUtils
+import ru.nekit.android.utils.RevealAnimator
+import ru.nekit.android.utils.ScreenHost
 import java.util.concurrent.CopyOnWriteArrayList
 
 open class Window(private val context: Context,
@@ -191,15 +191,15 @@ open class Window(private val context: Context,
         init {
             val lockScreenBackgroundColor = ContextCompat.getColor(context,
                     R.color.lock_screen_background_color)
-            val ta = context.obtainStyledAttributes(styleResId, R.styleable.QuestWindowStyle)
-            openPosition = ta.getString(R.styleable.QuestWindowStyle_openPosition)
-            closePosition = ta.getString(R.styleable.QuestWindowStyle_closePosition)
-            backgroundColorStart = ta.getColor(R.styleable.QuestWindowStyle_backgroundColorStart,
+            val ta = context.obtainStyledAttributes(styleResId, R.styleable.WindowStyle)
+            openPosition = ta.getString(R.styleable.WindowStyle_openPosition)
+            closePosition = ta.getString(R.styleable.WindowStyle_closePosition)
+            backgroundColorStart = ta.getColor(R.styleable.WindowStyle_backgroundColorStart,
                     lockScreenBackgroundColor)
-            backgroundColorEnd = ta.getColor(R.styleable.QuestWindowStyle_backgroundColorEnd,
+            backgroundColorEnd = ta.getColor(R.styleable.WindowStyle_backgroundColorEnd,
                     lockScreenBackgroundColor)
-            animationDuration = ta.getInt(R.styleable.QuestWindowStyle_animationDuration, 0)
-            dimAmount = ta.getFloat(R.styleable.QuestWindowStyle_dimAmount, 1f)
+            animationDuration = ta.getInt(R.styleable.WindowStyle_animationDuration, 0)
+            dimAmount = ta.getFloat(R.styleable.WindowStyle_dimAmount, 1f)
             ta.recycle()
         }
     }
