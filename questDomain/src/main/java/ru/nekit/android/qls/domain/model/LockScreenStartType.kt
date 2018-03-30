@@ -16,8 +16,7 @@ enum class LockScreenStartType {
 
         const val NAME = "LockScreenStartType"
 
-        fun getById(id: Int): LockScreenStartType {
-            return LockScreenStartType.values()[id]
-        }
+        fun getById(id: Int) = LockScreenStartType.values()[id]
+
     }
 }
