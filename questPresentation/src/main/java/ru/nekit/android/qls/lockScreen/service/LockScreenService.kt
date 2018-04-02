@@ -151,7 +151,6 @@ class LockScreenService : Service() {
 
             }
         }
-
         return Service.START_REDELIVER_INTENT
     }
 
@@ -170,7 +169,7 @@ class LockScreenService : Service() {
         notificationManager.cancelAll()
         stopForeground(true)
         eventListener.stopListen(this)
-        LockScreen.activeIfOn(this, ON_DESTROY)
+        LockScreen.startIfOn(this, ON_DESTROY)
         stopSelf(startId)
     }
 
@@ -243,7 +242,7 @@ class LockScreenService : Service() {
                     .setWhen(TimeUtils.currentTime)
 
     override fun onTaskRemoved(rootIntent: Intent) {
-        LockScreen.activeIfOn(this, ON_DESTROY)
+        LockScreen.startIfOn(this, ON_DESTROY)
     }
 
     companion object {
