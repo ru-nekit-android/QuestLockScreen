@@ -7,8 +7,8 @@ import io.reactivex.disposables.CompositeDisposable
 import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.providers.IEventListenerProvider
-import ru.nekit.android.qls.window.Window
-import ru.nekit.android.qls.window.WindowContentViewHolder
+import ru.nekit.android.window.Window
+import ru.nekit.android.window.WindowContentViewHolder
 
 abstract class QuestWindowMediator(protected val questContext: QuestContext) : IEventListenerProvider {
 

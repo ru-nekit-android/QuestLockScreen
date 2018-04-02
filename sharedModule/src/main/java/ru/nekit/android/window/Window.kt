@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.window
+package ru.nekit.android.window
 
 import android.animation.Animator
 import android.content.Context
@@ -9,11 +9,13 @@ import android.support.annotation.Size
 import android.support.annotation.StyleRes
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AnticipateOvershootInterpolator
+import android.widget.FrameLayout
 import ru.nekit.android.shared.R
 import ru.nekit.android.utils.AnimationUtils
 import ru.nekit.android.utils.RevealAnimator
@@ -41,7 +43,14 @@ open class Window(private val context: Context,
 
     fun open() {
         if (!isOpen) {
-            viewHolder = WindowViewHolder(context)
+            viewHolder = WindowViewHolder(context, object : FrameLayout(context) {
+                override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+                    if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                        close()
+                    }
+                    return super.dispatchKeyEvent(event)
+                }
+            })
             styleParameters = StyleParameters(context, styleResId)
             content!!.closeButton.setOnClickListener({ close(styleParameters.closePosition) })
             if (styleParameters.openPosition != null) {
@@ -189,15 +198,14 @@ open class Window(private val context: Context,
         internal var dimAmount: Float = 0.toFloat()
 
         init {
-            val lockScreenBackgroundColor = ContextCompat.getColor(context,
-                    R.color.lock_screen_background_color)
+            val backgroundColor = ContextCompat.getColor(context, R.color.white)
             val ta = context.obtainStyledAttributes(styleResId, R.styleable.WindowStyle)
             openPosition = ta.getString(R.styleable.WindowStyle_openPosition)
             closePosition = ta.getString(R.styleable.WindowStyle_closePosition)
             backgroundColorStart = ta.getColor(R.styleable.WindowStyle_backgroundColorStart,
-                    lockScreenBackgroundColor)
+                    backgroundColor)
             backgroundColorEnd = ta.getColor(R.styleable.WindowStyle_backgroundColorEnd,
-                    lockScreenBackgroundColor)
+                    backgroundColor)
             animationDuration = ta.getInt(R.styleable.WindowStyle_animationDuration, 0)
             dimAmount = ta.getFloat(R.styleable.WindowStyle_dimAmount, 1f)
             ta.recycle()

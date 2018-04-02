@@ -27,15 +27,12 @@ import ru.nekit.android.qls.quest.providers.IEventSenderProvider
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
 import ru.nekit.android.qls.utils.PhoneUtils
 import ru.nekit.android.qls.utils.Vibrate
-import ru.nekit.android.qls.utils.throttleClicks
 import ru.nekit.android.qls.view.adapters.PhoneContactListener
 import ru.nekit.android.qls.view.adapters.PhoneContactsAdapterForReading
 import ru.nekit.android.qls.window.MenuWindowMediator.Step.*
 import ru.nekit.android.qls.window.common.QuestWindowMediator
-import ru.nekit.android.utils.AnimationUtils
-import ru.nekit.android.utils.Delay
-import ru.nekit.android.utils.RevealPoint
-import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.*
+import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
 class MenuWindowMediator private constructor(questContext: QuestContext) :

@@ -1,4 +1,4 @@
-package ru.nekit.android.qls.window
+package ru.nekit.android.window
 
 import android.content.Context
 import android.support.annotation.IdRes

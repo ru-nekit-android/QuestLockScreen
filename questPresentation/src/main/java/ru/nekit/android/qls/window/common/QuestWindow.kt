@@ -3,32 +3,31 @@ package ru.nekit.android.qls.window.common
 import android.support.annotation.StyleRes
 import ru.nekit.android.domain.event.IEvent
 import ru.nekit.android.domain.event.IEventSender
-
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.window.Window
-import ru.nekit.android.qls.window.WindowContentViewHolder
-import ru.nekit.android.qls.window.WindowListener
 import ru.nekit.android.qls.window.common.QuestWindowEvent.*
+import ru.nekit.android.window.Window
+import ru.nekit.android.window.WindowContentViewHolder
+import ru.nekit.android.window.WindowListener
 
-open class QuestWindow(context: QuestContext,
+open class QuestWindow(questContext: QuestContext,
                        name: String,
                        content: WindowContentViewHolder?,
-                       @StyleRes styleResId: Int) : Window(context, name, object : WindowListener {
+                       @StyleRes styleResId: Int) : Window(questContext, name, object : WindowListener {
 
     override fun onWindowOpen(window: Window) {
-        sendEvent(context.eventSender, OPEN, window.name)
+        sendEvent(questContext.eventSender, OPEN, window.name)
     }
 
     override fun onWindowOpened(window: Window) {
-        sendEvent(context.eventSender, OPENED, window.name)
+        sendEvent(questContext.eventSender, OPENED, window.name)
     }
 
     override fun onWindowClose(window: Window) {
-        sendEvent(context.eventSender, CLOSE, window.name)
+        sendEvent(questContext.eventSender, CLOSE, window.name)
     }
 
     override fun onWindowClosed(window: Window) {
-        sendEvent(context.eventSender, CLOSED, window.name)
+        sendEvent(questContext.eventSender, CLOSED, window.name)
     }
 }, content, styleResId) {
 
