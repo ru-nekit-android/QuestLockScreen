@@ -4,8 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
 import io.reactivex.Completable
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.domain.model.LockScreenStartType
+import ru.nekit.android.qls.domain.model.LockScreenStartType.EXPLICIT
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
 import ru.nekit.android.qls.lockScreen.service.LockScreenService
 import ru.nekit.android.qls.utils.ActivityUtils
@@ -14,25 +14,24 @@ object LockScreen {
 
     /*
     on
-    active
+    start
     show
      */
 
-    fun activeIfOn(context: Context, startType: LockScreenStartType) =
-            LockScreenUseCases.isSwitchedOn().use {
-                if (it) active(context, startType)
+    fun startIfOn(context: Context, startType: LockScreenStartType) =
+            LockScreenUseCases.isSwitchedOn {
+                if (it) start(context, startType)
             }
 
-    private fun active(context: Context, startType: LockScreenStartType) {
-        return LockScreenUseCases.start(startType) {
-            ContextCompat.startForegroundService(context, getStartIntent(context, startType))
-        }
-    }
+    private fun start(context: Context, startType: LockScreenStartType) =
+            LockScreenUseCases.start(startType) {
+                ContextCompat.startForegroundService(context, getStartIntent(context, startType))
+            }
 
     /*
     fun startForSetupWizard(context: Context) {
         if (!isActive(context)) {
-            active(context, LockScreenStartType.SETUP_WIZARD)
+            start(context, LockScreenStartType.SETUP_WIZARD)
         }
     }
 
@@ -48,7 +47,8 @@ object LockScreen {
                 context.stopService(Intent(context, LockScreenService::class.java))
             }
 
-    fun show(context: Context) = active(context, LockScreenStartType.EXPLICIT)
+    //on -> start -> show
+    fun show(context: Context) = start(context, EXPLICIT)
 
     fun hide() = LockScreenUseCases.hide()
 
