@@ -5,7 +5,7 @@ import io.reactivex.Single
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.CompletableUseCase
 import ru.nekit.android.domain.interactor.SingleUseCase
-import ru.nekit.android.domain.interactor.buildAsyncEmptySingleUseCase
+import ru.nekit.android.domain.interactor.buildSingleUseCase
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.PhoneContact
 import ru.nekit.android.qls.domain.providers.DependenciesProvider
@@ -38,7 +38,7 @@ object PhoneContactsUseCases : DependenciesProvider() {
     private val phoneContactRepository
         get() = repository.getPhoneContactRepository()
 
-    fun getPhoneContacts(): Single<List<PhoneContact>> = buildAsyncEmptySingleUseCase(null) {
+    fun getPhoneContacts(): Single<List<PhoneContact>> = buildSingleUseCase(schedulerProvider) {
         pupil(repository) {
             getPhoneContactsForPupil(it)
         }
@@ -46,7 +46,6 @@ object PhoneContactsUseCases : DependenciesProvider() {
 
     private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
             phoneContactRepository.getAll(pupil)
-
 
 }
 

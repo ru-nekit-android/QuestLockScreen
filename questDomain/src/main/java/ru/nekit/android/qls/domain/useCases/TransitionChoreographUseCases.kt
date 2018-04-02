@@ -21,8 +21,8 @@ class GoStartTransitionUseCase(private val repository: IRepositoryHolder,
                                private val eventSender: IEventSender,
                                scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
     override fun build(): Completable =
-            GetQuestSeriesLength(repository).build().flatMapCompletable { seriesLength ->
-                QuestStatisticsAndHistoryUseCases.getLastHistory().build().flatMapCompletable { historyOpt ->
+            SettingsUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
+                QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
                     Completable.fromRunnable {
                         repository.getTransitionChoreographRepository().let {
                             it.questSeriesCounter.startValue = seriesLength
@@ -62,7 +62,7 @@ class DestroyTransitionUseCase(private val repository: IRepositoryHolder,
 class CommitNextTransitionUseCase(private val repository: IRepositoryHolder,
                                   private val eventSender: IEventSender,
                                   scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.getLastHistory().build().flatMapCompletable { historyOpt ->
+    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
         Completable.fromRunnable {
             repository.getTransitionChoreographRepository().apply {
                 setCurrentTransition(this,
@@ -75,7 +75,7 @@ class CommitNextTransitionUseCase(private val repository: IRepositoryHolder,
 
 class GenerateNextTransitionUseCase(private val repository: IRepositoryHolder,
                                     scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.getLastHistory().build().flatMapCompletable { historyOpt ->
+    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
         Completable.fromRunnable {
             repository.getTransitionChoreographRepository().apply {
                 questSeriesCounter.countDown()

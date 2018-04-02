@@ -11,46 +11,38 @@ import ru.nekit.android.qls.domain.model.LockScreenStartType
 import ru.nekit.android.qls.domain.model.LockScreenStartType.*
 import ru.nekit.android.qls.domain.providers.DependenciesProvider
 import ru.nekit.android.utils.doIfOrComplete
+import ru.nekit.android.utils.doIfOrNever
 
 object LockScreenUseCases : DependenciesProvider() {
 
     private val lockScreenRepository
         get() = repository.getLockScreenRepository()
 
-    fun start(parameter: LockScreenStartType, useBody: () -> Unit) =
-            useCompletableUseCase(parameter, schedulerProvider, {
-                saveStartType(parameter).concatWith(
-                        Completable.fromRunnable {
-                            if (parameter != SETUP_WIZARD)
-                                switchOn()
-                        })
-            }, useBody)
+    fun start(startType: LockScreenStartType, body: () -> Unit) =
+            useCompletableUseCase(schedulerProvider, {
+                saveStartType(startType).concatWith(
+                        switchOn().doIfOrComplete { startType != SETUP_WIZARD }
+                )
+            }, body)
 
-    fun showLockScreen(parameter: LockScreenStartType,
-                       useBody: () -> Unit) =
-            useCompletableUseCase(parameter, schedulerProvider, {
-                if (parameter != SETUP_WIZARD)
-                    QuestStatisticsAndHistoryUseCases.getLastHistory().build().map { historyOpt ->
-                        if (parameter == ON_NOTIFICATION_CLICK || parameter == EXPLICIT) true
-                        else
-                            if (repository.getQuestSetupWizardSettingRepository().skipAfterRightAnswer)
-                                if (historyOpt.isNotEmpty() &&
-                                        historyOpt.nonNullData.answerType == AnswerType.RIGHT)
-                                    timeProvider.getCurrentTime() - historyOpt.nonNullData.timeStamp >
-                                            repository.getQuestSetupWizardSettingRepository().timeForSkipAfterRightAnswer
-                                else true
+    fun showLockScreen(startType: LockScreenStartType, body: () -> Unit) =
+            useCompletableUseCase(schedulerProvider, {
+                QuestStatisticsAndHistoryUseCases.lastHistory().build().map { historyOpt ->
+                    if (startType == ON_NOTIFICATION_CLICK || startType == EXPLICIT) true
+                    else
+                        if (repository.getQuestSetupWizardSettingRepository().skipAfterRightAnswer)
+                            if (historyOpt.isNotEmpty() &&
+                                    historyOpt.nonNullData.answerType == AnswerType.RIGHT)
+                                timeProvider.getCurrentTime() - historyOpt.nonNullData.timeStamp >
+                                        repository.getQuestSetupWizardSettingRepository().timeForSkipAfterRightAnswer
                             else true
-                    }.flatMapCompletable { show ->
-                                if (show)
-                                    saveStartType(parameter)
-                                else
-                                    Completable.never()
-                            }
-                else
-                    Completable.never()
-            }, useBody)
+                        else true
+                }.flatMapCompletable {
+                    saveStartType(startType).doIfOrNever { it }
+                }.doIfOrNever { startType != SETUP_WIZARD }
+            }, body)
 
-    private fun switchOn() = completableUseCaseFromRunnable(schedulerProvider) {
+    private fun switchOn() = buildCompletableUseCaseFromRunnable {
         lockScreenRepository.switchOn(true)
     }
 
@@ -64,9 +56,9 @@ object LockScreenUseCases : DependenciesProvider() {
         sendHideEvent(eventSender)
     })
 
-    fun isSwitchedOn() =
+    fun isSwitchedOn(body: (Boolean) -> Unit) =
             singleUseCaseFromCallable(schedulerProvider) {
-                lockScreenRepository.isSwitchedOn()
+                body(lockScreenRepository.isSwitchedOn())
             }
 
     fun startIncomingCall(body: () -> Unit) =
@@ -102,17 +94,17 @@ object LockScreenUseCases : DependenciesProvider() {
             }, body)
 
     private fun saveStartType(parameter: LockScreenStartType): Completable =
-            buildEmptyCompletableUseCase {
+            buildCompletableUseCase(schedulerProvider) {
                 lockScreenRepository.saveStartType(parameter)
             }
 
     fun getLastStartType(): Single<Optional<LockScreenStartType>> =
-            buildEmptySingleUseCase {
+            buildSingleUseCase(schedulerProvider) {
                 lockScreenRepository.getLastStartType()
             }
 
     fun updateLastStartType(): Completable =
-            buildEmptyCompletableUseCase {
+            buildCompletableUseCase(schedulerProvider) {
                 getLastStartType().flatMapCompletable { lastStartTypeOpt ->
                     lockScreenRepository.saveStartType(EXPLICIT).doIfOrComplete {
                         lastStartTypeOpt.data == ON_NOTIFICATION_CLICK

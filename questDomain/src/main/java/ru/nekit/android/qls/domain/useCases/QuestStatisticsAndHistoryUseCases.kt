@@ -87,17 +87,21 @@ object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
     private val questHistoryRepository
         get() = repository.getQuestHistoryRepository()
 
-    fun getLastHistory() = emptySingleUseCase(schedulerProvider) {
+    internal fun lastHistory() = singleUseCase(schedulerProvider) {
         pupil(repository) {
             questHistoryRepository
                     .getLastHistoryByLimit(it, 1)
                     .map {
-                        Optional(if (it.isNotEmpty()) it[0] else null)
+                        Optional(if (it.isEmpty()) null else it[0])
                     }
         }
     }
 
-    private fun getHistoryByStatisticsPeriodType() = singleUseCase<List<QuestHistory>, StatisticsPeriodType>(schedulerProvider) { parameter ->
+    fun getLastHistory(body: (QuestHistory?) -> Unit) = lastHistory().use {
+        body(it.data)
+    }
+
+    private fun getHistoryByStatisticsPeriodType(parameter: StatisticsPeriodType) = buildSingleUseCase(schedulerProvider) {
         pupil(repository) {
             repository.getQuestHistoryRepository().getHistoryByPeriod(it,
                     timeProvider.getTimestampBy(parameter))
@@ -107,8 +111,8 @@ object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
     fun getStatisticsForMonth() = getStatisticsForPeriod(MONTHLY to WEEKLY)
 
     fun getStatisticsForPeriod(parameter: Pair<StatisticsPeriodType, StatisticsPeriodType>) =
-            emptySingleUseCase<List<Statistics>>(schedulerProvider) {
-                getHistoryByStatisticsPeriodType().build(parameter.first).map { history ->
+            singleUseCase<List<Statistics>>(schedulerProvider) {
+                getHistoryByStatisticsPeriodType(parameter.first).map { history ->
                     val periodIntervals = timeProvider.getPeriodIntervalForPeriod(parameter)
                     val currentTime = timeProvider.getCurrentTime()
                     val statisticsByPeriod = ArrayList<Statistics>(periodIntervals.size)
@@ -184,17 +188,14 @@ object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
                     statisticsByPeriod.reversed()
                 }
             }
-}
 
-class GetPreviousHistoryWithBestSessionTimeUseCase(private val repository: IRepositoryHolder,
-                                                   scheduler: ISchedulerProvider? = null
-) : SingleUseCase<Optional<QuestHistory>, QuestAndQuestionType>(scheduler) {
-
-    override fun build(parameter: QuestAndQuestionType): Single<Optional<QuestHistory>> =
-            pupil(repository) {
-                repository.getQuestHistoryRepository()
-                        .getPreviousHistoryItemWithBestSessionTime(it, parameter)
-            }
+    fun getPreviousHistoryWithBestSessionTime(questAndQuestionType: QuestAndQuestionType, body: (Optional<QuestHistory>) -> Unit) =
+            useSingleUseCase<Optional<QuestHistory>>(schedulerProvider, {
+                pupil(repository) {
+                    repository.getQuestHistoryRepository()
+                            .getPreviousHistoryItemWithBestSessionTime(it, questAndQuestionType)
+                }
+            }, body)
 
 }
 

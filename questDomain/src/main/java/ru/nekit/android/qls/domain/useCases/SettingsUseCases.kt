@@ -1,29 +1,22 @@
 package ru.nekit.android.qls.domain.useCases
 
-import io.reactivex.Completable
-import io.reactivex.Single
-import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.CompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
-import ru.nekit.android.qls.domain.repository.IRepositoryHolder
-import ru.nekit.android.utils.toSingle
+import ru.nekit.android.domain.interactor.singleUseCaseFromCallable
+import ru.nekit.android.domain.interactor.use
+import ru.nekit.android.domain.interactor.useCompletableUseCaseFromRunnable
+import ru.nekit.android.qls.domain.providers.DependenciesProvider
 
-class GetQuestSeriesLength(private val repository: IRepositoryHolder,
-                           scheduler: ISchedulerProvider? = null) : ParameterlessSingleUseCase<Int>(scheduler) {
+object SettingsUseCases : DependenciesProvider() {
 
-    override fun build(): Single<Int> =
-            Math.max(LENGTH_BY_DEFAULT, repository.getQuestSetupWizardSettingRepository().getQuestSeriesLength()).toSingle()
-
-    companion object {
-        const val LENGTH_BY_DEFAULT = 1
+    fun setQuestSeriesLength(length: Int) = useCompletableUseCaseFromRunnable(schedulerProvider) {
+        repository.getQuestSetupWizardSettingRepository().setQuestSeriesLength(length)
     }
 
-}
+    fun getQuestSeriesLength(body: (Int) -> Unit) = questSeriesLength().use(body)
 
-class SetQuestSeriesLength(private val repository: IRepositoryHolder,
-                           scheduler: ISchedulerProvider? = null) : CompletableUseCase<Int>(scheduler) {
-    override fun build(parameter: Int): Completable = Completable.fromRunnable {
-        repository.getQuestSetupWizardSettingRepository().setQuestSeriesLength(parameter)
-    }
+    internal fun questSeriesLength() = singleUseCaseFromCallable(schedulerProvider, {
+        Math.max(LENGTH_BY_DEFAULT, repository.getQuestSetupWizardSettingRepository().getQuestSeriesLength())
+    })
+
+    private const val LENGTH_BY_DEFAULT = 1
 
 }
