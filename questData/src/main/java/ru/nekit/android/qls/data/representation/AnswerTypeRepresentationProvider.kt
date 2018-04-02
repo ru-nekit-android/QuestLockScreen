@@ -14,4 +14,4 @@ object AnswerTypeRepresentationProvider : StringListIdRepresentationProvider<Ans
 
 }
 
-fun AnswerType.getRepresentation() = AnswerTypeRepresentationProvider.getRepresentation(this)
+fun AnswerType.getTitleRepresentation() = AnswerTypeRepresentationProvider.getRepresentation(this)
