@@ -11,4 +11,11 @@
     <string name="quest_colors_synonym">цвета</string>
     <string name="quest_direction_synonym">направление</string>
 
+    <string name="pupil_sex_girl_title">Девочка</string>
+    <string name="pupil_sex_boy_title">Мальчик</string>
+
+    <string name="complexity_easy_title">Легко</string>
+    <string name="complexity_normal_title">Нормально</string>
+    <string name="complexity_hard_title">Сложно</string>
+
 </resources>

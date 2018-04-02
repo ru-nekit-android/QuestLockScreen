@@ -29,21 +29,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/complexity_easy" />
+                android:text="@string/complexity_easy_title" />
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/complexity_normal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/complexity_normal" />
+                android:text="@string/complexity_normal_title" />
 
             <android.support.v7.widget.AppCompatRadioButton
                 android:id="@+id/complexity_hard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/complexity_hard" />
+                android:text="@string/complexity_hard_title" />
         </RadioGroup>
 
     </LinearLayout>

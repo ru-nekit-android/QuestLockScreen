@@ -19,8 +19,8 @@
                 style="@style/Quest.Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:autoSizeMaxTextSize="20sp"
-                app:autoSizeMinTextSize="14sp"
+                app:autoSizeMaxTextSize="200sp"
+                app:autoSizeMinTextSize="18sp"
                 app:autoSizeStepGranularity="1px"
                 app:autoSizeTextType="uniform" />
 
