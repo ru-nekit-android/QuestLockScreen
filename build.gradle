@@ -1,14 +1,16 @@
 buildscript {
 
     ext.versions = [
-            'buildTools'    : '27.0.1',
-            'compileSdk'    : 26,
-            'minSdk'        : 16,
-            'targetSdk'     : 26,
-            'supportLibrary': '27.1.0',
-            'multidex'      : '1.0.2',
-            'kotlin'        : '1.2.21',
-            'objectbox'     : '1.4.1'
+            'gradle'          : '3.0.1',
+            'buildTools'      : '27.0.3',
+            'compileSdk'      : 26,
+            'minSdk'          : 16,
+            'targetSdk'       : 26,
+            'supportLibrary'  : '27.1.0',
+            'constraintLayout': '1.0.2',
+            'multidex'        : '1.0.2',
+            'kotlin'          : '1.2.30',
+            'objectbox'       : '1.4.1'
     ]
 
     ext.deps = [
@@ -20,13 +22,14 @@ buildscript {
                     ]
             ],
             'support'        : [
-                    'multidex'    : "com.android.support:multidex:${versions.multidex}",
-                    'annotations' : "com.android.support:support-annotations:${versions.supportLibrary}",
-                    'compat'      : "com.android.support:support-compat:${versions.supportLibrary}",
-                    'recyclerView': "com.android.support:recyclerview-v7:${versions.supportLibrary}",
-                    'cardview'    : "com.android.support:cardview-v7:${versions.supportLibrary}",
-                    'appCompat'   : "com.android.support:appcompat-v7:${versions.supportLibrary}",
-                    'design'      : "com.android.support:design:${versions.supportLibrary}"
+                    'multidex'        : "com.android.support:multidex:${versions.multidex}",
+                    'annotations'     : "com.android.support:support-annotations:${versions.supportLibrary}",
+                    'compat'          : "com.android.support:support-compat:${versions.supportLibrary}",
+                    'recyclerView'    : "com.android.support:recyclerview-v7:${versions.supportLibrary}",
+                    'cardview'        : "com.android.support:cardview-v7:${versions.supportLibrary}",
+                    'appCompat'       : "com.android.support:appcompat-v7:${versions.supportLibrary}",
+                    'design'          : "com.android.support:design:${versions.supportLibrary}",
+                    'constraintLayout': "com.android.support.constraint:constraint-layout:${versions.constraintLayout}"
             ],
             'pubnub'         : 'com.pubnub:pubnub-android:3.7.5',
             'zxing'          : 'com.google.zxing:core:3.3.0',
@@ -66,10 +69,12 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:3.0.1"
+        classpath "com.android.tools.build:gradle:${versions.gradle}"
         classpath "io.objectbox:objectbox-gradle-plugin:${versions.objectbox}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
+
+
 }
 
 allprojects {

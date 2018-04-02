@@ -1,4 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
+
+    <string name="label_next">Далее</string>
+    <string name="label_ask_for_permission">Запросить</string>
+    <string name="label_ok">OK</string>
+    <string name="label_create">Создать</string>
+    <string name="label_yes">Да</string>
+    <string name="label_no">Нет</string>
+    <string name="title_do_you_really_want_to_delete">Вы действительно хотетите удалить?</string>
 
 </resources>
