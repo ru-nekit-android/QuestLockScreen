@@ -9,13 +9,8 @@ import ru.nekit.android.qls.lockScreen.LockScreen
 
 class BootCompletedReceiver : BroadcastReceiver() {
 
-    private var wasReceived: Boolean = false
-
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
-        if (!wasReceived) {
-            wasReceived = true
-            LockScreen.activeIfOn(context, LockScreenStartType.ON_BOOT_COMPLETE)
-        }
+        LockScreen.startIfOn(context, LockScreenStartType.ON_BOOT_COMPLETE)
     }
 }
