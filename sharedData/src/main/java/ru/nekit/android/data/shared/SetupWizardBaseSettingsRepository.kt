@@ -11,9 +11,9 @@ open class SetupWizardBaseSettingsRepository(sharedPreferences: SharedPreference
     private val booleanStore: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
 
     companion object {
-        val SETUP_IS_START = "setup_wizard.is_start"
-        val SETUP_IS_COMPLETE = "setup_wizard.is_complete"
-        val QUEST_SERIES_LENGTH = "setup_wizard.quest_series_length"
+        const val SETUP_IS_START = "setup_wizard.is_start"
+        const val SETUP_IS_COMPLETE = "setup_wizard.is_complete"
+        const val QUEST_SERIES_LENGTH = "setup_wizard.quest_series_length"
 
         private fun createParameter(prefix: String, name: String): String {
             return String.format("%s_%s", prefix, name)
