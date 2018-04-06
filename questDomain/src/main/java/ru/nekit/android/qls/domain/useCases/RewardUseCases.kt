@@ -40,19 +40,18 @@ class GetReachedRewardsUseCase(private val repository: IRepositoryHolder,
     override fun build(parameter: QuestAndQuestionType): Single<List<Reward>> =
             pupil(repository) { pupil ->
                 Flowable.fromIterable(ArrayList<Single<Optional<Reward>>>().also { list ->
-                    Reward.Values.get().forEach { reward ->
-                        reward.getVariants().forEach { rewardVariant ->
-                            //reward.variant = rewardVariant
+                    Reward.Values.get().forEach { rewardSource ->
+                        rewardSource.getVariants().forEach { rewardVariant ->
+                            val reward = Reward.Creator.create(rewardSource, rewardVariant)
                             repository.getQuestHistoryCriteriaRepository()
-                                    .getQuestHistoryCriteria(reward, rewardVariant, parameter)?.let { criteria ->
-                                list.add(FetchFirstResultableHistoryByCriteriaListUseCase(repository)
-                                        .build(criteria).flatMap { historyList ->
-                                    reward.getReachedReward(repository,
-                                            pupil.complexity!!,
-                                            historyList,
-                                            rewardVariant)
-                                })
-                            }
+                                    .getQuestHistoryCriteria(reward, parameter)?.let { criteria ->
+                                        list.add(FetchFirstResultableHistoryByCriteriaListUseCase(repository)
+                                                .build(criteria).flatMap { historyList ->
+                                                    reward.getReachedReward(repository,
+                                                            pupil.complexity!!,
+                                                            historyList)
+                                                })
+                                    }
                         }
                     }
                 }).flatMapMaybe { task -> task.filter { it.isNotEmpty() }.map { it.nonNullData }.subscribeOn(Schedulers.computation()) }
@@ -90,21 +89,20 @@ class GetRemainingAmountForReaching(private val repository: IRepositoryHolder,
     override fun build(): Single<List<Pair<Reward, Int>>> =
             pupil(repository) { pupil ->
                 Flowable.fromIterable(ArrayList<Single<Pair<Reward, Optional<Int>>>>().also { list ->
-                    Reward.Values.get().forEach { reward ->
-                        reward.getVariants().forEach { rewardVariant ->
-                            //reward.variant = rewardVariant
+                    Reward.Values.get().forEach { rewardSource ->
+                        rewardSource.getVariants().forEach { rewardVariant ->
+                            val reward = Reward.Creator.create(rewardSource, rewardVariant)
                             repository.getQuestHistoryCriteriaRepository()
-                                    .getQuestHistoryCriteria(reward, rewardVariant)?.let { criteria ->
-                                list.add(FetchFirstResultableHistoryByCriteriaListUseCase(repository)
-                                        .build(criteria).flatMap { historyList ->
-                                    reward.computeRemainingAmountForReaching(repository,
-                                            rewardVariant,
-                                            pupil.complexity!!,
-                                            historyList).map {
-                                        Pair(reward, it)
+                                    .getQuestHistoryCriteria(reward)?.let { criteria ->
+                                        list.add(FetchFirstResultableHistoryByCriteriaListUseCase(repository)
+                                                .build(criteria).flatMap { historyList ->
+                                                    reward.computeRemainingAmountForReaching(repository,
+                                                            pupil.complexity!!,
+                                                            historyList).map {
+                                                        Pair(reward, it)
+                                                    }
+                                                })
                                     }
-                                })
-                            }
                         }
                     }
                 }).flatMapMaybe { task ->

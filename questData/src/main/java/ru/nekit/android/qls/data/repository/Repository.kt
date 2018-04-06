@@ -1417,65 +1417,64 @@ abstract class TransitionChoreographRepository(sharedPreferences: SharedPreferen
 class QuestHistoryCriteriaRepository : IQuestHistoryCriteriaRepository {
 
     override fun getQuestHistoryCriteria(reward: Reward,
-                                         rewardVariant: IRewardVariant,
                                          questAndQuestionType: QuestAndQuestionType?):
-            List<QuestHistoryCriteria>? =
-
-            when (reward) {
-                is Reward.UnlockKey ->
-                    when (rewardVariant) {
-                        ReachVariant.RightSeries -> listOf(
-                                QuestHistoryCriteria(
-                                        true,
-                                        rewards = listOf(Reward.UnlockKey(ReachVariant.RightSeries))
-                                )
-                                ,
-                                QuestHistoryCriteria()
-                        )
-                        ReachVariant.Independence -> listOf(
-                                QuestHistoryCriteria(
-                                        true,
-                                        answerType = AnswerType.RIGHT,
-                                        rewards = listOf(Reward.UnlockKey(ReachVariant.Independence)),
-                                        lockScreenStartType = LockScreenStartType.ON_NOTIFICATION_CLICK
-                                )
-                                ,
-                                QuestHistoryCriteria(
-                                        answerType = AnswerType.RIGHT,
-                                        lockScreenStartType = LockScreenStartType.ON_NOTIFICATION_CLICK
-                                )
-                        )
-                        else -> null
-                    }
-
-                is Reward.Medal -> {
-                    listOf(
+            List<QuestHistoryCriteria>? =reward.let {
+        when (it) {
+            is Reward.UnlockKey ->
+                when (it.variant) {
+                    ReachVariant.RightSeries -> listOf(
                             QuestHistoryCriteria(
-                                    limitByLastItem = true,
-                                    questType = questAndQuestionType?.questType,
-                                    questionType = questAndQuestionType?.questionType,
-                                    rewards = listOf(Reward.Medal())
+                                    true,
+                                    rewards = listOf(Reward.UnlockKey(ReachVariant.RightSeries))
+                            )
+                            ,
+                            QuestHistoryCriteria()
+                    )
+                    ReachVariant.Independence -> listOf(
+                            QuestHistoryCriteria(
+                                    true,
+                                    answerType = AnswerType.RIGHT,
+                                    rewards = listOf(Reward.UnlockKey(ReachVariant.Independence)),
+                                    lockScreenStartType = LockScreenStartType.ON_NOTIFICATION_CLICK
                             )
                             ,
                             QuestHistoryCriteria(
-                                    questType = questAndQuestionType?.questType,
-                                    questionType = questAndQuestionType?.questionType)
+                                    answerType = AnswerType.RIGHT,
+                                    lockScreenStartType = LockScreenStartType.ON_NOTIFICATION_CLICK
+                            )
                     )
+                    else -> null
                 }
-                is Reward.Achievement ->
-                    when (rewardVariant) {
-                        is IRewardVariantWithQuestAndQuestionType ->
-                            listOf(
-                                    QuestHistoryCriteria(answerType = AnswerType.RIGHT,
-                                            questType = questAndQuestionType?.questType,
-                                            questionType = questAndQuestionType?.questionType)
-                            )
-                        else ->
-                            listOf(
-                                    QuestHistoryCriteria(answerType = AnswerType.RIGHT)
-                            )
-                    }
+
+            is Reward.Medal -> {
+                listOf(
+                        QuestHistoryCriteria(
+                                limitByLastItem = true,
+                                questType = questAndQuestionType?.questType,
+                                questionType = questAndQuestionType?.questionType,
+                                rewards = listOf(Reward.Medal())
+                        )
+                        ,
+                        QuestHistoryCriteria(
+                                questType = questAndQuestionType?.questType,
+                                questionType = questAndQuestionType?.questionType)
+                )
             }
+            is Reward.Achievement ->
+                when (it.variant) {
+                    is IRewardVariantWithQuestAndQuestionType ->
+                        listOf(
+                                QuestHistoryCriteria(answerType = AnswerType.RIGHT,
+                                        questType = questAndQuestionType?.questType,
+                                        questionType = questAndQuestionType?.questionType)
+                        )
+                    else ->
+                        listOf(
+                                QuestHistoryCriteria(answerType = AnswerType.RIGHT)
+                        )
+                }
+        }
+    }
 }
 
 object CONST {

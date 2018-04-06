@@ -4,6 +4,7 @@ import io.reactivex.Single
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.AnswerType.RIGHT
 import ru.nekit.android.qls.domain.model.AnswerType.WRONG
+import ru.nekit.android.qls.domain.model.LockScreenStartType.ON_NOTIFICATION_CLICK
 import ru.nekit.android.qls.domain.model.ReachVariant.Independence
 import ru.nekit.android.qls.domain.model.ReachVariant.RightSeries
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
@@ -64,41 +65,36 @@ sealed class Reward {
                 achievementVariant = value as AchievementVariant
             }
 
-        override fun getAmountForReaching(rewardVariant: IRewardVariant, complexity: Complexity): Int =
+        override fun getAmountForReaching(complexity: Complexity): Int =
                 achievementVariant?.count ?: -1
 
         override fun getVariants(): List<IRewardVariant> = AchievementVariant.Values.get()
 
         override fun computeRemainingAmountForReaching(repository: IRepositoryHolder,
-                                                       rewardVariant: IRewardVariant,
                                                        complexity: Complexity,
                                                        historyList: List<QuestHistory>): Single<Optional<Int>> =
                 Single.just(Optional(null))
 
         override fun getReachedReward(repository: IRepositoryHolder,
                                       complexity: Complexity,
-                                      historyList: List<QuestHistory>,
-                                      rewardVariant: IRewardVariant): Single<Optional<Reward>> =
+                                      historyList: List<QuestHistory>): Single<Optional<Reward>> =
 
                 InternalGetCurrentQuestUseCase().build().flatMap { quest ->
-                    variant = rewardVariant
-                    if (rewardVariant is IRewardVariantWithQuestAndQuestionType)
-                        rewardVariant.questAndQuestionType = quest.questAndQuestionType()
+                    if (variant is IRewardVariantWithQuestAndQuestionType)
+                        (variant as IRewardVariantWithQuestAndQuestionType).questAndQuestionType = quest.questAndQuestionType()
                     repository.getRewardRepository().getCount(this).flatMap { count ->
                         if (count == 1) Single.just(Optional(null)) else {
                             getActualAmount(repository,
-                                    rewardVariant,
                                     complexity,
                                     historyList).map { it.nonNullData }.map { actualAmount ->
-                                Optional(if (actualAmount == getAmountForReaching(rewardVariant, complexity))
-                                    Achievement(rewardVariant as AchievementVariant) else null)
+                                Optional(if (actualAmount == getAmountForReaching(complexity))
+                                    this else null)
                             }
                         }
                     }
                 }
 
         override fun getActualAmount(repository: IRepositoryHolder,
-                                     rewardVariant: IRewardVariant,
                                      complexity: Complexity,
                                      historyList: List<QuestHistory>): Single<Optional<Int>> =
                 Single.just(Optional(historyList.size))
@@ -109,36 +105,33 @@ sealed class Reward {
 
         override var variant: IRewardVariant?
             get() = null
-                //empty setter
+        //empty setter
             set(value) {}
 
         override fun getVariants(): List<IRewardVariant> = listOf(DefaultRewardVariant)
 
-        override fun getAmountForReaching(rewardVariant: IRewardVariant, complexity: Complexity): Int = 10
+        override fun getAmountForReaching(complexity: Complexity): Int = 10
 
         private fun getMedalTypeBy(allAmount: Int, rightAnswerAmount: Int, wrongAnswerAmount: Int): MedalType? =
-                MedalType.Values.get().first {
+                MedalType.Values.get().firstOrNull {
                     wrongAnswerAmount in it.min..it.max
                 }
 
         override fun computeRemainingAmountForReaching(repository: IRepositoryHolder,
-                                                       rewardVariant: IRewardVariant,
                                                        complexity: Complexity,
                                                        historyList: List<QuestHistory>): Single<Optional<Int>> =
                 Single.just(Optional(null))
 
         override fun getReachedReward(repository: IRepositoryHolder,
                                       complexity: Complexity,
-                                      historyList: List<QuestHistory>,
-                                      rewardVariant: IRewardVariant): Single<Optional<Reward>> =
+                                      historyList: List<QuestHistory>): Single<Optional<Reward>> =
                 getActualAmount(repository,
-                        rewardVariant,
                         complexity,
                         historyList).map { it.nonNullData }.map { actualAmount ->
                     var result: Medal? = null
-                    if (actualAmount >= getAmountForReaching(rewardVariant, complexity)) {
-                        getMedalTypeBy(historyList.size, actualAmount,
-                                historyList.count { it.answerType == WRONG })?.let {
+                    if (actualAmount >= getAmountForReaching(complexity)) {
+                        val wrongCount = historyList.count { it.answerType == WRONG }
+                        getMedalTypeBy(historyList.size, actualAmount, wrongCount)?.let {
                             result = Medal(it)
                         }
                     }
@@ -146,13 +139,12 @@ sealed class Reward {
                 }
 
         override fun getActualAmount(repository: IRepositoryHolder,
-                                     rewardVariant: IRewardVariant,
                                      complexity: Complexity,
                                      historyList: List<QuestHistory>): Single<Optional<Int>> =
                 Single.just(Optional(historyList.count { it.answerType == RIGHT }))
     }
 
-    data class UnlockKey(var reachVariant: ReachVariant? = null) : Reward() {
+    data class UnlockKey(private var reachVariant: ReachVariant? = null) : Reward() {
 
         override var variant: IRewardVariant?
             get() = reachVariant
@@ -164,43 +156,48 @@ sealed class Reward {
 
         override fun getReachedReward(repository: IRepositoryHolder,
                                       complexity: Complexity,
-                                      historyList: List<QuestHistory>,
-                                      rewardVariant: IRewardVariant): Single<Optional<Reward>> =
+                                      historyList: List<QuestHistory>): Single<Optional<Reward>> =
                 getActualAmount(repository,
-                        rewardVariant,
                         complexity,
                         historyList).map { it.nonNullData }.map { actualAmount ->
-                    Optional(if (actualAmount == getAmountForReaching(rewardVariant, complexity))
-                        UnlockKey(rewardVariant as ReachVariant) else null)
+                    Optional(if (actualAmount == getAmountForReaching(complexity))
+                        this else null)
                 }
 
         override fun getActualAmount(repository: IRepositoryHolder,
-                                     rewardVariant: IRewardVariant,
                                      complexity: Complexity,
                                      historyList: List<QuestHistory>): Single<Optional<Int>> {
-            return when (rewardVariant) {
+            return when (variant) {
                 RightSeries ->
                     Single.fromCallable {
                         val actualAmount = historyList.size
                         val seriesLength = Math.min(actualAmount,
-                                getAmountForReaching(rewardVariant, complexity))
+                                getAmountForReaching(complexity))
                         Optional(historyList.subList(actualAmount - seriesLength, actualAmount)
                                 .count { it.answerType == RIGHT })
                     }
                 Independence -> {
-                    Single.just(
-                            Optional(historyList.count {
-                                it.lockScreenStartType == LockScreenStartType.ON_NOTIFICATION_CLICK
-                            })
-                    )
+                    val h = historyList
+                    Single.fromCallable {
+                        val count = historyList.count {
+                            it.answerType == RIGHT &&
+                                    it.lockScreenStartType == ON_NOTIFICATION_CLICK
+                        }
+                        val countByStartType = historyList.count {
+                            it.lockScreenStartType == ON_NOTIFICATION_CLICK
+                        }
+                        Optional(if (countByStartType == count)
+                            count
+                        else
+                            0)
+                    }
                 }
                 else -> Single.just(Optional(null))
             }
         }
 
-        override fun getAmountForReaching(rewardVariant: IRewardVariant,
-                                          complexity: Complexity): Int =
-                when (rewardVariant) {
+        override fun getAmountForReaching(complexity: Complexity): Int =
+                when (variant) {
                     RightSeries ->
                         when (complexity) {
                             HARD -> 12
@@ -216,27 +213,33 @@ sealed class Reward {
         fun get(): List<Reward> = arrayListOf(UnlockKey(), Medal(), Achievement())
     }
 
-    abstract fun getAmountForReaching(rewardVariant: IRewardVariant,
-                                      complexity: Complexity): Int
+    object Creator {
+        fun create(reward: Reward, rewardVariant: IRewardVariant): Reward {
+            return when (reward) {
+                is UnlockKey -> UnlockKey(rewardVariant as ReachVariant)
+                is Medal -> Medal()
+                is Achievement -> Achievement(rewardVariant as AchievementVariant)
+            }
+        }
+    }
+
+    abstract fun getAmountForReaching(complexity: Complexity): Int
 
     abstract fun getReachedReward(repository: IRepositoryHolder,
                                   complexity: Complexity,
-                                  historyList: List<QuestHistory>,
-                                  rewardVariant: IRewardVariant): Single<Optional<Reward>>
+                                  historyList: List<QuestHistory>): Single<Optional<Reward>>
 
     open fun getVariants(): List<IRewardVariant> = ArrayList()
 
     abstract fun getActualAmount(repository: IRepositoryHolder,
-                                 rewardVariant: IRewardVariant,
                                  complexity: Complexity,
                                  historyList: List<QuestHistory>): Single<Optional<Int>>
 
     open fun computeRemainingAmountForReaching(repository: IRepositoryHolder,
-                                               rewardVariant: IRewardVariant,
                                                complexity: Complexity,
                                                historyList: List<QuestHistory>): Single<Optional<Int>> =
-            getActualAmount(repository, rewardVariant, complexity, historyList).map {
-                Optional(getAmountForReaching(rewardVariant, complexity) - (it.data ?: 0))
+            getActualAmount(repository, complexity, historyList).map {
+                Optional(getAmountForReaching(complexity) - (it.data ?: 0))
             }
 
     abstract var variant: IRewardVariant?
