@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion versions.targetSdk
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -44,6 +44,8 @@ dependencies {
     api deps.rx.binding
     implementation deps.pubnub
     api deps.zxing
+
+    //api deps.support.constraintLayout
 
     api project(':sharedData')
 }
