@@ -8,7 +8,6 @@ dependencies {
     api deps.rx.bus
     api deps.rx.extensions
     api deps.kotlin.stdlib.jdk
-    compile 'com.intellij:annotations:12.0'
 
 }
 
