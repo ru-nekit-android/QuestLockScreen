@@ -7,4 +7,5 @@
     <integer name="quest_delayed_start_animation_duration">300</integer>
     <integer name="keyboard_delay">100</integer>
     <integer name="vibration_delay">100</integer>
+    <integer name="click_delay">50</integer>
 </resources>

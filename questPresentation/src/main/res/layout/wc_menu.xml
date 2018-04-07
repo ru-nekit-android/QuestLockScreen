@@ -4,7 +4,7 @@
     style="@style/Window.Menu"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="MenuWindowContentViewHolder">
+    tools:showIn="ru.nekit.android.qls.window.MenuWindowMediator.MenuWindowContentViewHolder">
 
     <RelativeLayout
         android:id="@+id/container_title"

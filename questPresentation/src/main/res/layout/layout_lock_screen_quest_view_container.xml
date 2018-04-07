@@ -84,29 +84,115 @@
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/container_delayed_play"
+            android:id="@+id/container_instruction"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/icon_delayed_play"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    app:srcCompat="@drawable/ic_play" />
+                <RelativeLayout
+                    android:id="@+id/container_delayed_play"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/tv_delayed_play"
-                    style="@style/LockScreen.QuestView.DelayedPlay"
-                    android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="64dp"
+                        android:layout_marginRight="64dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:id="@+id/icon_delayed_play"
+                            android:layout_width="64dp"
+                            android:layout_height="64dp"
+                            app:srcCompat="@drawable/ic_play" />
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_delayed_play"
+                            style="@style/LockScreen.QuestView.Instruction.Part1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_delayed_start" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/title_delayed_start" />
+                    android:layout_gravity="center">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@color/green" />
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/tv_or"
+                        style="@style/LockScreen.QuestView.Instruction.Part2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/title_or" />
+
+                </FrameLayout>
+
+                <RelativeLayout
+                    android:id="@+id/container_unlock_key"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="64dp"
+                        android:layout_marginRight="64dp"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <android.support.v7.widget.AppCompatImageView
+                                android:id="@+id/icon_unlock_key"
+                                android:layout_width="48dp"
+                                android:layout_height="64dp"
+                                app:srcCompat="@drawable/reward_key" />
+
+                            <android.support.v7.widget.AppCompatTextView
+                                android:id="@+id/tv_unlock_key_count"
+                                style="@style/LockScreen.QuestView.UnlockKeyCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+
+                        <android.support.v7.widget.AppCompatTextView
+                            android:id="@+id/tv_unlock_key"
+                            style="@style/LockScreen.QuestView.Instruction.Part3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/title_use_unlock_key" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
 
             </LinearLayout>
 

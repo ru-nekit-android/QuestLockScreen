@@ -22,11 +22,13 @@
             android:orientation="vertical">
 
             <ViewFlipper
+                android:background="@color/green"
                 android:id="@+id/container_title"
                 style="@style/LockScreen.TitleContainer"
                 android:layout_width="match_parent" />
 
             <ViewFlipper
+
                 android:id="@+id/container_content"
                 style="@style/LockScreen.ContentContainer"
                 android:layout_width="match_parent"

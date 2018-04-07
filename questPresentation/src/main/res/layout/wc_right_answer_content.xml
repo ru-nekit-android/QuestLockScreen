@@ -3,10 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/RightAnswer.ContentContainer">
 
-    <!--<android.support.v7.widget.CardView
-        android:id="@+id/container_title"
-        style="@style/RightAnswer.TitleContainer">-->
-
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
         style="@style/RightAnswer.Title"
@@ -14,7 +10,5 @@
         app:autoSizeMinTextSize="16sp"
         app:autoSizeStepGranularity="1px"
         app:autoSizeTextType="uniform" />
-
-    <!--</android.support.v7.widget.CardView>-->
 
 </RelativeLayout>

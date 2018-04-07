@@ -8,6 +8,7 @@
         android:id="@+id/list_phone_contacts"
         style="@style/Window.Menu.Phone.ContactList"
         android:layout_width="match_parent"
+        android:overScrollMode="never"
         android:layout_height="wrap_content" />
 
 </RelativeLayout>

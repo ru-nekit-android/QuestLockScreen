@@ -3,6 +3,7 @@
     <string name="label_next">Далее</string>
     <string name="label_ask_for_permission">Запросить</string>
     <string name="label_ok">OK</string>
+    <string name="label_skip">Пропустить</string>
     <string name="label_create">Создать</string>
     <string name="label_yes">Да</string>
     <string name="label_no">Нет</string>

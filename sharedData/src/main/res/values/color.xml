@@ -13,5 +13,6 @@
     <color name="friut_shadow">#88333333</color>
     <color name="transparent">#00000000</color>
     <color name="gold">#ffca9731</color>
+    <color name="silver">#ffc0c0c0</color>
 
 </resources>

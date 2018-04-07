@@ -36,9 +36,10 @@
     <string name="cancel">Отмена</string>
     <string name="hint_unlock_password">Пароль</string>
     <string name="title_setup_unlock_secret">Установите пароль</string>
+    <string name="title_enter_unlock_secret">Введите пароль</string>
     <string name="title_unlock_secret">Разблокировка</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="label_show_no_more">Больше\nне показывать</string>
+    <string name="label_show_no_more">Больше не показывать</string>
     <string name="label_ask_for_overlay_permission">Запросить</string>
     <string name="label_ask_for_call_phone_permission">Запросить</string>
     <string name="title_hello">Приветствие</string>
@@ -87,6 +88,8 @@
     <string name="notification_setup_wizard">Настройка приложения</string>
     <string name="title_notification_setup_wizard">Мастер настройки</string>
     <string name="title_delayed_start">Нажмите для начала решения задачи</string>
+    <string name="title_or">или</string>
+    <string name="title_use_unlock_key">Воспользуйтесь ключиком для проска задачи</string>
     <string name="color_default">По умолчанию</string>
     <string name="right_answer_timer_formatter">mm:ss.SSS</string>
     <string name="maximum">максимальное</string>
@@ -94,10 +97,11 @@
     <string name="clock_formatter">HH:mm</string>
     <string name="quest_timer_formatter">mm:ss</string>
     <string name="title_advert">Реклама</string>
+    <string name="title_advert_loading">Загрузка рекламы</string>
     <string name="title_new_level">Новый уровень</string>
     <string name="title_introduction">Приветствие</string>
-    <string name="device_description">Администратор "Маленький гения"</string>
-    <string name="device_admin_label">Администратор "Маленький гения"</string>
+    <string name="device_description">Администратор "Маленький гений"</string>
+    <string name="device_admin_label">Администратор "Маленький гений"</string>
     <string name="label_device_admin">Запросить права администратора</string>
     <string name="label_play_one_more_time">Еще раз</string>
     <string name="title_setup_wizard_admin_request">Запросить права администратора</string>
@@ -112,9 +116,16 @@
     <string name="quest_series">%1$d из %2$d</string>
     <string name="title_statistics">Статистика</string>
     <string name="title_rewards">Достижения</string>
+    <string name="title_unlock_key_help_on_consume">Ключ</string>
+    <string name="title_unlock_key_help_on_zero_count">Нет ключей</string>
     <string name="title_gifts">Подарки</string>
 
     <string name="admob_app_id">ca-app-pub-9028944105026522~9170175648</string>
     <string name="admob_ad_id">ca-app-pub-9028944105026522/2601732014</string>
+
+    <string name="title_loading">Загрузка</string>
+    <string name="ads_timeout_title">%1$s секунд осталось до пропуска</string>
+    <string name="label_consume">Использовать</string>
+    <string name="wait_for_start_title">Выберите</string>
 
 </resources>

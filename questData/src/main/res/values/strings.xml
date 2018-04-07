@@ -128,7 +128,13 @@
     <string name="reward_medal_gold_title">Золотая медаль</string>
     <string name="reward_medal_silver_title">Серебряная медаль</string>
     <string name="reward_medal_bronze_title">Бронзова медаль</string>
+    <string name="reward_medal_gold_contraction_title">Золото</string>
+    <string name="reward_medal_silver_contraction_title">Серебро</string>
+    <string name="reward_medal_bronze_contraction_title">Бронза</string>
     <string name="reward_achievement_newbe_title">Новичок</string>
     <string name="reward_achievement_newbe_by_quest_and_question_type_title">Новичок по типу задания</string>
 
+    <string name="reward_default_reach_rule_title" />
+    <string name="reward_unlock_key_right_series_reach_rule_title">Нужно ответить %1$s подряд</string>
+    <string name="reward_unlock_key_independence_reach_rule_title">Нужно ответить %1$s подряд</string>
 </resources>
