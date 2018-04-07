@@ -3,176 +3,171 @@ package ru.nekit.android.qls.domain.useCases
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.event.IEvent
-import ru.nekit.android.domain.event.IEventSender
-import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.ParameterlessCompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
+import ru.nekit.android.domain.interactor.*
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.QuestHistory
 import ru.nekit.android.qls.domain.model.Transition
 import ru.nekit.android.qls.domain.model.Transition.*
 import ru.nekit.android.qls.domain.model.Transition.Type.CURRENT_TRANSITION
 import ru.nekit.android.qls.domain.model.Transition.Type.PREVIOUS_TRANSITION
-import ru.nekit.android.qls.domain.repository.IRepositoryHolder
+import ru.nekit.android.qls.domain.providers.DependenciesProvider
 import ru.nekit.android.qls.domain.repository.ITransitionChoreographRepository
 import ru.nekit.android.qls.domain.useCases.TransitionChoreographEvent.TRANSITION_CHANGED
 
-class GoStartTransitionUseCase(private val repository: IRepositoryHolder,
-                               private val eventSender: IEventSender,
-                               scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable =
-            SettingsUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
-                QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
-                    Completable.fromRunnable {
-                        repository.getTransitionChoreographRepository().let {
-                            it.questSeriesCounter.startValue = seriesLength
-                            it.advertCounter.startValue = it.advertStartValue
-                            it.advertCounter.reset()
-                            var startTransition: Transition?
-                            do {
-                                startTransition = generateNextTransition(historyOpt.data, repository)
-                                if (startTransition == null)
-                                    reset(repository)
-                            } while (startTransition == null)
-                            it.setTransition(CURRENT_TRANSITION, null)
-                            setCurrentTransition(it, startTransition)
-                            notifyAboutTransitionChange(it, eventSender)
-                        }
+object TransitionChoreographUseCases : DependenciesProvider() {
+
+    private val transitionRepository: ITransitionChoreographRepository
+        get() = repository.getTransitionChoreographRepository()
+
+    private fun getCurrentTransition(): Transition? =
+            transitionRepository.getTransition(CURRENT_TRANSITION)
+
+    private fun getPreviousTransition(): Transition? =
+            transitionRepository.getTransition(PREVIOUS_TRANSITION)
+
+    private fun generateNextTransition(lastHistory: QuestHistory?): Transition? =
+            transitionRepository.let {
+                var transition: Transition? = null
+                if (it.introductionIsPresented) {
+                    if (!it.introductionWasShown()) {
+                        it.introductionWasShown(true)
+                        transition = INTRODUCTION
                     }
                 }
-            }
-}
-
-class DestroyTransitionUseCase(private val repository: IRepositoryHolder,
-                               scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable =
-            Completable.fromRunnable {
-                repository.getTransitionChoreographRepository().let {
-                    val currentTransition = getCurrentTransition(it)
-                    val lastTransition = Transition.values()[Transition.values().size - 1]
-                    if (currentTransition == null || currentTransition == lastTransition) {
-                        reset(repository)
-                    }
-                    it.introductionWasShown(false)
-                    it.advertWasShown(false)
+                if (transition == null)
+                    transition = levelUpGoIfCan(lastHistory) ?: advertGoIfCan(it)
+                if (transition == null) {
+                    transition = if (!it.questSeriesCounter.zeroWasReached()) QUEST else null
                 }
+                transition
             }
-}
 
-class CommitNextTransitionUseCase(private val repository: IRepositoryHolder,
-                                  private val eventSender: IEventSender,
-                                  scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
-        Completable.fromRunnable {
-            repository.getTransitionChoreographRepository().apply {
-                setCurrentTransition(this,
-                        generateNextTransition(historyOpt.data, repository))
-                notifyAboutTransitionChange(this, eventSender)
-            }
-        }
+    private fun advertGoIfCan(repository: ITransitionChoreographRepository) =
+            if (repository.advertIsPresented && repository.advertCounter.zeroWasReached()
+                    && !repository.advertWasShown()) {
+                repository.advertCounter.reset()
+                repository.advertWasShown(true)
+                ADVERT
+            } else null
+
+    private fun levelUpGoIfCan(lastHistory: QuestHistory?) =
+            if (lastHistory != null && lastHistory.levelUp) LEVEL_UP else null
+
+    private fun notifyAboutTransitionChange() {
+        TRANSITION_CHANGED.currentTransition = getCurrentTransition()
+        TRANSITION_CHANGED.previousTransition = getPreviousTransition()
+        eventSender.send(TRANSITION_CHANGED)
     }
-}
 
-class GenerateNextTransitionUseCase(private val repository: IRepositoryHolder,
-                                    scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
-        Completable.fromRunnable {
-            repository.getTransitionChoreographRepository().apply {
-                questSeriesCounter.countDown()
-                if (advertIsPresented) {
-                    advertCounter.countDown()
-                }
-                setCurrentTransition(this,
-                        generateNextTransition(historyOpt.data, repository))
-            }
-        }
+    private fun setCurrentTransition(transition: Transition?) {
+        transitionRepository.setTransition(PREVIOUS_TRANSITION, getCurrentTransition())
+        transitionRepository.setTransition(CURRENT_TRANSITION, transition)
     }
-}
 
-class GetQuestSeriesCounterValueUseCase(private val repository: IRepositoryHolder,
-                                        scheduler: ISchedulerProvider? = null) : ParameterlessSingleUseCase<Int>(scheduler) {
-    override fun build(): Single<Int> = Single.just(repository.getTransitionChoreographRepository().questSeriesCounter.value)
-}
+    fun getPreviousTransition(body: (Transition?) -> Unit) = useSingleUseCaseFromCallable(schedulerProvider, {
+        Optional(getPreviousTransition())
+    }) {
+        body(it.data)
+    }
 
-class CommitCurrentTransitionUseCase(private val repository: IRepositoryHolder, private val eventSender: IEventSender,
-                                     scheduler: ISchedulerProvider? = null) : ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = Completable.fromRunnable {
-        repository.getTransitionChoreographRepository().let {
+    fun getQuestSeriesCounterValue(body: (Int) -> Unit) = useSingleUseCaseFromCallable(schedulerProvider, {
+        transitionRepository.questSeriesCounter.value
+    }, body)
+
+    fun goOnCurrentTransition() = useCompletableUseCaseFromRunnable(schedulerProvider, {
+        transitionRepository.let {
             it.advertWasShown(false)
-            notifyAboutTransitionChange(it, eventSender)
+            notifyAboutTransitionChange()
         }
-    }
-}
+    })
 
-class GetCurrentTransitionUseCase(private val repository: IRepositoryHolder,
-                                  scheduler: ISchedulerProvider? = null) : ParameterlessSingleUseCase<Optional<Transition>>(scheduler) {
-    override fun build(): Single<Optional<Transition>> = Single.fromCallable {
-        Optional(getCurrentTransition(repository.getTransitionChoreographRepository()))
-    }
-}
-
-class GetPreviousTransitionUseCase(private val repository: IRepositoryHolder,
-                                   scheduler: ISchedulerProvider? = null) : ParameterlessSingleUseCase<Optional<Transition>>(scheduler) {
-    override fun build(): Single<Optional<Transition>> = Single.fromCallable {
-        Optional(getPreviousTransition(repository.getTransitionChoreographRepository()))
-    }
-}
-
-private fun generateNextTransition(lastHistory: QuestHistory?, repository: IRepositoryHolder): Transition? =
-        repository.getTransitionChoreographRepository().let {
-            var transition: Transition? = null
-            if (it.introductionIsPresented) {
-                if (!it.introductionWasShown()) {
-                    it.introductionWasShown(true)
-                    transition = INTRODUCTION
+    internal fun generateNextTransition() = buildCompletableUseCase(null, {
+        QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
+            Completable.fromRunnable {
+                transitionRepository.apply {
+                    questSeriesCounter.countDown()
+                    if (advertIsPresented)
+                        advertCounter.countDown()
+                    setCurrentTransition(generateNextTransition(historyOpt.data))
                 }
             }
-            if (transition == null)
-                transition = levelUpGoIfCan(lastHistory) ?: advertGoIfCan(it)
-            if (transition == null) {
-                transition = if (!it.questSeriesCounter.zeroWasReached()) QUEST else null
-            }
-            transition
         }
+    })
 
-private fun advertGoIfCan(repository: ITransitionChoreographRepository) =
-        if (repository.advertIsPresented && repository.advertCounter.zeroWasReached()
-                && !repository.advertWasShown()) {
-            repository.advertCounter.reset()
-            repository.advertWasShown(true)
-            ADVERT
-        } else null
+    fun goOnNextTransition() = useCompletableUseCase(schedulerProvider, {
+        QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
+            Completable.fromRunnable {
+                transitionRepository.apply {
+                    setCurrentTransition(generateNextTransition(historyOpt.data))
+                    notifyAboutTransitionChange()
+                }
+            }
+        }
+    })
 
-private fun levelUpGoIfCan(lastHistory: QuestHistory?) =
-        if (lastHistory != null && lastHistory.levelUp) LEVEL_UP else null
+    fun getCurrentTransition(body: (Transition?) -> Unit) = currentTransition().use { body(it.data) }
 
-private fun notifyAboutTransitionChange(repository: ITransitionChoreographRepository,
-                                        eventSender: IEventSender) {
-    TRANSITION_CHANGED.currentTransition = getCurrentTransition(repository)
-    TRANSITION_CHANGED.previousTransition = getPreviousTransition(repository)
-    eventSender.send(TRANSITION_CHANGED)
-}
+    fun currentTransition() = singleUseCaseFromCallable(schedulerProvider, {
+        Optional(getCurrentTransition())
+    })
 
-private fun getCurrentTransition(repository: ITransitionChoreographRepository): Transition? =
-        repository.getTransition(CURRENT_TRANSITION)
+    fun getNextTransition(body: (Transition?) -> Unit) = useSingleUseCase(schedulerProvider, {
+        QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMap { historyOpt ->
+            Single.fromCallable {
+                Optional(generateNextTransition(historyOpt.data))
+            }
+        }
+    }) { body(it.data) }
 
-private fun getPreviousTransition(repository: ITransitionChoreographRepository): Transition? =
-        repository.getTransition(PREVIOUS_TRANSITION)
+    fun goStartTransition(body: () -> Unit) = useCompletableUseCase(schedulerProvider, {
+        SettingsUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
+            QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
+                Completable.fromRunnable {
+                    transitionRepository.let {
+                        it.questSeriesCounter.startValue = seriesLength
+                        it.advertCounter.startValue = it.advertStartValue
+                        it.advertCounter.reset()
+                        var startTransition: Transition?
+                        do {
+                            startTransition = generateNextTransition(historyOpt.data)
+                            if (startTransition == null)
+                                reset()
+                        } while (startTransition == null)
+                        it.setTransition(CURRENT_TRANSITION, null)
+                        setCurrentTransition(startTransition)
+                        notifyAboutTransitionChange()
+                    }
+                }
+            }
+        }
+    }, body)
 
-private fun reset(repository: IRepositoryHolder) {
-    repository.getTransitionChoreographRepository().apply {
-        introductionWasShown(false)
-        advertWasShown(false)
-        questSeriesCounter.reset()
-        setTransition(PREVIOUS_TRANSITION, null)
-        setTransition(CURRENT_TRANSITION, null)
+    fun destroyTransition() = useCompletableUseCase(schedulerProvider, {
+        Completable.fromRunnable {
+            transitionRepository.let {
+                val currentTransition = getCurrentTransition()
+                val lastTransition = Transition.values()[Transition.values().size - 1]
+                if (currentTransition == null || currentTransition == lastTransition) {
+                    reset()
+                }
+                it.introductionWasShown(false)
+                it.advertWasShown(false)
+            }
+        }
+    })
+
+
+    private fun reset() {
+        transitionRepository.apply {
+            introductionWasShown(false)
+            advertWasShown(false)
+            if (questSeriesCounter.zeroWasReached())
+                questSeriesCounter.reset()
+            setTransition(PREVIOUS_TRANSITION, null)
+            setTransition(CURRENT_TRANSITION, null)
+        }
     }
-}
 
-private fun setCurrentTransition(repository: ITransitionChoreographRepository,
-                                 transition: Transition?) {
-    repository.setTransition(PREVIOUS_TRANSITION, getCurrentTransition(repository))
-    repository.setTransition(CURRENT_TRANSITION, transition)
 }
 
 enum class TransitionChoreographEvent : IEvent {

@@ -1,20 +1,25 @@
 package ru.nekit.android.qls.setupWizard.view
 
-import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.view.View
 import android.widget.RadioGroup
+import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.shared.model.Complexity
+import ru.nekit.android.qls.shared.model.Complexity.*
 
-class SetupQTPComplexityFragment : QuestSetupWizardFragment(), RadioGroup.OnCheckedChangeListener {
+class SetupQTPComplexityFragment : QuestSetupWizardFragment() {
 
     private lateinit var qtpComplexityGroup: RadioGroup
 
     override fun onSetupStart(view: View) {
         qtpComplexityGroup = view.findViewById(R.id.complexity_group)
-        qtpComplexityGroup.setOnCheckedChangeListener(this)
+        autoDispose {
+            qtpComplexityGroup.checkedChanges().subscribe {
+                update(true)
+            }
+        }
         setNextButtonText(R.string.label_ok)
         update(false)
     }
@@ -23,9 +28,9 @@ class SetupQTPComplexityFragment : QuestSetupWizardFragment(), RadioGroup.OnChec
         val selectedComplexity = qtpComplexityGroup.checkedRadioButtonId
         val complexity: Complexity? =
                 when (selectedComplexity) {
-                    R.id.complexity_easy -> Complexity.EASY
-                    R.id.complexity_normal -> Complexity.NORMAL
-                    R.id.complexity_hard -> Complexity.HARD
+                    R.id.complexity_easy -> EASY
+                    R.id.complexity_normal -> NORMAL
+                    R.id.complexity_hard -> HARD
                     else -> null
                 }
         return setupWizard.setQTPComplexity(complexity)
@@ -36,17 +41,8 @@ class SetupQTPComplexityFragment : QuestSetupWizardFragment(), RadioGroup.OnChec
         return R.layout.sw_setup_qtp_complexity
     }
 
-    override fun onCheckedChanged(group: RadioGroup, @IdRes checkedId: Int) {
-        update(true)
-    }
-
     private fun update(choiced: Boolean) {
         setNextButtonVisibility(choiced)
-    }
-
-    override fun onDestroy() {
-        qtpComplexityGroup.setOnCheckedChangeListener(null)
-        super.onDestroy()
     }
 
     companion object {

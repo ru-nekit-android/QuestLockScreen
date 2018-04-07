@@ -32,7 +32,7 @@ import ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver
 import ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver.PhoneEvent.*
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard
-import ru.nekit.android.qls.utils.PhoneUtils
+import ru.nekit.android.utils.PhoneUtils
 import ru.nekit.android.utils.TimeUtils
 
 class LockScreenService : Service() {
@@ -106,7 +106,9 @@ class LockScreenService : Service() {
                             startActivity(Intent(ACTION_CALL).apply {
                                 flags = FLAG_ACTIVITY_NEW_TASK or
                                         FLAG_ACTIVITY_NO_USER_ACTION
-                                data = Uri.parse("tel:" + it.nonNullData.phoneNumber)
+                                val phoneContact = it.nonNullData
+                                val phoneNumber = phoneContact.phoneNumber
+                                data = Uri.parse("tel:$phoneNumber")
                             })
                             hideLockScreen()
                         }
@@ -194,8 +196,8 @@ class LockScreenService : Service() {
                         }
                         buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
                             startForeground(notification)
+                        }
                     }
-                }
                 } else setupWizard.start()
         }
     }
@@ -242,6 +244,7 @@ class LockScreenService : Service() {
                     .setWhen(TimeUtils.currentTime)
 
     override fun onTaskRemoved(rootIntent: Intent) {
+        LockScreen.hide()
         LockScreen.startIfOn(this, ON_DESTROY)
     }
 

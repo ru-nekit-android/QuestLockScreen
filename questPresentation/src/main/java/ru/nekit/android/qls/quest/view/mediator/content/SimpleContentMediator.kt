@@ -13,7 +13,7 @@ import ru.nekit.android.qls.quest.QuestContext
 abstract class SimpleContentMediator : IContentMediator {
 
     override lateinit var quest: Quest
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
     override lateinit var questContext: QuestContext
     protected lateinit var rootContentContainer: ViewGroup
 

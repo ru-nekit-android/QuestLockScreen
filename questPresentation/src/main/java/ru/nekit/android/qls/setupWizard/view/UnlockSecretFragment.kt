@@ -1,7 +1,9 @@
 package ru.nekit.android.qls.setupWizard.view
 
+import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.view.View
+import android.widget.TextView
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.PatternLockView.PatternViewMode.WRONG
 import com.andrognito.patternlockview.listener.PatternLockViewListener
@@ -9,20 +11,22 @@ import com.andrognito.patternlockview.utils.PatternLockUtils
 import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
+import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep.UNLOCK_SECRET
 import ru.nekit.android.qls.setupWizard.ISetupWizardStep
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.SETUP_UNLOCK_SECRET
-import ru.nekit.android.qls.utils.KeyboardHost
-import ru.nekit.android.qls.utils.Vibrate
 import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.KeyboardHost
+import ru.nekit.android.utils.Vibrate
 
 class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener {
 
-    private lateinit var step: ISetupWizardStep
+    private var step: ISetupWizardStep? = null
     private lateinit var patternLockView: PatternLockView
     private lateinit var pattern: List<PatternLockView.Dot>
 
     override fun onStarted() {
+
     }
 
     override fun onProgress(pattern: List<PatternLockView.Dot>) {
@@ -72,14 +76,30 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
             isTactileFeedbackEnabled = true
             isInputEnabled = true
         }
+        val titleView = view.findViewById<TextView>(R.id.tv_title)
         if (step == SETUP_UNLOCK_SECRET) {
+            titleView.text = getString(R.string.title_setup_unlock_secret)
             setNextButtonText(R.string.label_set_unlock_secret)
             setAltButtonText(R.string.label_reset_unlock_secret)
         } else if (step == UNLOCK_SECRET) {
             setToolContainerVisibility(false)
+            titleView.text = getString(R.string.title_enter_unlock_secret)
         }
         setAltButtonVisibility(false)
         update(false)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (step != null)
+            outState.putString(CURRENT_STEP, (step as BaseSetupWizardStep).name)
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        savedInstanceState?.let {
+            step = BaseSetupWizardStep.valueOf(savedInstanceState.getString(CURRENT_STEP))
+        }
+        super.onViewStateRestored(savedInstanceState)
     }
 
     override fun onDestroy() {
@@ -111,6 +131,8 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
     }
 
     companion object {
+
+        const val CURRENT_STEP = "current_step"
 
         fun getInstance(step: ISetupWizardStep): UnlockSecretFragment {
             val fragment = UnlockSecretFragment()

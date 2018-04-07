@@ -237,6 +237,20 @@ fun <T> singleUseCase(schedulerProvider: ISchedulerProvider? = null,
             override fun build(): Single<T> = body()
         }
 
+fun <T> flowableUseCase(schedulerProvider: ISchedulerProvider? = null,
+                        body: () -> Flowable<T>) =
+        object : ParameterlessFlowableUseCase<T>(schedulerProvider) {
+            override fun build(): Flowable<T> = body()
+        }
+
+fun <T> buildFlowableUseCase(schedulerProvider: ISchedulerProvider? = null,
+                             body: () -> Flowable<T>) = flowableUseCase(schedulerProvider, body).let {
+    if (schedulerProvider == null)
+        it.build()
+    else
+        it.buildAsync()
+}
+
 fun <T> buildSingleUseCase(schedulerProvider: ISchedulerProvider? = null, body: () -> Single<T>) =
         singleUseCase(schedulerProvider, body).let {
             if (schedulerProvider == null)
@@ -246,7 +260,7 @@ fun <T> buildSingleUseCase(schedulerProvider: ISchedulerProvider? = null, body: 
         }
 
 fun <T> useSingleUseCase(schedulerProvider: ISchedulerProvider?,
-                              body: () -> Single<T>, useBody: (T) -> Unit) =
+                         body: () -> Single<T>, useBody: (T) -> Unit) =
         singleUseCase(schedulerProvider, body).use(useBody)
 
 fun buildCompletableUseCase(schedulerProvider: ISchedulerProvider?, body: () -> Completable): Completable =

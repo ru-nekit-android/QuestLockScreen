@@ -5,7 +5,7 @@ import ru.nekit.android.qls.quest.providers.IQuestContextProvider
 
 abstract class AbstractLockScreenContentMediator : IQuestContextProvider {
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     abstract val viewHolder: ILockScreenContentViewHolder
 

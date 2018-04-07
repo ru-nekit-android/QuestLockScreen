@@ -28,7 +28,7 @@ import ru.nekit.android.qls.setupWizard.view.QuestSetupWizardActivity
 import ru.nekit.android.qls.shared.model.Complexity
 import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.qls.shared.model.PupilSex
-import ru.nekit.android.qls.utils.PhoneUtils
+import ru.nekit.android.utils.PhoneUtils
 import ru.nekit.android.utils.SingletonHolder
 import ru.nekit.android.utils.toSingle
 
@@ -165,9 +165,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
     }
 
 
-    fun switchOff() {
-        LockScreen.switchOff(context)
-    }
+    fun switchOff() = LockScreen.switchOff(context)
 
     fun phoneIsAvailable(): Boolean {
         return PhoneUtils.phoneIsAvailable(context)
@@ -193,12 +191,12 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
     }
 
     /*
-    fun setDeviceAdminRemovable(value: Boolean) {
+    fun setDeviceAdminRemovable(visibility: Boolean) {
         if (knoxIsSupport()) {
             /*EnterpriseLicenseManager enterpriseLicenseManager = EnterpriseLicenseManager.getInstance(context);
             enterpriseLicenseManager.activateLicense();
             EnterpriseDeviceManager edm = new EnterpriseDeviceManager(context);
-            edm.setAdminRemovable(value);*/
+            edm.setAdminRemovable(visibility);*/
         }
     }
     */

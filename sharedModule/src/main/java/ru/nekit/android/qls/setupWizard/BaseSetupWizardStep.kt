@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.setupWizard
 
-
-enum class BaseSetupWizardStep private constructor(val flags: Int) : ISetupWizardStep {
+enum class BaseSetupWizardStep constructor(val flags: Int) : ISetupWizardStep {
 
     UNLOCK_SECRET(0),
     SETUP_INTERNET_CONNECTION(0);

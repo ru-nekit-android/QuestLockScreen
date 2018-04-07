@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.support.annotation.StyleRes
 import android.view.ContextThemeWrapper
+import io.reactivex.Flowable
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
@@ -13,6 +15,7 @@ import ru.nekit.android.domain.event.IEvent
 import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.executor.ISchedulerProvider
+import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.data.repository.QuestResourceRepository
@@ -25,9 +28,9 @@ import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.domain.useCases.*
 import ru.nekit.android.qls.quest.QuestContextEvent.*
 import ru.nekit.android.qls.shared.model.Pupil
-import ru.nekit.android.qls.utils.Vibrate
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.IAutoDispose
+import ru.nekit.android.utils.Vibrate
 import java.util.concurrent.TimeUnit.MILLISECONDS
 
 class QuestContext constructor(
@@ -42,9 +45,9 @@ class QuestContext constructor(
     override lateinit var eventListener: IEventListener
     override lateinit var screenProvider: IScreenProvider
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
     val questResourceRepository: QuestResourceRepository = QuestResourceRepository(this)
-    val questDelayedPlayAnimationDuration: Long = application.getQuestParams().delayedPlayDelay
+    val questDelayedPlayAnimationDuration: Long = application.getQuestSetupWizardSettingRepository().delayedPlayDelay
     val answerCallback = PublishSubject.create<Any>().toSerialized()
 
     private val screenOnBroadcastReceiver = object : BroadcastReceiver() {
@@ -114,22 +117,41 @@ class QuestContext constructor(
             notifyAboutPlayQuest()
     }
 
-    fun questSeriesLength(body: (Int) -> Unit) = GetQuestSeriesLength(repository,
-            schedulerProvider).use(body)
+    fun questSeriesLength(body: (Int) -> Unit) = SettingsUseCases.getQuestSeriesLength(body)
 
     fun questSeriesCounterValue(body: (Int) -> Unit) =
-            GetQuestSeriesCounterValueUseCase(repository, schedulerProvider).use(body)
+            TransitionChoreographUseCases.getQuestSeriesCounterValue(body)
 
     fun <T : Quest> listenQuest(clazz: Class<T>, body: (T) -> Unit): Disposable =
             ListenCurrentQuestUseCase(schedulerProvider).buildAsync().cast(clazz).subscribe { quest -> body(quest) }
 
+    fun <T : Quest> quest(clazz: Class<T>, body: (T) -> Unit): Disposable =
+            GetCurrentQuestUseCase(schedulerProvider).buildAsync().cast(clazz).subscribe { quest -> body(quest) }
+
     fun questHasState(state: QuestState, body: (Boolean) -> Unit) =
             QuestHasStateUseCase(repository, schedulerProvider).use(state, body)
 
+    fun questHasStates(vararg state: QuestState, body: (List<Boolean>) -> Unit) =
+            autoDispose {
+                Single.zip(state.map {
+                    QuestHasStateUseCase(repository, schedulerProvider).buildAsync(it)
+                }, { values -> values }).subscribe { it ->
+                    body(it.map { it as Boolean })
+                }
+            }
 
-    fun pupil(body: (Pupil) -> Unit) =
-            GetCurrentPupilUseCase(repository).use {
-                body(it.nonNullData)
+    fun pupil(body: (Pupil) -> Unit) = pupil.use {
+        body(it.nonNullData)
+    }
+
+    private val pupil
+        get() = GetCurrentPupilUseCase(repository, schedulerProvider)
+
+    fun List<ParameterlessSingleUseCase<Any>>.paralell(body: (List<Any>) -> Unit): Unit =
+            autoDispose {
+                Flowable.fromIterable(this).map { it.buildAsync() }.flatMapSingle { task ->
+                    task.subscribeOn(schedulerProvider.computation())
+                }.toList().subscribe({ it -> body(it) })
             }
 
     fun destroy() = DestroyQuestUseCase(repository, schedulerProvider).use {
@@ -147,10 +169,9 @@ class QuestContext constructor(
                 body()
             }
 
-    fun playQuest(body: (Boolean) -> Unit) = PlayQuestUseCase(repository, timeProvider,
+    fun playQuest() = PlayQuestUseCase(repository, timeProvider,
             screenProvider).use {
         notifyAboutPlayQuest()
-        body(it)
     }
 
     fun stopQuest() =
@@ -170,24 +191,33 @@ class QuestContext constructor(
             GetBeforeCurrentQuestTrainingProgramLevelAllPointsUseCase(repository, schedulerProvider).use(body)
 
     fun questHistory(body: (QuestHistory?) -> Unit) =
-            QuestStatisticsAndHistoryUseCases.getLastHistory().use { body(it.data) }
+            QuestStatisticsAndHistoryUseCases.getLastHistory(body)
 
     fun questStatisticsReport(body: (QuestStatisticsReport) -> Unit) =
             GetCurrentQuestStatisticsReportUseCase(repository).use(body)
 
     fun questPreviousHistoryWithBestSessionTime(questHistory: QuestHistory, body: (QuestHistory?) -> Unit) =
-            GetPreviousHistoryWithBestSessionTimeUseCase(repository, schedulerProvider).use(questHistory.questAndQuestionType) {
-                body(if (it.isEmpty()) null else it.nonNullData)
+            QuestStatisticsAndHistoryUseCases.getPreviousHistoryWithBestSessionTime(questHistory.questAndQuestionType) {
+                body(it.data)
             }
 
-    fun listenSessionTime(body: (Long) -> Unit): Disposable = ListenSessionTimeUseCase(schedulerProvider).buildAsync().subscribe(body)
+    fun listenSessionTime(body: (Long, Long) -> Unit): Disposable = ListenSessionTimeUseCase(
+            repository, schedulerProvider).buildAsync().subscribe {
+        body(it.first, it.second)
+    }
 
     fun listenUnlockKeyCount(body: (Int) -> Unit): Disposable = ListenRewardUseCase(repository, schedulerProvider)
             .build(Reward.UnlockKey())
             .subscribe(body)
 
+    fun unlockKeyCount(body: (Int) -> Unit) = GetRewardCountUseCase(repository, schedulerProvider)
+            .use(Reward.UnlockKey(), body)
+
     fun statistics(statisticsPeriodPair: Pair<StatisticsPeriodType, StatisticsPeriodType>, body: (List<Statistics>) -> Unit) =
             QuestStatisticsAndHistoryUseCases.getStatisticsForPeriod(statisticsPeriodPair).use(body)
+
+    fun statistics(body: (List<Statistics>) -> Unit) =
+            QuestStatisticsAndHistoryUseCases.getStatisticsForMonth().use(body)
 
     fun getRemainingAmountForReaching(body: (List<Pair<Reward, Int>>) -> Unit) =
             GetRemainingAmountForReaching(repository, schedulerProvider).use(body)

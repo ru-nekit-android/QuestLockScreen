@@ -112,7 +112,8 @@ enum class Delay(@IntegerRes private val resourceId: Int) {
     SHORT(R.integer.short_animation_duration),
     SMALL(R.integer.small_animation_duration),
     KEYBOARD(R.integer.keyboard_delay),
-    VIBRATION(R.integer.vibration_delay);
+    VIBRATION(R.integer.vibration_delay),
+    CLICK(R.integer.vibration_delay);
 
     fun get(context: Context) = context.resources.getInteger(resourceId).toLong()
 }

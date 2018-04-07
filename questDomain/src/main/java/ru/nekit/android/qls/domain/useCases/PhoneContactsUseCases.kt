@@ -13,26 +13,6 @@ import ru.nekit.android.qls.domain.repository.IPupilRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.shared.model.Pupil
 
-//TOD: return inmutable list
-/*class GetPhoneContactsForUserUseCase(private val repository: IRepositoryHolder,
-                                     scheduler: ISchedulerProvider? = null) :
-        SingleUseCase<MutableList<PhoneContact>, Pupil>(scheduler) {
-
-    override fun build(parameter: Pupil): Single<MutableList<PhoneContact>> =
-            repository.getPhoneContactRepository().getAll(parameter).map { it.toMutableList() }
-
-}*/
-
-/*class GetPhoneContactsUseCase(private val repository: IRepositoryHolder,
-                              scheduler: ISchedulerProvider? = null) :
-        ParameterlessSingleUseCase<MutableList<PhoneContact>>(scheduler) {
-
-    override fun build(): Single<MutableList<PhoneContact>> =
-            GetCurrentPupilUseCase(repository).build().map { it.data }.flatMap {
-                GetPhoneContactsForUserUseCase(repository).build(it)
-            }
-}*/
-
 object PhoneContactsUseCases : DependenciesProvider() {
 
     private val phoneContactRepository
@@ -45,7 +25,10 @@ object PhoneContactsUseCases : DependenciesProvider() {
     }
 
     private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
-            phoneContactRepository.getAll(pupil)
+            phoneContactRepository.getAll(pupil).map { it.toMutableList() }.map {
+                it.addAll(0, repository.getEmergencyPhoneRepository().getPhoneContacts())
+                it
+            }.map { it.toList() }
 
 }
 
@@ -54,10 +37,12 @@ class GetPhoneContactByIdUseCase(private val repository: IRepositoryHolder,
 
     override fun build(parameter: Long): Single<Optional<PhoneContact>> =
             repository.getPupilRepository().getCurrentPupil().flatMap {
-                if (it.isEmpty())
-                    Single.error(IPupilRepository.CurrentPupilIsNotSet())
-                else
-                    repository.getPhoneContactRepository().getByContactId(it.nonNullData, parameter)
+                when {
+                    it.isEmpty() -> Single.error(IPupilRepository.CurrentPupilIsNotSet())
+                    parameter <= PhoneContact.EMERGENCY_PHONE_NUMBER.contactId -> Single.just(Optional(repository.getEmergencyPhoneRepository().getPhoneContacts()[(Math.abs(parameter) -
+                            Math.abs(PhoneContact.EMERGENCY_PHONE_NUMBER.contactId)).toInt()]))
+                    else -> repository.getPhoneContactRepository().getByContactId(it.nonNullData, parameter)
+                }
             }
 }
 

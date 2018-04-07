@@ -75,7 +75,7 @@ class PhoneContactsFragment : QuestSetupWizardFragment(), PhoneContactListener {
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int = R.layout.sw_allow_contacts
+    override fun getLayoutId(): Int = R.layout.sw_phone_contacts
 
     override fun nextAction(): Single<Boolean> = Single.fromCallable {
         showSetupWizardStep(QuestSetupWizard.QuestSetupWizardStep.SETTINGS)

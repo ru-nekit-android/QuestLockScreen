@@ -8,53 +8,57 @@ import android.widget.Button
 import android.widget.EditText
 import io.reactivex.Single
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.domain.useCases.GetQuestSeriesLength
-import ru.nekit.android.qls.domain.useCases.SetQuestSeriesLength
+import ru.nekit.android.qls.domain.useCases.SettingsUseCases
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.*
-import ru.nekit.android.qls.utils.KeyboardHost
 import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.KeyboardHost
+import ru.nekit.android.utils.throttleClicks
 
 
-class SettingsFragment : QuestSetupWizardFragment(), View.OnClickListener {
+class SettingsFragment : QuestSetupWizardFragment() {
 
     override var unconditionedNextAction: Boolean = false
 
     private lateinit var saveQuestSeriesLengthButton: Button
     private lateinit var showBindParentButton: Button
     private lateinit var voiceRecorderButton: Button
-    private lateinit var allowContactsButton: Button
+    private lateinit var phoneContactsButton: Button
     private lateinit var questSeriesLengthInput: EditText
 
     override fun onSetupStart(view: View) {
         saveQuestSeriesLengthButton = view.findViewById(R.id.btn_quest_series_length_save)
         showBindParentButton = view.findViewById(R.id.btn_bind_parent_control)
         voiceRecorderButton = view.findViewById(R.id.btn_voice_record)
-        allowContactsButton = view.findViewById(R.id.btn_allow_contacts)
-        allowContactsButton.visibility = if (setupWizard.phoneIsAvailable()) VISIBLE else GONE
+        phoneContactsButton = view.findViewById(R.id.btn_phone_contacts)
+        phoneContactsButton.visibility = if (setupWizard.phoneIsAvailable()) VISIBLE else GONE
         questSeriesLengthInput = view.findViewById(R.id.input_quest_series_length)
-        autoDispose {
-            GetQuestSeriesLength(questApplication, questApplication.getDefaultSchedulerProvider()).build().subscribe { value ->
-                questSeriesLengthInput.setText(value.toString())
-            }
+        SettingsUseCases.getQuestSeriesLength { value ->
+            questSeriesLengthInput.setText(value.toString())
         }
-
         setNextButtonText(R.string.label_try_now)
         setAltButtonText(R.string.label_stop_lock)
-        saveQuestSeriesLengthButton.setOnClickListener(this)
-        showBindParentButton.setOnClickListener(this)
-        voiceRecorderButton.setOnClickListener(this)
-        allowContactsButton.setOnClickListener(this)
+        autoDisposeList {
+            listOf(
+                    saveQuestSeriesLengthButton.throttleClicks {
+                        SettingsUseCases.setQuestSeriesLength(Integer.valueOf(questSeriesLengthInput.text.toString()))
+                    },
+                    showBindParentButton.throttleClicks {
+                        showSetupWizardStep(BIND_PARENT_CONTROL)
+                    },
+                    voiceRecorderButton.throttleClicks {
+                        showSetupWizardStep(VOICE_RECORD)
+                    },
+                    phoneContactsButton.throttleClicks {
+                        showSetupWizardStep(SETUP_PHONE_CONTACTS)
+                    }
+            )
+        }
         setAltButtonVisibility(setupWizard.lockScreenIsActive())
-
     }
 
     override fun onDestroy() {
         KeyboardHost.hideKeyboard(context!!, questSeriesLengthInput, Delay.KEYBOARD.get(context!!))
-        saveQuestSeriesLengthButton.setOnClickListener(null)
-        showBindParentButton.setOnClickListener(null)
-        voiceRecorderButton.setOnClickListener(null)
-        allowContactsButton.setOnClickListener(null)
         super.onDestroy()
     }
 
@@ -69,16 +73,6 @@ class SettingsFragment : QuestSetupWizardFragment(), View.OnClickListener {
     override fun altAction() {
         setupWizard.switchOff()
         setAltButtonVisibility(setupWizard.lockScreenIsActive())
-    }
-
-    override fun onClick(view: View) {
-        when (view) {
-            showBindParentButton -> showSetupWizardStep(BIND_PARENT_CONTROL)
-            allowContactsButton -> showSetupWizardStep(SETUP_PHONE_CONTACTS)
-            saveQuestSeriesLengthButton ->
-                SetQuestSeriesLength(questApplication, questApplication.getDefaultSchedulerProvider()).build(Integer.valueOf(questSeriesLengthInput.text.toString())).subscribe()
-            voiceRecorderButton -> showSetupWizardStep(VOICE_RECORD)
-        }
     }
 
     companion object {

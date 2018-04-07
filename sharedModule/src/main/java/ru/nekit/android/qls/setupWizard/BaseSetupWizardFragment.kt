@@ -34,7 +34,7 @@ abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {
     private val toolContainer: View
         get() = setupWizardHolder.getToolContainer()
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     @LayoutRes
     protected abstract fun getLayoutId(): Int

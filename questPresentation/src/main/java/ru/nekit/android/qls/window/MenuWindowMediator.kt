@@ -13,20 +13,15 @@ import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
 import io.reactivex.Single
-import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.interactor.use
-import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.PhoneContact
 import ru.nekit.android.qls.domain.useCases.CheckUnlockSecretUseCase
 import ru.nekit.android.qls.domain.useCases.PhoneContactsUseCases
-import ru.nekit.android.qls.lockScreen.mediator.LockScreenMediatorAction
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorAction
 import ru.nekit.android.qls.lockScreen.service.OutgoingCall
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.providers.IEventSenderProvider
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
-import ru.nekit.android.qls.utils.PhoneUtils
-import ru.nekit.android.qls.utils.Vibrate
 import ru.nekit.android.qls.view.adapters.PhoneContactListener
 import ru.nekit.android.qls.view.adapters.PhoneContactsAdapterForReading
 import ru.nekit.android.qls.window.MenuWindowMediator.Step.*
@@ -35,14 +30,11 @@ import ru.nekit.android.utils.*
 import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
+
 class MenuWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext),
         PhoneContactListener,
-        PatternLockViewListener,
-        IEventSenderProvider {
-
-    override val eventSender: IEventSender
-        get() = questContext.eventSender
+        PatternLockViewListener {
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -51,9 +43,6 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
     private lateinit var phoneContacts: List<PhoneContact>
 
     override val windowStyleId: Int = R.style.Window_Menu
-
-    private val application: QuestLockScreenApplication
-        get() = questContext.application
 
     override fun createWindowContent(): Single<WindowContentViewHolder> {
         return getPhoneContacts().map {
@@ -107,15 +96,14 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
 
     private fun setStep(step: Step) {
         if (currentStep != step) {
-            @StringRes var titleResID = 0
+            @StringRes var titleResId = 0
             if (currentStep != null) {
                 destroyContentForStep()
             }
             currentStep = step
             when (step) {
-
                 PHONE -> {
-                    titleResID = R.string.title_phone
+                    titleResId = R.string.title_phone
                     currentContentHolder = PhoneViewHolder(questContext)
                     (currentContentHolder as PhoneViewHolder).let { phoneViewHolder ->
                         val phoneContactsAdapter = PhoneContactsAdapterForReading(phoneContacts,
@@ -125,16 +113,15 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
                         phoneViewHolder.contactsListView.layoutManager = linearLayoutManager
                     }
                 }
-
                 UNLOCK -> {
-                    titleResID = R.string.title_unlock_secret
+                    titleResId = R.string.title_unlock_secret
                     currentContentHolder = UnlockViewHolder(questContext)
                     (currentContentHolder as UnlockViewHolder).apply {
                         patterLockView.addPatternLockListener(this@MenuWindowMediator)
                     }
                 }
             }
-            title = questContext.getString(titleResID)
+            title = questContext.getString(titleResId)
             (0 until windowContent.buttonContainer.childCount).forEach { i ->
                 val button = windowContent.buttonContainer.getChildAt(i) as AppCompatImageButton
                 val stepOfButton = button.tag as Step
@@ -190,16 +177,16 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
                     PatternLockUtils.patternToMD5(unlockViewHolder.patterLockView, pattern)) { result ->
                 if (result) {
                     closeWindow(RevealPoint.POSITION_MIDDLE_CENTER)
-                    eventSender.send(LockScreenMediatorAction.CLOSE)
+                    eventSender.send(LockScreenContentMediatorAction.CLOSE)
                     unlockViewHolder.patterLockView.clearPattern()
                 } else {
                     unlockViewHolder.patterLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
-                    Vibrate.make(questContext, 400)
+                    Vibrate.make(questContext, Delay.VIBRATION.get(questContext))
                 }
             }
         } else {
             unlockViewHolder.patterLockView.setViewMode(PatternLockView.PatternViewMode.WRONG)
-            Vibrate.make(questContext, 400)
+            Vibrate.make(questContext, Delay.VIBRATION.get(questContext))
         }
     }
 

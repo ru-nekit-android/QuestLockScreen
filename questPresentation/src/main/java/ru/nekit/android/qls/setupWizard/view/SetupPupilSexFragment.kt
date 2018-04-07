@@ -10,11 +10,11 @@ import ru.nekit.android.qls.shared.model.PupilSex
 
 class SetupPupilSexFragment : QuestSetupWizardFragment(), RadioGroup.OnCheckedChangeListener {
 
-    private lateinit var mPupilSexGroup: RadioGroup
+    private lateinit var pupilSexGroup: RadioGroup
 
     override fun onSetupStart(view: View) {
-        mPupilSexGroup = view.findViewById(R.id.pupil_sex_group)
-        mPupilSexGroup.setOnCheckedChangeListener(this)
+        pupilSexGroup = view.findViewById(R.id.pupil_sex_group)
+        pupilSexGroup.setOnCheckedChangeListener(this)
         setNextButtonText(R.string.label_ok)
         update(false)
     }
@@ -24,7 +24,7 @@ class SetupPupilSexFragment : QuestSetupWizardFragment(), RadioGroup.OnCheckedCh
     }
 
     override fun nextAction(): Single<Boolean> {
-        val selectedSex = mPupilSexGroup.checkedRadioButtonId
+        val selectedSex = pupilSexGroup.checkedRadioButtonId
         val pupilSex = if (selectedSex == R.id.pupil_sex_boy) PupilSex.BOY else PupilSex.GIRL
         return setupWizard.setPupilSex(pupilSex)
     }
@@ -39,7 +39,7 @@ class SetupPupilSexFragment : QuestSetupWizardFragment(), RadioGroup.OnCheckedCh
     }
 
     override fun onDestroy() {
-        mPupilSexGroup.setOnCheckedChangeListener(null)
+        pupilSexGroup.setOnCheckedChangeListener(null)
         super.onDestroy()
     }
 

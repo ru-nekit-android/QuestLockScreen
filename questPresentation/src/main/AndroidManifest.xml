@@ -23,7 +23,7 @@
         android:required="false" />
 
     <application
-        android:name="ru.nekit.android.qls.QuestLockScreenApplication"
+        android:name=".QuestLockScreenApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,14 +31,11 @@
 
         <receiver
             android:name=".lockScreen.receiver.BootCompletedReceiver"
-            android:enabled="true"
             android:exported="false">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.QUICKBOOT_POWERON" />
                 <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
 
@@ -69,13 +66,15 @@
         com.samsung.sec.android.clockpackage.alarm.NOTIFY_ALARM_CHANGE:
         -->
 
-        <!--<receiver
+        <!--
+        <receiver
             android:name=".deviceAdminSupport.samsung.EnterpriseLicenseReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="edm.intent.action.license.status" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
 
         <receiver android:name=".lockScreen.receiver.AlarmClockReceiver">
             <intent-filter>
@@ -88,10 +87,10 @@
                 <action android:name="com.urbandroid.sleep.alarmclock.ALARM_ALERT" />
                 <action android:name="com.sonyericsson.alarm.ALARM_ALERT" />
                 <action android:name="zte.com.cn.alarmclock.ALARM_ALERT" />
+                <action android:name="droom.sleepIfUCan.pro.ALARM_ALERT" />
                 <action android:name="com.motorola.blur.alarmclock.ALARM_ALERT" />
             </intent-filter>
         </receiver>
-
         <receiver
             android:name=".deviceAdminSupport.DeviceAdminComponent"
             android:description="@string/device_description"
@@ -100,6 +99,7 @@
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
+
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
                 <action android:name="android.app.action.DEVICE_ADMIN_DISABLE_REQUESTED" />
@@ -109,11 +109,13 @@
         <activity
             android:name=".setupWizard.view.QuestSetupWizardActivity"
             android:clearTaskOnLaunch="true"
+            android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

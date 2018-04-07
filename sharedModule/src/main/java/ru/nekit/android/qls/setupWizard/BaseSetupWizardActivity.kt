@@ -11,14 +11,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import ru.nekit.android.shared.R
 import ru.nekit.android.utils.IAutoDispose
+import ru.nekit.android.utils.throttleClicks
 
 abstract class BaseSetupWizardActivity : FragmentActivity(),
         IAutoDispose,
-        ISetupWizardHolder,
-        View.OnClickListener {
+        ISetupWizardHolder {
 
-
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     protected val context: Context
         get() = applicationContext
@@ -36,7 +35,6 @@ abstract class BaseSetupWizardActivity : FragmentActivity(),
     override fun getNextButton(): Button = nextButton
     override fun getAltButton(): Button = altButton
 
-
     override fun getView(): View = fragmentContainer
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +44,20 @@ abstract class BaseSetupWizardActivity : FragmentActivity(),
         fragmentContainer = findViewById(R.id.container_fragment)
         nextButton = findViewById(R.id.btn_next)
         altButton = findViewById(R.id.btn_alt)
-        nextButton.setOnClickListener(this)
-        altButton.setOnClickListener(this)
+        autoDisposeList {
+            listOf(
+                    nextButton.throttleClicks {
+                        autoDispose {
+                            nextAction().subscribe { it ->
+                                if (it) showNextSetupWizardStep()
+                            }
+                        }
+                    },
+                    altButton.throttleClicks {
+                        altAction()
+                    }
+            )
+        }
         showNextSetupWizardStep()
     }
 
@@ -66,13 +76,9 @@ abstract class BaseSetupWizardActivity : FragmentActivity(),
                 BiFunction { a: Boolean, b: Boolean -> a || b })
     }
 
-    override fun altAction() {
-        currentFragment.altAction()
-    }
+    override fun altAction() = currentFragment.altAction()
 
     override fun onDestroy() {
-        nextButton.setOnClickListener(null)
-        altButton.setOnClickListener(null)
         dispose()
         super.onDestroy()
     }
@@ -103,19 +109,7 @@ abstract class BaseSetupWizardActivity : FragmentActivity(),
         //mFragmentContainer.requestLayout();
     }
 
-    override fun onClick(view: View) {
-        if (view == nextButton) {
-            autoDispose {
-                nextAction().subscribe { it ->
-                    if (it) showNextSetupWizardStep()
-                }
-            }
-        } else if (view == altButton) {
-            altAction()
-        }
-    }
-
     companion object {
-        private val FRAGMENT_NAME = "SetupWizardFragment"
+        private const val FRAGMENT_NAME = "SetupWizardFragment"
     }
 }

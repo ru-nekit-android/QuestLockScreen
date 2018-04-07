@@ -5,8 +5,6 @@ import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.answer.SwipeAnswerMediator
-import ru.nekit.android.qls.window.RightAnswerWindow
-import ru.nekit.android.qls.window.WrongAnswerWindow
 import ru.nekit.android.utils.AnimationUtils
 
 //ver 1.0
@@ -27,13 +25,11 @@ class DirectionAnswerMediator : SwipeAnswerMediator() {
 
     override fun onAnswer(answerType: AnswerType): Boolean {
         when (answerType) {
-            AnswerType.RIGHT -> RightAnswerWindow.openSimple(questContext)
-            AnswerType.WRONG -> {
-                AnimationUtils.shake(viewHolder.targetView)
-                WrongAnswerWindow.openSimple(questContext)
+            AnswerType.RIGHT -> {
             }
+            AnswerType.WRONG -> AnimationUtils.shake(viewHolder.targetView)
             else -> AnimationUtils.shake(viewHolder.targetView)
         }
-        return false
+        return super.onAnswer(answerType)
     }
 }

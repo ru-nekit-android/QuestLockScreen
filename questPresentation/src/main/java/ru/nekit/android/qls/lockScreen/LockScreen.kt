@@ -3,12 +3,11 @@ package ru.nekit.android.qls.lockScreen
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
-import io.reactivex.Completable
 import ru.nekit.android.qls.domain.model.LockScreenStartType
 import ru.nekit.android.qls.domain.model.LockScreenStartType.EXPLICIT
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
 import ru.nekit.android.qls.lockScreen.service.LockScreenService
-import ru.nekit.android.qls.utils.ActivityUtils
+import ru.nekit.android.utils.ActivityUtils
 
 object LockScreen {
 
@@ -42,8 +41,8 @@ object LockScreen {
             ).build()
     */
 
-    fun switchOff(context: Context): Completable =
-            LockScreenUseCases.switchOff().doOnComplete {
+    fun switchOff(context: Context) =
+            LockScreenUseCases.switchOff {
                 context.stopService(Intent(context, LockScreenService::class.java))
             }
 

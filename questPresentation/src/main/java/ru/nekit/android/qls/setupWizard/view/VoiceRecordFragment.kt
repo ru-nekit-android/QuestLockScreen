@@ -1,24 +1,23 @@
 package ru.nekit.android.qls.setupWizard.view
 
 import android.Manifest
-import android.support.design.widget.FloatingActionButton
 import android.view.View
-
+import android.widget.ImageButton
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.domain.model.AnswerType
+import ru.nekit.android.qls.domain.model.AnswerType.RIGHT
+import ru.nekit.android.qls.domain.model.AnswerType.WRONG
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardPermissionRequestFragment
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.VoiceCenter
-import ru.nekit.android.qls.setupWizard.VoiceCenter.Type
 
-import ru.nekit.android.qls.setupWizard.VoiceCenter.Type.RIGHT
-import ru.nekit.android.qls.setupWizard.VoiceCenter.Type.WRONG
 
 class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnClickListener {
 
-    private lateinit var mVoiceCenter: VoiceCenter
-    private lateinit var mRightAnswerVoiceRecordButton: FloatingActionButton
-    private lateinit var mWrongAnswerVoiceRecordButton: FloatingActionButton
-    private var mActiveType: Type? = null
+    private lateinit var voiceCenter: VoiceCenter
+    private lateinit var rightAnswerVoiceRecordButton: ImageButton
+    private lateinit var wrongAnswerVoiceRecordButton: ImageButton
+    private var activeType: AnswerType? = null
 
     override val permissionRequestCode: Int
         get() = 2
@@ -31,11 +30,11 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
         if (!setupWizard.permissionIsGranted(PERMISSIONS)) {
             requestPermission()
         } else {
-            mVoiceCenter = VoiceCenter()
-            mRightAnswerVoiceRecordButton = view.findViewById<View>(R.id.btn_record_voice_for_right_answer) as FloatingActionButton
-            mWrongAnswerVoiceRecordButton = view.findViewById<View>(R.id.btn_record_voice_for_wrong_answer) as FloatingActionButton
-            mRightAnswerVoiceRecordButton.setOnClickListener(this)
-            mWrongAnswerVoiceRecordButton.setOnClickListener(this)
+            voiceCenter = VoiceCenter()
+            rightAnswerVoiceRecordButton = view.findViewById(R.id.btn_record_voice_for_right_answer) as ImageButton
+            wrongAnswerVoiceRecordButton = view.findViewById(R.id.btn_record_voice_for_wrong_answer) as ImageButton
+            rightAnswerVoiceRecordButton.setOnClickListener(this)
+            wrongAnswerVoiceRecordButton.setOnClickListener(this)
         }
         update(false)
     }
@@ -46,9 +45,9 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
     }
 
     override fun onStop() {
-        mRightAnswerVoiceRecordButton.setOnClickListener(null)
-        mWrongAnswerVoiceRecordButton.setOnClickListener(null)
-        mVoiceCenter.stopRecording()
+        rightAnswerVoiceRecordButton.setOnClickListener(null)
+        wrongAnswerVoiceRecordButton.setOnClickListener(null)
+        voiceCenter.stopRecording()
         super.onStop()
     }
 
@@ -65,26 +64,26 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
     }
 
     override fun onClick(view: View) {
-        mVoiceCenter.stopRecording()
-        if (view == mRightAnswerVoiceRecordButton) {
-            if (mActiveType == RIGHT) {
-                mRightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
-                mActiveType = null
+        voiceCenter.stopRecording()
+        if (view == rightAnswerVoiceRecordButton) {
+            if (activeType == RIGHT) {
+                rightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
+                activeType = null
             } else {
-                mActiveType = RIGHT
-                mVoiceCenter.startRecording(mActiveType!!)
-                mRightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[1])
-                mWrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
+                activeType = RIGHT
+                voiceCenter.startRecording(activeType!!)
+                rightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[1])
+                wrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
             }
-        } else if (view === mWrongAnswerVoiceRecordButton) {
-            if (mActiveType == WRONG) {
-                mWrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
-                mActiveType = null
+        } else if (view === wrongAnswerVoiceRecordButton) {
+            if (activeType == WRONG) {
+                wrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
+                activeType = null
             } else {
-                mActiveType = WRONG
-                mVoiceCenter.startRecording(mActiveType!!)
-                mWrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[1])
-                mRightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
+                activeType = WRONG
+                voiceCenter.startRecording(activeType!!)
+                wrongAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[1])
+                rightAnswerVoiceRecordButton.setImageResource(BUTTON_ICONS[0])
             }
         }
     }

@@ -2,32 +2,30 @@ package ru.nekit.android.qls.quest.view.mediator.title
 
 import android.content.Context
 import android.support.annotation.CallSuper
-import android.support.annotation.StringRes
-import android.support.design.widget.FloatingActionButton
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import io.reactivex.disposables.CompositeDisposable
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.R.string.*
 import ru.nekit.android.qls.data.representation.getRepresentation
 import ru.nekit.android.qls.domain.model.AnswerType
-import ru.nekit.android.qls.domain.model.Reward
 import ru.nekit.android.qls.domain.model.quest.*
 import ru.nekit.android.qls.domain.model.resources.CoinVisualResourceCollection
 import ru.nekit.android.qls.domain.model.resources.ColorResourceCollection
 import ru.nekit.android.qls.domain.model.resources.DirectionResourceCollection
 import ru.nekit.android.qls.domain.model.resources.TrafficLightResourceCollection
 import ru.nekit.android.qls.domain.model.resources.common.IGroupWeightComparisonQuest
-import ru.nekit.android.qls.domain.useCases.ConsumeRewardUseCase
-import ru.nekit.android.qls.lockScreen.mediator.LockScreenMediatorAction
+import ru.nekit.android.qls.lockScreen.mediator.SoftKeyboardVisibilityChangeEvent
 import ru.nekit.android.qls.quest.QuestContext
+import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_PLAY
 import ru.nekit.android.qls.quest.formatter.TimeFormatter
 import ru.nekit.android.qls.quest.types.PerimeterQuest
 import ru.nekit.android.qls.quest.types.TextQuest
-import ru.nekit.android.qls.shared.model.QuestType
+import ru.nekit.android.qls.shared.model.QuestType.*
 import ru.nekit.android.qls.shared.model.QuestionType
-import ru.nekit.android.qls.utils.throttleClicks
 import ru.nekit.android.utils.MathUtils
 import ru.nekit.android.utils.ViewHolder
 
@@ -39,207 +37,201 @@ class TitleMediator : ITitleMediator {
     private lateinit var rootContentContainer: ViewGroup
     private lateinit var viewHolder: QuestTitleViewHolder
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     override lateinit var title: String
 
-    override val view: View?
+    override val view: View
         get() = viewHolder.view
-
-    private fun getString(@StringRes resId: Int): String = questContext.getString(resId)
 
     private fun updateTitle() {
         with(quest) {
-
             val questResourceRepository = questContext.questResourceRepository
-            pupil { pupil ->
-                if (this is NumberSummandQuest) {
-                    val numberSummandQuest = this
-                    when (questType) {
+            if (this is NumberSummandQuest) {
+                val numberSummandQuest = this
+                when (questType) {
 
-                        QuestType.COINS ->
+                    COINS ->
 
-                            when (questionType) {
+                        when (questionType) {
 
-                                QuestionType.UNKNOWN_MEMBER -> {
+                            QuestionType.UNKNOWN_MEMBER -> {
 
-                                    val nominationSum = numberSummandQuest.leftNode.sumBy {
-                                        CoinVisualResourceCollection.getById(it).nomination
-                                    }
-                                    title = java.lang.String.format(getString(R.string.quest_coins_unknown_member_title),
-                                            nominationSum)
+                                val nominationSum = numberSummandQuest.leftNode.sumBy {
+                                    CoinVisualResourceCollection.getById(it).nomination
                                 }
-
-                                QuestionType.SOLUTION ->
-
-                                    title = getString(R.string.quest_coins_solution_title)
+                                title = java.lang.String.format(getString(quest_coins_unknown_member_title),
+                                        nominationSum)
                             }
 
-                        QuestType.SIMPLE_EXAMPLE ->
+                            QuestionType.SOLUTION ->
 
-                            when (questionType) {
-
-                                QuestionType.UNKNOWN_MEMBER ->
-
-                                    title = getString(R.string.quest_simple_example_unknown_member_title)
-
-                                QuestionType.SOLUTION ->
-
-                                    title = getString(R.string.quest_simple_example_solution_title)
-
-                                QuestionType.COMPARISON ->
-
-                                    title = getString(R.string.quest_simple_example_comparison_title)
-
-                                QuestionType.UNKNOWN_OPERATION ->
-
-                                    title = getString(R.string.quest_simple_example_unknown_operation_title)
-                            }
-
-                        QuestType.METRICS ->
-
-                            when (questionType) {
-
-                                QuestionType.SOLUTION ->
-
-                                    title = getString(R.string.quest_metrics_solution_title)
-
-                                QuestionType.COMPARISON ->
-
-                                    title = getString(R.string.quest_metrics_comparison_title)
-                            }
-
-                        QuestType.PERIMETER -> {
-
-                            val perimeterQuest = this as PerimeterQuest
-
-                            when (questionType) {
-
-                                QuestionType.SOLUTION ->
-
-
-                                    title = java.lang.String.format(getString(R.string.quest_perimeter_solution_title),
-                                            perimeterQuest.getFigureName(questContext))
-
-                                QuestionType.UNKNOWN_MEMBER ->
-
-                                    title = java.lang.String.format(getString(R.string.quest_perimeter_unknown_member_title),
-                                            getString(R.string.unknown_side),
-                                            perimeterQuest.perimeter)
-                            }
+                                title = getString(quest_coins_solution_title)
                         }
 
-                        QuestType.TRAFFIC_LIGHT ->
+                    SIMPLE_EXAMPLE ->
 
-                            when (questionType) {
+                        when (questionType) {
 
-                                QuestionType.SOLUTION -> {
+                            QuestionType.UNKNOWN_MEMBER ->
 
-                                    val trafficLightModels = MathUtils.shuffleArray(TrafficLightResourceCollection.values())
-                                    title = java.lang.String.format(getString(R.string.quest_traffic_light_solution_title),
-                                            trafficLightModels[0].getRepresentation().getRandomString(questContext),
-                                            trafficLightModels[1].getRepresentation().getRandomString(questContext))
-                                }
-                            }
+                                title = getString(quest_simple_example_unknown_member_title)
 
-                        QuestType.FRUIT_ARITHMETIC -> {
+                            QuestionType.SOLUTION ->
 
-                            val fruitArithmeticQuest = this as FruitArithmeticQuest
+                                title = getString(quest_simple_example_solution_title)
 
-                            when (questionType) {
+                            QuestionType.COMPARISON ->
 
-                                QuestionType.SOLUTION ->
+                                title = getString(quest_simple_example_comparison_title)
 
-                                    title = getString(R.string.quest_fruit_arithmetic_solution_title)
+                            QuestionType.UNKNOWN_OPERATION ->
 
-                                QuestionType.COMPARISON ->
-
-                                    title = java.lang.String.format(getString(R.string.quest_fruit_arithmetic_comparison_title),
-                                            if (fruitArithmeticQuest.groupComparisonType == IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT)
-                                                getString(R.string.greater)
-                                            else
-                                                getString(R.string.less))
-                            }
+                                title = getString(quest_simple_example_unknown_operation_title)
                         }
 
-                        QuestType.TIME -> {
+                    METRICS ->
 
-                            val timeQuest = this as TimeQuest
+                        when (questionType) {
 
-                            when (questionType) {
+                            QuestionType.SOLUTION ->
 
-                                QuestionType.UNKNOWN_MEMBER ->
+                                title = getString(quest_metrics_solution_title)
 
-                                    title = java.lang.String.format(getString(R.string.quest_time_unknown_member_title),
-                                            TimeFormatter.getTimeString(timeQuest))
+                            QuestionType.COMPARISON ->
 
-                                QuestionType.COMPARISON ->
-
-                                    title = java.lang.String.format(getString(R.string.quest_time_comparison_title),
-                                            if (timeQuest.groupComparisonType == IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT)
-                                                getString(R.string.maximum)
-                                            else
-                                                getString(R.string.minimum))
-                            }
+                                title = getString(quest_metrics_comparison_title)
                         }
 
-                        QuestType.CURRENT_TIME ->
+                    PERIMETER -> {
 
-                            title = getString(R.string.quest_current_time_unknown_member_title)
+                        val perimeterQuest = this as PerimeterQuest
 
-                        QuestType.CHOICE ->
+                        when (questionType) {
 
-                            when (questionType) {
+                            QuestionType.SOLUTION ->
 
-                                QuestionType.UNKNOWN_MEMBER -> {
 
-                                    title = java.lang.String.format(getString(R.string.quest_choice_unknown_member_title),
-                                            questResourceRepository.getNounStringRepresentation(
-                                                    questResourceRepository.getVisualResourceItemById(
-                                                            numberSummandQuest.unknownMember)
+                                title = java.lang.String.format(getString(quest_perimeter_solution_title),
+                                        perimeterQuest.getFigureName(questContext))
 
-                                            ))
-                                }
+                            QuestionType.UNKNOWN_MEMBER ->
 
-                            }
-
-                        QuestType.MISMATCH ->
-
-                            title = getString(R.string.quest_mismatch_unknown_member_title)
-
-                        QuestType.CURRENT_SEASON ->
-
-                            title = getString(R.string.quest_current_season_unknown_member_title)
-
-                        QuestType.COLORS -> {
-
-                            val colorQuest = quest as VisualRepresentationalNumberSummandQuest
-                            val visualResourceItem = questResourceRepository.getVisualResourceItemById(
-                                    colorQuest.visualRepresentationList[colorQuest.unknownMemberIndex])
-                            val colorResourceItem = ColorResourceCollection.getById(colorQuest.unknownMember)
-                            val formatString = "%s %s"
-                            title = java.lang.String.format(getString(R.string.quest_colors_unknown_member_title),
-                                    questResourceRepository.localizeAdjectiveAndNounStringResourceIfNeed(
-                                            colorResourceItem,
-                                            visualResourceItem,
-                                            formatString))
+                                title = java.lang.String.format(getString(quest_perimeter_unknown_member_title),
+                                        getString(unknown_side),
+                                        perimeterQuest.perimeter)
                         }
-
-                        QuestType.DIRECTION ->
-
-                            title = java.lang.String.format(getString(R.string.quest_direction_unknown_member_title),
-                                    DirectionResourceCollection.getById(numberSummandQuest.answer)
-                                            .getRepresentation().getRandomString(questContext))
                     }
-                } else if (this is TextQuest) {
-                    val textQuest = this
-                    title = java.lang.String.format(getString(R.string.quest_text_camouflage_title),
-                            textQuest.questionStringArray!![0].length)
-                }
-                title = "${pupil.name}, ${title.toLowerCase()}"
-                viewHolder.titleView.text = title
 
+                    TRAFFIC_LIGHT ->
+
+                        when (questionType) {
+
+                            QuestionType.SOLUTION -> {
+
+                                val trafficLightModels = MathUtils.shuffleArray(TrafficLightResourceCollection.values())
+                                title = java.lang.String.format(getString(quest_traffic_light_solution_title),
+                                        trafficLightModels[0].getRepresentation().getRandomString(questContext),
+                                        trafficLightModels[1].getRepresentation().getRandomString(questContext))
+                            }
+                        }
+
+                    FRUIT_ARITHMETIC -> {
+
+                        val fruitArithmeticQuest = this as FruitArithmeticQuest
+
+                        when (questionType) {
+
+                            QuestionType.SOLUTION ->
+
+                                title = getString(quest_fruit_arithmetic_solution_title)
+
+                            QuestionType.COMPARISON ->
+
+                                title = java.lang.String.format(getString(quest_fruit_arithmetic_comparison_title),
+                                        if (fruitArithmeticQuest.groupComparisonType == IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT)
+                                            getString(greater)
+                                        else
+                                            getString(less))
+                        }
+                    }
+
+                    TIME -> {
+
+                        val timeQuest = this as TimeQuest
+
+                        when (questionType) {
+
+                            QuestionType.UNKNOWN_MEMBER ->
+
+                                title = java.lang.String.format(getString(quest_time_unknown_member_title),
+                                        TimeFormatter.getTimeString(timeQuest))
+
+                            QuestionType.COMPARISON ->
+
+                                title = java.lang.String.format(getString(quest_time_comparison_title),
+                                        if (timeQuest.groupComparisonType == IGroupWeightComparisonQuest.MAX_GROUP_WEIGHT)
+                                            getString(maximum)
+                                        else
+                                            getString(minimum))
+                        }
+                    }
+
+                    CURRENT_TIME ->
+
+                        title = getString(quest_current_time_unknown_member_title)
+
+                    CHOICE ->
+
+                        when (questionType) {
+
+                            QuestionType.UNKNOWN_MEMBER -> {
+
+                                title = java.lang.String.format(getString(quest_choice_unknown_member_title),
+                                        questResourceRepository.getNounStringRepresentation(
+                                                questResourceRepository.getVisualResourceItemById(
+                                                        numberSummandQuest.unknownMember)
+
+                                        ))
+                            }
+
+                        }
+
+                    MISMATCH ->
+
+                        title = getString(quest_mismatch_unknown_member_title)
+
+                    CURRENT_SEASON ->
+
+                        title = getString(quest_current_season_unknown_member_title)
+
+                    COLORS -> {
+
+                        val colorQuest = quest as VisualRepresentationalNumberSummandQuest
+                        val visualResourceItem = questResourceRepository.getVisualResourceItemById(
+                                colorQuest.visualRepresentationList[colorQuest.unknownMemberIndex])
+                        val colorResourceItem = ColorResourceCollection.getById(colorQuest.unknownMember)
+                        val formatString = "%s %s"
+                        title = java.lang.String.format(getString(quest_colors_unknown_member_title),
+                                questResourceRepository.localizeAdjectiveAndNounStringResourceIfNeed(
+                                        colorResourceItem,
+                                        visualResourceItem,
+                                        formatString))
+                    }
+
+                    DIRECTION ->
+
+                        title = java.lang.String.format(getString(quest_direction_unknown_member_title),
+                                DirectionResourceCollection.getById(numberSummandQuest.answer)
+                                        .getRepresentation().getRandomString(questContext))
+                }
+            } else if (this is TextQuest) {
+                val textQuest = this
+                title = java.lang.String.format(getString(quest_text_camouflage_title),
+                        textQuest.questionStringArray!![0].length)
             }
+            title = title.toLowerCase()
+            viewHolder.titleView.text = title
         }
     }
 
@@ -247,28 +239,47 @@ class TitleMediator : ITitleMediator {
         super.onCreate(questContext, quest)
         viewHolder = QuestTitleViewHolder(questContext)
         updateTitle()
-        autoDispose {
-            viewHolder.unlockKeyButton.throttleClicks {
-                ConsumeRewardUseCase(questContext.repository).use(Reward.UnlockKey()) {
-                    if (it) sendEvent(LockScreenMediatorAction.CLOSE)
+        /*autoDispose {
+            viewHolder.unlockKeyContainer.throttleClicks {
+                SettingsUseCases.showUnlockKeyHelpOnConsume {
+                    if (it) {
+                        UnlockKeyHelpWindowMediator.openWindow(questContext, HELP_ON_CONSUME)
+                    } else {
+                        ConsumeRewardUseCase(questContext.repository).use(Reward.UnlockKey()) {
+                            if (it) sendEvent(HIDE)
+                        }
+                    }
                 }
             }
         }
         listenUnlockKeyCount {
             viewHolder.unlockKeyCount.text = "$it"
         }
+        viewHolder.unlockKeyContainer.visibility = GONE*/
+        listenForQuestEvent {
+            when (it) {
+                QUEST_PLAY -> {
+                    //viewHolder.unlockKeyContainer.visibility = GONE
+                    view.visibility = VISIBLE
+                }
+            }
+        }
+        listenForEvent(SoftKeyboardVisibilityChangeEvent::class.java) { event ->
+        }
+        view.visibility = INVISIBLE
     }
 
     override fun onQuestAttach(rootContentContainer: ViewGroup) {
         this.rootContentContainer = rootContentContainer
+        updateTitle()
     }
 
     override fun onQuestStart(delayedPlay: Boolean) {
-
+        updateTitle()
     }
 
     override fun onQuestPlay(delayedPlay: Boolean) {
-
+        updateTitle()
     }
 
     override fun onAnswer(answerType: AnswerType): Boolean {
@@ -308,7 +319,7 @@ class TitleMediator : ITitleMediator {
     internal class QuestTitleViewHolder(context: Context) : ViewHolder(context, R.layout.layout_quest_title) {
 
         val titleView: TextView = view.findViewById(R.id.tv_title) as TextView
-        val unlockKeyButton: FloatingActionButton = view.findViewById(R.id.btn_unlock_key)
-        val unlockKeyCount: TextView = view.findViewById(R.id.tv_unlock_key_count)
+        //val unlockKeyContainer: ViewGroup = view.findViewById(R.id.container_unlock_key)
+        //val unlockKeyCount: TextView = view.findViewById(R.id.tv_unlock_key_count)
     }
 }

@@ -8,10 +8,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-import android.graphics.PixelFormat
+import android.graphics.PixelFormat.TRANSLUCENT
+import android.graphics.Rect
 import android.os.Build
 import android.util.DisplayMetrics
-import android.view.Gravity
+import android.view.Gravity.*
 import android.view.View
 import android.view.View.*
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -20,39 +21,40 @@ import android.view.WindowManager.LayoutParams
 import android.view.WindowManager.LayoutParams.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import android.widget.FrameLayout
 import android.widget.TextView
 import android.widget.ViewFlipper
 import io.reactivex.disposables.CompositeDisposable
 import ru.nekit.android.domain.event.IEvent
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.R.styleable.*
 import ru.nekit.android.qls.domain.model.Transition.*
-import ru.nekit.android.qls.domain.useCases.DestroyTransitionUseCase
-import ru.nekit.android.qls.domain.useCases.GoStartTransitionUseCase
-import ru.nekit.android.qls.domain.useCases.SessionLimiter
 import ru.nekit.android.qls.domain.useCases.TransitionChoreographEvent
+import ru.nekit.android.qls.domain.useCases.TransitionChoreographUseCases
 import ru.nekit.android.qls.lockScreen.LockScreen
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorAction.*
 import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorEvent.ON_CONTENT_SWITCH
-import ru.nekit.android.qls.lockScreen.mediator.LockScreenMediatorAction.CLOSE
-import ru.nekit.android.qls.lockScreen.mediator.LockScreenMediatorAction.CLOSE_IMMEDIATELY
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenViewViewState.SwitchContentViewState
+import ru.nekit.android.qls.lockScreen.mediator.LockScreenViewViewState.UpdateSizeViewState
 import ru.nekit.android.qls.lockScreen.mediator.StatusBarViewState.*
 import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContentMediator
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.QuestContextEvent
 import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_PAUSE
 import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_RESUME
 import ru.nekit.android.qls.quest.providers.IQuestContextProvider
+import ru.nekit.android.qls.window.common.QuestWindowEvent
 import ru.nekit.android.utils.AnimationUtils.fadeAnimation
-import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.Delay.SHORT
 import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.ViewHolder
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 class LockScreenContentMediator(override var questContext: QuestContext) : View.OnLayoutChangeListener,
         IQuestContextProvider {
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     private lateinit var contentViewHolder: LockScreenContentViewHolder
     private var statusBarViewHolder: StatusBarViewHolder
@@ -100,23 +102,36 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                     }
 
                     override fun onAnimationRepeat(animation: Animation) {}
-                })
+                }).apply {
+            view.responsiveClick {
+                hideKeyboard()
+            }
+        }
         contentViewHolder.view.addOnLayoutChangeListener(this)
         statusBarViewHolder = StatusBarViewHolder(questContext, windowManager)
         questContext.registerReceiver(timeTickReceiver, IntentFilter(Intent.ACTION_TIME_TICK))
-        listenForEvent(LockScreenMediatorAction::class.java) { action ->
+        listenForEvent(LockScreenContentMediatorAction::class.java) { action ->
             when (action) {
-                CLOSE_IMMEDIATELY ->
-                    detachView()
-                CLOSE ->
-                    closeView()
+                CLOSE -> closeView()
+                HIDE -> render(IViewState.VisibleViewState(false))
+                SHOW -> render(IViewState.VisibleViewState(true))
             }
         }
-        listenForEvent(QuestContextEvent::class.java) { event ->
+        listenForQuestEvent { event ->
             when (event) {
                 QUEST_PAUSE ->
                     render(FadeOutViewState)
                 QUEST_RESUME ->
+                    render(FadeInViewState)
+                else -> {
+                }
+            }
+        }
+        listenForWindowEvent { event ->
+            when (event) {
+                QuestWindowEvent.OPEN ->
+                    render(FadeOutViewState)
+                QuestWindowEvent.CLOSED ->
                     render(FadeInViewState)
                 else -> {
                 }
@@ -139,12 +154,13 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                         viewHolder.contentContainer?.setLayerType(LAYER_TYPE_HARDWARE, null)
                     }
                     contentMediatorStack[0] = when (currentTransition) {
-                        QUEST -> LockScreenQuestContainerMediator(questContext)
+                        QUEST -> LockScreenQuestContentMediator(questContext)
                         INTRODUCTION -> IntroductionContentMediator(questContext)
-                        LEVEL_UP, ADVERT -> SupportContentMediator(questContext)
+                        ADVERT -> AdsContentMediator(questContext)
+                        LEVEL_UP -> LevelUpContentMediator(questContext)
                         else -> TODO()
                     }
-                    render(LockScreenViewViewState.SwitchContentViewState(contentMediatorStack[0]!!,
+                    render(SwitchContentViewState(contentMediatorStack[0]!!,
                             useAnimation, previousTransition == null && questTransition))
                 }
                 if (questTransition) {
@@ -153,73 +169,42 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                 render(if (!questTransition) FadeOutViewState else FadeInViewState)
             }
         }
-        listenSessionTime { sessionTime ->
+        listenSessionTime { sessionTime, maxSessionTime ->
             questStatisticsReport { report ->
                 var bestTime = report.bestAnswerTime
                 val worstTime = report.worseAnswerTime
-                val maxTimeDefault = Math.max(1000 * 60, worstTime * 2)
-                val maxTime = if (sessionTime < maxTimeDefault) maxTimeDefault else
-                    SessionLimiter.MAX_SESSION_TIME
+                val maxTimeDefault = Math.min(maxSessionTime, Math.max(1000 * 60, worstTime * 2))
+                val maxTime = if (sessionTime < maxTimeDefault) maxTimeDefault else maxSessionTime
                 if (bestTime == Long.MAX_VALUE) {
                     bestTime = 0
                 }
                 render(SessionTimeViewState(sessionTime, bestTime, worstTime, maxTime))
             }
         }
-        questContext.apply {
-            GoStartTransitionUseCase(repository, eventSender,
-                    schedulerProvider).use {
-                sendEvent(LockScreenContentMediatorEvent.ON_INIT)
-            }
+        TransitionChoreographUseCases.goStartTransition {
+            sendEvent(LockScreenContentMediatorEvent.ON_INIT)
         }
     }
 
     fun render(viewState: IViewState) {
         when (viewState) {
-            IViewState.DetachViewState -> {
+            IViewState.DetachViewState, is IViewState.VisibleViewState, is IViewState.AttachViewState -> {
                 contentViewHolder.render(viewState)
                 statusBarViewHolder.render(viewState)
-            }
-            is IViewState.AttachViewState -> {
-                contentViewHolder.render(viewState)
-                statusBarViewHolder.render(viewState)
-                render(TimeViewState(questContext.timeProvider.getCurrentTime()))
+                if (viewState == IViewState.AttachViewState)
+                    render(TimeViewState(questContext.timeProvider.getCurrentTime()))
             }
             is StatusBarViewState -> statusBarViewHolder.render(viewState)
             is LockScreenViewViewState -> contentViewHolder.render(viewState)
         }
     }
 
-    private val statusBarHeight: Int
-        get() = questContext.resources.getDimensionPixelSize(R.dimen.status_bar_height)
-
-    private val isLandscape: Boolean
-        get() = is10InchTabletDevice
-
-    private val is10InchTabletDevice: Boolean
-        get() {
-            val diagonalInches = DisplayMetrics().let {
-                with(it) {
-                    windowManager.defaultDisplay.getMetrics(it)
-                    val widthPixels = widthPixels
-                    val heightPixels = heightPixels
-                    val widthDpi = xdpi
-                    val heightDpi = ydpi
-                    val widthInches = widthPixels / widthDpi
-                    val heightInches = heightPixels / heightDpi
-                    Math.sqrt((widthInches * widthInches + heightInches * heightInches).toDouble())
-                }
-            }
-            return diagonalInches >= 9
-        }
-
-
     fun attachView() {
-        render(IViewState.AttachViewState(isLandscape, statusBarHeight))
+        render(IViewState.AttachViewState)
     }
 
     fun deactivate() {
-        DestroyTransitionUseCase(questContext.repository, questContext.schedulerProvider)
+        TransitionChoreographUseCases.destroyTransition()
         render(IViewState.DeactiveViewState)
         contentMediatorStack[0]?.deactivate()
         contentViewHolder.view.removeOnLayoutChangeListener(this)
@@ -239,7 +224,10 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
 
     override fun onLayoutChange(view: View, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int,
                                 oldTop: Int, oldRight: Int, oldBottom: Int) {
-        render(LockScreenViewViewState.UpdateSizeViewState(statusBarHeight))
+        val screenRect = ScreenHost.getScreenSize(questContext)
+        val isOpened = screenRect.y - bottom > 200
+        sendEvent(SoftKeyboardVisibilityChangeEvent(isOpened))
+        render(UpdateSizeViewState(Rect(left, top, right, bottom)))
     }
 
     private class LockScreenContentViewHolder internal constructor(private val questContext: QuestContext,
@@ -247,9 +235,9 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                                                                    private val animationListener: Animation.AnimationListener) :
             ViewHolder(questContext, R.layout.layout_lock_screen) {
 
-        private val container: View = view.findViewById(R.id.container)
-        private val contentContainer: ViewFlipper = view.findViewById(R.id.container_content) as ViewFlipper
-        private val titleContainer: ViewFlipper = view.findViewById(R.id.container_title) as ViewFlipper
+        val container: View = view.findViewById(R.id.container)
+        private val contentContainer: ViewFlipper = view.findViewById(R.id.container_content)
+        val titleContainer: ViewFlipper = view.findViewById(R.id.container_title)
         var outAnimation: Animation = AnimationUtils.loadAnimation(questContext, R.anim.slide_horizontal_out)
         var inAnimation: Animation? = null
 
@@ -312,81 +300,106 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
             internal var dimAmount: Float = 0F
 
             init {
-                val ta = context.obtainStyledAttributes(R.style.LockScreen_Window,
-                        R.styleable.LockScreenWindowStyle)
-                dimAmount = ta.getFloat(R.styleable.LockScreenWindowStyle_dimAmount, 1f)
-                animationDuration = ta.getInteger(R.styleable.LockScreenWindowStyle_animationDuration,
-                        0)
-                ta.recycle()
+                context.obtainStyledAttributes(R.style.LockScreen_Window,
+                        LockScreenWindowStyle).apply {
+                    dimAmount = getFloat(LockScreenWindowStyle_dimAmount, 1f)
+                    animationDuration = getInteger(LockScreenWindowStyle_animationDuration,
+                            0)
+                    recycle()
+                }
             }
         }
 
+        private fun createLockScreenLayoutParams(): LayoutParams {
+            val isLandscape = isLandscape(windowManager)
+            val screenSize = ScreenHost.getScreenSize(questContext)
+            val statusBaHeight = if (isLandscape) 0 else StatusBarViewHolder.statusBarHeight(questContext)
+            val x = Math.max(screenSize.x, screenSize.y)
+            val y = Math.min(screenSize.x, screenSize.y)
+            val height = y - if (isLandscape) statusBaHeight else 0
+            val width = if (isLandscape)
+                Math.min(x, (height * y.toFloat() / x * 1.3).toInt())
+            else
+                MATCH_PARENT
+            lockScreenLayoutParams = LayoutParams(
+                    width,
+                    MATCH_PARENT,
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                        TYPE_APPLICATION_OVERLAY
+                    else {
+                        @Suppress("DEPRECATION")
+                        TYPE_SYSTEM_ERROR
+                    },
+                    FLAG_SHOW_WHEN_LOCKED
+                            or FLAG_FULLSCREEN
+                            or FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                            or FLAG_DIM_BEHIND
+                            or FLAG_HARDWARE_ACCELERATED,
+                    TRANSLUCENT).apply {
+                softInputMode = SOFT_INPUT_ADJUST_RESIZE
+                screenBrightness = 1f
+                gravity = if (isLandscape) CENTER_HORIZONTAL else LEFT
+                screenOrientation = if (isLandscape)
+                    SCREEN_ORIENTATION_LANDSCAPE
+                else
+                    SCREEN_ORIENTATION_PORTRAIT
+                dimAmount = styleParameters.dimAmount
+                this.y = 0
+            }
+            return lockScreenLayoutParams
+        }
+
         private val styleParameters: StyleParameters = StyleParameters(questContext)
+
+        private var lastYPosition = 0
 
         fun render(viewState: IViewState) {
             when (viewState) {
                 is IViewState.AttachViewState -> {
                     if (!isViewAttached) {
-                        val statusBarHeight = viewState.statusBarHeight
-                        val isLandscape = viewState.isLandscape
-                        val screenSize = ScreenHost.getScreenSize(questContext)
-                        val statusBaHeight = if (isLandscape) 0 else statusBarHeight
-                        val x = Math.max(screenSize.x, screenSize.y)
-                        val y = Math.min(screenSize.x, screenSize.y)
-                        val height = y - if (isLandscape) statusBaHeight else 0
-                        val width = if (isLandscape)
-                            Math.min(x, (height * y.toFloat() / x * 1.3).toInt())
-                        else
-                            MATCH_PARENT
-                        LayoutParams(
-                                width,
-                                MATCH_PARENT,
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                                    TYPE_APPLICATION_OVERLAY
-                                else {
-                                    @Suppress("DEPRECATION")
-                                    TYPE_SYSTEM_ERROR
-                                },
-                                FLAG_SHOW_WHEN_LOCKED
-                                        or FLAG_FULLSCREEN
-                                        or FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
-                                        or FLAG_DIM_BEHIND
-                                        or FLAG_HARDWARE_ACCELERATED,
-                                PixelFormat.TRANSLUCENT).apply {
-                            lockScreenLayoutParams = this
-                            screenBrightness = 1f
-                            gravity = if (isLandscape) Gravity.CENTER_HORIZONTAL else Gravity.LEFT
-                            screenOrientation = if (isLandscape)
-                                SCREEN_ORIENTATION_LANDSCAPE
-                            else
-                                SCREEN_ORIENTATION_PORTRAIT
-
-                            dimAmount = styleParameters.dimAmount
-                            this.y = 0
-                            windowManager.addView(view, this)
-                        }
+                        createLockScreenLayoutParams()
+                        windowManager.addView(view, lockScreenLayoutParams)
                     }
                 }
                 is LockScreenViewViewState.UpdateSizeViewState -> {
-                    val statusBarHeight = viewState.statusBarHeight
+                    val containerLayout: FrameLayout.LayoutParams = container.layoutParams as FrameLayout.LayoutParams
+                    val statusBarHeight = StatusBarViewHolder.statusBarHeight(questContext)
                     val position = IntArray(2)
                     view.getLocationOnScreen(position)
-                    if (position[1] < statusBarHeight) {
-                        val screenSize = ScreenHost.getScreenSize(questContext)
-                        lockScreenLayoutParams.height = screenSize.y - statusBarHeight
-                        lockScreenLayoutParams.y = statusBarHeight
-                        windowManager.updateViewLayout(view, lockScreenLayoutParams)
+                    if (position[1] != lastYPosition) {
+                        lastYPosition = position[1]
+                        containerLayout.setMargins(0, if (position[1] < statusBarHeight) statusBarHeight else 0, 0, 0)
+                        container.layoutParams = containerLayout
                     }
+                    val screenRect = ScreenHost.getScreenSize(questContext)
+                    val isOpened = screenRect.y - viewState.rect.bottom > 200
+                    titleContainer.visibility = if (isOpened) GONE else VISIBLE
+                    titleContainer.parent.requestLayout()
                 }
                 is LockScreenViewViewState.FadeOutViewState ->
                     container.animate().setListener(viewState.listener).withLayer().alpha(0f).start()
                 is LockScreenViewViewState.SwitchContentViewState -> {
-                    viewState.lockScreenContentMediator.apply {
-                        switchToContent(this,
-                                viewState.useAnimation,
-                                viewState.useFadeAnimation)
-                        attachView()
+                    viewState.let {
+                        it.lockScreenContentMediator.apply {
+                            switchToContent(this,
+                                    it.useAnimation,
+                                    it.useFadeAnimation)
+                            attachView()
+                        }
                     }
+                }
+                is IViewState.VisibleViewState -> {
+                    if (viewState.visibility)
+                        lockScreenLayoutParams.apply {
+                            width = MATCH_PARENT
+                            flags = flags and FLAG_NOT_TOUCHABLE.inv()
+                        }
+                    else
+                        lockScreenLayoutParams.apply {
+                            width = 0
+                            flags = flags or FLAG_NOT_TOUCHABLE
+                        }
+                    windowManager.updateViewLayout(view, lockScreenLayoutParams)
                 }
                 IViewState.DeactiveViewState -> {
                     outAnimation.setAnimationListener(null)
@@ -414,24 +427,30 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
         private var worstTimeView: View = view.findViewById(R.id.progress_worst_time)
         private var timerContainer: View = view.findViewById(R.id.container_timer)
 
+        private lateinit var statusBarLayoutParams: LayoutParams
+
+        companion object {
+            fun statusBarHeight(context: Context): Int = context.resources.getDimensionPixelSize(R.dimen.status_bar_height)
+        }
+
         fun render(viewState: IViewState) {
             when (viewState) {
                 is IViewState.AttachViewState -> {
-                    if (!viewState.isLandscape) {
+                    if (!isLandscape(windowManager)) {
                         LayoutParams().apply {
-
+                            statusBarLayoutParams = this
                             type = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
                                 TYPE_APPLICATION_OVERLAY
                             else
                                 @Suppress("DEPRECATION")
                                 TYPE_SYSTEM_ERROR
-                            gravity = Gravity.TOP
+                            gravity = TOP
                             flags = FLAG_NOT_FOCUSABLE or
                                     FLAG_NOT_TOUCH_MODAL or
                                     FLAG_LAYOUT_IN_SCREEN
-                            format = PixelFormat.TRANSLUCENT
+                            format = TRANSLUCENT
                             width = MATCH_PARENT
-                            height = viewState.statusBarHeight
+                            height = statusBarHeight(questContext)
                             timerContainer.visibility = INVISIBLE
                             windowManager.addView(view, this)
                         }
@@ -445,21 +464,31 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                     updateSessionTimeView(0)
                 }
                 is StatusBarViewState.TimeViewState ->
-                    timeView.text = SimpleDateFormat(context.getString(R.string.clock_formatter),
-                            Locale.getDefault()).format(viewState.time)
-                is StatusBarViewState.SessionTimeViewState -> {
-                    bestTimeView.scaleX = viewState.bestTime.toFloat() / viewState.maxTime
-                    worstTimeView.scaleX = viewState.worstTime.toFloat() / viewState.maxTime
-                    progressSessionTimeView.scaleX = Math.min(1f, viewState.sessionTime.toFloat() / viewState.maxTime)
-                    updateSessionTimeView(viewState.sessionTime)
+                    timeView.text = SimpleDateFormat(context.getString(R.string.clock_formatter), Locale.getDefault())
+                            .format(viewState.time)
+                is StatusBarViewState.SessionTimeViewState -> viewState.apply {
+                    bestTimeView.scaleX = bestTime.toFloat() / maxTime
+                    worstTimeView.scaleX = worstTime.toFloat() / maxTime
+                    progressSessionTimeView.scaleX = Math.min(1f, sessionTime.toFloat() / maxTime)
+                    updateSessionTimeView(sessionTime)
                 }
                 IViewState.DetachViewState ->
                     if (view.parent != null)
                         windowManager.removeView(view)
                 FadeInViewState ->
-                    fadeAnimation(timerContainer, false, Delay.SHORT.get(questContext))
+                    fadeAnimation(timerContainer, false, SHORT.get(questContext))
                 FadeOutViewState ->
-                    fadeAnimation(timerContainer, true, Delay.SHORT.get(questContext))
+                    fadeAnimation(timerContainer, true, SHORT.get(questContext))
+                is IViewState.VisibleViewState -> statusBarLayoutParams.apply {
+                    if (viewState.visibility) {
+                        width = MATCH_PARENT
+                        flags = flags and FLAG_NOT_TOUCHABLE.inv()
+                    } else {
+                        width = 0
+                        flags = flags or FLAG_NOT_TOUCHABLE
+                    }
+                    windowManager.updateViewLayout(view, this)
+                }
             }
         }
 
@@ -468,6 +497,27 @@ class LockScreenContentMediator(override var questContext: QuestContext) : View.
                     Locale.getDefault()).apply {
                 sessionTimeView.text = format(sessionTime)
             }
+        }
+    }
+
+    companion object {
+
+        fun isLandscape(windowManager: WindowManager): Boolean = is10InchTabletDevice(windowManager)
+
+        private fun is10InchTabletDevice(windowManager: WindowManager): Boolean {
+            val diagonalInches = DisplayMetrics().let {
+                with(it) {
+                    windowManager.defaultDisplay.getMetrics(it)
+                    val widthPixels = widthPixels
+                    val heightPixels = heightPixels
+                    val widthDpi = xdpi
+                    val heightDpi = ydpi
+                    val widthInches = widthPixels / widthDpi
+                    val heightInches = heightPixels / heightDpi
+                    Math.sqrt((widthInches * widthInches + heightInches * heightInches).toDouble())
+                }
+            }
+            return diagonalInches >= 9
         }
     }
 }
@@ -490,13 +540,14 @@ sealed class LockScreenViewViewState : IViewState {
                                       val useFadeAnimation: Boolean) : LockScreenViewViewState()
 
     data class FadeOutViewState(val listener: Animator.AnimatorListener?) : LockScreenViewViewState()
-    data class UpdateSizeViewState(val statusBarHeight: Int) : LockScreenViewViewState()
+    data class UpdateSizeViewState(val rect: Rect) : LockScreenViewViewState()
 }
 
 interface IViewState {
     object DetachViewState : IViewState
     object DeactiveViewState : IViewState
-    data class AttachViewState(val isLandscape: Boolean, val statusBarHeight: Int) : IViewState
+    data class VisibleViewState(val visibility: Boolean) : IViewState
+    object AttachViewState : IViewState
 }
 
 enum class LockScreenContentMediatorEvent : IEvent {
@@ -508,10 +559,17 @@ enum class LockScreenContentMediatorEvent : IEvent {
 
 }
 
-enum class LockScreenMediatorAction : IEvent {
+data class SoftKeyboardVisibilityChangeEvent(val visibility: Boolean) : IEvent {
 
-    CLOSE_IMMEDIATELY,
-    CLOSE;
+    override val eventName: String = javaClass.name
+
+}
+
+enum class LockScreenContentMediatorAction : IEvent {
+
+    CLOSE,
+    HIDE,
+    SHOW;
 
     override val eventName = "${javaClass.name}::$name"
 

@@ -10,7 +10,7 @@ import ru.nekit.android.utils.IAutoDispose
 abstract class SquareItemAdapter<T : RecyclerView.ViewHolder>(protected val answerPublisher: Subject<Any>) :
         RecyclerView.Adapter<T>(), IAutoDispose {
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     var size: Int = 0
 

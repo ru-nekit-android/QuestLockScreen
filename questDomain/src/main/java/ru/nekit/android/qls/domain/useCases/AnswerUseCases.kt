@@ -41,7 +41,7 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, startTypeOptional ->
                         val startType = startTypeOptional.nonNullData
-                        val sessionTime: Long = SessionTimer.getTime(parameter.currentTime)
+                        val sessionTime: Long = SessionTimer.getTime(repository.getQuestSetupWizardSettingRepository(), parameter.currentTime)
                         var rightAnswerSeriesLengthUpdated = false
                         var recordType = 0
                         with(report) {
@@ -92,8 +92,8 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
                                                                         .build(it)
                                                             }
                                                     ).concatWith(Completable.fromCallable {
-                                                RewardHolder.getAndNotify(null, repository, scheduler)
-                                            }.doIfOrComplete { rewards.isNotEmpty() })
+                                                        RewardHolder.getAndNotify(null, repository, scheduler)
+                                                    }.doIfOrComplete { rewards.isNotEmpty() })
                                         }.concatWith(
                                                 LockScreenUseCases.updateLastStartType()
                                         )
@@ -111,7 +111,9 @@ private class UpdateStatisticsReportOnWrongAnswerUseCase(private val repository:
                     BiFunction<QuestStatisticsReport,
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, lockScreenStartTypeOptional ->
-                        val sessionTime: Long = SessionTimer.getTime(parameter.currentTime)
+                        val sessionTime: Long = SessionTimer.getTime(
+                                repository.getQuestSetupWizardSettingRepository(),
+                                parameter.currentTime)
                         val lockScreenStartType = lockScreenStartTypeOptional.nonNullData
                         with(report) {
                             wrongAnswerCount++
@@ -157,52 +159,52 @@ class RightAnswerUseCase(private val repository: IRepositoryHolder,
         SessionTimer.stop()
         timeProvider.getCurrentTime()
     }.flatMapCompletable { currentTime ->
-                Single.zip(
-                        GetCurrentQuestTrainingProgramLevelUseCase(repository).build(),
-                        GetCurrentQuestTrainingProgramRule(repository).build(),
-                        InternalGetCurrentPupilStatisticsUseCase(repository).build(),
-                        Function3<QuestTrainingProgramLevel,
-                                QuestTrainingProgramRule,
-                                PupilStatistics,
-                                Pair<PupilStatistics, QuestTrainingProgramLevel>> { currentLevel,
-                                                                                    rule,
-                                                                                    statistics ->
-                            statistics.score += ScoreHelper.get(rule, currentLevel)
-                            Pair(statistics, currentLevel)
-                        }).flatMap { pair ->
-                    Single.zip(
-                            UpdateCurrentPupilStatisticsUseCase(repository).build(pair.first).toSingleDefault(true),
-                            GetCurrentQuestTrainingProgramLevelUseCase(repository).build(),
-                            GetCurrentQuestTrainingProgramRule(repository).build(),
-                            Function3<Boolean, QuestTrainingProgramLevel, QuestTrainingProgramRule, AnswerParameter> { _, currentLevel, rule ->
-                                val isLevelUp = currentLevel.index > pair.second.index
-                                AnswerParameter(
-                                        quest!!.questAndQuestionType(),
-                                        currentTime, ScoreHelper.get(rule, currentLevel), isLevelUp)
-                            })
-                }.flatMapCompletable { answer ->
-                            UpdateStatisticsReportOnRightAnswerUseCase(repository, scheduler).build(answer)
-                        }.concatWith(questStateRepository.has(ANSWERED).flatMapCompletable {
-                            questStateRepository.replace(PLAYED, ANSWERED).doIfOrNever { !it }
-                        })
-                        .concatWith(pupilAsCompletable(repository) {
-                            repository.getQuestRepository().clear(it)
-                        })
-                        .concatWith(questStateRepository.clear())
-                        .concatWith(GenerateNextTransitionUseCase(repository).build())
-            }
+        Single.zip(
+                GetCurrentQuestTrainingProgramLevelUseCase(repository).build(),
+                GetCurrentQuestTrainingProgramRule(repository).build(),
+                InternalGetCurrentPupilStatisticsUseCase(repository).build(),
+                Function3<QuestTrainingProgramLevel,
+                        QuestTrainingProgramRule,
+                        PupilStatistics,
+                        Pair<PupilStatistics, QuestTrainingProgramLevel>> { currentLevel,
+                                                                            rule,
+                                                                            statistics ->
+                    statistics.score += ScoreHelper.get(rule, currentLevel)
+                    Pair(statistics, currentLevel)
+                }).flatMap { pair ->
+            Single.zip(
+                    UpdateCurrentPupilStatisticsUseCase(repository).build(pair.first).toSingleDefault(true),
+                    GetCurrentQuestTrainingProgramLevelUseCase(repository).build(),
+                    GetCurrentQuestTrainingProgramRule(repository).build(),
+                    Function3<Boolean, QuestTrainingProgramLevel, QuestTrainingProgramRule, AnswerParameter> { _, currentLevel, rule ->
+                        val isLevelUp = currentLevel.index > pair.second.index
+                        AnswerParameter(
+                                quest!!.questAndQuestionType(),
+                                currentTime, ScoreHelper.get(rule, currentLevel), isLevelUp)
+                    })
+        }.flatMapCompletable { answer ->
+            UpdateStatisticsReportOnRightAnswerUseCase(repository, scheduler).build(answer)
+        }.concatWith(questStateRepository.has(ANSWERED).flatMapCompletable {
+            questStateRepository.replace(PLAYED, ANSWERED).doIfOrNever { !it }
+        })
+                .concatWith(pupilAsCompletable(repository) {
+                    repository.getQuestRepository().clear(it)
+                })
+                .concatWith(questStateRepository.clear())
+                .concatWith(TransitionChoreographUseCases.generateNextTransition())
+    }
 }
 
 private class WrongAnswerUseCase(private val repository: IRepositoryHolder,
                                  private val timeProvider: ITimeProvider,
                                  scheduler: ISchedulerProvider? = null) :
         ParameterlessCompletableUseCase(scheduler) {
-    override fun build(): Completable = InternalGetCurrentQuestUseCase().build().map { quest ->
+    override fun build(): Completable = GetCurrentQuestUseCase().build().map { quest ->
         SessionTimer.stop()
         AnswerParameter(quest.questAndQuestionType(), timeProvider.getCurrentTime())
     }.flatMapCompletable { answer ->
-                UpdateStatisticsReportOnWrongAnswerUseCase(repository).build(answer)
-            }
+        UpdateStatisticsReportOnWrongAnswerUseCase(repository).build(answer)
+    }
 }
 
 private class EmptyAnswerUseCase(private val repository: IRepositoryHolder,
@@ -238,7 +240,7 @@ class AnswerCallbackUseCase(private val repository: IRepositoryHolder,
                     })
                     .flatMap {
                         if (!it) {
-                            InternalGetCurrentQuestUseCase().build().flatMap { quest ->
+                            GetCurrentQuestUseCase().build().flatMap { quest ->
                                 Single.fromCallable {
                                     if (parameter == null || parameter is String && parameter.isEmpty())
                                         AnswerType.EMPTY

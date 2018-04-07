@@ -16,7 +16,7 @@ class GetCurrentQuestStatisticsReportUseCase(private val repository: IRepository
 ) : ParameterlessSingleUseCase<QuestStatisticsReport>(scheduler) {
 
     override fun build(): Single<QuestStatisticsReport> =
-            InternalGetCurrentQuestUseCase()
+            GetCurrentQuestUseCase()
                     .build()
                     .flatMap { quest ->
                         pupil(repository) {

@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.EditText
 import io.reactivex.Single
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.utils.KeyboardHost
 import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.KeyboardHost
 import ru.nekit.android.utils.toSingle
 
 class SetupPupilNameFragment : QuestSetupWizardFragment() {

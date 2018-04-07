@@ -82,6 +82,12 @@ internal constructor(
         override val stringResourceId: Int
 ) : IStringResourceProvider, IRepresentation
 
+open class DrawableRepresentation
+internal constructor(
+        @DrawableRes
+        override val drawableResourceId: Int
+) : IDrawableResourceProvider, IRepresentation
+
 open class StringRepresentation
 internal constructor(
         override val string: String

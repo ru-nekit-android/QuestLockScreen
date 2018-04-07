@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.TextView
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.data.representation.getRepresentation
+import ru.nekit.android.qls.data.representation.getStringRepresentation
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD
 import ru.nekit.android.qls.domain.model.RecordType.RIGHT_ANSWER_SERIES_LENGTH_UPDATE_RECORD
@@ -93,7 +94,7 @@ object WrongAnswerWindow {
 
 private fun buildTitle(questContext: QuestContext, view: View, answerType: AnswerType) {
     (view.findViewById(R.id.tv_title) as TextView).apply {
-        text = answerType.getRepresentation().getRandomString(questContext)
+        text = answerType.getStringRepresentation(questContext)
     }
 }
 
@@ -137,9 +138,8 @@ object RightAnswerWindow {
                                                 getString(R.string.right_answer_timer_formatter),
                                                 Locale.getDefault())
                                         ArrayList<String>().let { list ->
-                                            list.add("${pupil.name}, ${
-                                            AnswerType.RIGHT.getRepresentation().getRandomString(questContext).toLowerCase()
-                                            }")
+                                            list.add("${pupil.name}, ${AnswerType.RIGHT
+                                                    .getStringRepresentation(questContext).toLowerCase()}")
                                             list.add(String.format(questContext.getString(R.string.right_answer_time_formatter),
                                                     dateFormat.format(questHistory.sessionTime)))
                                             if (previousHistory != null && (questHistory.recordTypes and RIGHT_ANSWER_BEST_TIME_UPDATE_RECORD.value) != 0)
@@ -155,6 +155,7 @@ object RightAnswerWindow {
                                                 }
                                             }
                                             (view.findViewById(R.id.tv_title) as TextView).apply {
+                                                setLines(list.size)
                                                 text = list.joinToString("\n")
                                             }
                                         }

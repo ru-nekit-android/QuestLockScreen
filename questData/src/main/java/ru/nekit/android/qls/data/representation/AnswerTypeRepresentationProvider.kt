@@ -1,5 +1,6 @@
 package ru.nekit.android.qls.data.representation
 
+import android.content.Context
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.AnswerType.RIGHT
 import ru.nekit.android.qls.domain.model.AnswerType.WRONG
@@ -14,4 +15,4 @@ object AnswerTypeRepresentationProvider : StringListIdRepresentationProvider<Ans
 
 }
 
-fun AnswerType.getTitleRepresentation() = AnswerTypeRepresentationProvider.getRepresentation(this)
+fun AnswerType.getStringRepresentation(context: Context) = AnswerTypeRepresentationProvider.getRepresentation(this).getRandomString(context)

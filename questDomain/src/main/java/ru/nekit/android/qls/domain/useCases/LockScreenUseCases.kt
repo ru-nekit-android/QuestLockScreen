@@ -46,10 +46,10 @@ object LockScreenUseCases : DependenciesProvider() {
         lockScreenRepository.switchOn(true)
     }
 
-    fun switchOff() = buildCompletableUseCaseFromRunnable {
+    fun switchOff(body: () -> Unit) = useCompletableUseCaseFromRunnable(schedulerProvider, {
         lockScreenRepository.switchOn(false)
         sendHideEvent(eventSender)
-    }
+    }, body)
 
     fun hide() = useCompletableUseCaseFromRunnable(schedulerProvider, {
         SessionTimer.stop()
@@ -57,9 +57,9 @@ object LockScreenUseCases : DependenciesProvider() {
     })
 
     fun isSwitchedOn(body: (Boolean) -> Unit) =
-            singleUseCaseFromCallable(schedulerProvider) {
-                body(lockScreenRepository.isSwitchedOn())
-            }
+            useSingleUseCaseFromCallable(schedulerProvider, {
+                lockScreenRepository.isSwitchedOn()
+            }, body)
 
     fun startIncomingCall(body: () -> Unit) =
             useCompletableUseCaseFromRunnable(schedulerProvider, {

@@ -11,12 +11,8 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
 import io.reactivex.Single
-import ru.nekit.android.domain.event.IEventSender
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.domain.useCases.QuestStatisticsAndHistoryUseCases
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.providers.IEventSenderProvider
 import ru.nekit.android.qls.view.adapters.StatisticsAdapter
 import ru.nekit.android.qls.window.StatisticsWindowMediator.Step.*
 import ru.nekit.android.qls.window.common.QuestWindowMediator
@@ -28,11 +24,7 @@ import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
 class StatisticsWindowMediator private constructor(questContext: QuestContext) :
-        QuestWindowMediator(questContext),
-        IEventSenderProvider {
-
-    override val eventSender: IEventSender
-        get() = questContext.eventSender
+        QuestWindowMediator(questContext) {
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -95,7 +87,8 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
                     titleResID = R.string.title_statistics
                     currentContentHolder = StatisticsViewHolder(questContext)
                     (currentContentHolder as StatisticsViewHolder).let { viewHolder ->
-                        QuestStatisticsAndHistoryUseCases.getStatisticsForMonth().use {
+                        questStatisticsReport { }
+                        statistics {
                             val statisticsAdapter = StatisticsAdapter(it)
                             val linearLayoutManager = LinearLayoutManager(questContext)
                             viewHolder.statisticsListView.adapter = statisticsAdapter

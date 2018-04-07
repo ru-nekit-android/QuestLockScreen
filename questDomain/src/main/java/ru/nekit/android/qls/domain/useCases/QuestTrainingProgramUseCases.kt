@@ -113,7 +113,7 @@ class GetCurrentQuestTrainingProgramRule(private val repository: IRepositoryHold
         ParameterlessSingleUseCase<QuestTrainingProgramRule>(scheduler) {
 
     override fun build(): Single<QuestTrainingProgramRule> =
-            InternalGetCurrentQuestUseCase()
+            GetCurrentQuestUseCase()
                     .build()
                     .flatMap { quest ->
                         GetQuestTrainingProgramRuleByQuestAndQuestionType(repository)

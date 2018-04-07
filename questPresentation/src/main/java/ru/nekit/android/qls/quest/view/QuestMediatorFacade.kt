@@ -17,7 +17,7 @@ import com.jakewharton.rxbinding2.widget.editorActionEvents
 import io.reactivex.Completable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
-import ru.nekit.android.domain.event.KeyboardHideAction
+import ru.nekit.android.domain.event.KeyboardAction
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.data.representation.getAnswerInputType
 import ru.nekit.android.qls.domain.model.AnswerType
@@ -25,7 +25,6 @@ import ru.nekit.android.qls.domain.model.QuestState.DELAYED_PLAY
 import ru.nekit.android.qls.domain.model.QuestState.PLAYED
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.QuestContextEvent
 import ru.nekit.android.qls.quest.QuestContextEvent.*
 import ru.nekit.android.qls.quest.view.mediator.answer.ButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.answer.IAlternativeAnswerMediator
@@ -34,12 +33,8 @@ import ru.nekit.android.qls.quest.view.mediator.answer.IButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.content.EmptyQuestContentMediator
 import ru.nekit.android.qls.quest.view.mediator.content.IContentMediator
 import ru.nekit.android.qls.quest.view.mediator.title.ITitleMediator
-import ru.nekit.android.qls.utils.KeyboardHost
-import ru.nekit.android.qls.utils.KeyboardHost.hideKeyboard
-import ru.nekit.android.qls.utils.throttleClicks
-import ru.nekit.android.utils.AnimationUtils
-import ru.nekit.android.utils.Delay
-import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.*
+import ru.nekit.android.utils.KeyboardHost.hideKeyboard
 import java.util.concurrent.TimeUnit
 
 //ver 1.2
@@ -50,7 +45,7 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         IQuestMediatorFacade,
         View.OnLayoutChangeListener {
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     override val view: View
         get() = viewHolder.view
@@ -68,10 +63,14 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         get() = questContext.answerCallback
 
     init {
-        listenForEvent(KeyboardHideAction::class.java) { action ->
-            hideKeyboard(questContext, viewHolder.defaultAnswerInput, Delay.KEYBOARD.get(questContext), action.action)
+        listenForEvent(KeyboardAction::class.java) { action ->
+            if (action.action == KeyboardAction.Action.SHOW) {
+                showKeyboard(viewHolder.defaultAnswerInput)
+            } else {
+                hideKeyboard(questContext, viewHolder.defaultAnswerInput, Delay.KEYBOARD.get(questContext), action.actionBody)
+            }
         }
-        listenForEvent(QuestContextEvent::class.java) {
+        listenForQuestEvent {
             when (it) {
                 QUEST_ATTACH -> onQuestAttach(viewHolder.rootContainer)
                 QUEST_START -> questHasState(DELAYED_PLAY) {
@@ -333,13 +332,13 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
             }.subscribeOn(questContext.schedulerProvider.ui())
                     .delay(Delay.LONG.get(questContext),
                             TimeUnit.MILLISECONDS, questContext.schedulerProvider.ui()).concatWith(
-                    Completable.fromRunnable {
-                        AnimationUtils.getColorAnimator(questContext, R.color.red,
-                                R.color.green,
-                                duration,
-                                viewHolder.defaultAnswerInputContainer
-                        ).start()
-                    }).subscribe()
+                            Completable.fromRunnable {
+                                AnimationUtils.getColorAnimator(questContext, R.color.red,
+                                        R.color.green,
+                                        duration,
+                                        viewHolder.defaultAnswerInputContainer
+                                ).start()
+                            }).subscribe()
         }
     }
 
@@ -359,18 +358,20 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         answerMediator.detachView()
     }
 
-    private fun requestFocus() = questHasState(DELAYED_PLAY) { delayed ->
-        questHasState(PLAYED) { played ->
+    private fun requestFocus() = questHasStates(DELAYED_PLAY, PLAYED) {
+        val delayed = it[0]
+        val played = it[1]
+        viewHolder.apply {
             if (delayed && !played)
-                hideKeyboard(viewHolder.defaultAnswerInput)
+                hideKeyboard(defaultAnswerInput)
             else {
                 if (alternativeAnswerWithButtonListIsPresent())
-                    hideKeyboard(viewHolder.defaultAnswerInput)
+                    hideKeyboard(defaultAnswerInput)
                 if (contentMediator.answerInput == null) {
-                    if (viewHolder.defaultAnswerInput.visibility == VISIBLE)
-                        showKeyboard(viewHolder.defaultAnswerInput)
+                    if (defaultAnswerInput.visibility == VISIBLE)
+                        showKeyboard(defaultAnswerInput)
                     else
-                        hideKeyboard(viewHolder.defaultAnswerInput)
+                        hideKeyboard(defaultAnswerInput)
                 } else if (contentMediator.answerInput?.visibility == VISIBLE) {
                     showKeyboard(contentMediator.answerInput!!)
                 }
@@ -378,13 +379,11 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         }
     }
 
-    private fun showKeyboard(view: View) {
-        KeyboardHost.showKeyboard(questContext, view, Delay.KEYBOARD.get(questContext))
-    }
+    private fun showKeyboard(view: View) =
+            KeyboardHost.showKeyboard(questContext, view, Delay.KEYBOARD.get(questContext))
 
-    private fun hideKeyboard(view: View) {
-        KeyboardHost.hideKeyboard(questContext, view, Delay.KEYBOARD.get(questContext))
-    }
+    private fun hideKeyboard(view: View) =
+            KeyboardHost.hideKeyboard(questContext, view, Delay.KEYBOARD.get(questContext))
 
     private fun updateVisibilityOfViews(value: Boolean) {
         val contentView = contentMediator.view

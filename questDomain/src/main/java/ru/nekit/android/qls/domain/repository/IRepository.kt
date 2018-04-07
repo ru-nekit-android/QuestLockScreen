@@ -32,20 +32,19 @@ interface IRepositoryHolder {
     fun getTransitionChoreographRepository(): ITransitionChoreographRepository
     fun getQuestStatisticsReportRepository(): IQuestStatisticsReportRepository
     fun getQuestHistoryRepository(): IQuestHistoryRepository
-    fun getQuestParams(): IQuestParams
     fun getQuestHistoryCriteriaRepository(): IQuestHistoryCriteriaRepository
+    fun getEmergencyPhoneRepository(): IEmergencyPhoneRepository
 }
 
-interface IQuestParams {
+interface IEmergencyPhoneRepository {
 
-    val delayedPlayDelay: Long
+    fun getPhoneContacts(): List<PhoneContact>
 
 }
 
 interface IQuestHistoryCriteriaRepository {
 
     fun getQuestHistoryCriteria(reward: Reward,
-                                rewardVariant: IRewardVariant,
                                 questAndQuestionType: QuestAndQuestionType? = null): List<QuestHistoryCriteria>?
 
 }
@@ -110,6 +109,13 @@ interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
 
     val timeForSkipAfterRightAnswer: Long
 
+    var showUnlockKeyHelpOnConsume: Boolean
+
+    val maxSessionTime: Long
+
+    val delayedPlayDelay: Long
+
+    val adsSkipTimeout: Long
 }
 
 interface IRewardRepository {

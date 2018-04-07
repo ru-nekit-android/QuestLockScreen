@@ -54,10 +54,25 @@
     <orderEntry type="library" exported="" scope="PROVIDED" name="rxjava2-extensions-0.18.7" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="rxandroid-2.0.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="rxjava-2.1.10" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="kotlin-stdlib-1.2.21" level="project" />
-    <orderEntry type="library" exported="" scope="PROVIDED" name="annotations-12.0" level="project" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="kotlin-stdlib-1.2.30" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="reactive-streams-1.0.2" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="support-annotations-25.1.1" level="project" />
     <orderEntry type="library" exported="" scope="PROVIDED" name="annotations-13.0" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="rxbus-1.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="rxjava2-extensions-0.18.7" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="rxandroid-2.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="rxjava-2.1.10" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="kotlin-stdlib-1.2.30" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="reactive-streams-1.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="support-annotations-25.1.1" level="project" />
+    <orderEntry type="library" exported="" scope="RUNTIME" name="annotations-13.0" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="rxbus-1.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="rxjava2-extensions-0.18.7" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="rxandroid-2.0.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="rxjava-2.1.10" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="kotlin-stdlib-1.2.30" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="reactive-streams-1.0.2" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="support-annotations-25.1.1" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="annotations-13.0" level="project" />
   </component>
 </module>

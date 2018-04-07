@@ -9,92 +9,78 @@ import android.support.annotation.NonNull;
 import java.io.File;
 import java.io.IOException;
 
+import ru.nekit.android.qls.domain.model.AnswerType;
+
 public class VoiceCenter {
 
-    private MediaRecorder mRecorder;
-    private MediaPlayer mMediaPlayer;
+    private MediaRecorder recorder;
+    private MediaPlayer mediaPlayer;
 
     public VoiceCenter() {
     }
 
-    public static String getVoiceFilePath(@NonNull Type type) {
+    public static String getVoiceFilePath(@NonNull AnswerType type) {
         return Environment.getExternalStorageDirectory().getAbsolutePath() +
                 File.separator +
                 "Voice Recorder" +
                 File.separator +
-                type.getName() +
+                type.name() +
                 ".m4a";
     }
 
-    public void startRecording(@NonNull Type type) {
-        mRecorder = new MediaRecorder();
-        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+    public void startRecording(@NonNull AnswerType type) {
+        recorder = new MediaRecorder();
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
-            mRecorder.setAudioEncodingBitRate(48000);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.HE_AAC);
+            recorder.setAudioEncodingBitRate(48000);
         } else {
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-            mRecorder.setAudioEncodingBitRate(64000);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            recorder.setAudioEncodingBitRate(64000);
         }
-        mRecorder.setAudioSamplingRate(16000);
+        recorder.setAudioSamplingRate(16000);
         File outputFile = new File(getVoiceFilePath(type));
         outputFile.getParentFile().mkdirs();
-        mRecorder.setOutputFile(outputFile.getAbsolutePath());
+        recorder.setOutputFile(outputFile.getAbsolutePath());
         try {
-            mRecorder.prepare();
-            mRecorder.start();
+            recorder.prepare();
+            recorder.start();
         } catch (IOException ignored) {
         }
     }
 
     public void stopRecording() {
-        if (mRecorder != null) {
-            mRecorder.stop();
-            mRecorder.release();
-            mRecorder = null;
+        if (recorder != null) {
+            recorder.stop();
+            recorder.release();
+            recorder = null;
         }
     }
 
     public boolean recordingIsAlive() {
-        return mRecorder != null;
+        return recorder != null;
     }
 
-    public void playVoice(@NonNull Type type) {
-        mMediaPlayer = new MediaPlayer();
+    public void playVoice(@NonNull AnswerType type) {
+        mediaPlayer = new MediaPlayer();
         try {
-            mMediaPlayer.setDataSource(getVoiceFilePath(type));
-            mMediaPlayer.prepare();
-            mMediaPlayer.start();
+            mediaPlayer.setDataSource(getVoiceFilePath(type));
+            mediaPlayer.prepare();
+            mediaPlayer.start();
         } catch (IOException error) {
             stopVoice();
         }
     }
 
     public void stopVoice() {
-        if (mMediaPlayer != null) {
+        if (mediaPlayer != null) {
             try {
-                mMediaPlayer.stop();
-                mMediaPlayer.release();
-                mMediaPlayer = null;
+                mediaPlayer.stop();
+                mediaPlayer.release();
+                mediaPlayer = null;
             } catch (IllegalStateException ignore) {
             }
-        }
-    }
-
-    public enum Type {
-
-        RIGHT("right"),
-        WRONG("wrong");
-
-        private String mName;
-
-        Type(@NonNull String name) {
-            mName = name;
-        }
-
-        public String getName() {
-            return mName;
         }
     }
 }

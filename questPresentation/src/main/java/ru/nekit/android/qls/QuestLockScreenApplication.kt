@@ -29,10 +29,7 @@ import ru.nekit.android.qls.domain.providers.IDependenciesProvider
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.*
-import ru.nekit.android.qls.domain.useCases.IUUIDProvider
-import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
-import ru.nekit.android.qls.domain.useCases.PhoneContactsUseCases
-import ru.nekit.android.qls.domain.useCases.QuestStatisticsAndHistoryUseCases
+import ru.nekit.android.qls.domain.useCases.*
 import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.TimeUtils
 import java.util.*
@@ -58,6 +55,7 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     private lateinit var mQuestHistoryRepository: IQuestHistoryRepository
     private lateinit var mQuestRepository: IQuestRepository
     private lateinit var mQuestHistoryCriteriaRepository: QuestHistoryCriteriaRepository
+    private lateinit var mEmergencyPhoneRepository: EmergencyPhoneRepository
 
     private var rxEventBus: RxEventBus = RxEventBus.getInstance(RxBus())
     private val eventSender: IEventSender = object : IEventSender {
@@ -68,11 +66,6 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     private val mDefaultSchedulerProvider: ISchedulerProvider = object : ISchedulerProvider {
         override fun computation(): Scheduler = Schedulers.computation()
         override fun ui(): Scheduler = AndroidSchedulers.mainThread()
-    }
-
-    override fun getQuestParams(): IQuestParams = object : IQuestParams {
-        override val delayedPlayDelay: Long
-            get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
     }
 
     fun injectDependencies(value: IDependenciesProvider) {
@@ -96,13 +89,17 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
         mQuestTrainingProgramRepository = QuestTrainingProgramRepository(this, boxStore)
         mPhoneContactRepository = PhoneContactRepository(this, boxStore)
         mQuestStatisticsReportRepository = QuestStatisticsReportRepository(this, boxStore)
+        mEmergencyPhoneRepository = EmergencyPhoneRepository(this)
         mPupilStatisticsRepository = PupilStatisticsRepository(this, boxStore)
         mQuestStateRepository = QuestStateRepository(getSharedPreferences())
         mTransitionChoreographRepository = object : TransitionChoreographRepository(getSharedPreferences()) {
             override val advertCounter: ICounter = Counter(getSharedPreferences(), "advert")
             override val questSeriesCounter: ICounter = Counter(getSharedPreferences(), "questSeries")
         }
-        mQuestSetupWizardSettingRepository = QuestSetupWizardSettingRepository(getSharedPreferences())
+        mQuestSetupWizardSettingRepository = object : QuestSetupWizardSettingRepository(getSharedPreferences()) {
+            override val delayedPlayDelay: Long
+                get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
+        }
         mLockScreenRepository = LockScreenRepository(getSharedPreferences())
         mQuestHistoryRepository = QuestHistoryRepository(this, boxStore)
         mQuestStore = QuestStore(getSharedPreferences())
@@ -115,7 +112,10 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     private fun injectDependencies() {
         injectDependencies(LockScreenUseCases)
         injectDependencies(QuestStatisticsAndHistoryUseCases)
+        injectDependencies(SettingsUseCases)
         injectDependencies(PhoneContactsUseCases)
+        injectDependencies(TransitionChoreographUseCases)
+        injectDependencies(AdsUseCases)
     }
 
     override fun onCreate() {
@@ -169,6 +169,7 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
 
     }
 
+    override fun getEmergencyPhoneRepository(): IEmergencyPhoneRepository = mEmergencyPhoneRepository
     override fun getUnlockSecretRepository(): IUnlockSecretRepository = mUnlockSecretRepository
     override fun getCurrentPupilRepository(): ICurrentPupilRepository = mCurrentPupilRepository
     override fun getPhoneContactRepository(): IPhoneContactRepository = mPhoneContactRepository

@@ -8,7 +8,7 @@ import ru.nekit.android.qls.domain.model.LockScreenStartType.ON_NOTIFICATION_CLI
 import ru.nekit.android.qls.domain.model.ReachVariant.Independence
 import ru.nekit.android.qls.domain.model.ReachVariant.RightSeries
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
-import ru.nekit.android.qls.domain.useCases.InternalGetCurrentQuestUseCase
+import ru.nekit.android.qls.domain.useCases.GetCurrentQuestUseCase
 import ru.nekit.android.qls.shared.model.Complexity
 import ru.nekit.android.qls.shared.model.Complexity.*
 
@@ -79,7 +79,7 @@ sealed class Reward {
                                       complexity: Complexity,
                                       historyList: List<QuestHistory>): Single<Optional<Reward>> =
 
-                InternalGetCurrentQuestUseCase().build().flatMap { quest ->
+                GetCurrentQuestUseCase().build().flatMap { quest ->
                     if (variant is IRewardVariantWithQuestAndQuestionType)
                         (variant as IRewardVariantWithQuestAndQuestionType).questAndQuestionType = quest.questAndQuestionType()
                     repository.getRewardRepository().getCount(this).flatMap { count ->

@@ -17,8 +17,8 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import ru.nekit.android.data.*
+import ru.nekit.android.data.shared.QuestTypeRepresentation
 import ru.nekit.android.data.shared.SetupWizardBaseSettingsRepository
-import ru.nekit.android.data.shared.ktQuestTypeSupport
 import ru.nekit.android.data.support.JsonHelper
 import ru.nekit.android.data.support.ObjectBoxSupport
 import ru.nekit.android.domain.model.Optional
@@ -170,15 +170,15 @@ open class RewardRepository(sharedPreferences: SharedPreferences) : IRewardRepos
             getCount(reward).map {
                 it + 1
             }.flatMapCompletable { count ->
-                        Completable.fromRunnable { store.put(name(reward), count) }
-                    }
+                Completable.fromRunnable { store.put(name(reward), count) }
+            }
 
     override fun remove(reward: Reward): Completable =
             getCount(reward).map {
                 it - 1
             }.flatMapCompletable { count ->
-                        Completable.fromRunnable { store.put(name(reward), count) }
-                    }
+                Completable.fromRunnable { store.put(name(reward), count) }
+            }
 
     override fun getCount(reward: Reward): Single<Int> = Single.fromCallable {
         val name = name(reward)
@@ -257,9 +257,9 @@ class QuestStatisticsReportRepository(repository: IRepositoryHolder, boxStore: B
                 if (questType != null)
                     it.equal(QuestStatisticsReportEntity_.questType, questType.asParameter())
             }.also {
-                        if (questionType != null)
-                            it.equal(QuestStatisticsReportEntity_.questionType, questionType.asParameter())
-                    }.build()
+                if (questionType != null)
+                    it.equal(QuestStatisticsReportEntity_.questionType, questionType.asParameter())
+            }.build()
 
     private fun internalGetBy(pupilId: Long, questAndQuestionType: QuestAndQuestionType) =
             boxSingleUsingWithCallable {
@@ -384,10 +384,10 @@ class QuestHistoryRepository(repository: IRepositoryHolder, boxStore: BoxStore) 
                     getQueryBuilderByCriteria(it, pupilId,
                             QuestHistoryCriteria())
                             .build().let {
-                        val queryCount = it.count()
-                        val count = if (limit <= queryCount) queryCount else limit
-                        it.find(count - limit, limit).map { Mapper.from(it) }
-                    }
+                                val queryCount = it.count()
+                                val count = if (limit <= queryCount) queryCount else limit
+                                it.find(count - limit, limit).map { Mapper.from(it) }
+                            }
                 }
             }
 
@@ -515,8 +515,8 @@ class QuestRepository(repository: IRepositoryHolder,
     override fun save(pupil: Pupil, quest: Quest): Completable = Single.fromCallable {
         questStore.save(quest, pupil.uuid)
     }.flatMapCompletable {
-                add(pupil, quest, questStore.questString)
-            }
+        add(pupil, quest, questStore.questString)
+    }
 
     override fun restoreQuest(pupil: Pupil): Single<Optional<Quest>> = Single.fromCallable {
         Optional(questStore.restore(pupil.uuid))
@@ -536,6 +536,7 @@ class QuestRepository(repository: IRepositoryHolder,
                 }
             }
 
+    /*
     fun getLastId(pupil: Pupil): Single<Optional<Long?>> =
             boxSingleUsingWithCallable {
                 val query = it.query().build()
@@ -544,6 +545,7 @@ class QuestRepository(repository: IRepositoryHolder,
                     lastList.last().id
                 } else null)
             }
+            */
 }
 
 class PhoneContactRepository(repository: IRepositoryHolder, boxStore: BoxStore) :
@@ -608,6 +610,13 @@ class PhoneContactRepository(repository: IRepositoryHolder, boxStore: BoxStore) 
     }
 }
 
+class EmergencyPhoneRepository(val context: Context) : IEmergencyPhoneRepository {
+
+    override fun getPhoneContacts(): List<PhoneContact> {
+        return listOf(PhoneContact(PhoneContact.EMERGENCY_PHONE_NUMBER.contactId, "Экстренный вызов", "112"))
+    }
+}
+
 open class UnlockSecretRepository(sharedPreferences: SharedPreferences) : IUnlockSecretRepository {
 
     companion object {
@@ -636,14 +645,27 @@ open class SessionRepository(sharedPreferences: SharedPreferences) : ISessionRep
     }
 }
 
-class QuestSetupWizardSettingRepository(sharedPreferences: SharedPreferences) : SetupWizardBaseSettingsRepository(sharedPreferences),
+abstract class QuestSetupWizardSettingRepository(sharedPreferences: SharedPreferences) : SetupWizardBaseSettingsRepository(sharedPreferences),
         IQuestSetupWizardSettingRepository {
-
 
     override val skipAfterRightAnswer: Boolean = CONST.SKIP_AFTER_RIGHT_ANSWER
     override val timeForSkipAfterRightAnswer: Long = CONST.TIME_FOR_SKIP_AFTER_RIGHT_ANSWER
 
+    override var showUnlockKeyHelpOnConsume: Boolean
+        get() = booleanStore.get(UNLOCK_KEY_HELP_ON_CONSUME, CONST.UNLOCK_KEY_HELP_ON_CONSUME)
+        set(value) = booleanStore.put(UNLOCK_KEY_HELP_ON_CONSUME, value)
 
+    override val maxSessionTime: Long
+        get() = CONST.MAX_SESSION_TIME
+
+    override val adsSkipTimeout: Long
+        get() = CONST.ADS_SKIP_TIMEOUT
+
+    companion object {
+
+        private const val UNLOCK_KEY_HELP_ON_CONSUME = "unlockKeyHelpOnConsume"
+
+    }
 }
 
 class QuestTrainingProgramRepository(private val context: Context,
@@ -1121,7 +1143,7 @@ class QuestTrainingProgramRuleRepositoryCollection(private val context: Context,
         rulesJA.forEach { item ->
             val ruleJO = item as JsonObject
             val questTypeNameOrSynonym = JsonHelper.readString(QuestTrainingProgramRepository.QUEST_TYPE, ruleJO)
-            val questType = ktQuestTypeSupport.getByNameOrSynonym(context, questTypeNameOrSynonym)
+            val questType = QuestTypeRepresentation.getByNameOrSynonym(context, questTypeNameOrSynonym)
             if (questType != null) {
                 val questionTypes: MutableList<QuestionType>
                 if (ruleJO.has(QuestTrainingProgramRepository.QUESTION_TYPES)) {
@@ -1214,7 +1236,7 @@ class QuestTrainingProgramPriorityRuleRepository(private val context: Context, b
                         val questPriorityJO = item.asJsonObject
                         val questionTypesJA = if (questPriorityJO.has(QuestTrainingProgramRepository.QUESTION_TYPES))
                             questPriorityJO.get(QuestTrainingProgramRepository.QUESTION_TYPES).asJsonArray else null
-                        val questType = ktQuestTypeSupport.getByNameOrSynonym(context,
+                        val questType = QuestTypeRepresentation.getByNameOrSynonym(context,
                                 json.fromJson(questPriorityJO.get(
                                         QuestTrainingProgramRepository.QUEST_TYPE),
                                         String::class.java))
@@ -1418,7 +1440,7 @@ class QuestHistoryCriteriaRepository : IQuestHistoryCriteriaRepository {
 
     override fun getQuestHistoryCriteria(reward: Reward,
                                          questAndQuestionType: QuestAndQuestionType?):
-            List<QuestHistoryCriteria>? =reward.let {
+            List<QuestHistoryCriteria>? = reward.let {
         when (it) {
             is Reward.UnlockKey ->
                 when (it.variant) {
@@ -1479,11 +1501,14 @@ class QuestHistoryCriteriaRepository : IQuestHistoryCriteriaRepository {
 
 object CONST {
 
-    internal const val SHOW_ADVERT_AFTER_N_RIGHT_ANSWER = 2
+    internal const val SHOW_ADVERT_AFTER_N_RIGHT_ANSWER = 10
     internal const val INTRODUCTION_IS_PRESENTED_BY_DEFAULT = false
     internal const val ADVERT_IS_PRESENTED_BY_DEFAULT = true
     internal const val SKIP_AFTER_RIGHT_ANSWER = false
     internal const val TIME_FOR_SKIP_AFTER_RIGHT_ANSWER: Long = 60 * 1000
+    internal const val UNLOCK_KEY_HELP_ON_CONSUME: Boolean = true
+    internal const val MAX_SESSION_TIME: Long = 3 * 60 * 1000
+    internal const val ADS_SKIP_TIMEOUT: Long = 10000
 
 }
 
@@ -1535,9 +1560,7 @@ class QuestResourceRepository(private val context: Context) : IQuestResourceRepo
     override fun getVisualResourceItemsByGroup(group: ResourceGroupCollection): List<IVisualResourceHolder> {
         val result = ArrayList<IVisualResourceHolder>()
         questVisualQuestResourceList.forEach { item ->
-            item.groups.asSequence()
-                    .filter { it.hasParent(group) }
-                    .forEach { result += item }
+            item.groups.asSequence().filter { it.hasParent(group) }.forEach { result += item }
         }
         return result
     }

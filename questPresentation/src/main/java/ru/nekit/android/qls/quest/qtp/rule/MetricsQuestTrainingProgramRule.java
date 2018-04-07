@@ -57,7 +57,7 @@ public class MetricsQuestTrainingProgramRule {
         this.flags = 0;
         if (flags != null) {
             for (NumberSummandQuestGenerator.Flag item : flags) {
-                this.flags |= item.value();
+                this.flags |= item.visibility();
             }
         }
     }

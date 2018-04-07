@@ -22,8 +22,6 @@ class QuestSetupWizardActivity : BaseSetupWizardActivity(), IEventListenerProvid
             if (it == LockScreenContentMediatorEvent.ON_INIT)
                 finish()
         }
-        //val t = Single.just(1).applySchedulers((application as QuestLockScreenApplication).getDefaultSchedulerProvider()).subscribeOn(AndroidSchedulers.mainThread()).observeOn(AndroidSchedulers.mainThread()).blockingGet()
-        //System.out.print(t)
         //eventBus.handleEvents(this, LockScreenService.PUPIL_BIND_OK)
     }
 

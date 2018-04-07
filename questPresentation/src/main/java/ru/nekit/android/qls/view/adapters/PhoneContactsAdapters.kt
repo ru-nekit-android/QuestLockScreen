@@ -4,6 +4,8 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import io.reactivex.disposables.CompositeDisposable
@@ -19,7 +21,7 @@ abstract class PhoneContactsAdapter(private val data: List<PhoneContact>,
                                     private val phoneContactListener: PhoneContactListener) :
         RecyclerView.Adapter<PhoneContactViewHolder>(), IAutoDispose {
 
-    override var disposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhoneContactViewHolder {
         return PhoneContactViewHolder(LayoutInflater.from(parent.context)
@@ -27,13 +29,18 @@ abstract class PhoneContactsAdapter(private val data: List<PhoneContact>,
     }
 
     override fun onBindViewHolder(holder: PhoneContactViewHolder, position: Int) {
-        val (_, name, phoneNumber) = data[position]
+        val (id, name, phoneNumber) = data[position]
         with(holder) {
             titleView.text = name
             informationView.text = phoneNumber
-            autoDispose {
-                actionButton.throttleClicks { phoneContactListener.onAction(holder.adapterPosition) }
+            val isEmergency = id <= PhoneContact.EMERGENCY_PHONE_NUMBER.contactId &&
+                    this@PhoneContactsAdapter is PhoneContactsAdapterForModification
+            if (!isEmergency) {
+                autoDispose {
+                    actionButton.throttleClicks { phoneContactListener.onAction(holder.adapterPosition) }
+                }
             }
+            actionButton.visibility = if (isEmergency) GONE else VISIBLE
         }
     }
 

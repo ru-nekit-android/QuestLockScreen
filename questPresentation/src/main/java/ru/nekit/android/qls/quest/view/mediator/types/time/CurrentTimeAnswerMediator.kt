@@ -16,14 +16,14 @@ class CurrentTimeAnswerMediator : TimeAnswerMediator() {
 
     override fun onQuestPlay(delayedPlay: Boolean) {
         super.onQuestPlay(delayedPlay)
-        listenSessionTime {
+        listenSessionTimeUpdate {
             listAdapter.notifyDataSetChanged()
         }
     }
 
     override fun onQuestReplay() {
         super.onQuestReplay()
-        listenSessionTime {
+        listenSessionTimeUpdate {
             listAdapter.notifyDataSetChanged()
         }
     }

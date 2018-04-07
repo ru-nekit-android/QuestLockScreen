@@ -56,7 +56,7 @@ public class SimpleExampleQuestTrainingProgramRule {
                 NumberSummandQuestGenerator.Flag[].class);
         this.flags = 0;
         for (NumberSummandQuestGenerator.Flag item : flags) {
-            this.flags |= item.value();
+            this.flags |= item.visibility();
         }
     }
 

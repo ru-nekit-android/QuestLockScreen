@@ -22,7 +22,7 @@ class SquareImageAdapter(@param:LayoutRes @field:LayoutRes
                          answerPublisher: Subject<Any>) :
         SquareItemAdapter<SquareImageAdapter.ImageViewHolder>(answerPublisher) {
 
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         super.onBindViewHolder(holder, position)

@@ -17,10 +17,9 @@ open class AnswerMediator : IAnswerMediator {
     override lateinit var quest: Quest
     override lateinit var questContext: QuestContext
     override lateinit var answerPublisher: Subject<Any>
-    override var disposable: CompositeDisposable = CompositeDisposable()
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     protected lateinit var rootContentContainer: ViewGroup
-
 
     override val view: View?
         get() = null

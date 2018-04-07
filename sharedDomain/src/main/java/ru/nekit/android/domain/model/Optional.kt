@@ -16,7 +16,7 @@ data class Optional<out T>(val data: T? = null) {
         get() = data!!
 
     companion object {
-        fun setIf(value: Any, predicate: Boolean) = Optional(if (predicate) value else null)
+        fun <T> setValueIf(value: T, predicate: Boolean): Optional<T> = Optional(if (predicate) value else null)
 
         fun <T> just(data: T? = null): Single<Optional<T>> = Single.just(Optional(data))
     }

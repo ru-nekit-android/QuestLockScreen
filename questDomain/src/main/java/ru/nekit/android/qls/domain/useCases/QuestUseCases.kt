@@ -20,8 +20,9 @@ import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.domain.model.quest.TimeQuest
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
+import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
-import ru.nekit.android.qls.shared.model.QuestType
+import ru.nekit.android.qls.shared.model.QuestType.*
 import ru.nekit.android.utils.asSingleIf
 import ru.nekit.android.utils.doIfOrComplete
 import ru.nekit.android.utils.doIfOrNever
@@ -49,7 +50,7 @@ class PauseQuestUseCase(private val repository: IRepositoryHolder,
     override fun build(): Completable = QuestHasStateUseCase(repository).build(PLAYED).flatMapCompletable {
         repository.getQuestStateRepository().replace(PLAYED, PAUSED).doOnComplete {
             SessionTimer.stop()
-        }.doIfOrComplete { it }
+        }.doIfOrNever { it }
     }
 }
 
@@ -59,7 +60,7 @@ class ResumeQuestUseCase(private val repository: IRepositoryHolder,
         ParameterlessCompletableUseCase(scheduler) {
     override fun build(): Completable = QuestHasStateUseCase(repository).build(PAUSED).flatMapCompletable {
         repository.getQuestStateRepository().replace(PAUSED, PLAYED).concatWith(
-                StartSessionTimerUseCase(timeProvider).build()).doIfOrComplete { it }
+                StartSessionTimerUseCase(repository, timeProvider).build()).doIfOrComplete { it }
     }
 }
 
@@ -106,7 +107,7 @@ class OnScreenOnUseCase(private val repository: IRepositoryHolder,
         ParameterlessSingleUseCase<Boolean>(scheduler) {
 
     override fun build(): Single<Boolean> =
-            Single.zip(GetCurrentTransitionUseCase(repository).build().map { it.nonNullData },
+            Single.zip(TransitionChoreographUseCases.currentTransition().build().map { it.nonNullData },
                     QuestHasStateUseCase(repository).build(DELAYED_PLAY),
                     QuestHasStateUseCase(repository).build(WAS_STOPPED),
                     Function3<Transition, Boolean, Boolean, Boolean> { transition, delayed, wasStopped ->
@@ -148,7 +149,7 @@ class PlayQuestUseCase(private val repository: IRepositoryHolder,
                                         null).use()
                             }
                             if (!questIsPlayed || wasStopped) {
-                                StartSessionTimerUseCase(timeProvider).use()
+                                StartSessionTimerUseCase(repository, timeProvider).use()
                             }
                         }
                     }.map { it[0] && !it[1] }
@@ -161,19 +162,19 @@ private class StartSessionTimerWithDelayUseCase(
         ParameterlessCompletableUseCase(scheduler) {
 
     override fun build(): Completable = Completable.timer(
-            repository.getQuestParams().delayedPlayDelay, TimeUnit.MILLISECONDS).andThen {
-        SessionTimer.start(timeProvider)
+            repository.getQuestSetupWizardSettingRepository().delayedPlayDelay, TimeUnit.MILLISECONDS).andThen {
+        SessionTimer.start(repository.getQuestSetupWizardSettingRepository(), timeProvider)
     }
 
 }
 
-private class StartSessionTimerUseCase(
-        private val timeProvider: ITimeProvider,
-        scheduler: ISchedulerProvider? = null) :
+private class StartSessionTimerUseCase(private val repository: IRepositoryHolder,
+                                       private val timeProvider: ITimeProvider,
+                                       scheduler: ISchedulerProvider? = null) :
         ParameterlessCompletableUseCase(scheduler) {
 
     override fun build(): Completable = Completable.fromRunnable {
-        SessionTimer.start(timeProvider)
+        SessionTimer.start(repository.getQuestSetupWizardSettingRepository(), timeProvider)
     }
 }
 
@@ -192,10 +193,14 @@ class StopQuestUseCase(private val repository: IRepositoryHolder,
             }
 }
 
-class ListenSessionTimeUseCase(scheduler: ISchedulerProvider? = null) :
-        ParameterlessFlowableUseCase<Long>(scheduler) {
+class ListenSessionTimeUseCase(private val repository: IRepositoryHolder,
+                               scheduler: ISchedulerProvider? = null) :
+        ParameterlessFlowableUseCase<Pair<Long, Long>>(scheduler) {
 
-    override fun build(): Flowable<Long> = SessionTimer.publisher
+    override fun build(): Flowable<Pair<Long, Long>> = SessionTimer.publisher.map {
+        it to
+                repository.getQuestSetupWizardSettingRepository().maxSessionTime
+    }
 
 }
 
@@ -218,10 +223,10 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
                                                 GetQuestTrainingProgramRuleByQuestAndQuestionType(repository)
                                                         .build(QuestAndQuestionType(restoredQuest.questType,
                                                                 restoredQuest.questionType)).map { rule ->
-                                                    if (rule.isEmpty())
-                                                        restoredQuest = null
-                                                    Optional(restoredQuest)
-                                                }.flatMap { result ->
+                                                            if (rule.isEmpty())
+                                                                restoredQuest = null
+                                                            Optional(restoredQuest)
+                                                        }.flatMap { result ->
                                                             questStateRepository.add(WAS_RESTORED).asSingleIf(result) { result.isNotEmpty() }
                                                         }
                                             } else just(Optional(null))
@@ -245,55 +250,55 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
 
                                                         val quest: Quest = when (questType) {
 
-                                                            QuestType.CHOICE ->
+                                                            CHOICE ->
 
                                                                 ChoiceQuestCreator(
                                                                         rule as ChoiceQuestTrainingProgramRule,
                                                                         questResourceRepository
                                                                 ).create(questionType)
 
-                                                            QuestType.MISMATCH ->
+                                                            MISMATCH ->
 
                                                                 MismatchQuestCreator(
                                                                         rule as ChoiceQuestTrainingProgramRule,
                                                                         questResourceRepository
                                                                 ).create(questionType)
 
-                                                            QuestType.COLORS ->
+                                                            COLORS ->
 
                                                                 ColoredVisualRepresentationQuestCreator(
                                                                         rule as MemberCountQuestTrainingRule,
                                                                         questResourceRepository
                                                                 ).create(questionType)
 
-                                                            QuestType.COINS ->
+                                                            COINS ->
 
                                                                 CoinsQuestCreator(
                                                                         rule as MemberCountQuestTrainingRule
                                                                 ).create(questionType)
 
-                                                            QuestType.DIRECTION ->
+                                                            DIRECTION ->
 
                                                                 DirectionQuestCreator().create(questionType)
 
-                                                            QuestType.TRAFFIC_LIGHT ->
+                                                            TRAFFIC_LIGHT ->
 
                                                                 TrafficLightQuestCreator().create(questionType)
 
-                                                            QuestType.CURRENT_SEASON ->
+                                                            CURRENT_SEASON ->
 
                                                                 CurrentSeasonQuestCreator(
                                                                         questResourceRepository
                                                                 ).create(questionType)
 
-                                                            QuestType.FRUIT_ARITHMETIC ->
+                                                            FRUIT_ARITHMETIC ->
 
                                                                 FruitArithmeticQuestCreator(
                                                                         rule as FruitArithmeticQuestTrainingProgramRule,
                                                                         questResourceRepository
                                                                 ).create(questionType)
 
-                                                            QuestType.TIME ->
+                                                            TIME ->
 
                                                                 TimeQuestCreator(
                                                                         rule as TimeQuestTrainingProgramRule
@@ -301,7 +306,7 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
                                                                     TimeQuest(it)
                                                                 }
 
-                                                            QuestType.CURRENT_TIME ->
+                                                            CURRENT_TIME ->
 
                                                                 CurrentTimeQuestCreator(
                                                                         rule as TimeQuestTrainingProgramRule
@@ -309,10 +314,10 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
                                                                     CurrentTimeQuest(it)
                                                                 }
 
-                                                            QuestType.SIMPLE_EXAMPLE -> TODO()
-                                                            QuestType.TEXT_CAMOUFLAGE -> TODO()
-                                                            QuestType.METRICS -> TODO()
-                                                            QuestType.PERIMETER -> TODO()
+                                                            SIMPLE_EXAMPLE -> TODO()
+                                                            TEXT_CAMOUFLAGE -> TODO()
+                                                            METRICS -> TODO()
+                                                            PERIMETER -> TODO()
                                                         }
                                                         quest.questType = questType
                                                         quest.questionType = questionType
@@ -345,7 +350,7 @@ class ListenCurrentQuestUseCase(scheduler: ISchedulerProvider? = null) :
 
 }
 
-internal class InternalGetCurrentQuestUseCase(scheduler: ISchedulerProvider? = null) :
+class GetCurrentQuestUseCase(scheduler: ISchedulerProvider? = null) :
         ParameterlessSingleUseCase<Quest>(scheduler) {
 
     override fun build(): Single<Quest> =
@@ -378,33 +383,34 @@ internal object QuestHolder {
 
 object SessionLimiter {
 
-    const val MAX_SESSION_TIME: Long = 3 * 60 * 1000
-
-    internal fun timeLimiter(time: Long) = Math.min(MAX_SESSION_TIME, time)
+    internal fun timeLimiter(repository: IQuestSetupWizardSettingRepository, time: Long) =
+            Math.min(repository.maxSessionTime, time)
 
 }
 
 internal object SessionTimer {
 
-    fun start(timeProvider: ITimeProvider, scheduler: ISchedulerProvider? = null) {
+    private const val TIME_RESOLUTION = 1000L
+
+    fun start(repository: IQuestSetupWizardSettingRepository, timeProvider: ITimeProvider, scheduler: ISchedulerProvider? = null) {
         stop()
-        disposer = timer.compose(applySchedulersFlowable(scheduler)).map { it.value() * 1000 }.subscribe {
-            publisher.onNext(SessionLimiter.timeLimiter(it))
+        disposable = timer.compose(applySchedulersFlowable(scheduler)).map { it.value() * TIME_RESOLUTION }.subscribe {
+            publisher.onNext(SessionLimiter.timeLimiter(repository, it))
         }
         startSessionTime = timeProvider.getCurrentTime()
     }
 
     private var startSessionTime: Long = 0
 
-    fun getTime(currentTime: Long) = SessionLimiter.timeLimiter(currentTime - startSessionTime)
+    fun getTime(repository: IQuestSetupWizardSettingRepository, currentTime: Long) = SessionLimiter.timeLimiter(repository, currentTime - startSessionTime)
 
     fun stop() {
-        disposer?.dispose()
+        disposable?.dispose()
         publisher.onNext(0)
     }
 
-    private val timer: Flowable<Timed<Long>> = Flowable.interval(1000L, TimeUnit.MILLISECONDS).timeInterval().onBackpressureDrop()
-    private var disposer: Disposable? = null
+    private val timer: Flowable<Timed<Long>> = Flowable.interval(TIME_RESOLUTION, TimeUnit.MILLISECONDS).timeInterval().onBackpressureDrop()
+    private var disposable: Disposable? = null
 
     val publisher: FlowableProcessor<Long> = BehaviorProcessor.create<Long>().toSerialized()
 

@@ -5,19 +5,58 @@ import io.reactivex.disposables.Disposable
 
 interface IAutoDispose {
 
-    var disposable: CompositeDisposable
-
-    fun autoDispose(body: () -> Disposable) {
-        disposable.add(body())
+    companion object {
+        internal const val DEFAULT_NAME = "default"
     }
 
-    fun autoDisposeList(body: () -> List<Disposable>) {
+    var disposableMap: MutableMap<String, CompositeDisposable>
+
+    fun disposable(name: String?): CompositeDisposable {
+        var disposable = disposableMap[getName(name)]
+        if (disposable == null) {
+            disposable = CompositeDisposable()
+            disposableMap[getName(name)] = disposable
+        }
+        return disposable
+    }
+
+    fun autoDispose(name: String? = null, body: () -> Disposable) {
+        disposable(name).apply {
+            this.add(body())
+        }
+    }
+
+    private fun init(name: String? = null) {
+        val localName = getName(name)
+        if (!disposableMap.containsKey(localName))
+            disposableMap[localName] = CompositeDisposable()
+    }
+
+    private fun getName(name: String? = null) = name ?: DEFAULT_NAME
+
+    fun autoDisposeList(name: String? = null, body: () -> List<Disposable>) {
         body().forEach {
-            disposable.add(it)
+            disposable(name)?.apply {
+                add(it)
+            }
         }
     }
 
     fun dispose() {
-        disposable.clear()
+        dispose(null)
+    }
+
+    fun dispose(name: String? = null) {
+        if (name == null) {
+            disposableMap.forEach {
+                dispose(it.key)
+            }
+            disposableMap.clear()
+        } else {
+            disposableMap[getName(name)]?.apply {
+                clear()
+                disposableMap.remove(getName(name))
+            }
+        }
     }
 }

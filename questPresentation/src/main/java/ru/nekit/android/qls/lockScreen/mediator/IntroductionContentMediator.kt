@@ -4,33 +4,27 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.jakewharton.rxbinding2.view.clicks
-import io.reactivex.disposables.CompositeDisposable
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.domain.useCases.CommitNextTransitionUseCase
+import ru.nekit.android.qls.domain.useCases.TransitionChoreographUseCases
 import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContentMediator
 import ru.nekit.android.qls.lockScreen.mediator.common.ILockScreenContentViewHolder
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.throttleClicks
 
 //ver 1.0
 class IntroductionContentMediator(override var questContext: QuestContext) :
         AbstractLockScreenContentMediator() {
-
-    override var disposable: CompositeDisposable = CompositeDisposable()
 
     override var viewHolder: LockScreenIntroductionViewContentHolder = LockScreenIntroductionViewContentHolder(questContext)
 
     init {
         autoDisposeList {
             listOf(
-                    viewHolder.startButton.clicks().subscribe {
-                        CommitNextTransitionUseCase(questContext.repository,
-                                eventSender,
-                                questContext.schedulerProvider).use()
+                    viewHolder.startButton.throttleClicks {
+                        TransitionChoreographUseCases.goOnNextTransition()
                     },
-                    viewHolder.menuButton.clicks().subscribe {
+                    viewHolder.menuButton.throttleClicks {
                         //MenuWindowMediator.openWindow(questContext)
                     }
             )
@@ -47,10 +41,6 @@ class IntroductionContentMediator(override var questContext: QuestContext) :
 
     override fun attachView() {
         viewHolder.titleView.text = questContext.getString(R.string.title_introduction)
-
-        questContext.getRemainingAmountForReaching { it ->
-            System.out.print(it)
-        }
     }
 
     class LockScreenIntroductionViewContentHolder internal constructor(context: Context) :

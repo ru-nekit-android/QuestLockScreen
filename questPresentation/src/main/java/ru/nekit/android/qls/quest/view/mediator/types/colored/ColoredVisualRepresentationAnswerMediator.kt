@@ -10,7 +10,6 @@ import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.domain.model.quest.VisualRepresentationalNumberSummandQuest
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.answer.ListableAnswerMediator
-import ru.nekit.android.qls.window.RightAnswerWindow
 import ru.nekit.android.utils.Delay
 import java.util.*
 
@@ -81,10 +80,7 @@ class ColoredVisualRepresentationAnswerMediator :
                 localListData.add(item)
                 updateListAdapter(false)
                 listView.requestLayout()
-            }, {
-                RightAnswerWindow.openSimple(questContext)
-            })
-            return false
+            }, {})
         } else if (answerType == AnswerType.WRONG) {
             fadeOutAndIn(Delay.SMALL.get(questContext), {
                 shuffleListData()

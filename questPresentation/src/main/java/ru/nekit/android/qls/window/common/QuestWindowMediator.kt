@@ -4,19 +4,17 @@ import android.support.annotation.CallSuper
 import android.support.annotation.StyleRes
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
-import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.providers.IEventListenerProvider
+import ru.nekit.android.qls.quest.providers.IQuestContextProvider
 import ru.nekit.android.window.Window
 import ru.nekit.android.window.WindowContentViewHolder
 
-abstract class QuestWindowMediator(protected val questContext: QuestContext) : IEventListenerProvider {
+abstract class QuestWindowMediator(override var questContext: QuestContext) : IQuestContextProvider {
 
     private lateinit var window: Window
     private lateinit var windowContentViewHolder: WindowContentViewHolder
 
-    override lateinit var disposable: CompositeDisposable
-    override val eventListener: IEventListener = questContext.eventListener
+    override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
     @get:StyleRes
     protected abstract val windowStyleId: Int
@@ -24,7 +22,6 @@ abstract class QuestWindowMediator(protected val questContext: QuestContext) : I
     protected abstract fun createWindowContent(): Single<WindowContentViewHolder>
 
     fun openWindow(body: () -> Unit) {
-        disposable = CompositeDisposable()
         autoDispose {
             createWindowContent().subscribe { it ->
                 windowContentViewHolder = it
