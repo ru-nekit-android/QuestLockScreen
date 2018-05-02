@@ -10,11 +10,11 @@ import ru.nekit.android.qls.domain.model.Transition
 import ru.nekit.android.qls.domain.model.Transition.*
 import ru.nekit.android.qls.domain.model.Transition.Type.CURRENT_TRANSITION
 import ru.nekit.android.qls.domain.model.Transition.Type.PREVIOUS_TRANSITION
-import ru.nekit.android.qls.domain.providers.DependenciesProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.ITransitionChoreographRepository
 import ru.nekit.android.qls.domain.useCases.TransitionChoreographEvent.TRANSITION_CHANGED
 
-object TransitionChoreographUseCases : DependenciesProvider() {
+object TransitionChoreographUseCases : UseCaseSupport() {
 
     private val transitionRepository: ITransitionChoreographRepository
         get() = repository.getTransitionChoreographRepository()
@@ -29,29 +29,31 @@ object TransitionChoreographUseCases : DependenciesProvider() {
             transitionRepository.let {
                 var transition: Transition? = null
                 if (it.introductionIsPresented) {
-                    if (!it.introductionWasShown()) {
-                        it.introductionWasShown(true)
+                    if (!it.introductionWasShown) {
+                        it.introductionWasShown = true
                         transition = INTRODUCTION
                     }
                 }
-                if (transition == null)
-                    transition = levelUpGoIfCan(lastHistory) ?: advertGoIfCan(it)
-                if (transition == null) {
-                    transition = if (!it.questSeriesCounter.zeroWasReached()) QUEST else null
-                }
-                transition
+                transition ?: levelUpGoIfCan(lastHistory) ?: advertGoIfCan(it) ?: questGoIfCan(it)
             }
+
+    private fun questGoIfCan(repository: ITransitionChoreographRepository) =
+            if (!repository.questSeriesCounter.zeroWasReached()) QUEST else null
 
     private fun advertGoIfCan(repository: ITransitionChoreographRepository) =
             if (repository.advertIsPresented && repository.advertCounter.zeroWasReached()
-                    && !repository.advertWasShown()) {
+                    && !repository.advertWasShown) {
                 repository.advertCounter.reset()
-                repository.advertWasShown(true)
+                repository.advertWasShown = true
                 ADVERT
             } else null
 
+    fun advertIsPresent(value: Boolean) = useCompletableUseCaseFromRunnable(schedulerProvider) {
+        transitionRepository.advertIsPresented = value
+    }
+
     private fun levelUpGoIfCan(lastHistory: QuestHistory?) =
-            if (lastHistory != null && lastHistory.levelUp) LEVEL_UP else null
+            if (lastHistory?.levelUp == true) LEVEL_UP else null
 
     private fun notifyAboutTransitionChange() {
         TRANSITION_CHANGED.currentTransition = getCurrentTransition()
@@ -74,9 +76,9 @@ object TransitionChoreographUseCases : DependenciesProvider() {
         transitionRepository.questSeriesCounter.value
     }, body)
 
-    fun goOnCurrentTransition() = useCompletableUseCaseFromRunnable(schedulerProvider, {
+    fun doCurrentTransition() = useCompletableUseCaseFromRunnable(schedulerProvider, {
         transitionRepository.let {
-            it.advertWasShown(false)
+            it.advertWasShown = false
             notifyAboutTransitionChange()
         }
     })
@@ -94,7 +96,7 @@ object TransitionChoreographUseCases : DependenciesProvider() {
         }
     })
 
-    fun goOnNextTransition() = useCompletableUseCase(schedulerProvider, {
+    fun doNextTransition() = useCompletableUseCase(schedulerProvider, {
         QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
             Completable.fromRunnable {
                 transitionRepository.apply {
@@ -119,7 +121,7 @@ object TransitionChoreographUseCases : DependenciesProvider() {
         }
     }) { body(it.data) }
 
-    fun goStartTransition(body: () -> Unit) = useCompletableUseCase(schedulerProvider, {
+    fun goStartTransition() = useCompletableUseCase(schedulerProvider, {
         SettingsUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
             QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
                 Completable.fromRunnable {
@@ -140,27 +142,28 @@ object TransitionChoreographUseCases : DependenciesProvider() {
                 }
             }
         }
-    }, body)
+    }) {
+        eventSender.send(TransitionChoreographEvent.ON_INIT)
+    }
 
     fun destroyTransition() = useCompletableUseCase(schedulerProvider, {
         Completable.fromRunnable {
-            transitionRepository.let {
+            transitionRepository.apply {
                 val currentTransition = getCurrentTransition()
                 val lastTransition = Transition.values()[Transition.values().size - 1]
                 if (currentTransition == null || currentTransition == lastTransition) {
                     reset()
                 }
-                it.introductionWasShown(false)
-                it.advertWasShown(false)
+                introductionWasShown = false
+                advertWasShown = false
             }
         }
     })
 
-
     private fun reset() {
         transitionRepository.apply {
-            introductionWasShown(false)
-            advertWasShown(false)
+            introductionWasShown = false
+            advertWasShown = false
             if (questSeriesCounter.zeroWasReached())
                 questSeriesCounter.reset()
             setTransition(PREVIOUS_TRANSITION, null)
@@ -172,7 +175,8 @@ object TransitionChoreographUseCases : DependenciesProvider() {
 
 enum class TransitionChoreographEvent : IEvent {
 
-    TRANSITION_CHANGED;
+    TRANSITION_CHANGED,
+    ON_INIT;
 
     var currentTransition: Transition? = null
         internal set

@@ -13,6 +13,6 @@ abstract class AbstractLockScreenContentMediator : IQuestContextProvider {
 
     abstract fun detachView()
 
-    abstract fun attachView()
+    abstract fun attachView(body: () -> Unit)
 
 }

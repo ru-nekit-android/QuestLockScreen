@@ -6,7 +6,7 @@ import android.widget.RadioGroup
 import com.jakewharton.rxbinding2.widget.checkedChanges
 import io.reactivex.Single
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.shared.model.Complexity
+import ru.nekit.android.qls.R.id.*
 import ru.nekit.android.qls.shared.model.Complexity.*
 
 class SetupQTPComplexityFragment : QuestSetupWizardFragment() {
@@ -14,7 +14,7 @@ class SetupQTPComplexityFragment : QuestSetupWizardFragment() {
     private lateinit var qtpComplexityGroup: RadioGroup
 
     override fun onSetupStart(view: View) {
-        qtpComplexityGroup = view.findViewById(R.id.complexity_group)
+        qtpComplexityGroup = view.findViewById(complexity_group)
         autoDispose {
             qtpComplexityGroup.checkedChanges().subscribe {
                 update(true)
@@ -25,15 +25,14 @@ class SetupQTPComplexityFragment : QuestSetupWizardFragment() {
     }
 
     override fun nextAction(): Single<Boolean> {
-        val selectedComplexity = qtpComplexityGroup.checkedRadioButtonId
-        val complexity: Complexity? =
-                when (selectedComplexity) {
-                    R.id.complexity_easy -> EASY
-                    R.id.complexity_normal -> NORMAL
-                    R.id.complexity_hard -> HARD
-                    else -> null
-                }
-        return setupWizard.setQTPComplexity(complexity)
+        return setupWizard.setQTPComplexity(qtpComplexityGroup.checkedRadioButtonId.let {
+            when (it) {
+                complexity_easy -> EASY
+                complexity_normal -> NORMAL
+                complexity_hard -> HARD
+                else -> null
+            }
+        })
     }
 
     @LayoutRes

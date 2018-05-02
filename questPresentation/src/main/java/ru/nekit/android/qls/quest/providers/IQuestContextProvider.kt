@@ -5,6 +5,8 @@ import android.view.View
 import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.event.KeyboardAction
+import ru.nekit.android.domain.provider.IEventListenerProvider
+import ru.nekit.android.domain.provider.IEventSenderProvider
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.model.quest.Quest
@@ -29,9 +31,6 @@ interface IQuestContextProvider : IEventListenerProvider, IEventSenderProvider {
     override val eventSender: IEventSender
         get() = questContext.eventSender
 
-    fun listenQuest(body: (Quest) -> Unit) =
-            listenQuest(Quest::class.java, body)
-
     fun quest(body: (Quest) -> Unit) =
             quest(Quest::class.java, body)
 
@@ -45,19 +44,6 @@ interface IQuestContextProvider : IEventListenerProvider, IEventSenderProvider {
                 questContext.quest(clazz, body)
             }
 
-    fun listenPupilStatistics(body: (PupilStatistics) -> Unit) =
-            autoDispose {
-                questContext.pupilStatistics(body)
-            }
-
-    fun listenSessionTime(body: (Long, Long) -> Unit) = autoDispose {
-        questContext.listenSessionTime(body)
-    }
-
-    fun listenSessionTimeUpdate(body: () -> Unit) = autoDispose {
-        questContext.listenSessionTime { _, _ -> body() }
-    }
-
     fun allPointsLevel(body: (Int) -> Unit) =
             questContext.allPointsLevel(body)
 
@@ -68,6 +54,8 @@ interface IQuestContextProvider : IEventListenerProvider, IEventSenderProvider {
 
     fun questHasState(state: QuestState, body: (Boolean) -> Unit) =
             questContext.questHasState(state, body)
+
+    fun questIsDelayed(body: (Boolean) -> Unit) = questHasState(QuestState.DELAYED_PLAY, body)
 
     fun questHasStates(vararg state: QuestState, body: (List<Boolean>) -> Unit) =
             questContext.questHasStates(*state) { body(it) }
@@ -98,13 +86,29 @@ interface IQuestContextProvider : IEventListenerProvider, IEventSenderProvider {
     fun listenForWindowEvent(body: (event: QuestWindowEvent) -> Unit) =
             listenForEvent(QuestWindowEvent::class.java, body)
 
+    fun listenQuest(body: (Quest) -> Unit) =
+            listenQuest(Quest::class.java, body)
+
+    fun listenPupilStatistics(body: (PupilStatistics) -> Unit) =
+            autoDispose {
+                questContext.listenPupilStatistics(body)
+            }
+
+    fun listenSessionTime(body: (Long, Long) -> Unit) = autoDispose {
+        questContext.listenSessionTime(body)
+    }
+
+    fun listenSessionTimeUpdate(body: () -> Unit) = listenSessionTime { _, _ -> body() }
+
     fun getString(@StringRes stringResId: Int): String = questContext.getString(stringResId)
 
-    fun View.responsiveClick(body: () -> Unit) = autoDispose {
-        throttleClicks {
-            Vibrate.make(questContext, Delay.CLICK.get(questContext))
-            body()
-        }
+    fun View.responsiveClick(body: () -> Unit) = click {
+        Vibrate.make(questContext, Delay.CLICK.get(questContext))
+        body()
+    }
+
+    fun View.click(body: () -> Unit) = autoDispose {
+        throttleClicks(body)
     }
 
     fun statistics(body: (List<Statistics>) -> Unit) = questContext.statistics(body)

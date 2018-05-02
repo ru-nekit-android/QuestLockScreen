@@ -10,7 +10,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.view.animation.FastOutLinearInInterpolator
 import android.view.View
 import android.view.ViewPropertyAnimator
-import ru.nekit.android.shared.R
+import ru.nekit.android.shared.R.integer.*
 
 object AnimationUtils {
 
@@ -44,8 +44,8 @@ object AnimationUtils {
         val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(),
                 startColor, endColor)
         colorAnimation.duration = duration.toLong()
-        if (interpolator != null) {
-            colorAnimation.interpolator = interpolator
+        interpolator?.let {
+            colorAnimation.interpolator = it
         }
         colorAnimation.addListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(animation: Animator) {}
@@ -108,12 +108,13 @@ object AnimationUtils {
 
 enum class Delay(@IntegerRes private val resourceId: Int) {
 
-    LONG(R.integer.long_animation_duration),
-    SHORT(R.integer.short_animation_duration),
-    SMALL(R.integer.small_animation_duration),
-    KEYBOARD(R.integer.keyboard_delay),
-    VIBRATION(R.integer.vibration_delay),
-    CLICK(R.integer.vibration_delay);
+    LONG(long_animation_duration),
+    SHORT(short_animation_duration),
+    SMALL(small_animation_duration),
+    KEYBOARD(keyboard_delay),
+    VIBRATION(vibration_delay),
+    ANSWER(answer_delay),
+    CLICK(vibration_delay);
 
     fun get(context: Context) = context.resources.getInteger(resourceId).toLong()
 }

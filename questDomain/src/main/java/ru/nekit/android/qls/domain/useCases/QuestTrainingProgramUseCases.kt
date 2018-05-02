@@ -23,7 +23,7 @@ private class InternalCreateQuestTrainingProgramUseCase(private val repository: 
                                                         scheduler: ISchedulerProvider? = null) :
         SingleUseCase<Boolean, Boolean>(scheduler) {
 
-    override fun build(parameter: Boolean): Single<Boolean> = pupil(repository) {
+    override fun build(parameter: Boolean): Single<Boolean> = pupilFlatMap {
         repository.getQuestTrainingProgramRepository().create(it.sex!!, it.complexity!!, parameter).doOnEvent { result, _ ->
             if (result) {
                 //do work on qtp update
@@ -50,7 +50,7 @@ class GetQuestTrainingProgramPriorityRule(private val repository: IRepositoryHol
         SingleUseCase<Optional<QuestTrainingProgramRulePriority>, QuestAndQuestionType>(scheduler) {
 
     override fun build(parameter: QuestAndQuestionType): Single<Optional<QuestTrainingProgramRulePriority>> =
-            pupil(repository) {
+            pupilFlatMap {
                 repository.getQuestTrainingProgramRepository().getPriorityRule(
                         it.sex!!,
                         it.complexity!!,
@@ -66,7 +66,7 @@ class GetCurrentQuestTrainingProgramAllPriorityRule(private val repository: IRep
         ParameterlessSingleUseCase<List<QuestTrainingProgramRulePriority>>(scheduler) {
 
     override fun build(): Single<List<QuestTrainingProgramRulePriority>> =
-            pupil(repository) {
+            pupilFlatMap {
                 repository.getQuestTrainingProgramRepository().getAllPriorityRule(it.sex!!, it.complexity!!)
             }
 
@@ -79,7 +79,7 @@ class GetQuestTrainingProgramRulesByLevelIndexUseCase(private val repository: IR
     private val questTrainingProgramRepository = repository.getQuestTrainingProgramRepository()
 
     override fun build(parameter: Int): Single<List<QuestTrainingProgramRule>> =
-            pupil(repository) { pupil ->
+            pupilFlatMap { pupil ->
                 questTrainingProgramRepository.getLevel(pupil.sex!!, pupil.complexity!!, parameter).flatMap {
                     if (it.isEmpty())
                         Single.just(ArrayList())
@@ -240,28 +240,28 @@ class GetAppropriateQuestAndQuestionType(private val repository: IRepositoryHold
                                 appropriateItem.chanceValue = (questStatisticsReportList.find {
                                     it.questAndQuestionType == appropriateItem.questAndQuestionType
                                 }?.let { report ->
-                                            val wrongAnswerCount = report.wrongAnswerCount
-                                            val rightAnswerCount = report.rightAnswerCount
-                                            val rightAnswerSeriesCounter = report.rightAnswerSeriesCounter
-                                            val searchPriorityRule = qtpRulePriorityList.find {
-                                                it.questType == it.questType
-                                                        && it.questionTypes.contains(
-                                                        report.questAndQuestionType.questionType)
-                                            }
-                                            computeChanceWeight(
-                                                    searchPriorityRule?.startPriority
-                                                            ?: START_PRIORITY,
-                                                    searchPriorityRule?.wrongAnswerPriority
-                                                            ?: START_PRIORITY,
-                                                    rightAnswerCount,
-                                                    wrongAnswerCount,
-                                                    rightAnswerSeriesCounter,
-                                                    questStatisticsReportList
-                                                            .map { it.rightAnswerSeriesCounter }
-                                                            .max()
-                                                            ?: 0
-                                            )
-                                        } ?: START_PRIORITY) * BASE_CHANCE
+                                    val wrongAnswerCount = report.wrongAnswerCount
+                                    val rightAnswerCount = report.rightAnswerCount
+                                    val rightAnswerSeriesCounter = report.rightAnswerSeriesCounter
+                                    val searchPriorityRule = qtpRulePriorityList.find {
+                                        it.questType == it.questType
+                                                && it.questionTypes.contains(
+                                                report.questAndQuestionType.questionType)
+                                    }
+                                    computeChanceWeight(
+                                            searchPriorityRule?.startPriority
+                                                    ?: START_PRIORITY,
+                                            searchPriorityRule?.wrongAnswerPriority
+                                                    ?: START_PRIORITY,
+                                            rightAnswerCount,
+                                            wrongAnswerCount,
+                                            rightAnswerSeriesCounter,
+                                            questStatisticsReportList
+                                                    .map { it.rightAnswerSeriesCounter }
+                                                    .max()
+                                                    ?: 0
+                                    )
+                                } ?: START_PRIORITY) * BASE_CHANCE
                             }
                             result = if (appropriateList.size == 1)
                                 appropriateList[0].questAndQuestionType
@@ -385,7 +385,7 @@ private object QuestTrainingProgramUseCasesHelper {
 
     fun <R> getPupilAndStatisticsAndAllLevels(repository: IRepositoryHolder, body: (Pupil, PupilStatistics, List<QuestTrainingProgramLevel>) -> R):
             Single<R> {
-        return pupil(repository) { pupil ->
+        return pupilFlatMap { pupil ->
             repository.getPupilStatisticsRepository().get(pupil).flatMap { statistics ->
                 repository.getQuestTrainingProgramRepository().getAllLevels(pupil.sex!!, pupil.complexity!!).flatMap { levels ->
                     Single.fromCallable {

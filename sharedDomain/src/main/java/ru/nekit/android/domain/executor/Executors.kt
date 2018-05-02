@@ -7,6 +7,8 @@ interface ISchedulerProvider {
 
     fun computation(): Scheduler
 
+    fun newThread(): Scheduler = Schedulers.newThread()
+
     fun ui(): Scheduler
 }
 

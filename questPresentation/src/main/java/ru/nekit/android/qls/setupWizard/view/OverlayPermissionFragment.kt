@@ -18,9 +18,7 @@ class OverlayPermissionFragment : QuestSetupWizardFragment() {
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int {
-        return R.layout.sw_overlay_permission
-    }
+    override fun getLayoutId(): Int = R.layout.sw_overlay_permission
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun altAction() {
@@ -48,7 +46,7 @@ class OverlayPermissionFragment : QuestSetupWizardFragment() {
 
     companion object {
 
-        private val REQUEST_CODE = 1
+        private const val REQUEST_CODE = 1
 
         val instance: OverlayPermissionFragment
             get() = OverlayPermissionFragment()

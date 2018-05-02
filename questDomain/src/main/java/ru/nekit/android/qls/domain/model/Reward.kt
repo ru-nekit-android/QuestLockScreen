@@ -177,7 +177,6 @@ sealed class Reward {
                                 .count { it.answerType == RIGHT })
                     }
                 Independence -> {
-                    val h = historyList
                     Single.fromCallable {
                         val count = historyList.count {
                             it.answerType == RIGHT &&

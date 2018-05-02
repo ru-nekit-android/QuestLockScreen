@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import io.reactivex.Completable
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.useCases.TransitionChoreographUseCases
 import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContentMediator
@@ -22,7 +23,7 @@ class IntroductionContentMediator(override var questContext: QuestContext) :
         autoDisposeList {
             listOf(
                     viewHolder.startButton.throttleClicks {
-                        TransitionChoreographUseCases.goOnNextTransition()
+                        TransitionChoreographUseCases.doNextTransition()
                     },
                     viewHolder.menuButton.throttleClicks {
                         //MenuWindowMediator.openWindow(questContext)
@@ -39,8 +40,10 @@ class IntroductionContentMediator(override var questContext: QuestContext) :
         viewHolder.content.removeAllViews()
     }
 
-    override fun attachView() {
-        viewHolder.titleView.text = questContext.getString(R.string.title_introduction)
+    override fun attachView(body: () -> Unit) = autoDispose {
+        Completable.fromAction {
+            viewHolder.titleView.text = questContext.getString(R.string.title_introduction)
+        }.subscribe(body)
     }
 
     class LockScreenIntroductionViewContentHolder internal constructor(context: Context) :

@@ -94,9 +94,7 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
                                                     ).concatWith(Completable.fromCallable {
                                                         RewardHolder.getAndNotify(null, repository, scheduler)
                                                     }.doIfOrComplete { rewards.isNotEmpty() })
-                                        }.concatWith(
-                                                LockScreenUseCases.updateLastStartType()
-                                        )
+                                        }.concatWith(LockScreenUseCases.updateLastStartType())
                                 )
                         )
             }
@@ -187,7 +185,7 @@ class RightAnswerUseCase(private val repository: IRepositoryHolder,
         }.concatWith(questStateRepository.has(ANSWERED).flatMapCompletable {
             questStateRepository.replace(PLAYED, ANSWERED).doIfOrNever { !it }
         })
-                .concatWith(pupilAsCompletable(repository) {
+                .concatWith(pupilFlatMapCompletable {
                     repository.getQuestRepository().clear(it)
                 })
                 .concatWith(questStateRepository.clear())

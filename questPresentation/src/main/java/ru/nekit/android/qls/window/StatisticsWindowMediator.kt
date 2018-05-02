@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.TextView
 import io.reactivex.Single
@@ -19,12 +20,13 @@ import ru.nekit.android.qls.window.common.QuestWindowMediator
 import ru.nekit.android.utils.AnimationUtils
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.ViewHolder
-import ru.nekit.android.utils.throttleClicks
 import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
 class StatisticsWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext) {
+
+    override fun getName(): String = "statistics"
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -42,15 +44,13 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
                     AppCompatImageButton(questContext).apply {
                         tag = step
                         setImageResource(icons[step]!![1])
-                        val params = LinearLayout.LayoutParams(0,
-                                ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
-                        params.setMargins(margin, margin, margin, margin)
-                        layoutParams = params
+                        LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f).apply {
+                            setMargins(margin, margin, margin, margin)
+                            layoutParams = this
+                        }
                         windowContent.buttonContainer.addView(this)
-                        autoDispose {
-                            throttleClicks {
-                                setStep(step)
-                            }
+                        click {
+                            setStep(step)
                         }
                     }
                 }
@@ -85,9 +85,7 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
             when (step) {
                 STATISTICS -> {
                     titleResID = R.string.title_statistics
-                    currentContentHolder = StatisticsViewHolder(questContext)
-                    (currentContentHolder as StatisticsViewHolder).let { viewHolder ->
-                        questStatisticsReport { }
+                    currentContentHolder = StatisticsViewHolder(questContext).also { viewHolder ->
                         statistics {
                             val statisticsAdapter = StatisticsAdapter(it)
                             val linearLayoutManager = LinearLayoutManager(questContext)
@@ -98,15 +96,13 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
                 }
                 REWARDS -> {
                     titleResID = R.string.title_rewards
-                    currentContentHolder = RewardViewHolder(questContext)
-                    (currentContentHolder as RewardViewHolder).apply {
+                    currentContentHolder = RewardViewHolder(questContext).also {
 
                     }
                 }
                 GIFTS -> {
                     titleResID = R.string.title_gifts
-                    currentContentHolder = GiftsViewHolder(questContext)
-                    (currentContentHolder as GiftsViewHolder).apply {
+                    currentContentHolder = GiftsViewHolder(questContext).also {
 
                     }
                 }
@@ -161,10 +157,6 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
         REWARDS,
         GIFTS;
 
-        companion object {
-
-            fun getByOrdinal(ordinal: Int): Step = values()[ordinal]
-        }
     }
 
     internal class StatisticsWindowContentViewHolder(context: Context) : WindowContentViewHolder(context, R.layout.wc_menu) {

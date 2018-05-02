@@ -1,54 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.AppCompatTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_title"
+    style="@style/Quest.Title"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content" />
 
-    <!--<RelativeLayout
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content">-->
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_title"
-        style="@style/Quest.Title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!--android:layout_gravity="fill_vertical"
-     app:autoSizeMaxTextSize="200sp"
+    <!--
+        android:layout_gravity="fill_vertical"
+        app:autoSizeMaxTextSize="200sp"
         app:autoSizeMinTextSize="18sp"
         app:autoSizeStepGranularity="1px"
         app:autoSizeTextType="uniform"
-    <LinearLayout
-        android:id="@+id/container_unlock_key"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/tv_title"
-        android:layout_marginTop="-12dp"
-        android:background="@drawable/rectangle_with_rounded_corners"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="@dimen/small_gap">
-
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/tv_unlock_key_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/small_gap"
-            android:paddingRight="@dimen/small_gap"
-            android:textAppearance="@style/TextAppearance"
-            android:textColor="@color/white"
-            android:textSize="22sp" />
-
-        <android.support.v7.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/reward_key" />
-
-
-    </LinearLayout>-->
-
-    <!--</RelativeLayout>-->
-
-</FrameLayout>
+    -->

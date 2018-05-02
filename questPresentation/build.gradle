@@ -7,19 +7,32 @@ android {
     compileSdkVersion versions.compileSdk
     buildToolsVersion versions.buildTools
 
+    signingConfigs {
+        release {
+            storeFile project.KEYSTORE_STORE_FILE
+            storePassword project.KEYSTORE_STORE_PASSWORD
+            keyAlias project.KEYSTORE_KEY_ALIAS
+            keyPassword project.KEYSTORE_KEY_PASSWORD
+        }
+    }
+
     defaultConfig {
-        applicationId 'ru.nekit.android.qls'
+        applicationId 'ru.nekit.android.qls.parentcontrol'
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        versionCode 18
-        versionName "1.31"
+        versionCode versions.appCode
+        versionName versions.appName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -52,10 +65,10 @@ dependencies {
     implementation deps.patternLockView
     implementation deps.maskableLayout
     implementation deps.firebase.ads
-
+    //implementation deps.billing
     implementation deps.support.constraintLayout
+    implementation deps.flexbox
 
-    implementation 'com.google.android:flexbox:0.3.2'
 
     api project(':sharedModule')
     api project(':questData')

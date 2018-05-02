@@ -736,22 +736,63 @@
         <item name="android:layout_alignParentTop">true</item>
     </style>
 
+    <style name="AccessInfo" />
+
+    <style name="AccessInfo.Title" parent="Title.h1.Padding">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="AccessInfo.ExpiredTime" parent="Title.h2">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="Subscriptions" />
+
+    <style name="Subscriptions.Container">
+        <item name="android:layout_margin">4dp</item>
+        <item name="cardCornerRadius">0dp</item>
+        <item name="elevation">4dp</item>
+        <item name="cardBackgroundColor">@color/white</item>
+        <item name="cardUseCompatPadding">false</item>
+    </style>
+
+    <style name="Subscriptions.ContentContainer">
+        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:gravity">right</item>
+    </style>
+
+    <style name="Subscriptions.Button" />
+
+    <style name="Subscriptions.Title" parent="Title.h2">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Subscriptions.Description" parent="Text" />
+
+    <style name="Subscriptions.Price" parent="TextAppearance">
+        <item name="android:fontFamily">@font/roboto_light_bold</item>
+    </style>
+
+    <style name="Subscriptions.List">
+        <item name="android:scrollbars">vertical</item>
+    </style>
+
+    <style name="Subscriptions.Activated" parent="TextAppearance">
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 
     <style name="PhoneContact" />
 
     <style name="PhoneContact.Read" />
 
-    <style name="PhoneContact.Read.InformationField" parent="TextAppearance">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:paddingLeft">@dimen/normal_gap</item>
-        <item name="android:paddingRight">@dimen/normal_gap</item>
-    </style>
-
     <style name="PhoneContact.Read.Title" parent="TextAppearance">
         <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
-        <item name="android:background">@color/green_dark</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:paddingLeft">@dimen/normal_gap</item>
         <item name="android:paddingRight">@dimen/normal_gap</item>
     </style>
@@ -777,7 +818,7 @@
     </style>
 
     <style name="PhoneContact.Read.ContentContainer">
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:gravity">right</item>
     </style>
 
     <!--modification-->

@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.view
 
 import io.reactivex.Single
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
 import ru.nekit.android.qls.domain.useCases.GenerateQuestUseCase
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.answer.ButtonListAnswerMediator
@@ -33,127 +32,122 @@ class QuestVisualBuilder {
 
     companion object {
 
-        fun build(questContext: QuestContext): ParameterlessSingleUseCase<IQuestMediatorFacade> =
-                object : ParameterlessSingleUseCase<IQuestMediatorFacade>() {
+        fun build(questContext: QuestContext): Single<QuestMediatorFacade> =
+                GenerateQuestUseCase(questContext.repository).build().map { quest ->
+                    val questMediatorFacade = when (quest.questType) {
 
-                    override fun build(): Single<IQuestMediatorFacade> =
-                            GenerateQuestUseCase(questContext.repository).build().map { quest ->
-                                val questMediatorFacade = when (quest.questType) {
+                        COINS ->
 
-                                    COINS ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    CoinQuestContentMediator(),
+                                    CoinAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                CoinQuestContentMediator(),
-                                                CoinAnswerMediator()
-                                        )
+                        SIMPLE_EXAMPLE ->
 
-                                    SIMPLE_EXAMPLE ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    SimpleExampleQuestContentMediator(),
+                                    SimpleExampleAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                SimpleExampleQuestContentMediator(),
-                                                SimpleExampleAnswerMediator()
-                                        )
+                        METRICS ->
 
-                                    METRICS ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    MetricsQuestContentMediator(),
+                                    MetricsAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                MetricsQuestContentMediator(),
-                                                MetricsAnswerMediator()
-                                        )
+                        PERIMETER ->
 
-                                    PERIMETER ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    PerimeterQuestContentMediator(),
+                                    SimpleExampleAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                PerimeterQuestContentMediator(),
-                                                SimpleExampleAnswerMediator()
-                                        )
+                        TRAFFIC_LIGHT ->
 
-                                    TRAFFIC_LIGHT ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    TrafficLightQuestContentMediator(),
+                                    TrafficLightAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                TrafficLightQuestContentMediator(),
-                                                TrafficLightAnswerMediator()
-                                        )
+                        TEXT_CAMOUFLAGE ->
 
-                                    TEXT_CAMOUFLAGE ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    TextCamouflageContentMediator(),
+                                    ButtonListAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                TextCamouflageContentMediator(),
-                                                ButtonListAnswerMediator()
-                                        )
+                        FRUIT_ARITHMETIC -> {
 
-                                    FRUIT_ARITHMETIC -> {
+                            val isSolution = quest.questionType == QuestionType.SOLUTION
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    if (isSolution) FruitArithmeticQuestContentMediator() else
+                                        null,
+                                    if (isSolution)
+                                        FruitArithmeticAnswerMediator()
+                                    else
+                                        FruitComparisonAnswerMediator()
+                            )
+                        }
 
-                                        val isSolution = quest.questionType == QuestionType.SOLUTION
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                if (isSolution) FruitArithmeticQuestContentMediator() else
-                                                    null,
-                                                if (isSolution)
-                                                    FruitArithmeticAnswerMediator()
-                                                else
-                                                    FruitComparisonAnswerMediator()
-                                        )
-                                    }
+                        TIME ->
 
-                                    TIME ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(), null,
+                                    TimeAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(), null,
-                                                TimeAnswerMediator()
-                                        )
+                        CURRENT_TIME ->
 
-                                    CURRENT_TIME ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(), null,
+                                    CurrentTimeAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(), null,
-                                                CurrentTimeAnswerMediator()
-                                        )
+                        CHOICE, MISMATCH, CURRENT_SEASON ->
 
-                                    CHOICE, MISMATCH, CURRENT_SEASON ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(), null,
+                                    ChoiceAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(), null,
-                                                ChoiceAnswerMediator()
-                                        )
+                        COLORS ->
 
-                                    COLORS ->
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(), null,
+                                    ColoredVisualRepresentationAnswerMediator()
+                            )
 
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(), null,
-                                                ColoredVisualRepresentationAnswerMediator()
-                                        )
+                        DIRECTION ->
 
-                                    DIRECTION ->
-
-                                        QuestMediatorFacade(
-                                                questContext,
-                                                TitleMediator(),
-                                                EmptyQuestContentMediator(),
-                                                DirectionAnswerMediator()
-                                        )
-                                }
-                                questMediatorFacade.onCreate(questContext, quest)
-                                questMediatorFacade
-                            }
-
+                            QuestMediatorFacade(
+                                    questContext,
+                                    TitleMediator(),
+                                    EmptyQuestContentMediator(),
+                                    DirectionAnswerMediator()
+                            )
+                    }
+                    questMediatorFacade.onCreate(questContext, quest)
+                    questMediatorFacade
                 }
     }
 }

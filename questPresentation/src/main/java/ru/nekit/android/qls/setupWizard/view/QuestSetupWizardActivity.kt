@@ -1,36 +1,27 @@
 package ru.nekit.android.qls.setupWizard.view
 
-import android.os.Bundle
-import ru.nekit.android.domain.event.IEventListener
+import com.anadeainc.rxbus.Subscribe
 import ru.nekit.android.qls.QuestLockScreenApplication
-import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorEvent
-import ru.nekit.android.qls.quest.providers.IEventListenerProvider
+import ru.nekit.android.qls.domain.useCases.TransitionChoreographEvent
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardActivity
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep.UNLOCK_SECRET
 import ru.nekit.android.qls.setupWizard.ISetupWizardStep
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.*
 
-class QuestSetupWizardActivity : BaseSetupWizardActivity(), IEventListenerProvider {
+class QuestSetupWizardActivity : BaseSetupWizardActivity() {
 
-    override val setupWizard: QuestSetupWizard
-        get() = QuestSetupWizard.getInstance(application as QuestLockScreenApplication)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        listenForEvent(LockScreenContentMediatorEvent::class.java) {
-            if (it == LockScreenContentMediatorEvent.ON_INIT)
-                finish()
-        }
-        //eventBus.handleEvents(this, LockScreenService.PUPIL_BIND_OK)
-    }
-
-    private val questApplication: QuestLockScreenApplication
-        get() = context.applicationContext as QuestLockScreenApplication
-
-    override val eventListener: IEventListener
+    private val questApplication
+        get() = application as QuestLockScreenApplication
+    override val setupWizard
+        get() = questApplication.setupWizard
+    override val eventListener
         get() = questApplication.getEventListener()
 
+    @Subscribe
+    fun listen(event: TransitionChoreographEvent) {
+        if (event == TransitionChoreographEvent.ON_INIT)
+            finish()
+    }
 
     override fun showSetupWizardStep(step: ISetupWizardStep, vararg params: Any) {
         setupWizard.commitCurrentSetupStep(step)
@@ -50,7 +41,9 @@ class QuestSetupWizardActivity : BaseSetupWizardActivity(), IEventListenerProvid
                     SETUP_PHONE_CONTACTS -> PhoneContactsFragment.instance
                     BIND_PARENT_CONTROL -> BindParentFragment.instance
                     VOICE_RECORD -> VoiceRecordFragment.instance
-                    else -> SettingsFragment.instance
+                    SUBSCRIBES -> SubscriptionsFragment.instance
+                    SETTINGS -> SettingsFragment.instance
+                    else -> TODO()
                 }
         )
     }

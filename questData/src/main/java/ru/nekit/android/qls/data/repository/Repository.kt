@@ -154,7 +154,7 @@ open class CurrentPupilRepository(sharedPreferences: SharedPreferences) : Reacti
         private const val CURRENT: String = "current_pupil"
     }
 
-    override fun setCurrentUuid(pupilUuid: String): Completable = put(CURRENT, pupilUuid)
+    override fun setCurrentUuid(pupilUuid: String): Completable = set(CURRENT, pupilUuid)
 
     override fun getCurrentUuid(): Single<Optional<String>> = get(CURRENT)
 
@@ -170,14 +170,14 @@ open class RewardRepository(sharedPreferences: SharedPreferences) : IRewardRepos
             getCount(reward).map {
                 it + 1
             }.flatMapCompletable { count ->
-                Completable.fromRunnable { store.put(name(reward), count) }
+                Completable.fromRunnable { store.set(name(reward), count) }
             }
 
     override fun remove(reward: Reward): Completable =
             getCount(reward).map {
                 it - 1
             }.flatMapCompletable { count ->
-                Completable.fromRunnable { store.put(name(reward), count) }
+                Completable.fromRunnable { store.set(name(reward), count) }
             }
 
     override fun getCount(reward: Reward): Single<Int> = Single.fromCallable {
@@ -537,7 +537,7 @@ class QuestRepository(repository: IRepositoryHolder,
             }
 
     /*
-    fun getLastId(pupil: Pupil): Single<Optional<Long?>> =
+    fun getLastId(pupilFlatMap: Pupil): Single<Optional<Long?>> =
             boxSingleUsingWithCallable {
                 val query = it.query().build()
                 val lastList = query.find(query.count() - 1, 1)
@@ -630,7 +630,7 @@ open class UnlockSecretRepository(sharedPreferences: SharedPreferences) : IUnloc
     override fun get(): String? = store.get(UNLOCK_SECRET)
 
     override fun set(value: String) {
-        store.put(UNLOCK_SECRET, value)
+        store.set(UNLOCK_SECRET, value)
     }
 }
 
@@ -640,9 +640,9 @@ open class SessionRepository(sharedPreferences: SharedPreferences) : ISessionRep
 
     override fun get(sessionName: String): Long = store.get(sessionName)
 
-    override fun set(sessionName: String, time: Long) {
-        store.put(sessionName, time)
-    }
+    override fun set(sessionName: String, time: Long) =
+            store.set(sessionName, time)
+
 }
 
 abstract class QuestSetupWizardSettingRepository(sharedPreferences: SharedPreferences) : SetupWizardBaseSettingsRepository(sharedPreferences),
@@ -653,7 +653,7 @@ abstract class QuestSetupWizardSettingRepository(sharedPreferences: SharedPrefer
 
     override var showUnlockKeyHelpOnConsume: Boolean
         get() = booleanStore.get(UNLOCK_KEY_HELP_ON_CONSUME, CONST.UNLOCK_KEY_HELP_ON_CONSUME)
-        set(value) = booleanStore.put(UNLOCK_KEY_HELP_ON_CONSUME, value)
+        set(value) = booleanStore.set(UNLOCK_KEY_HELP_ON_CONSUME, value)
 
     override val maxSessionTime: Long
         get() = CONST.MAX_SESSION_TIME
@@ -710,7 +710,7 @@ class QuestTrainingProgramRepository(private val context: Context,
         if (it.data == null)
             Single.just(ArrayList())
         else
-            questTrainingProgramLevelRepository.getAllLevels(it.nonNullData.id)
+            questTrainingProgramLevelRepository.getAllLevels(it.nonNullData.id).map { it.sortedBy { it.index } }
     }
 
     override fun getQuestRules(sex: PupilSex, complexity: Complexity, level: QuestTrainingProgramLevel): Single<List<QuestTrainingProgramRule>> =
@@ -929,7 +929,7 @@ class QuestTrainingProgramLevelRepository(context: Context, boxStore: BoxStore) 
                         false.toSingle()
                 }
             }
-            return Flowable.fromIterable(actionList).flatMapSingle { task -> task.subscribeOn(Schedulers.computation()) }.toList().map { true }
+            return Flowable.fromIterable(actionList).flatMapSingle { task -> task.subscribeOn(Schedulers.newThread()) }.toList().map { true }
         } else
             return false.toSingle()
     }
@@ -1341,7 +1341,7 @@ class PupilStatisticsRepository(repository: IRepositoryHolder, boxStore: BoxStor
 
 class QuestStateRepository(sharedPreferences: SharedPreferences) : IQuestStateRepository {
 
-    private fun set(value: Int): Completable = Completable.fromRunnable { store.put(value) }
+    private fun set(value: Int): Completable = Completable.fromRunnable { store.set(value) }
 
     private fun get(): Single<Int> = Single.fromCallable { store.get() }
 
@@ -1353,10 +1353,10 @@ class QuestStateRepository(sharedPreferences: SharedPreferences) : IQuestStateRe
         set(value.value or it)
     }
 
-    override fun clear(): Completable = Completable.fromCallable { store.put(0) }
+    override fun clear(): Completable = Completable.fromCallable { store.set(0) }
 
     override fun remove(value: QuestState): Completable = Completable.fromRunnable {
-        store.put(store.get() and value.value.inv())
+        store.set(store.get() and value.value.inv())
     }
 
     override fun replace(oldValue: QuestState, newValue: QuestState): Completable =
@@ -1370,32 +1370,54 @@ class QuestStateRepository(sharedPreferences: SharedPreferences) : IQuestStateRe
 
 }
 
-class LockScreenRepository(sharedPreferences: SharedPreferences) : ILockScreenRepository {
+class LockScreenRepository(sharedPreferences: SharedPreferences, boxStore: BoxStore) :
+        ObjectBoxSupport<LockScreenStartTypeEntity>(boxStore),
+        ILockScreenRepository {
 
-    private val booleanStore: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
+    override fun createBox(): Box<LockScreenStartTypeEntity> = initBox()
+
+    private val booleanStore: StringKeyBooleanValueStore = StringKeyBooleanValueStore(sharedPreferences)
     private val stringStore: ReactiveStringKeyStringValueStore = ReactiveStringKeyStringValueStore(sharedPreferences)
 
-    override fun switchOn(value: Boolean) = booleanStore.put(IS_ON, value)
+    override var switchOn
+        get() = booleanStore.get(IS_ON)
+        set(value) = booleanStore.set(IS_ON, value)
 
-    override fun isSwitchedOn(): Boolean = booleanStore.get(IS_ON)
+    override var incomeCallInProcess
+        get() = booleanStore.get(INCOME_CALL, false)
+        set(value) = booleanStore.set(INCOME_CALL, value)
 
-    override fun incomeCallInProcess(value: Boolean) =
-            booleanStore.put(INCOME_CALL, value)
+    override var outgoingCallInProcess
+        get() = booleanStore.get(OUTGOING_CALL, false)
+        set(value) = booleanStore.set(OUTGOING_CALL, value)
 
-    override fun incomeCallInProcess(): Boolean =
-            booleanStore.get(INCOME_CALL, false)
+    override val lastStartType: Single<Optional<LockScreenStartType>>
+        get() = stringStore.get(START_TYPE).map {
+            Optional(if (it.isEmpty()) null else LockScreenStartTypeConverter().convertToEntityProperty(it.nonNullData))
+        }
 
-    override fun outgoingCallInProcess(value: Boolean) =
-            booleanStore.put(OUTGOING_CALL, value)
+    override fun saveStartType(value: LockScreenStartType, timestamp: Long): Completable =
+            saveStartType(LockScreenStartTypeEntity(0, timestamp, value))
 
-    override fun outgoingCallInProcess(): Boolean =
-            booleanStore.get(OUTGOING_CALL, false)
+    private fun saveStartType(value: LockScreenStartTypeEntity) = boxCompletableUsingFromRunnable {
+        it.put(value)
+    }.andThen(stringStore.set(START_TYPE, LockScreenStartTypeConverter().convertToDatabaseValue(value.lockScreenStartType)))
 
-    override fun getLastStartType(): Single<Optional<LockScreenStartType>> = stringStore.get(START_TYPE).map {
-        Optional(if (it.isEmpty()) null else LockScreenStartType.valueOf(it.nonNullData))
-    }
+    override fun updateLastStartType(value: LockScreenStartType): Completable =
+            boxSingleUsingWithCallable { it.all.last() }.flatMapCompletable {
+                saveStartType(LockScreenStartTypeEntity(it.id, it.timestamp, value))
+            }
 
-    override fun saveStartType(value: LockScreenStartType) = stringStore.put(START_TYPE, value.name)
+    override fun firstStartTypeTimestamp(vararg values: LockScreenStartType): Single<Optional<Long>> =
+            boxSingleUsingWithCallable {
+                var q: QueryBuilder<LockScreenStartTypeEntity>? =
+                        it.query().equal(LockScreenStartTypeEntity_.lockScreenStartType, values[0].asParameter())
+                for (i in 1 until values.size) {
+                    q = q!!.or().equal(LockScreenStartTypeEntity_.lockScreenStartType, values[i].asParameter())
+                }
+                val first = q!!.build().findFirst()
+                Optional(first?.timestamp)
+            }
 
     companion object {
 
@@ -1410,29 +1432,40 @@ class LockScreenRepository(sharedPreferences: SharedPreferences) : ILockScreenRe
 
 abstract class TransitionChoreographRepository(sharedPreferences: SharedPreferences) : ITransitionChoreographRepository {
 
-    override val introductionIsPresented: Boolean = CONST.INTRODUCTION_IS_PRESENTED_BY_DEFAULT
-    override val advertIsPresented: Boolean = CONST.ADVERT_IS_PRESENTED_BY_DEFAULT
+    override var introductionIsPresented: Boolean = CONST.INTRODUCTION_IS_PRESENTED_BY_DEFAULT
+
     override val advertStartValue: Int = CONST.SHOW_ADVERT_AFTER_N_RIGHT_ANSWER
 
-    private val booleanStore: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
+    private val booleanStore: StringKeyBooleanValueStore = StringKeyBooleanValueStore(sharedPreferences)
     private val stringStore: StringKeyStringValueStore = StringKeyStringValueStore(sharedPreferences)
 
-    override fun introductionWasShown(value: Boolean) =
-            booleanStore.put(INTRODUCTION.name, value)
+    override var introductionWasShown
+        get() = booleanStore.get(INTRODUCTION.name, false)
+        set(value) {
+            booleanStore.set(INTRODUCTION.name, value)
+        }
 
-    override fun introductionWasShown(): Boolean =
-            booleanStore.get(INTRODUCTION.name, false)
+    override var advertWasShown
+        get() = booleanStore.get(ADVERT.name)
+        set(value) {
+            booleanStore.set(ADVERT.name, value)
+        }
+
+    override var advertIsPresented
+        get() = booleanStore.get(ADVERT_IS_PRESENT, CONST.ADVERT_IS_PRESENTED_BY_DEFAULT)
+        set(value) {
+            booleanStore.set(ADVERT_IS_PRESENT, value)
+        }
 
     override fun setTransition(type: Transition.Type, transition: Transition?) =
-            stringStore.put(type.name, transition?.name ?: Transition.EMPTY_TRANSITION)
+            stringStore.set(type.name, transition?.name ?: Transition.EMPTY_TRANSITION)
 
     override fun getTransition(type: Transition.Type): Transition? =
             Transition.getByName(stringStore.get(type.name))
 
-    override fun advertWasShown(value: Boolean) =
-            booleanStore.put(ADVERT.name, value)
-
-    override fun advertWasShown(): Boolean = booleanStore.get(ADVERT.name)
+    companion object {
+        const val ADVERT_IS_PRESENT: String = "advert_is_present"
+    }
 
 }
 
@@ -1501,7 +1534,7 @@ class QuestHistoryCriteriaRepository : IQuestHistoryCriteriaRepository {
 
 object CONST {
 
-    internal const val SHOW_ADVERT_AFTER_N_RIGHT_ANSWER = 10
+    internal const val SHOW_ADVERT_AFTER_N_RIGHT_ANSWER = 1
     internal const val INTRODUCTION_IS_PRESENTED_BY_DEFAULT = false
     internal const val ADVERT_IS_PRESENTED_BY_DEFAULT = true
     internal const val SKIP_AFTER_RIGHT_ANSWER = false
@@ -1671,3 +1704,138 @@ class QuestResourceRepository(private val context: Context) : IQuestResourceRepo
     }
 }
 
+class SKUDetailsRepository(boxStore: BoxStore) :
+        ISKUDetailsRepository, ObjectBoxSupport<SKUDetailsEntity>(boxStore) {
+
+    override fun createBox(): Box<SKUDetailsEntity> = initBox()
+
+    override fun getBy(sku: SKU): Single<Optional<SKUDetails>> = internalGetBy(sku).map {
+        Optional(if (it.isEmpty()) {
+            null
+        } else {
+            Mapper.from(it.nonNullData)
+        })
+    }
+
+    override fun clear(): Completable = boxCompletableUsingFromRunnable { removeAll() }
+
+    private fun internalGetBy(sku: SKU) =
+            boxSingleUsingWithCallable {
+                Optional(it.queryBy(SKUDetailsEntity_.sku, SKUConverter().convertToDatabaseValue(sku)).findFirst())
+            }
+
+    override fun add(value: SKUDetails): Completable =
+            internalGetBy(value.sku).flatMapCompletable { sourceEntity ->
+                boxCompletableUsingFromRunnable {
+                    it.put(Mapper.to(value).also {
+                        if (sourceEntity.isNotEmpty()) {
+                            it.id = sourceEntity.nonNullData.id
+                        }
+                    })
+                }
+            }
+
+    override fun getAll(): Single<List<SKUDetails>> =
+            boxSingleUsingWithCallable {
+                it.all.map { Mapper.from(it) }
+            }
+
+    object Mapper : IEntityMapper<SKUDetailsEntity, SKUDetails> {
+
+        override fun to(value: SKUDetails): SKUDetailsEntity {
+            with(value) {
+                return SKUDetailsEntity(0, sku,
+                        price,
+                        priceAmountMicros,
+                        priceCurrencyCode,
+                        title,
+                        description,
+                        subscriptionPeriod,
+                        freeTrialPeriod,
+                        introductoryPrice,
+                        introductoryPriceAmountMicros,
+                        introductoryPricePeriod)
+            }
+        }
+
+        override fun from(value: SKUDetailsEntity): SKUDetails {
+            with(value) {
+                return SKUDetails(value.sku,
+                        price,
+                        priceAmountMicros,
+                        priceCurrencyCode,
+                        title,
+                        description,
+                        subscriptionPeriod,
+                        freeTrialPeriod,
+                        introductoryPrice,
+                        introductoryPriceAmountMicros,
+                        introductoryPricePeriod)
+            }
+        }
+    }
+}
+
+class SKUPurchaseRepository(boxStore: BoxStore) :
+        ISKUPurchaseRepository, ObjectBoxSupport<SKUPurchaseEntity>(boxStore) {
+
+    override fun createBox(): Box<SKUPurchaseEntity> = initBox()
+
+    private fun internalGetBy(sku: SKU) =
+            boxSingleUsingWithCallable {
+                Optional(it.queryBy(SKUPurchaseEntity_.sku, SKUConverter().convertToDatabaseValue(sku)).findFirst())
+            }
+
+    override fun getBy(sku: SKU): Single<Optional<SKUPurchase>> = internalGetBy(sku).map {
+        Optional(if (it.isEmpty()) {
+            null
+        } else {
+            Mapper.from(it.nonNullData)
+        })
+    }
+
+    override fun clear(): Completable = boxCompletableUsingFromRunnable { removeAll() }
+
+    override fun add(value: SKUPurchase): Completable =
+            internalGetBy(value.sku).flatMapCompletable { sourceEntity ->
+                boxCompletableUsingFromRunnable {
+                    it.put(Mapper.to(value).also {
+                        if (sourceEntity.isNotEmpty()) {
+                            it.id = sourceEntity.nonNullData.id
+                        }
+                    })
+                }
+            }
+
+    override fun getAll(): Single<List<SKUPurchase>> =
+            boxSingleUsingWithCallable {
+                it.all.map { Mapper.from(it) }
+            }
+
+    object Mapper : IEntityMapper<SKUPurchaseEntity, SKUPurchase> {
+
+        override fun to(value: SKUPurchase): SKUPurchaseEntity {
+            with(value) {
+                return SKUPurchaseEntity(0, value.sku,
+                        orderId,
+                        time,
+                        token,
+                        autoRenewing,
+                        signature
+                )
+            }
+        }
+
+        override fun from(value: SKUPurchaseEntity): SKUPurchase {
+            with(value) {
+                return SKUPurchase(value.sku,
+                        orderId,
+                        time,
+                        token,
+                        autoRenewing,
+                        signature
+                )
+            }
+        }
+    }
+}

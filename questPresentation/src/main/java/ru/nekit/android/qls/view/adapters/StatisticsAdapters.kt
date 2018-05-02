@@ -20,7 +20,6 @@ import ru.nekit.android.qls.domain.model.Statistics
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 //ver 1.0
 class StatisticsAdapter(private val data: List<Statistics>) :
         RecyclerView.Adapter<StatisticsViewHolder>() {

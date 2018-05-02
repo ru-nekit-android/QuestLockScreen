@@ -1,34 +1,45 @@
 package ru.nekit.android.qls.domain.useCases
 
-import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.CompletableUseCase
 import ru.nekit.android.domain.interactor.SingleUseCase
-import ru.nekit.android.domain.interactor.buildSingleUseCase
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.PhoneContact
-import ru.nekit.android.qls.domain.providers.DependenciesProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IPupilRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.shared.model.Pupil
 
-object PhoneContactsUseCases : DependenciesProvider() {
+object PhoneContactsUseCases : UseCaseSupport() {
 
     private val phoneContactRepository
         get() = repository.getPhoneContactRepository()
 
-    fun getPhoneContacts(): Single<List<PhoneContact>> = buildSingleUseCase(schedulerProvider) {
-        pupil(repository) {
+    private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
+            phoneContactRepository.getAll(pupil).map { list ->
+                ArrayList<PhoneContact>().also {
+                    it.addAll(repository.getEmergencyPhoneRepository().getPhoneContacts())
+                    it.addAll(list)
+                }
+            }
+
+    fun getPhoneContacts(): Single<List<PhoneContact>> = buildSingleUseCase {
+        pupilFlatMap {
             getPhoneContactsForPupil(it)
         }
     }
 
-    private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
-            phoneContactRepository.getAll(pupil).map { it.toMutableList() }.map {
-                it.addAll(0, repository.getEmergencyPhoneRepository().getPhoneContacts())
-                it
-            }.map { it.toList() }
+    fun addPhoneContact(contact: PhoneContact) = buildCompletableUseCase {
+        pupilFlatMapCompletable {
+            phoneContactRepository.add(it, contact)
+        }
+    }
+
+    fun removePhoneContact(contact: PhoneContact) = buildCompletableUseCase {
+        pupilFlatMapCompletable {
+            phoneContactRepository.remove(it, contact)
+        }
+    }
 
 }
 
@@ -46,32 +57,4 @@ class GetPhoneContactByIdUseCase(private val repository: IRepositoryHolder,
             }
 }
 
-class AddPhoneContactUseCase(private val repository: IRepositoryHolder,
-                             scheduler: ISchedulerProvider? = null) :
-        CompletableUseCase<PhoneContact>(scheduler) {
 
-    override fun build(parameter: PhoneContact) =
-            PhoneContactHelper.buildUseCase(repository) {
-                repository.getPhoneContactRepository().add(it, parameter)
-            }
-
-}
-
-class RemovePhoneContactUseCase(private val repository: IRepositoryHolder,
-                                scheduler: ISchedulerProvider? = null) :
-        CompletableUseCase<PhoneContact>(scheduler) {
-
-    override fun build(parameter: PhoneContact) =
-            PhoneContactHelper.buildUseCase(repository) {
-                repository.getPhoneContactRepository().remove(it, parameter)
-            }
-
-}
-
-object PhoneContactHelper {
-
-    fun buildUseCase(repository: IRepositoryHolder, action: (Pupil) -> Completable): Completable =
-            pupilAsCompletable(repository) {
-                action(it)
-            }
-}

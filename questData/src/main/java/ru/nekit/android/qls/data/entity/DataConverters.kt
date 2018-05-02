@@ -9,7 +9,7 @@ import ru.nekit.android.qls.shared.model.PupilSex
 import ru.nekit.android.qls.shared.model.QuestType
 import ru.nekit.android.qls.shared.model.QuestionType
 
-open class PupilSexConverter : PropertyConverter<PupilSex?, String?> {
+class PupilSexConverter : PropertyConverter<PupilSex?, String?> {
     override fun convertToEntityProperty(databaseValue: String?): PupilSex? {
         return if (databaseValue == null) null else PupilSex.valueOf(databaseValue)
     }
@@ -19,7 +19,7 @@ open class PupilSexConverter : PropertyConverter<PupilSex?, String?> {
     }
 }
 
-open class ComplexityConverter : PropertyConverter<Complexity?, String?> {
+class ComplexityConverter : PropertyConverter<Complexity?, String?> {
     override fun convertToEntityProperty(databaseValue: String?): Complexity? {
         return if (databaseValue == null) null else Complexity.valueOf(databaseValue)
     }
@@ -29,7 +29,7 @@ open class ComplexityConverter : PropertyConverter<Complexity?, String?> {
     }
 }
 
-open class QuestTypeConverter : PropertyConverter<QuestType, String> {
+class QuestTypeConverter : PropertyConverter<QuestType, String> {
     override fun convertToEntityProperty(databaseValue: String): QuestType {
         return QuestType.valueOf(databaseValue)
     }
@@ -39,7 +39,7 @@ open class QuestTypeConverter : PropertyConverter<QuestType, String> {
     }
 }
 
-open class AnswerTypeConverter : PropertyConverter<AnswerType, String> {
+class AnswerTypeConverter : PropertyConverter<AnswerType, String> {
     override fun convertToEntityProperty(databaseValue: String): AnswerType {
         return AnswerType.valueOf(databaseValue)
     }
@@ -49,12 +49,22 @@ open class AnswerTypeConverter : PropertyConverter<AnswerType, String> {
     }
 }
 
-open class LockScreenStartTypeConverter : PropertyConverter<LockScreenStartType, String> {
+class LockScreenStartTypeConverter : PropertyConverter<LockScreenStartType, String> {
     override fun convertToEntityProperty(databaseValue: String): LockScreenStartType {
         return LockScreenStartType.valueOf(databaseValue)
     }
 
     override fun convertToDatabaseValue(entityProperty: LockScreenStartType): String {
+        return entityProperty.name
+    }
+}
+
+class SKUConverter : PropertyConverter<SKU, String> {
+    override fun convertToEntityProperty(databaseValue: String): SKU {
+        return SKU.valueOf(databaseValue)
+    }
+
+    override fun convertToDatabaseValue(entityProperty: SKU): String {
         return entityProperty.name
     }
 }

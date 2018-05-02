@@ -1,9 +1,12 @@
 package ru.nekit.android.qls
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.support.multidex.MultiDex
+import android.util.Log
 import com.anadeainc.rxbus.BusProvider
 import com.anadeainc.rxbus.RxBus
 import io.objectbox.BoxStore
@@ -18,18 +21,20 @@ import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.repository.ICounter
 import ru.nekit.android.eventBus.EventListener
 import ru.nekit.android.eventBus.RxEventBus
-import ru.nekit.android.qls.data.entity.MyObjectBox
-import ru.nekit.android.qls.data.entity.QuestHistoryEntity
-import ru.nekit.android.qls.data.entity.QuestStatisticsReportEntity
+import ru.nekit.android.qls.data.entity.*
+import ru.nekit.android.qls.data.providers.IRepositorySupport
 import ru.nekit.android.qls.data.repository.*
 import ru.nekit.android.qls.data.repository.store.QuestStore
 import ru.nekit.android.qls.domain.model.StatisticsPeriodType
 import ru.nekit.android.qls.domain.model.StatisticsPeriodType.*
-import ru.nekit.android.qls.domain.providers.IDependenciesProvider
-import ru.nekit.android.qls.domain.providers.IScreenProvider
-import ru.nekit.android.qls.domain.providers.ITimeProvider
+import ru.nekit.android.qls.domain.providers.*
 import ru.nekit.android.qls.domain.repository.*
 import ru.nekit.android.qls.domain.useCases.*
+import ru.nekit.android.qls.domain.useCases.PeriodTime.*
+import ru.nekit.android.qls.lockScreen.LockScreen.startForSetupWizard
+import ru.nekit.android.qls.setupWizard.QuestSetupWizard
+import ru.nekit.android.qls.setupWizard.billing.Billing
+import ru.nekit.android.qls.setupWizard.view.QuestSetupWizardActivity
 import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.TimeUtils
 import java.util.*
@@ -56,6 +61,11 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     private lateinit var mQuestRepository: IQuestRepository
     private lateinit var mQuestHistoryCriteriaRepository: QuestHistoryCriteriaRepository
     private lateinit var mEmergencyPhoneRepository: EmergencyPhoneRepository
+    private lateinit var mSKUDetailsRepository: ISKUDetailsRepository
+    private lateinit var mSKUPurchaseRepository: ISKUPurchaseRepository
+    private lateinit var mSetupWizard: QuestSetupWizard
+    private lateinit var billing: Billing
+    private lateinit var mLog: ILog
 
     private var rxEventBus: RxEventBus = RxEventBus.getInstance(RxBus())
     private val eventSender: IEventSender = object : IEventSender {
@@ -63,20 +73,39 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     }
     private val eventListener: IEventListener = EventListener(rxEventBus)
 
-    private val mDefaultSchedulerProvider: ISchedulerProvider = object : ISchedulerProvider {
+    val defaultSchedulerProvider: ISchedulerProvider = object : ISchedulerProvider {
         override fun computation(): Scheduler = Schedulers.computation()
+
         override fun ui(): Scheduler = AndroidSchedulers.mainThread()
     }
 
-    fun injectDependencies(value: IDependenciesProvider) {
+    val setupWizard: QuestSetupWizard
+        get() = mSetupWizard
+
+    private fun injectDependenciesForUseCase(value: IUseCaseSupport) {
+        injectDependencies(value)
+        value.apply {
+            log = mLog
+            when (value) {
+                is SKUUseCases -> value.billing = billing
+                is PupilUseCases -> value.uuidProvider = getUuidProvider()
+            }
+        }
+    }
+
+    fun injectDependencies(value: IDependenceProvider) {
         value.apply {
             repository = this@QuestLockScreenApplication
-            schedulerProvider = getDefaultSchedulerProvider()
+            schedulerProvider = defaultSchedulerProvider
             timeProvider = getTimeProvider()
             eventSender = getEventSender()
             eventListener = getEventListener()
             screenProvider = getScreenProvider()
         }
+    }
+
+    fun injectDependenciesForRepository(value: IRepositorySupport) {
+
     }
 
     private fun initDependencies() {
@@ -100,22 +129,40 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
             override val delayedPlayDelay: Long
                 get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
         }
-        mLockScreenRepository = LockScreenRepository(getSharedPreferences())
+        mLockScreenRepository = LockScreenRepository(getSharedPreferences(), boxStore)
         mQuestHistoryRepository = QuestHistoryRepository(this, boxStore)
         mQuestStore = QuestStore(getSharedPreferences())
         rxEventBus = RxEventBus.getInstance(BusProvider.getInstance())
         mQuestResourceRepository = QuestResourceRepository(this)
         mQuestRepository = QuestRepository(this, mQuestStore, boxStore)
         mQuestHistoryCriteriaRepository = QuestHistoryCriteriaRepository()
+        mSKUDetailsRepository = SKUDetailsRepository(boxStore)
+        mSKUPurchaseRepository = SKUPurchaseRepository(boxStore)
+        mSetupWizard = QuestSetupWizard.getInstance(this)
+        billing = Billing(this)
+        mLog = object : ILog {
+            override fun d(tag: String, message: String) {
+                Log.d(tag, message)
+            }
+
+        }
     }
 
     private fun injectDependencies() {
-        injectDependencies(LockScreenUseCases)
-        injectDependencies(QuestStatisticsAndHistoryUseCases)
-        injectDependencies(SettingsUseCases)
-        injectDependencies(PhoneContactsUseCases)
-        injectDependencies(TransitionChoreographUseCases)
-        injectDependencies(AdsUseCases)
+        injectDependenciesForUseCase(LockScreenUseCases)
+        injectDependenciesForUseCase(UnlockSecretUseCases)
+        injectDependenciesForUseCase(SessionUseCases)
+        injectDependenciesForUseCase(PupilUseCases)
+        injectDependenciesForUseCase(QuestStatisticsAndHistoryUseCases)
+        injectDependenciesForUseCase(SettingsUseCases)
+        injectDependenciesForUseCase(PhoneContactsUseCases)
+        injectDependenciesForUseCase(TransitionChoreographUseCases)
+        injectDependenciesForUseCase(AdsUseCases)
+        injectDependenciesForUseCase(QuestUseCases)
+        injectDependenciesForUseCase(AccessUseCases)
+        injectDependenciesForUseCase(TrialAccessUseCases)
+        injectDependenciesForUseCase(PremiumAccessUseCases)
+        injectDependenciesForUseCase(SKUUseCases)
     }
 
     override fun onCreate() {
@@ -123,16 +170,46 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
 
         initDependencies()
         injectDependencies()
-
+        ///
         val clear = false
         if (clear) {
             boxStore.boxFor(QuestStatisticsReportEntity::class.java).removeAll()
             boxStore.boxFor(QuestHistoryEntity::class.java).removeAll()
+            boxStore.boxFor(SKUDetailsEntity::class.java).removeAll()
+            boxStore.boxFor(SKUPurchaseEntity::class.java).removeAll()
             mRewardRepository.clear()
         }
+        ///
+        registerActivityLifecycleCallbacks(object : ActivityLifecycleCallbacks {
+            override fun onActivityPaused(activity: Activity?) {}
+
+            override fun onActivityResumed(activity: Activity?) {}
+
+            override fun onActivityStarted(activity: Activity?) {}
+
+            override fun onActivityDestroyed(activity: Activity?) {}
+            override fun onActivitySaveInstanceState(activity: Activity?, outState: Bundle?) {}
+            override fun onActivityStopped(activity: Activity?) {}
+            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+                if (activity is QuestSetupWizardActivity)
+                    startForSetupWizard(this@QuestLockScreenApplication)
+                setupWizard.activity = activity!!
+            }
+        })
     }
 
     fun getTimeProvider() = object : ITimeProvider {
+
+        override fun getPeriodTime(periodTime: PeriodTime): Long {
+            return when (periodTime) {
+                P1Y -> 365 * 24 * 60 * 60 * 1000L
+                P1M -> 31 * 24 * 60 * 60 * 1000L
+                P1W -> 7 * 24 * 60 * 60 * 1000L
+                P3M -> getPeriodTime(P1M) * 3
+                P6M -> getPeriodTime(P1M) * 6
+                else -> 0
+            }
+        }
 
         override fun getPeriodIntervalForPeriod(statisticsPeriodTypePair: Pair<StatisticsPeriodType, StatisticsPeriodType>): List<Pair<Long, Long>> {
 
@@ -158,7 +235,7 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     }
 
     fun getUuidProvider() = object : IUUIDProvider {
-        override fun provideUuid(): String = UUID.randomUUID().toString()
+        override fun generateUuid(): String = UUID.randomUUID().toString()
     }
 
     override fun getQuestSetupWizardSettingRepository(): IQuestSetupWizardSettingRepository = mQuestSetupWizardSettingRepository
@@ -184,11 +261,13 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     override fun getQuestStatisticsReportRepository(): IQuestStatisticsReportRepository = mQuestStatisticsReportRepository
     override fun getQuestHistoryRepository(): IQuestHistoryRepository = mQuestHistoryRepository
     override fun getQuestHistoryCriteriaRepository(): IQuestHistoryCriteriaRepository = mQuestHistoryCriteriaRepository
+    override fun getSKUDetailsRepository(): ISKUDetailsRepository = mSKUDetailsRepository
+    override fun getSKUPurchaseRepository(): ISKUPurchaseRepository = mSKUPurchaseRepository
 
     fun getSharedPreferences(name: String = "my"): SharedPreferences = getSharedPreferences(name, Context.MODE_PRIVATE)
-    fun getDefaultSchedulerProvider(): ISchedulerProvider = mDefaultSchedulerProvider
     fun getEventSender(): IEventSender = eventSender
     fun getEventListener(): IEventListener = eventListener
+    fun getBilling(): Billing = billing
     override fun getQuestResourceRepository() = mQuestResourceRepository
     override fun getQuestRepository(): IQuestRepository = mQuestRepository
 
@@ -198,4 +277,3 @@ class QuestLockScreenApplication : Application(), IRepositoryHolder {
     }
 
 }
-

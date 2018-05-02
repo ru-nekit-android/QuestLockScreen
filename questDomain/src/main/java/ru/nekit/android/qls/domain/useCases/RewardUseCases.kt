@@ -5,7 +5,6 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.processors.BehaviorProcessor
 import io.reactivex.processors.FlowableProcessor
-import io.reactivex.schedulers.Schedulers
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.*
 import ru.nekit.android.domain.model.Optional
@@ -34,11 +33,11 @@ class RemoveRewardUseCase(private val repository: IRepositoryHolder,
 }
 
 class GetReachedRewardsUseCase(private val repository: IRepositoryHolder,
-                               scheduler: ISchedulerProvider? = null) :
+                               val scheduler: ISchedulerProvider? = null) :
         SingleUseCase<List<Reward>, QuestAndQuestionType>(scheduler) {
 
     override fun build(parameter: QuestAndQuestionType): Single<List<Reward>> =
-            pupil(repository) { pupil ->
+            pupilFlatMap { pupil ->
                 Flowable.fromIterable(ArrayList<Single<Optional<Reward>>>().also { list ->
                     Reward.Values.get().forEach { rewardSource ->
                         rewardSource.getVariants().forEach { rewardVariant ->
@@ -48,13 +47,12 @@ class GetReachedRewardsUseCase(private val repository: IRepositoryHolder,
                                         list.add(FetchFirstResultableHistoryByCriteriaListUseCase(repository)
                                                 .build(criteria).flatMap { historyList ->
                                                     reward.getReachedReward(repository,
-                                                            pupil.complexity!!,
-                                                            historyList)
+                                                            pupil.complexity!!, historyList)
                                                 })
                                     }
                         }
                     }
-                }).flatMapMaybe { task -> task.filter { it.isNotEmpty() }.map { it.nonNullData }.subscribeOn(Schedulers.computation()) }
+                }).flatMapMaybe { task -> task.filter { it.isNotEmpty() }.map { it.nonNullData }.subscribeOn(scheduler!!.newThread()) }
                         .toList()
             }
 }
@@ -87,7 +85,7 @@ class GetRemainingAmountForReaching(private val repository: IRepositoryHolder,
         ParameterlessSingleUseCase<List<Pair<Reward, Int>>>(scheduler) {
 
     override fun build(): Single<List<Pair<Reward, Int>>> =
-            pupil(repository) { pupil ->
+            pupilFlatMap { pupil ->
                 Flowable.fromIterable(ArrayList<Single<Pair<Reward, Optional<Int>>>>().also { list ->
                     Reward.Values.get().forEach { rewardSource ->
                         rewardSource.getVariants().forEach { rewardVariant ->
@@ -108,7 +106,7 @@ class GetRemainingAmountForReaching(private val repository: IRepositoryHolder,
                 }).flatMapMaybe { task ->
                     task.filter { it.second.isNotEmpty() }.map {
                         Pair(it.first, it.second.nonNullData)
-                    }.subscribeOn(Schedulers.computation())
+                    }.subscribeOn(scheduler!!.newThread())
                 }.toList()
             }
 }

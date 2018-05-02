@@ -1,6 +1,5 @@
 package ru.nekit.android.qls.setupWizard
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.view.View
@@ -9,27 +8,22 @@ import android.widget.Button
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import ru.nekit.android.domain.provider.IEventListenerProvider
 import ru.nekit.android.shared.R
-import ru.nekit.android.utils.IAutoDispose
 import ru.nekit.android.utils.throttleClicks
 
-abstract class BaseSetupWizardActivity : FragmentActivity(),
-        IAutoDispose,
-        ISetupWizardHolder {
+abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
+        IEventListenerProvider {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
-    protected val context: Context
-        get() = applicationContext
-
-    private val currentFragment: BaseSetupWizardFragment
+    private val currentFragment
         get() = supportFragmentManager.findFragmentByTag(FRAGMENT_NAME) as BaseSetupWizardFragment
 
     private lateinit var toolContainer: ViewGroup
     private lateinit var nextButton: Button
     private lateinit var altButton: Button
     private lateinit var fragmentContainer: ViewGroup
-    override var unconditionedNextAction: Boolean = false
 
     override fun getToolContainer(): ViewGroup = toolContainer
     override fun getNextButton(): Button = nextButton
@@ -69,8 +63,18 @@ abstract class BaseSetupWizardActivity : FragmentActivity(),
         }
     }
 
+    override fun onResume() {
+        registerSubscriptions()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        unregisterSubscriptions()
+        super.onPause()
+    }
+
     override fun nextAction(): Single<Boolean> {
-        return if (unconditionedNextAction)
+        return if (currentFragment.unconditionedNextAction)
             currentFragment.nextAction()
         else Single.zip(setupWizard.needLogin(setupWizard.currentStep!!), currentFragment.nextAction(),
                 BiFunction { a: Boolean, b: Boolean -> a || b })

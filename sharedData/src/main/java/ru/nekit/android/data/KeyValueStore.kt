@@ -21,7 +21,7 @@ abstract class SingleKeyValueStore<Type>(private val key: String, private val sh
 
 open class StringKeyStringValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<String?>(sharedPreferences) {
 
-    override fun put(key: String, value: String?) {
+    override fun set(key: String, value: String?) {
         sharedPreferences.edit().putString(key, value).apply()
     }
 
@@ -35,8 +35,8 @@ open class ReactiveStringKeyStringValueStore(sharedPreferences: SharedPreference
 
     private val store: StringKeyStringValueStore = StringKeyStringValueStore(sharedPreferences)
 
-    override fun put(key: String, value: String): Completable = Completable.fromRunnable {
-        store.put(key, value)
+    override fun set(key: String, value: String): Completable = Completable.fromRunnable {
+        store.set(key, value)
     }
 
     override fun get(key: String): Single<Optional<String>> = Single.fromCallable {
@@ -54,10 +54,10 @@ open class ReactiveStringKeyStringValueStore(sharedPreferences: SharedPreference
 
 class ReactiveStringKeyBooleanValueStore(sharedPreferences: SharedPreferences) : IReactiveStringKeyValueStore<Boolean> {
 
-    private val store: BooleanKeyValueStore = BooleanKeyValueStore(sharedPreferences)
+    private val store: StringKeyBooleanValueStore = StringKeyBooleanValueStore(sharedPreferences)
 
-    override fun put(key: String, value: Boolean): Completable = Completable.fromRunnable {
-        store.put(key, value)
+    override fun set(key: String, value: Boolean): Completable = Completable.fromRunnable {
+        store.set(key, value)
     }
 
     override fun get(key: String): Single<Optional<Boolean>> = Single.fromCallable {
@@ -74,7 +74,7 @@ class ReactiveStringKeyBooleanValueStore(sharedPreferences: SharedPreferences) :
 }
 
 class StringKeyLongValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<Long>(sharedPreferences) {
-    override fun put(key: String, value: Long) {
+    override fun set(key: String, value: Long) {
         sharedPreferences.edit().putLong(key, value).apply()
     }
 
@@ -85,7 +85,7 @@ class StringKeyLongValueStore(private val sharedPreferences: SharedPreferences) 
 
 open class StringKeyIntValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<Int>(sharedPreferences) {
 
-    override fun put(key: String, value: Int) =
+    override fun set(key: String, value: Int) =
             sharedPreferences.edit().putInt(key, value).apply()
 
     override fun get(key: String): Int = sharedPreferences.getInt(key, 0)
@@ -98,16 +98,16 @@ class IntSingleKeyValueStore(private val key: String, private val sharedPreferen
 
     override fun get(default: Int): Int? = sharedPreferences.getInt(key, default)
 
-    override fun put(value: Int) =
+    override fun set(value: Int) =
             sharedPreferences.edit().putInt(key, value).apply()
 
     override fun get(): Int = sharedPreferences.getInt(key, 0)
 
 }
 
-class BooleanKeyValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<Boolean>(sharedPreferences) {
+class StringKeyBooleanValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<Boolean>(sharedPreferences) {
 
-    override fun put(key: String, value: Boolean) =
+    override fun set(key: String, value: Boolean) =
             sharedPreferences.edit().putBoolean(key, value).apply()
 
     override fun get(key: String): Boolean = sharedPreferences.getBoolean(key, false)
@@ -117,7 +117,7 @@ class BooleanKeyValueStore(private val sharedPreferences: SharedPreferences) : K
 
 class FloatKeyValueStore(private val sharedPreferences: SharedPreferences) : KeyValueStore<Float>(sharedPreferences) {
 
-    override fun put(key: String, value: Float) =
+    override fun set(key: String, value: Float) =
             sharedPreferences.edit().putFloat(key, value).apply()
 
     override fun get(key: String): Float = sharedPreferences.getFloat(key, 0F)

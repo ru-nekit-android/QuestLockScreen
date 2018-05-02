@@ -9,7 +9,6 @@ internal interface ISetupWizardHolder {
 
     val setupWizard: BaseSetupWizard
 
-    var unconditionedNextAction: Boolean
 
     fun getNextButton(): Button
 

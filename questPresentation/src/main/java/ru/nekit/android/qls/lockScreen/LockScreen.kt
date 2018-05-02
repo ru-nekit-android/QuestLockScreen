@@ -3,8 +3,9 @@ package ru.nekit.android.qls.lockScreen
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
+import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.domain.model.LockScreenStartType
-import ru.nekit.android.qls.domain.model.LockScreenStartType.EXPLICIT
+import ru.nekit.android.qls.domain.model.LockScreenStartType.*
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
 import ru.nekit.android.qls.lockScreen.service.LockScreenService
 import ru.nekit.android.utils.ActivityUtils
@@ -12,12 +13,12 @@ import ru.nekit.android.utils.ActivityUtils
 object LockScreen {
 
     /*
+    checkStatus
     on
-    start
     show
-     */
+    */
 
-    fun startIfOn(context: Context, startType: LockScreenStartType) =
+    private fun startIfOn(context: Context, startType: LockScreenStartType) =
             LockScreenUseCases.isSwitchedOn {
                 if (it) start(context, startType)
             }
@@ -27,29 +28,30 @@ object LockScreen {
                 ContextCompat.startForegroundService(context, getStartIntent(context, startType))
             }
 
-    /*
-    fun startForSetupWizard(context: Context) {
-        if (!isActive(context)) {
-            start(context, LockScreenStartType.SETUP_WIZARD)
+    fun startForSetupWizard(application: QuestLockScreenApplication) {
+        LockScreenUseCases.isSwitchedOn {
+            start(application, if (!it) {
+                if (application.setupWizard.setupIsComplete()) {
+                    LET_TRY_IT
+                } else {
+                    SETUP_WIZARD_IN_PROCESS
+                }
+            } else {
+                LET_TRY_IT
+            })
         }
     }
-
-    fun switchOn(context: Context): Completable =
-            LockScreenUseCases.SwitchOn(
-                    getApplication(context),
-                    getApplication(context).getDefaultSchedulerProvider()
-            ).build()
-    */
 
     fun switchOff(context: Context) =
             LockScreenUseCases.switchOff {
                 context.stopService(Intent(context, LockScreenService::class.java))
             }
 
-    //on -> start -> show
     fun show(context: Context) = start(context, EXPLICIT)
 
     fun hide() = LockScreenUseCases.hide()
+
+    fun hide(body: () -> Unit) = LockScreenUseCases.hide(body)
 
     fun getStartIntent(context: Context, startType: LockScreenStartType): Intent =
             Intent(context, LockScreenService::class.java).apply {
@@ -58,5 +60,13 @@ object LockScreen {
 
     fun isActive(context: Context): Boolean =
             ActivityUtils.isServiceRunning(context, LockScreenService::class.java)
+
+    fun startOnBootComplete(context: Context) {
+        start(context, ON_BOOT_COMPLETE)
+    }
+
+    fun startOnDestroy(context: Context) {
+        startIfOn(context, ON_DESTROY)
+    }
 
 }

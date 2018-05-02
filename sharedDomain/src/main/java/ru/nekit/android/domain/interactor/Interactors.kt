@@ -277,6 +277,13 @@ fun completableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
             override fun build(): Completable = Completable.fromRunnable(body)
         }
 
+
+fun <R> completableUseCaseFromCallable(schedulerProvider: ISchedulerProvider?,
+                                       body: () -> R) =
+        object : ParameterlessCompletableUseCase(schedulerProvider) {
+            override fun build(): Completable = Completable.fromCallable(body)
+        }
+
 fun useCompletableUseCaseFromRunnable(schedulerProvider: ISchedulerProvider?,
                                       actionBody: () -> Unit,
                                       useBody: () -> Unit) =

@@ -7,4 +7,6 @@ interface ISetupWizardStep {
 
     fun needInternetConnection(): Boolean
 
+    val name: String
+
 }

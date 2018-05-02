@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder;
 
 import java.lang.reflect.ParameterizedType;
 
-import ru.nekit.android.data.BooleanKeyValueStore;
+import ru.nekit.android.data.StringKeyBooleanValueStore;
 import ru.nekit.android.data.StringKeyStringValueStore;
 import ru.nekit.android.domain.repository.IStringKeyValueStore;
 
@@ -22,7 +22,7 @@ public abstract class AbstractJsonStateStore<T> {
 
     public AbstractJsonStateStore(SharedPreferences sharedPreferences) {
         json = new GsonBuilder().create();
-        booleanStore = new BooleanKeyValueStore(sharedPreferences);
+        booleanStore = new StringKeyBooleanValueStore(sharedPreferences);
         stringStore = new StringKeyStringValueStore(sharedPreferences);
     }
 
@@ -46,8 +46,8 @@ public abstract class AbstractJsonStateStore<T> {
     }
 
     protected void saveString(@Nullable String value, String uuid) {
-        booleanStore.put(HAS_SAVED_STATE(getName(), uuid), true);
-        stringStore.put(SAVED_STATE(getName(), uuid), value);
+        booleanStore.set(HAS_SAVED_STATE(getName(), uuid), true);
+        stringStore.set(SAVED_STATE(getName(), uuid), value);
     }
 
     public void removeByUuid(String uuid) {
@@ -65,7 +65,7 @@ public abstract class AbstractJsonStateStore<T> {
     }
 
     public void clear(@NonNull String uuid) {
-        booleanStore.put(HAS_SAVED_STATE(getName(), uuid), false);
+        booleanStore.set(HAS_SAVED_STATE(getName(), uuid), false);
     }
 
     public boolean hasSaved(@NonNull String uuid) {

@@ -11,7 +11,6 @@ import android.view.View
 import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.PhoneContact
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.view.adapters.PhoneContactListener
 import ru.nekit.android.qls.view.adapters.PhoneContactsAdapterForModification
 
@@ -55,9 +54,9 @@ class PhoneContactsFragment : QuestSetupWizardFragment(), PhoneContactListener {
                                         setupWizard.addPhoneContact(phoneContact).doFinally {
                                             close()
                                         }.subscribe {
-                                                    phoneContactsList.add(phoneContact)
-                                                    phoneContactsAdapterForModification.notifyDataSetChanged()
-                                                }
+                                            phoneContactsList.add(phoneContact)
+                                            phoneContactsAdapterForModification.notifyDataSetChanged()
+                                        }
                                     }
                                 }
                             }
@@ -68,17 +67,14 @@ class PhoneContactsFragment : QuestSetupWizardFragment(), PhoneContactListener {
         }
     }
 
-    override fun altAction() {
-        val contactPickerIntent = Intent(Intent.ACTION_PICK,
-                CONTENT_URI)
-        startActivityForResult(contactPickerIntent, PICK_CONTACT)
-    }
+    override fun altAction() =
+            startActivityForResult(Intent(Intent.ACTION_PICK, CONTENT_URI), PICK_CONTACT)
 
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.sw_phone_contacts
 
     override fun nextAction(): Single<Boolean> = Single.fromCallable {
-        showSetupWizardStep(QuestSetupWizard.QuestSetupWizardStep.SETTINGS)
+        back()
         true
     }
 

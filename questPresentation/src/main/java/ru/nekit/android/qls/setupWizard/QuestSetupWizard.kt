@@ -1,5 +1,6 @@
 package ru.nekit.android.qls.setupWizard
 
+import android.app.Activity
 import android.app.admin.DevicePolicyManager
 import android.content.ComponentName
 import android.content.Context
@@ -10,60 +11,73 @@ import android.provider.Settings
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.functions.Function
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.QuestLockScreenApplication
+import ru.nekit.android.qls.data.representation.getSkuId
+import ru.nekit.android.qls.data.representation.getSkuType
 import ru.nekit.android.qls.deviceAdminSupport.DeviceAdminComponent
 import ru.nekit.android.qls.domain.model.PhoneContact
+import ru.nekit.android.qls.domain.model.SKU
+import ru.nekit.android.qls.domain.model.SKUPurchase
 import ru.nekit.android.qls.domain.model.SessionType
 import ru.nekit.android.qls.domain.useCases.*
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.SETTINGS
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.START
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.CAN_BE_RESET_AFTER_SET
+import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.HAS_PERMISSION
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETTINGS_PARENT
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETUP_WIZARD_PARENT
+import ru.nekit.android.qls.setupWizard.billing.Billing
 import ru.nekit.android.qls.setupWizard.view.QuestSetupWizardActivity
 import ru.nekit.android.qls.shared.model.Complexity
+import ru.nekit.android.qls.shared.model.Complexity.NORMAL
 import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.qls.shared.model.PupilSex
 import ru.nekit.android.utils.PhoneUtils
 import ru.nekit.android.utils.SingletonHolder
 import ru.nekit.android.utils.toSingle
 
-class QuestSetupWizard private constructor(private val application: QuestLockScreenApplication) :
+class QuestSetupWizard private constructor(val application: QuestLockScreenApplication) :
         BaseSetupWizard(application, application.getQuestSetupWizardSettingRepository()) {
+
+    val timeProvider
+        get() = application.getTimeProvider()
+
+    private val billing: Billing
+        get() = application.getBilling()
 
     val deviceAdminComponent: ComponentName
         get() = ComponentName(context, DeviceAdminComponent::class.java)
 
-    //pupil can be null
     val pupil: Single<Optional<Pupil>>
-        get() = GetCurrentPupilUseCase(application,
-                application.getDefaultSchedulerProvider()).build()
+        get() = PupilUseCases.getCurrentPupil()
 
-    val phoneContacts: Single<List<PhoneContact>> = PhoneContactsUseCases.getPhoneContacts()
+    val phoneContacts: Single<List<PhoneContact>>
+        get() = PhoneContactsUseCases.getPhoneContacts()
 
-    private fun overlayPermissionIsSet(): Boolean {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
+    lateinit var activity: Activity
+
+    private fun getPurchasedSubscription(body: (SKUPurchase?) -> Unit) =
+            SKUUseCases.purchasedSubscription().use { it -> body(it.data) }
+
+    fun initiateSKUPurchaseFlow(sku: SKU) = getPurchasedSubscription { oldSku ->
+        billing.initiatePurchaseFlow(activity, sku.getSkuId(application),
+                oldSku?.sku?.getSkuId(application), sku.skuType.getSkuType())
     }
 
-    fun allPermissionsIsGranted(): Boolean {
-        var permissionIsGranted = true
-        if (PhoneUtils.phoneIsAvailable(context)) {
-            permissionIsGranted = callPhonePermissionIsGranted() && readContactsPermissionIsGranted()
-        }
-        return permissionIsGranted && overlayPermissionIsSet()
+    private fun overlayPermissionIsSet() =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
+
+    private fun allPermissionsIsGranted(): Boolean = QuestSetupWizardStep.values().all {
+        it.permissionIsSet(this)
     }
 
     fun addPhoneContact(value: PhoneContact): Completable =
-            AddPhoneContactUseCase(application, application.getDefaultSchedulerProvider()).build(value)
-
+            PhoneContactsUseCases.addPhoneContact(value)
 
     fun removePhoneContact(value: PhoneContact): Completable =
-            RemovePhoneContactUseCase(application, application.getDefaultSchedulerProvider()).build(value)
-
+            PhoneContactsUseCases.removePhoneContact(value)
 
     fun start() {
         context.startActivity(getStartIntent(true))
@@ -80,8 +94,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
                 }
             }
 
-    private fun unlockPasswordIsSet(): Single<Boolean> =
-            UnlockSecretIsSetUseCase(application, application.getDefaultSchedulerProvider()).build()
+    private fun unlockPasswordIsSet(): Single<Boolean> = UnlockSecretUseCases.unlockSecretIsSet()
 
     /*
     private fun knoxIsSupport(): Boolean {
@@ -90,58 +103,54 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
     }
     */
 
-    fun deviceAdminIsActive(): Boolean {
-        val devicePolicyManager = context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
-        return devicePolicyManager.isAdminActive(deviceAdminComponent)
+    override fun setupIsComplete(): Boolean {
+        return super.setupIsComplete() && allPermissionsIsGranted()
     }
 
+    fun deviceAdminPermissionsIsActive(): Boolean =
+            (context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager).isAdminActive(deviceAdminComponent)
+
     fun setPupilName(name: String): Single<Boolean> =
-            updatePupilParameter(Function { value -> value.name = name })
+            updatePupilParameter { it.name = name }
 
     fun setPupilSex(sex: PupilSex): Single<Boolean> =
-            updatePupilParameter(Function { value -> value.sex = sex })
+            updatePupilParameter { it.sex = sex }
 
     fun setPupilAvatar(avatar: String): Single<Boolean> =
-            updatePupilParameter(Function { value -> value.avatar = avatar })
+            updatePupilParameter { it.avatar = avatar }
 
     fun setQTPComplexity(complexity: Complexity?): Single<Boolean> =
-            updatePupilParameter(Function { value -> value.complexity = complexity ?: Complexity.NORMAL })
+            updatePupilParameter { it.complexity = complexity ?: NORMAL }
 
-    private fun updatePupilParameter(body: Function<Pupil, Unit>): Single<Boolean> =
-            UpdatePupilUseCase(application,
-                    application.getDefaultSchedulerProvider()
-            ).build(body)
-
+    private fun updatePupilParameter(body: (Pupil) -> Unit): Single<Boolean> =
+            PupilUseCases.updatePupil(body)
 
     override fun calculateNextStep(): Single<ISetupWizardStep> =
-            Flowable.fromIterable(QuestSetupWizardStep.values().toList()).flatMapSingle { step ->
+            Flowable.fromIterable(QuestSetupWizardStep.values().toList()).concatMap { step ->
                 if (setupIsComplete()) {
                     val flags = step.flags
-                    if (flags and CAN_BE_RESET_AFTER_SET != 0 && flags and SETUP_WIZARD_PARENT != 0)
-                        step.stepIsComplete(this).map { Optional(if (it) null else step) }
+                    if (flags and HAS_PERMISSION != 0 && flags and SETUP_WIZARD_PARENT != 0)
+                        step.stepIsComplete(this).map { Optional(if (it) null else step) }.toFlowable()
                     else
-                        Optional.just()
+                        Flowable.just(Optional())
 
                 } else
                     if (currentStep == null)
-                        Single.just(Optional(step))
+                        Flowable.just(Optional(step))
                     else
                         if (step.flags and SETUP_WIZARD_PARENT != 0)
-                            step.stepIsComplete(this).map { Optional(if (it) null else step) }
+                            step.stepIsComplete(this).map { Optional(if (it) null else step) }.toFlowable()
                         else
-                            Optional.just()
+                            Flowable.just(Optional())
             }.filter { it.isNotEmpty() }.map { it.nonNullData }.first(SETTINGS).cast(ISetupWizardStep::class.java)
 
+    override fun getName(): String = NAME
 
-    override fun getName(): String {
-        return NAME
-    }
+    override fun needLogin(step: ISetupWizardStep): Single<Boolean> =
+            if (step.needLogin())
+                SessionUseCases.checkSessionValidation(SessionType.SETUP_WIZARD).map { !it }
+            else false.toSingle()
 
-    override fun needLogin(step: ISetupWizardStep): Single<Boolean> {
-        return CheckSessionValidationUseCase(application,
-                application.getTimeProvider(),
-                application.getDefaultSchedulerProvider()).build(SessionType.SETUP_WIZARD).map { !it && step.needLogin() }
-    }
 
     fun commitCurrentSetupStep(value: ISetupWizardStep) {
         if (value == SETTINGS) {
@@ -153,17 +162,15 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
         currentStep = value
     }
 
-    fun setUnlockSecret(value: String): Completable =
-            SetUnlockSecretUseCase(application,
-                    application.getTimeProvider(),
-                    application.getDefaultSchedulerProvider()).build(value)
-
-    fun checkUnlockSecret(password: String, body: (Boolean) -> Unit) = CheckUnlockSecretUseCase(application,
-            application.getTimeProvider(),
-            application.getDefaultSchedulerProvider()).use(password) {
-        body(it)
+    override fun completeSetupWizard() {
+        super.completeSetupWizard()
+        LockScreen.startForSetupWizard(application)
     }
 
+    fun setUnlockSecret(value: String): Completable = UnlockSecretUseCases.setUnlockSecret(value)
+
+    fun checkUnlockSecret(password: String, body: (Boolean) -> Unit): Unit =
+            UnlockSecretUseCases.checkUnlockSecret(password, body)
 
     fun switchOff() = LockScreen.switchOff(context)
 
@@ -184,11 +191,7 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
                 )
             }
 
-    fun createPupilAndSetAsCurrent(): Single<Boolean> {
-        return CreatePupilAndSetAsCurrentUseCase(application,
-                application.getUuidProvider(),
-                application.getDefaultSchedulerProvider()).build()
-    }
+    fun createPupilAndSetAsCurrent(): Single<Boolean> = PupilUseCases.createPupilAndSetAsCurrent()
 
     /*
     fun setDeviceAdminRemovable(visibility: Boolean) {
@@ -203,30 +206,26 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
 
     enum class QuestSetupWizardStep(val flags: Int) : ISetupWizardStep {
 
-        START(SETUP_WIZARD_PARENT) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return true.toSingle()
-            }
-        },
+        START(SETUP_WIZARD_PARENT),
         SETUP_UNLOCK_SECRET(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
                 return setupWizard.unlockPasswordIsSet()
             }
         },
-        DEVICE_ADMIN(SETUP_WIZARD_PARENT or CAN_BE_RESET_AFTER_SET) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return setupWizard.deviceAdminIsActive().toSingle()
+        DEVICE_ADMIN(SETUP_WIZARD_PARENT or HAS_PERMISSION) {
+            override fun permissionIsSet(setupWizard: QuestSetupWizard): Boolean {
+                return setupWizard.deviceAdminPermissionsIsActive()
             }
         },
-        /*SAMSUNG_ENTERPRISE(SETUP_WIZARD_PARENT | CAN_BE_RESET_AFTER_SET) {
+        /*SAMSUNG_ENTERPRISE(SETUP_WIZARD_PARENT | HAS_PERMISSION) {
             @Override
             public boolean stepIsComplete(@NonNull QuestSetupWizard setupWizard) {
                 return false;
             }
         },*/
-        OVERLAY_PERMISSION(SETUP_WIZARD_PARENT or CAN_BE_RESET_AFTER_SET) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return setupWizard.overlayPermissionIsSet().toSingle()
+        OVERLAY_PERMISSION(SETUP_WIZARD_PARENT or HAS_PERMISSION) {
+            override fun permissionIsSet(setupWizard: QuestSetupWizard): Boolean {
+                return setupWizard.overlayPermissionIsSet()
             }
         },
         BIND_PARENT_CONTROL(SETTINGS_PARENT) {
@@ -239,19 +238,25 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
                 throw UnsupportedOperationException()
             }
         },
-        CALL_PHONE_AND_READ_CONTACTS_PERMISSION(SETUP_WIZARD_PARENT or CAN_BE_RESET_AFTER_SET) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return (setupWizard.phoneIsAvailable() && setupWizard.callPhonePermissionIsGranted()).toSingle()
+        CALL_PHONE_AND_READ_CONTACTS_PERMISSION(SETUP_WIZARD_PARENT or HAS_PERMISSION) {
+            override fun permissionIsSet(setupWizard: QuestSetupWizard): Boolean {
+                return if (setupWizard.phoneIsAvailable()) setupWizard.callPhonePermissionIsGranted()
+                        && setupWizard.readContactsPermissionIsGranted()
+                else true
             }
         },
         PUPIL_NAME(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return setupWizard.pupil.map { !it.isEmpty() && it.data?.name?.isNotEmpty() != null }
+                return setupWizard.pupil.map {
+                    it.isNotEmpty() && it.nonNullData.name?.isNotEmpty() != null
+                }
             }
         },
         PUPIL_SEX(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return setupWizard.pupil.map { it.data?.sex != null }
+                return setupWizard.pupil.map {
+                    it.data?.sex != null
+                }
             }
         },
         QTP_COMPLEXITY(SETUP_WIZARD_PARENT) {
@@ -275,28 +280,38 @@ class QuestSetupWizard private constructor(private val application: QuestLockScr
                 throw UnsupportedOperationException()
             }
         },
+        SUBSCRIBES(SETTINGS_PARENT) {
+            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
+                throw UnsupportedOperationException()
+            }
+        },
         SETTINGS(SETTINGS_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
                 throw UnsupportedOperationException()
             }
         };
 
-        override fun needLogin(): Boolean {
-            return !(this == SETUP_UNLOCK_SECRET || this == START)
-        }
+        override fun needLogin() = !(this == SETUP_UNLOCK_SECRET || this == START)
 
         override fun needInternetConnection(): Boolean {
             return this == BIND_PARENT_CONTROL
         }
 
-        abstract fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean>
+        open fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> =
+                (if (flags and HAS_PERMISSION != 0)
+                    permissionIsSet(setupWizard)
+                else
+                    true).toSingle()
+
+        open fun permissionIsSet(setupWizard: QuestSetupWizard): Boolean = true
     }
 
     internal object StepFlag {
 
         const val SETUP_WIZARD_PARENT = 1
         const val SETTINGS_PARENT = 2
-        const val CAN_BE_RESET_AFTER_SET = 4
+        //its can be reset or unset
+        const val HAS_PERMISSION = 4
 
     }
 

@@ -68,9 +68,6 @@ abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {
     }
 
     open var unconditionedNextAction: Boolean = false
-        set(value) {
-            setupWizardHolder.unconditionedNextAction = value
-        }
 
     protected fun setToolContainerVisibility(visibility: Boolean) {
         toolContainer.visibility = if (visibility) VISIBLE else INVISIBLE
@@ -105,7 +102,13 @@ abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {
         return true.toSingle()
     }
 
-    open fun altAction() {}
+    open fun altAction() {
+        if (addToBackStack) {
+            back()
+        }
+    }
+
+    protected fun back() = activity?.supportFragmentManager?.popBackStack()
 
     @CallSuper
     override fun onDestroy() {

@@ -13,13 +13,12 @@ import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
 import io.reactivex.Single
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.PhoneContact
-import ru.nekit.android.qls.domain.useCases.CheckUnlockSecretUseCase
 import ru.nekit.android.qls.domain.useCases.PhoneContactsUseCases
+import ru.nekit.android.qls.domain.useCases.UnlockSecretUseCases
 import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorAction
-import ru.nekit.android.qls.lockScreen.service.OutgoingCall
+import ru.nekit.android.qls.lockScreen.service.OutgoingCallAction
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
 import ru.nekit.android.qls.view.adapters.PhoneContactListener
@@ -30,11 +29,12 @@ import ru.nekit.android.utils.*
 import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
-
 class MenuWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext),
         PhoneContactListener,
         PatternLockViewListener {
+
+    override fun getName(): String = "menu"
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -61,10 +61,8 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
                             layoutParams = this
                         }
                         windowContent.buttonContainer.addView(this)
-                        autoDispose {
-                            throttleClicks {
-                                setStep(step)
-                            }
+                        click {
+                            setStep(step)
                         }
                         if (step == PHONE)
                             visibility = if (phoneIsAvailable) VISIBLE else GONE
@@ -153,10 +151,10 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
         currentStep = null
     }
 
-    private fun getPhoneContacts(): Single<List<PhoneContact>> = PhoneContactsUseCases.getPhoneContacts().map { it.toList() }
+    private fun getPhoneContacts(): Single<List<PhoneContact>> = PhoneContactsUseCases.getPhoneContacts()
 
     override fun onAction(position: Int) {
-        sendEvent(OutgoingCall(phoneContacts[position].contactId))
+        sendEvent(OutgoingCallAction(phoneContacts[position].contactId))
         closeWindow(RevealPoint.POSITION_BOTTOM_CENTER)
     }
 
@@ -171,9 +169,7 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
     override fun onComplete(pattern: List<PatternLockView.Dot>) {
         val unlockViewHolder = currentContentHolder as UnlockViewHolder
         if (pattern.size >= BaseSetupWizard.UNLOCK_SECRET_MIN_SIZE) {
-            CheckUnlockSecretUseCase(application,
-                    application.getTimeProvider(),
-                    application.getDefaultSchedulerProvider()).use(
+            UnlockSecretUseCases.checkUnlockSecret(
                     PatternLockUtils.patternToMD5(unlockViewHolder.patterLockView, pattern)) { result ->
                 if (result) {
                     closeWindow(RevealPoint.POSITION_MIDDLE_CENTER)

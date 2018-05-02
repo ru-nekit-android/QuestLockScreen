@@ -9,7 +9,6 @@ import android.widget.ImageView
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.domain.model.resources.TrafficLightResourceCollection
-import ru.nekit.android.qls.domain.useCases.GetCurrentPupilUseCase
 import ru.nekit.android.qls.pupil.avatar.PupilAvatarViewBuilder
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.content.SimpleContentMediator
@@ -27,21 +26,17 @@ class TrafficLightQuestContentMediator : SimpleContentMediator() {
 
     override fun onCreate(questContext: QuestContext, quest: Quest) {
         super.onCreate(questContext, quest)
-        viewHolder = TrafficLightQuestViewHolder(questContext)
-        val answer = TrafficLightResourceCollection.getById(quest.answer as Int)
-        viewHolder.trafficRedLight.visibility = INVISIBLE
-        viewHolder.trafficGreenLight.visibility = INVISIBLE
-        if (answer == TrafficLightResourceCollection.GREEN) {
-            viewHolder.trafficGreenLight.visibility = VISIBLE
-        } else {
-            viewHolder.trafficRedLight.visibility = VISIBLE
-        }
-        autoDispose {
-            GetCurrentPupilUseCase(questContext.application,
-                    questContext.application.getDefaultSchedulerProvider()).build().map { it.data }.subscribe { pupil ->
-                PupilAvatarViewBuilder.build(questContext,
-                        pupil!!,
-                        viewHolder.pupilAvatarContainer)
+        viewHolder = TrafficLightQuestViewHolder(questContext).apply {
+            val answer = TrafficLightResourceCollection.getById(quest.answer as Int)
+            trafficRedLight.visibility = INVISIBLE
+            trafficGreenLight.visibility = INVISIBLE
+            if (answer == TrafficLightResourceCollection.GREEN) {
+                trafficGreenLight.visibility = VISIBLE
+            } else {
+                trafficRedLight.visibility = VISIBLE
+            }
+            questContext.pupil {
+                PupilAvatarViewBuilder.build(questContext, it, pupilAvatarContainer)
             }
         }
     }
@@ -75,10 +70,11 @@ class TrafficLightQuestContentMediator : SimpleContentMediator() {
         val pupilAvatarWidth = globalScale * resources.getDimensionPixelSize(R.dimen.traffic_light_avatar_pupil_width)
         val pupilAvatarScale = pupilAvatarWidth / pupilAvatarView.width
         for (i in 0 until viewHolder.pupilAvatarContainer.childCount) {
-            val pupilAvatarPartImage = viewHolder.pupilAvatarContainer.getChildAt(i) as ImageView
-            pupilAvatarPartImage.scaleX = pupilAvatarScale
-            pupilAvatarPartImage.scaleY = pupilAvatarScale
-            pupilAvatarPartImage.y = resources.getDimensionPixelSize(R.dimen.traffic_light_quest_pupil_avatar_y) * globalScale - pupilAvatarView.height * (1 + pupilAvatarScale) / 2
+            (viewHolder.pupilAvatarContainer.getChildAt(i) as ImageView).apply {
+                scaleX = pupilAvatarScale
+                scaleY = pupilAvatarScale
+                y = resources.getDimensionPixelSize(R.dimen.traffic_light_quest_pupil_avatar_y) * globalScale - pupilAvatarView.height * (1 + pupilAvatarScale) / 2
+            }
         }
     }
 }

@@ -19,6 +19,11 @@ class EventListener(private val rxEventBus: RxEventBus) : IEventListener {
 
     }
 
+    override fun register(observer: Any) {
+        mapper.add(observer)
+        rxEventBus.bus.register(observer)
+    }
+
     override fun <T : IEvent> listen(observer: Any,
                                      clazz: Class<T>,
                                      body: (T) -> Unit) =
@@ -28,9 +33,7 @@ class EventListener(private val rxEventBus: RxEventBus) : IEventListener {
                                      clazz: Class<T>,
                                      scheduler: Scheduler,
                                      body: (T) -> Unit) {
-        rxEventBus.bus.obtainSubscriber(clazz) {
-            body(it)
-        }.withScheduler(scheduler).also {
+        rxEventBus.bus.obtainSubscriber(clazz, body).withScheduler(scheduler).also {
             mapper.add(observer)
             rxEventBus.bus.registerSubscriber(observer, it)
         }

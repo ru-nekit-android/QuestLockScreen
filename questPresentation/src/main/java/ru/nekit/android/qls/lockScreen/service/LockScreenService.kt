@@ -21,11 +21,12 @@ import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.interactor.useCompletableUseCaseFromRunnable
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.R
+import ru.nekit.android.qls.R.string.*
 import ru.nekit.android.qls.domain.model.LockScreenStartType
 import ru.nekit.android.qls.domain.model.LockScreenStartType.*
-import ru.nekit.android.qls.domain.useCases.GetCurrentPupilUseCase
 import ru.nekit.android.qls.domain.useCases.GetPhoneContactByIdUseCase
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
+import ru.nekit.android.qls.domain.useCases.PupilUseCases
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediator
 import ru.nekit.android.qls.lockScreen.receiver.PhoneCallReceiver
@@ -37,37 +38,33 @@ import ru.nekit.android.utils.TimeUtils
 
 class LockScreenService : Service() {
 
+    private val questApplication: QuestLockScreenApplication
+        get() = application as QuestLockScreenApplication
     private val eventListener: IEventListener
         get() = questApplication.getEventListener()
-
+    private val notificationManager: NotificationManager
+        get() = questApplication.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    private val setupWizard: QuestSetupWizard
+        get() = questApplication.setupWizard
+    private val contentIntentLockScreenSwitchOn: PendingIntent
+        get() = getService(questApplication, 0,
+                LockScreen.getStartIntent(questApplication, ON_NOTIFICATION_CLICK),
+                FLAG_UPDATE_CURRENT)
+    private val contentIntentForSetupWizard: PendingIntent
+        get() = getActivity(questApplication, 0,
+                setupWizard.getStartIntent(false),
+                FLAG_UPDATE_CURRENT)
+    private lateinit var startType: LockScreenStartType
+    private var questContext: QuestContext? = null
+    private var startId: Int = 0
     private var lockScreenContentMediator: LockScreenContentMediator? = null
 
     private val screenOffEventHandler = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             questContext?.stopQuest()
-            if (lockScreenContentMediator == null) {
-                showLockScreen(ON_SCREEN_OFF)
-            }
+            tryToShowLockScreen(ON_SCREEN_OFF)
         }
     }
-
-    private val notificationManager: NotificationManager
-        get() = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-    private lateinit var startType: LockScreenStartType
-    private var questContext: QuestContext? = null
-    private var startId: Int = 0
-    private val setupWizard: QuestSetupWizard
-        get() = QuestSetupWizard.getInstance(questApplication)
-    private val questApplication: QuestLockScreenApplication
-        get() = application as QuestLockScreenApplication
-    private val contentIntentForPupil: PendingIntent
-        get() = getService(applicationContext, 0,
-                LockScreen.getStartIntent(applicationContext, ON_NOTIFICATION_CLICK),
-                FLAG_UPDATE_CURRENT)
-    private val contentIntentForSetupWizard: PendingIntent
-        get() = getActivity(applicationContext, 0,
-                setupWizard.getStartIntent(false),
-                FLAG_UPDATE_CURRENT)
 
     override fun onCreate() {
         super.onCreate()
@@ -86,22 +83,22 @@ class LockScreenService : Service() {
                 INCOMING_CALL_COMPLETE ->
                     if (lockScreenContentMediator == null)
                         LockScreenUseCases.stopIncomingCall {
-                            showLockScreen(ON_INCOME_CALL_COMPLETE)
+                            tryToShowLockScreen(ON_INCOME_CALL_COMPLETE)
                         }
                 OUTGOING_CALL_COMPLETE -> {
                     LockScreenUseCases.stopOutgoingCall {
-                        showLockScreen(ON_OUTGOING_CALL_COMPLETE)
+                        tryToShowLockScreen(ON_OUTGOING_CALL_COMPLETE)
                     }
                 }
                 else -> {
                 }
             }
         }
-        eventListener.listen(this, OutgoingCall::class.java) {
+        eventListener.listen(this, OutgoingCallAction::class.java) {
             if (setupWizard.callPhonePermissionIsGranted()) {
                 LockScreenUseCases.startOutgoingCall {
                     GetPhoneContactByIdUseCase(questApplication,
-                            questApplication.getDefaultSchedulerProvider()).use(it.contactId) {
+                            questApplication.defaultSchedulerProvider).use(it.contactId) {
                         if (it.isNotEmpty()) {
                             startActivity(Intent(ACTION_CALL).apply {
                                 flags = FLAG_ACTIVITY_NEW_TASK or
@@ -121,39 +118,65 @@ class LockScreenService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         //Remember - intent can be null!!!
-        intent?.let {
+        if (intent != null) {
             this.startId = startId
-            startType = LockScreenStartType.getById(it.getIntExtra(LockScreenStartType.NAME, 0))
-            val setupWizardIsComplete = setupWizard.setupIsComplete()
-            when (startType) {
-
-                ON_BOOT_COMPLETE, SETUP_WIZARD -> {
-
-                    if (setupWizardIsComplete)
-                        buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
+            startType = LockScreenStartType.getById(intent.getIntExtra(LockScreenStartType.NAME, 0))
+            LockScreenUseCases.switchOnIfNeed(startType) { isOn ->
+                when (startType) {
+                    ON_BOOT_COMPLETE ->
+                        if (setupWizard.setupIsComplete())
+                            buildNotificationForLockScreenSwitchOn(if (isOn) notification_let_play
+                            else notification_let_try_to_play) { notification ->
+                                startForeground(notification)
+                            }
+                        else
+                            buildNotificationForSetupWizard(notification_setup_wizard) { notification ->
+                                startForeground(notification)
+                            }
+                    SETUP_WIZARD_IN_PROCESS -> {
+                        buildNotificationForSetupWizard(notification_setup_wizard) { notification ->
                             startForeground(notification)
                         }
-                    else
-                        buildNotificationForSetupWizard(R.string.notification_setup_wizard) { notification ->
+                    }
+                    LET_TRY_IT -> {
+                        buildNotificationForLockScreenSwitchOn(notification_let_try_to_play) { notification ->
                             startForeground(notification)
                         }
-                }
-
-                SILENCE ->
-
-                    buildNotificationForCurrentPupil(R.string.silence_mode) { notification ->
-                        startForeground(notification)
                     }
-
-                else -> {
-                    if (setupWizardIsComplete) {
-                        showLockScreen(startType)
-                    }
+                    else -> tryToShowLockScreen(startType)
                 }
-
             }
         }
         return Service.START_REDELIVER_INTENT
+    }
+
+    private fun tryToShowLockScreen(startType: LockScreenStartType) {
+        if (setupWizard.setupIsComplete()) {
+            if (lockScreenContentMediator == null) {
+                LockScreenUseCases.tryToShowLockScreen(startType) {
+                    if (PhoneUtils.isPhoneIdle(application)
+                            && !PhoneUtils.pinOrPukCodeRequired(application)) {
+                        sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
+                        QuestContext(questApplication, R.style.MainTheme).let {
+                            questContext = it
+                            questApplication.injectDependencies(it)
+                            eventListener.listen(it, LockScreenUseCases.LockScreenHideEvent::class.java) {
+                                hideLockScreen()
+                            }
+                            it.createQuestTrainingProgram {
+                                LockScreenContentMediator(it).apply {
+                                    lockScreenContentMediator = this
+                                    attachView()
+                                }
+                            }
+                            buildNotificationForLockScreenSwitchOn(notification_let_play) { notification ->
+                                startForeground(notification)
+                            }
+                        }
+                    }
+                }
+            }
+        } else setupWizard.start()
     }
 
     private fun startForeground(notification: Notification?) {
@@ -171,35 +194,8 @@ class LockScreenService : Service() {
         notificationManager.cancelAll()
         stopForeground(true)
         eventListener.stopListen(this)
-        LockScreen.startIfOn(this, ON_DESTROY)
+        LockScreen.startOnDestroy(this)
         stopSelf(startId)
-    }
-
-    //exclude SILENCE START LOCK SCREEN MODE
-    private fun showLockScreen(startType: LockScreenStartType) {
-        LockScreenUseCases.showLockScreen(startType) {
-            if (PhoneUtils.isPhoneIdle(application)
-                    && !PhoneUtils.pinOrPukCodeRequired(application))
-                if (setupWizard.allPermissionsIsGranted()) {
-                    sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
-                    QuestContext(questApplication, R.style.MainTheme).let {
-                        questContext = it
-                        questApplication.injectDependencies(it)
-                        eventListener.listen(it, LockScreenUseCases.LockScreenHideEvent::class.java) {
-                            hideLockScreen()
-                        }
-                        it.createQuestTrainingProgram {
-                            LockScreenContentMediator(it).apply {
-                                lockScreenContentMediator = this
-                                attachView()
-                            }
-                        }
-                        buildNotificationForCurrentPupil(R.string.notification_let_play) { notification ->
-                            startForeground(notification)
-                        }
-                    }
-                } else setupWizard.start()
-        }
     }
 
     private fun hideLockScreen() {
@@ -215,14 +211,14 @@ class LockScreenService : Service() {
         lockScreenContentMediator = null
     }
 
-    private fun buildNotificationForCurrentPupil(@StringRes textResId: Int, body: (Notification) -> Unit) =
-            GetCurrentPupilUseCase(questApplication, questApplication.getDefaultSchedulerProvider()).use {
-                body(createNotificationBuilder(it.nonNullData.name!!, getString(textResId), contentIntentForPupil).build())
+    private fun buildNotificationForLockScreenSwitchOn(@StringRes textResId: Int, body: (Notification) -> Unit) =
+            PupilUseCases.useCurrentPupil { it ->
+                body(createNotificationBuilder(it.name!!, getString(textResId), contentIntentLockScreenSwitchOn).build())
             }
 
     private fun buildNotificationForSetupWizard(@StringRes textResId: Int, body: (Notification) -> Unit): Unit =
-            useCompletableUseCaseFromRunnable(questApplication.getDefaultSchedulerProvider(), {}) {
-                body(createNotificationBuilder(getString(R.string.title_notification_setup_wizard),
+            useCompletableUseCaseFromRunnable(questApplication.defaultSchedulerProvider, {}) {
+                body(createNotificationBuilder(getString(title_notification_setup_wizard),
                         getString(textResId), contentIntentForSetupWizard).setAutoCancel(true).build())
             }
 
@@ -232,7 +228,7 @@ class LockScreenService : Service() {
             (if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 NotificationCompat.Builder(this,
                         NotificationChannelBuilder(notificationManager).create(
-                                getString(R.string.app_name)))
+                                getString(app_name)))
                         .setVisibility(Notification.VISIBILITY_PUBLIC)
             } else {
                 @Suppress("DEPRECATION")
@@ -243,9 +239,10 @@ class LockScreenService : Service() {
                     .setContentText(text)
                     .setWhen(TimeUtils.currentTime)
 
-    override fun onTaskRemoved(rootIntent: Intent) {
-        LockScreen.hide()
-        LockScreen.startIfOn(this, ON_DESTROY)
+    override fun onTaskRemoved(intent: Intent) {
+        LockScreen.hide {
+            LockScreen.startOnDestroy(this)
+        }
     }
 
     companion object {
@@ -254,6 +251,6 @@ class LockScreenService : Service() {
     }
 }
 
-data class OutgoingCall(val contactId: Long = 0) : IEvent {
+data class OutgoingCallAction(val contactId: Long = 0) : IEvent {
     override val eventName: String = javaClass.name
 }

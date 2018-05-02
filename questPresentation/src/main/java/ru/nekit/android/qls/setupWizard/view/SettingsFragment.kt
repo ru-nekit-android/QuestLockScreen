@@ -15,20 +15,21 @@ import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.KeyboardHost
 import ru.nekit.android.utils.throttleClicks
 
-
 class SettingsFragment : QuestSetupWizardFragment() {
 
-    override var unconditionedNextAction: Boolean = false
+    override var unconditionedNextAction: Boolean = true
 
     private lateinit var saveQuestSeriesLengthButton: Button
     private lateinit var showBindParentButton: Button
     private lateinit var voiceRecorderButton: Button
+    private lateinit var subscribesButton: Button
     private lateinit var phoneContactsButton: Button
     private lateinit var questSeriesLengthInput: EditText
 
     override fun onSetupStart(view: View) {
         saveQuestSeriesLengthButton = view.findViewById(R.id.btn_quest_series_length_save)
         showBindParentButton = view.findViewById(R.id.btn_bind_parent_control)
+        subscribesButton = view.findViewById(R.id.btn_subscribes)
         voiceRecorderButton = view.findViewById(R.id.btn_voice_record)
         phoneContactsButton = view.findViewById(R.id.btn_phone_contacts)
         phoneContactsButton.visibility = if (setupWizard.phoneIsAvailable()) VISIBLE else GONE
@@ -45,6 +46,9 @@ class SettingsFragment : QuestSetupWizardFragment() {
                     },
                     showBindParentButton.throttleClicks {
                         showSetupWizardStep(BIND_PARENT_CONTROL)
+                    },
+                    subscribesButton.throttleClicks {
+                        showSetupWizardStep(SUBSCRIBES)
                     },
                     voiceRecorderButton.throttleClicks {
                         showSetupWizardStep(VOICE_RECORD)

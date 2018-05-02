@@ -6,7 +6,7 @@ import ru.nekit.android.domain.model.Optional
 
 interface IKeyValueStore<in Key, Value> {
 
-    fun put(key: Key, value: Value)
+    fun set(key: Key, value: Value)
 
     fun get(key: Key): Value?
 
@@ -20,7 +20,7 @@ interface IKeyValueStore<in Key, Value> {
 
 interface ISingleKeyValueStore<Value> {
 
-    fun put(value: Value)
+    fun set(value: Value)
 
     fun get(): Value?
 
@@ -34,7 +34,7 @@ interface ISingleKeyValueStore<Value> {
 
 interface IStringKeyValueStore<Value> : IKeyValueStore<String, Value> {
 
-    override fun put(key: String, value: Value)
+    override fun set(key: String, value: Value)
 
     override fun get(key: String): Value
 
@@ -46,7 +46,7 @@ interface IStringKeyValueStore<Value> : IKeyValueStore<String, Value> {
 
 interface IReactiveKeyValueStore<in Key, Value> {
 
-    fun put(key: Key, value: Value): Completable
+    fun set(key: Key, value: Value): Completable
 
     fun get(key: Key): Single<Optional<Value>>
 
@@ -58,7 +58,7 @@ interface IReactiveKeyValueStore<in Key, Value> {
 
 interface IReactiveStringKeyValueStore<Value> : IReactiveKeyValueStore<String, Value> {
 
-    override fun put(key: String, value: Value): Completable
+    override fun set(key: String, value: Value): Completable
 
     override fun get(key: String): Single<Optional<Value>>
 

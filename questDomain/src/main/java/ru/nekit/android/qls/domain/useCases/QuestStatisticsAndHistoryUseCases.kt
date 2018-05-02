@@ -8,7 +8,7 @@ import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.model.StatisticsPeriodType.MONTHLY
 import ru.nekit.android.qls.domain.model.StatisticsPeriodType.WEEKLY
-import ru.nekit.android.qls.domain.providers.DependenciesProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 
 class GetCurrentQuestStatisticsReportUseCase(private val repository: IRepositoryHolder,
@@ -19,7 +19,7 @@ class GetCurrentQuestStatisticsReportUseCase(private val repository: IRepository
             GetCurrentQuestUseCase()
                     .build()
                     .flatMap { quest ->
-                        pupil(repository) {
+                        pupilFlatMap {
                             repository
                                     .getQuestStatisticsReportRepository()
                                     .getOrCreate(it, quest.questAndQuestionType())
@@ -32,7 +32,7 @@ class SaveStatisticsReportUseCase(private val repository: IRepositoryHolder,
 ) : CompletableUseCase<QuestStatisticsReport>(scheduler) {
 
     override fun build(parameter: QuestStatisticsReport): Completable =
-            pupilAsCompletable(repository) {
+            pupilFlatMapCompletable {
                 repository.getQuestStatisticsReportRepository().save(it, parameter)
             }
 }
@@ -42,7 +42,7 @@ class AddHistoryUseCase(private val repository: IRepositoryHolder,
 ) : CompletableUseCase<QuestHistory>(scheduler) {
 
     override fun build(parameter: QuestHistory): Completable =
-            pupilAsCompletable(repository) {
+            pupilFlatMapCompletable {
                 repository.getQuestHistoryRepository().add(it, parameter)
             }
 
@@ -53,7 +53,7 @@ class GetAllStatisticsReportsUseCase(private val repository: IRepositoryHolder,
 ) : ParameterlessSingleUseCase<List<QuestStatisticsReport>>(scheduler) {
 
     override fun build(): Single<List<QuestStatisticsReport>> =
-            pupil(repository) {
+            pupilFlatMap {
                 repository.getQuestStatisticsReportRepository()
                         .getAll(it)
             }
@@ -64,7 +64,7 @@ class GetLastHistoryByLimitUseCase(private val repository: IRepositoryHolder,
                                    scheduler: ISchedulerProvider? = null
 ) : SingleUseCase<List<QuestHistory>, Long>(scheduler) {
 
-    override fun build(parameter: Long): Single<List<QuestHistory>> = pupil(repository) {
+    override fun build(parameter: Long): Single<List<QuestHistory>> = pupilFlatMap {
         repository.getQuestHistoryRepository().getLastHistoryByLimit(it, parameter)
     }
 
@@ -75,20 +75,20 @@ class FetchFirstResultableHistoryByCriteriaListUseCase(private val repository: I
 ) : SingleUseCase<List<QuestHistory>, List<QuestHistoryCriteria>>(scheduler) {
 
     override fun build(parameter: List<QuestHistoryCriteria>): Single<List<QuestHistory>> =
-            pupil(repository) {
+            pupilFlatMap {
                 repository.getQuestHistoryRepository()
                         .getHistoriesByCriteriaList(it, parameter)
             }
 
 }
 
-object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
+object QuestStatisticsAndHistoryUseCases : UseCaseSupport() {
 
     private val questHistoryRepository
         get() = repository.getQuestHistoryRepository()
 
     internal fun lastHistory() = singleUseCase(schedulerProvider) {
-        pupil(repository) {
+        pupilFlatMap {
             questHistoryRepository
                     .getLastHistoryByLimit(it, 1)
                     .map {
@@ -102,7 +102,7 @@ object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
     }
 
     private fun getHistoryByStatisticsPeriodType(parameter: StatisticsPeriodType) = buildSingleUseCase(schedulerProvider) {
-        pupil(repository) {
+        pupilFlatMap {
             repository.getQuestHistoryRepository().getHistoryByPeriod(it,
                     timeProvider.getTimestampBy(parameter))
         }
@@ -191,7 +191,7 @@ object QuestStatisticsAndHistoryUseCases : DependenciesProvider() {
 
     fun getPreviousHistoryWithBestSessionTime(questAndQuestionType: QuestAndQuestionType, body: (Optional<QuestHistory>) -> Unit) =
             useSingleUseCase<Optional<QuestHistory>>(schedulerProvider, {
-                pupil(repository) {
+                pupilFlatMap {
                     repository.getQuestHistoryRepository()
                             .getPreviousHistoryItemWithBestSessionTime(it, questAndQuestionType)
                 }
@@ -204,7 +204,7 @@ class UpdateLastHistoryItemUseCase(private val repository: IRepositoryHolder,
 ) : CompletableUseCase<QuestHistory>(scheduler) {
 
     override fun build(parameter: QuestHistory): Completable =
-            pupilAsCompletable(repository) {
+            pupilFlatMapCompletable {
                 repository.getQuestHistoryRepository().updateLastHistoryItem(it, parameter)
             }
 

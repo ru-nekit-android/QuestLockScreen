@@ -6,7 +6,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.support.annotation.StyleRes
 import android.view.ContextThemeWrapper
-import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -15,20 +14,21 @@ import ru.nekit.android.domain.event.IEvent
 import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.data.repository.QuestResourceRepository
 import ru.nekit.android.qls.domain.model.*
+import ru.nekit.android.qls.domain.model.AnswerType.*
 import ru.nekit.android.qls.domain.model.quest.Quest
-import ru.nekit.android.qls.domain.providers.IDependenciesProvider
+import ru.nekit.android.qls.domain.providers.IDependenceProvider
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.domain.useCases.*
 import ru.nekit.android.qls.quest.QuestContextEvent.*
 import ru.nekit.android.qls.shared.model.Pupil
-import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.Delay.ANSWER
+import ru.nekit.android.utils.Delay.VIBRATION
 import ru.nekit.android.utils.IAutoDispose
 import ru.nekit.android.utils.Vibrate
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit.MILLISECONDS
 class QuestContext constructor(
         val application: QuestLockScreenApplication,
         @StyleRes themeResourceId: Int) :
-        ContextThemeWrapper(application, themeResourceId), IAutoDispose, IDependenciesProvider {
+        ContextThemeWrapper(application, themeResourceId), IAutoDispose, IDependenceProvider {
 
     override lateinit var timeProvider: ITimeProvider
     override lateinit var schedulerProvider: ISchedulerProvider
@@ -52,41 +52,38 @@ class QuestContext constructor(
 
     private val screenOnBroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            OnScreenOnUseCase(repository,
-                    timeProvider,
-                    screenProvider,
-                    schedulerProvider
-            ).use {
+            QuestUseCases.onScreenOnUseCase {
                 notifyAboutPlayQuest()
             }
         }
     }
 
     init {
-        application.registerReceiver(screenOnBroadcastReceiver, IntentFilter(Intent.ACTION_SCREEN_ON).also {
-            it.priority = IntentFilter.SYSTEM_HIGH_PRIORITY
-        })
+        application.registerReceiver(screenOnBroadcastReceiver,
+                IntentFilter(Intent.ACTION_SCREEN_ON).also {
+                    it.priority = IntentFilter.SYSTEM_HIGH_PRIORITY
+                })
 
         autoDispose {
-            answerCallback.throttleFirst(1000, MILLISECONDS)
+            answerCallback.throttleFirst(ANSWER.get(this), MILLISECONDS)
                     .flatMapSingle {
                         AnswerCallbackUseCase(repository, timeProvider, schedulerProvider)
                                 .build(it)
                     }.map {
                         when (it) {
-                            AnswerType.RIGHT -> RIGHT_ANSWER
-                            AnswerType.WRONG -> WRONG_ANSWER
-                            AnswerType.EMPTY -> EMPTY_ANSWER
-                            AnswerType.WRONG_INPUT_FORMAT -> WRONG_INPUT_FORMAT_ANSWER
+                            RIGHT -> RIGHT_ANSWER
+                            WRONG -> WRONG_ANSWER
+                            EMPTY -> EMPTY_ANSWER
+                            WRONG_INPUT_FORMAT -> WRONG_INPUT_FORMAT_ANSWER
                         }
                     }.doOnNext {
                         when (it) {
                             WRONG_ANSWER ->
-                                Vibrate.make(this, Delay.VIBRATION.get(this))
+                                Vibrate.make(this, VIBRATION.get(this))
                             EMPTY_ANSWER ->
-                                Vibrate.make(this, Delay.VIBRATION.get(this))
+                                Vibrate.make(this, VIBRATION.get(this))
                             WRONG_INPUT_FORMAT_ANSWER ->
-                                Vibrate.make(this, Delay.VIBRATION.get(this))
+                                Vibrate.make(this, VIBRATION.get(this))
                             else -> {
                             }
                         }
@@ -131,28 +128,22 @@ class QuestContext constructor(
     fun questHasState(state: QuestState, body: (Boolean) -> Unit) =
             QuestHasStateUseCase(repository, schedulerProvider).use(state, body)
 
-    fun questHasStates(vararg state: QuestState, body: (List<Boolean>) -> Unit) =
-            autoDispose {
-                Single.zip(state.map {
-                    QuestHasStateUseCase(repository, schedulerProvider).buildAsync(it)
-                }, { values -> values }).subscribe { it ->
-                    body(it.map { it as Boolean })
-                }
+    fun questHasStates(vararg state: QuestState, body: (List<Boolean>) -> Unit): Disposable =
+            Single.zip(state.map {
+                QuestHasStateUseCase(repository, schedulerProvider).buildAsync(it)
+            }, { values -> values }).subscribe { it ->
+                body(it.map { it as Boolean })
             }
 
-    fun pupil(body: (Pupil) -> Unit) = pupil.use {
-        body(it.nonNullData)
-    }
+    fun pupil(body: (Pupil) -> Unit) = PupilUseCases.useCurrentPupil(body)
 
-    private val pupil
-        get() = GetCurrentPupilUseCase(repository, schedulerProvider)
-
-    fun List<ParameterlessSingleUseCase<Any>>.paralell(body: (List<Any>) -> Unit): Unit =
+    /*fun List<ParameterlessSingleUseCase<Any>>.paralell(body: (List<Any>) -> Unit): Unit =
             autoDispose {
                 Flowable.fromIterable(this).map { it.buildAsync() }.flatMapSingle { task ->
-                    task.subscribeOn(schedulerProvider.computation())
+                    task.subscribeOn(schedulerProvider.newThread())
                 }.toList().subscribe({ it -> body(it) })
             }
+    */
 
     fun destroy() = DestroyQuestUseCase(repository, schedulerProvider).use {
         dispose()
@@ -180,11 +171,9 @@ class QuestContext constructor(
             }
 
     fun currentLevel(body: (QuestTrainingProgramLevel) -> Unit) =
-            GetCurrentQuestTrainingProgramLevelUseCase(repository, schedulerProvider).use {
-                body(it)
-            }
+            GetCurrentQuestTrainingProgramLevelUseCase(repository, schedulerProvider).use(body)
 
-    fun pupilStatistics(body: (PupilStatistics) -> Unit): Disposable =
+    fun listenPupilStatistics(body: (PupilStatistics) -> Unit): Disposable =
             GetCurrentPupilStatisticsUseCase(repository, schedulerProvider).buildAsync().subscribe(body)
 
     fun allPointsLevel(body: (Int) -> Unit) =

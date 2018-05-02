@@ -20,6 +20,7 @@ import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.domain.model.quest.TimeQuest
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.shared.model.QuestType.*
@@ -100,23 +101,21 @@ class StartAndPossiblePlayQuestUseCase(private val repository: IRepositoryHolder
             }
 }
 
-class OnScreenOnUseCase(private val repository: IRepositoryHolder,
-                        private val timeProvider: ITimeProvider,
-                        private val screenProvider: IScreenProvider,
-                        scheduler: ISchedulerProvider? = null) :
-        ParameterlessSingleUseCase<Boolean>(scheduler) {
+object QuestUseCases : UseCaseSupport() {
 
-    override fun build(): Single<Boolean> =
-            Single.zip(TransitionChoreographUseCases.currentTransition().build().map { it.nonNullData },
-                    QuestHasStateUseCase(repository).build(DELAYED_PLAY),
-                    QuestHasStateUseCase(repository).build(WAS_STOPPED),
-                    Function3<Transition, Boolean, Boolean, Boolean> { transition, delayed, wasStopped ->
-                        transition == Transition.QUEST && (!delayed || wasStopped)
-                    }
-            ).flatMap {
-                PlayQuestUseCase(repository, timeProvider, screenProvider).build()
-                        .doIfOrNever { it }
-            }
+    fun onScreenOnUseCase(body: (Boolean) -> Unit) = useSingleUseCase(schedulerProvider, {
+        Single.zip(TransitionChoreographUseCases.currentTransition().build().map { it.nonNullData },
+                QuestHasStateUseCase(repository).build(DELAYED_PLAY),
+                QuestHasStateUseCase(repository).build(WAS_STOPPED),
+                Function3<Transition, Boolean, Boolean, Boolean> { transition, delayed, wasStopped ->
+                    transition == Transition.QUEST && (!delayed || wasStopped)
+                }
+        ).flatMap {
+            PlayQuestUseCase(repository, timeProvider, screenProvider).build()
+                    .doIfOrNever { it }
+        }
+    }, body)
+
 }
 
 class PlayQuestUseCase(private val repository: IRepositoryHolder,
@@ -198,8 +197,7 @@ class ListenSessionTimeUseCase(private val repository: IRepositoryHolder,
         ParameterlessFlowableUseCase<Pair<Long, Long>>(scheduler) {
 
     override fun build(): Flowable<Pair<Long, Long>> = SessionTimer.publisher.map {
-        it to
-                repository.getQuestSetupWizardSettingRepository().maxSessionTime
+        it to repository.getQuestSetupWizardSettingRepository().maxSessionTime
     }
 
 }
@@ -211,7 +209,7 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
     private val questStateRepository = repository.getQuestStateRepository()
 
     override fun build(): Single<Quest> =
-            pupil(repository) { pupil ->
+            pupilFlatMap { pupil ->
                 questStateRepository.clear()
                         .andThen(repository.getQuestRepository().hasSavedQuest(pupil))
                         .flatMap { hasSavedQuest ->
@@ -247,7 +245,6 @@ class GenerateQuestUseCase(private val repository: IRepositoryHolder,
                                                         val questType = questAndQuestionType.questType
                                                         val questionType = questAndQuestionType.questionType
                                                         val questResourceRepository = repository.getQuestResourceRepository()
-
                                                         val quest: Quest = when (questType) {
 
                                                             CHOICE ->

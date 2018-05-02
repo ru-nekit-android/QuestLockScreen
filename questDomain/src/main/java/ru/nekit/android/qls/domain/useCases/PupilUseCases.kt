@@ -2,30 +2,61 @@ package ru.nekit.android.qls.domain.useCases
 
 import io.reactivex.Completable
 import io.reactivex.Single
-import io.reactivex.functions.Function
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.ParameterlessCompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
-import ru.nekit.android.domain.interactor.SingleUseCase
+import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
+import ru.nekit.android.qls.domain.providers.IUUIDProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
+import ru.nekit.android.qls.domain.repository.IPupilRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
 import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.utils.toSingle
 
-class CreatePupilAndSetAsCurrentUseCase(
-        private val repository: IRepositoryHolder,
-        private val uuidProvider: IUUIDProvider,
-        scheduler: ISchedulerProvider? = null) : ParameterlessSingleUseCase<Boolean>(scheduler) {
+object PupilUseCases : UseCaseSupport() {
 
-    override fun build(): Single<Boolean> {
-        return GetCurrentPupilUseCase(repository).build().flatMap {
+    lateinit var uuidProvider: IUUIDProvider
+
+    private val pupilRepository: IPupilRepository
+        get() = repository.getPupilRepository()
+
+    fun createPupilAndSetAsCurrent() = buildSingleUseCase {
+        getCurrentPupil().flatMap {
             if (it.isEmpty()) {
-                val pupil = Pupil(uuidProvider.provideUuid())
-                repository.getPupilRepository().create(pupil).andThen(
-                        repository.getPupilRepository().setCurrentPupil(pupil).andThen(
-                                repository.getPupilStatisticsRepository().create(pupil)
-                        )
-                )
+                val pupil = Pupil(uuidProvider.generateUuid())
+                pupilRepository.create(pupil)
+                        .andThen(pupilRepository.setCurrentPupil(pupil))
+                        .andThen(repository.getPupilStatisticsRepository().create(pupil))
+            } else {
+                false.toSingle()
+            }
+        }
+    }
+
+    private fun currentPupilUseCase() = singleUseCase {
+        Single.just(Optional(PupilHolder.pupil)).flatMap {
+            if (it.isEmpty())
+                repository.getPupilRepository().getCurrentPupil().doOnSuccess {
+                    PupilHolder.pupil = it.data
+                }
+            else
+                Single.just(it)
+        }
+    }
+
+    fun useCurrentPupil(body: (Pupil) -> Unit) = currentPupilUseCase().use { it ->
+        body(it.nonNullData)
+    }
+
+    fun getCurrentPupil() = currentPupilUseCase().buildAsync()
+
+    fun updatePupil(body: (Pupil) -> Unit) = buildSingleUseCase {
+        getCurrentPupil().flatMap {
+            if (it.isNotEmpty()) {
+                val pupil = it.nonNullData
+                repository.getPupilRepository().update(pupil.also {
+                    body(pupil)
+                }).toSingleDefault(true)
             } else {
                 false.toSingle()
             }
@@ -33,44 +64,11 @@ class CreatePupilAndSetAsCurrentUseCase(
     }
 }
 
-class UpdatePupilUseCase(private val repository: IRepositoryHolder,
-                         private val scheduler: ISchedulerProvider? = null) :
-        SingleUseCase<Boolean, Function<Pupil, Unit>>(scheduler) {
+internal fun <T> pupilFlatMap(body: (Pupil) -> Single<T>) =
+        PupilUseCases.getCurrentPupil().map { it.data }.flatMap(body)
 
-    override fun build(parameter: Function<Pupil, Unit>): Single<Boolean> =
-            GetCurrentPupilUseCase(repository, scheduler).build().flatMap {
-                if (it.isNotEmpty()) {
-                    val pupil = it.nonNullData
-                    repository.getPupilRepository().update(pupil.also {
-                        parameter.apply(pupil)
-                    }).toSingleDefault(true)
-                } else {
-                    false.toSingle()
-                }
-            }
-
-}
-
-class GetCurrentPupilUseCase(private val repository: IRepositoryHolder,
-                             scheduler: ISchedulerProvider? = null) :
-        ParameterlessSingleUseCase<Optional<Pupil>>(scheduler) {
-
-    override fun build(): Single<Optional<Pupil>> =
-            Single.just(Optional(PupilHolder.pupil)).flatMap {
-                if (it.isEmpty())
-                    repository.getPupilRepository().getCurrentPupil().doOnSuccess {
-                        PupilHolder.pupil = it.data
-                    }
-                else
-                    Single.just(it)
-            }
-}
-
-internal fun <T> pupil(repository: IRepositoryHolder, body: (Pupil) -> Single<T>) =
-        GetCurrentPupilUseCase(repository, null).build().map { it.data }.flatMap(body)
-
-internal fun pupilAsCompletable(repository: IRepositoryHolder, body: (Pupil) -> Completable) =
-        GetCurrentPupilUseCase(repository, null).build().map { it.data }.flatMapCompletable(body)
+internal fun pupilFlatMapCompletable(body: (Pupil) -> Completable) =
+        PupilUseCases.getCurrentPupil().map { it.data }.flatMapCompletable(body)
 
 class DropCurrentPupilUseCase(private val repository: IRepositoryHolder,
                               scheduler: ISchedulerProvider? = null) :
@@ -83,11 +81,5 @@ class DropCurrentPupilUseCase(private val repository: IRepositoryHolder,
 private object PupilHolder {
 
     var pupil: Pupil? = null
-
-}
-
-interface IUUIDProvider {
-
-    fun provideUuid(): String
 
 }

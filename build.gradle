@@ -1,6 +1,19 @@
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+project.ext {
+    KEYSTORE_STORE_FILE = rootProject.file(keystoreProperties['storeFile'])
+    KEYSTORE_STORE_PASSWORD = keystoreProperties['storePassword']
+    KEYSTORE_KEY_ALIAS = keystoreProperties['keyAlias']
+    KEYSTORE_KEY_PASSWORD = keystoreProperties['keyPassword']
+}
+
 buildscript {
 
     ext.versions = [
+            'appCode'         : 44,
+            'appName'         : '1.32',
             'gradle'          : '3.0.1',
             'buildTools'      : '27.0.3',
             'compileSdk'      : 26,
@@ -10,7 +23,8 @@ buildscript {
             'constraintLayout': '1.0.2',
             'multidex'        : '1.0.2',
             'kotlin'          : '1.2.30',
-            'objectbox'       : '1.4.1'
+            'objectbox'       : '1.4.1',
+            'flexbox'         : '0.3.2'
     ]
 
     ext.deps = [
@@ -42,6 +56,7 @@ buildscript {
             'firebase'       : [
                     'ads': 'com.google.firebase:firebase-ads:11.4.2'
             ],
+            'billing'        : "com.android.billingclient:billing:1.0",
             'rx'             : [
                     'java'      : 'io.reactivex.rxjava2:rxjava:2.1.10',
                     'kotlin'    : 'io.reactivex.rxjava2:rxkotlin:2.0.0',
@@ -54,12 +69,13 @@ buildscript {
                     'binding'   : 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.1.1',
                     'extensions': "com.github.akarnokd:rxjava2-extensions:0.18.7"
             ],
-            objectBox        : [
+            'objectBox'      : [
                     //not use
-                    'android': 'io.objectbox:objectbox-android:{versions.objectbox}',
+                    'android': "io.objectbox:objectbox-android:${versions.objectbox}",
                     //not use
-                    'kotlin' : 'io.objectbox:objectbox-kotlin:{versions.objectbox}'
-            ]
+                    'kotlin' : "io.objectbox:objectbox-kotlin:${versions.objectbox}"
+            ],
+            'flexbox'        : "com.google.android:flexbox:${versions.flexbox}"
     ]
 
     repositories {

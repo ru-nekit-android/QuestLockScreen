@@ -17,7 +17,7 @@ abstract class BaseSetupWizardPermissionRequestFragment : BaseSetupWizardFragmen
         update(false)
     }
 
-    protected fun update(granted: Boolean) {
+    private fun update(granted: Boolean) {
         setNextButtonVisibility(granted)
         setAltButtonVisibility(!granted)
     }

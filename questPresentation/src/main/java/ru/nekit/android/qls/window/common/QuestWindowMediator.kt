@@ -26,11 +26,11 @@ abstract class QuestWindowMediator(override var questContext: QuestContext) : IQ
             createWindowContent().subscribe { it ->
                 windowContentViewHolder = it
                 QuestWindow(questContext,
-                        "QuestWindowMediator",
+                        getName(),
                         windowContentViewHolder,
                         windowStyleId).also {
                     window = it
-                    eventListener.listen(this, QuestWindowEvent::class.java) {
+                    listenForWindowEvent {
                         if (it == QuestWindowEvent.CLOSED)
                             destroy()
                     }
@@ -39,6 +39,8 @@ abstract class QuestWindowMediator(override var questContext: QuestContext) : IQ
             }
         }
     }
+
+    abstract fun getName(): String
 
     @CallSuper
     protected open fun destroy() {

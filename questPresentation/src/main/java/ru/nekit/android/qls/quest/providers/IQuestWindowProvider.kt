@@ -1,5 +1,6 @@
 package ru.nekit.android.qls.quest.providers
 
+import ru.nekit.android.domain.provider.IEventListenerProvider
 import ru.nekit.android.qls.window.AnswerWindowType.RIGHT
 import ru.nekit.android.qls.window.AnswerWindowType.WRONG
 import ru.nekit.android.qls.window.common.QuestWindowEvent

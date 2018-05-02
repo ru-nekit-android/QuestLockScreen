@@ -1,62 +1,34 @@
 package ru.nekit.android.qls.domain.useCases
 
 import io.reactivex.Completable
-import io.reactivex.Single
-import ru.nekit.android.domain.executor.ISchedulerProvider
-import ru.nekit.android.domain.interactor.CompletableUseCase
-import ru.nekit.android.domain.interactor.ParameterlessCompletableUseCase
-import ru.nekit.android.domain.interactor.SingleUseCase
+import ru.nekit.android.domain.interactor.buildCompletableUseCaseFromRunnable
 import ru.nekit.android.qls.domain.model.SessionType
-import ru.nekit.android.qls.domain.providers.ITimeProvider
-import ru.nekit.android.qls.domain.repository.IRepositoryHolder
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
+import ru.nekit.android.qls.domain.repository.ISessionRepository
 
-class SessionTypeNameProvider {
+object SessionUseCases : UseCaseSupport() {
 
-    companion object {
-        fun getName(sessionType: SessionType): String {
-            return String.format("session.%s", sessionType.name)
-        }
+    private val sessionRepository: ISessionRepository
+        get() = repository.getSessionRepository()
+
+    fun checkSessionValidation(sessionType: SessionType) = buildSingleUseCaseFromCallable {
+        val sessionTime = sessionRepository.get(getName(sessionType))
+        sessionTime != 0L &&
+                (timeProvider.getCurrentTime() - sessionTime) <= sessionType.expiredTime
     }
 
-}
+    private fun startSession(session: SessionType) = buildCompletableUseCaseFromRunnable {
+        sessionRepository.set(getName(session), timeProvider.getCurrentTime())
+    }
 
-class StartSessionUseCase(private val repository: IRepositoryHolder,
-                          private val timeProvider: ITimeProvider,
-                          scheduler: ISchedulerProvider? = null) :
-        CompletableUseCase<SessionType>(scheduler) {
-
-    override fun build(parameter: SessionType): Completable =
-            Completable.fromRunnable {
-                repository.getSessionRepository().set(SessionTypeNameProvider.getName(parameter),
-                        timeProvider.getCurrentTime())
-            }
-}
-
-
-class StartAllSessionsUseCase(private val repository: IRepositoryHolder,
-                              private val timeProvider: ITimeProvider,
-                              scheduler: ISchedulerProvider? = null) :
-        ParameterlessCompletableUseCase(scheduler) {
-
-    override fun build(): Completable =
-            Single.zip(ArrayList<Single<Boolean>>().also { list ->
-                SessionType.values().forEach {
-                    list += StartSessionUseCase(repository, timeProvider).build(it).toSingleDefault(true)
+    fun startAllSessions() = buildCompletableUseCase {
+        Completable.concat(
+                SessionType.values().map {
+                    startSession(it)
                 }
-            }, {}).toCompletable()
-}
+        )
+    }
 
-
-class CheckSessionValidationUseCase(private val repository: IRepositoryHolder,
-                                    private val timeProvider: ITimeProvider,
-                                    scheduler: ISchedulerProvider? = null) :
-        SingleUseCase<Boolean, SessionType>(scheduler) {
-
-    override fun build(parameter: SessionType): Single<Boolean> =
-            Single.fromCallable {
-                val sessionTime = repository.getSessionRepository().get(SessionTypeNameProvider.getName(parameter))
-                sessionTime != 0L &&
-                        (timeProvider.getCurrentTime() - sessionTime) <= parameter.expiredTime
-            }
+    fun getName(sessionType: SessionType) = String.format("session.%s", sessionType.name)
 
 }

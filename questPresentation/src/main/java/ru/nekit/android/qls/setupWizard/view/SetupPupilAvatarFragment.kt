@@ -50,13 +50,7 @@ class SetupPupilAvatarFragment : QuestSetupWizardFragment(), View.OnLayoutChange
         return R.layout.sw_setup_pupil_avatar
     }
 
-    override fun onSetupStart(view: View) {
-        autoDispose {
-            setupWizard.pupil.subscribe { it ->
-                pupil = it.nonNullData
-                view.addOnLayoutChangeListener(this)
-            }
-        }
+    private fun initAvatarViewBuilder(view: View) {
         avatarPartImageList = ArrayList()
         prevButtonList = ArrayList()
         nextButtonList = ArrayList()
@@ -108,6 +102,16 @@ class SetupPupilAvatarFragment : QuestSetupWizardFragment(), View.OnLayoutChange
             avatarPartImageList.add(avatarPartImage)
             prevButtonList.add(prevButton)
             nextButtonList.add(nextButton)
+        }
+    }
+
+    override fun onSetupStart(view: View) {
+        autoDispose {
+            setupWizard.pupil.subscribe { it ->
+                pupil = it.nonNullData
+                view.addOnLayoutChangeListener(this)
+                initAvatarViewBuilder(view)
+            }
         }
         setAltButtonVisibility(true)
         setAltButtonText(R.string.label_set_random_avatar)

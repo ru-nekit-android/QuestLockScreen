@@ -34,6 +34,8 @@ interface IRepositoryHolder {
     fun getQuestHistoryRepository(): IQuestHistoryRepository
     fun getQuestHistoryCriteriaRepository(): IQuestHistoryCriteriaRepository
     fun getEmergencyPhoneRepository(): IEmergencyPhoneRepository
+    fun getSKUDetailsRepository(): ISKUDetailsRepository
+    fun getSKUPurchaseRepository(): ISKUPurchaseRepository
 }
 
 interface IEmergencyPhoneRepository {
@@ -89,7 +91,7 @@ interface IPupilRepository : IReactiveCRUD<Pupil, String> {
 
     class PupilIsNotExist : Throwable("Pupil in not set")
 
-    class CurrentPupilIsNotSet : Throwable("Current pupil in not save")
+    class CurrentPupilIsNotSet : Throwable("Current pupilFlatMap in not save")
 
 }
 
@@ -260,21 +262,19 @@ interface IQuestResourceRepository {
 
 interface ILockScreenRepository {
 
-    fun switchOn(value: Boolean)
+    var switchOn: Boolean
 
-    fun isSwitchedOn(): Boolean
+    var incomeCallInProcess: Boolean
 
-    fun incomeCallInProcess(value: Boolean)
+    var outgoingCallInProcess: Boolean
 
-    fun incomeCallInProcess(): Boolean
+    val lastStartType: Single<Optional<LockScreenStartType>>
 
-    fun outgoingCallInProcess(value: Boolean)
+    fun saveStartType(value: LockScreenStartType, timestamp: Long): Completable
 
-    fun outgoingCallInProcess(): Boolean
+    fun updateLastStartType(value: LockScreenStartType): Completable
 
-    fun getLastStartType(): Single<Optional<LockScreenStartType>>
-
-    fun saveStartType(value: LockScreenStartType): Completable
+    fun firstStartTypeTimestamp(vararg values: LockScreenStartType): Single<Optional<Long>>
 
 }
 
@@ -284,17 +284,13 @@ interface ITransitionChoreographRepository {
 
     fun getTransition(type: Transition.Type): Transition?
 
-    fun advertWasShown(value: Boolean)
+    var advertWasShown: Boolean
 
-    fun advertWasShown(): Boolean
+    var introductionWasShown: Boolean
 
-    fun introductionWasShown(value: Boolean)
+    var advertIsPresented: Boolean
 
-    fun introductionWasShown(): Boolean
-
-    val introductionIsPresented: Boolean
-
-    val advertIsPresented: Boolean
+    var introductionIsPresented: Boolean
 
     val advertCounter: ICounter
 
@@ -302,3 +298,17 @@ interface ITransitionChoreographRepository {
 
     val advertStartValue: Int
 }
+
+interface ISKURepository<T : ISKUHolder> {
+
+    fun clear(): Completable
+
+    fun add(value: T): Completable
+
+    fun getAll(): Single<List<T>>
+
+    fun getBy(sku: SKU): Single<Optional<T>>
+}
+
+interface ISKUDetailsRepository : ISKURepository<SKUDetails>
+interface ISKUPurchaseRepository : ISKURepository<SKUPurchase>

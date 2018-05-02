@@ -55,7 +55,7 @@ abstract class BaseSetupWizard(protected val context: Context,
         return settingsStorage.setupWizardIsStart(getName())
     }
 
-    fun setupIsComplete(): Boolean {
+    open fun setupIsComplete(): Boolean {
         return settingsStorage.setupWizardIsComplete(getName())
     }
 
@@ -63,7 +63,7 @@ abstract class BaseSetupWizard(protected val context: Context,
         settingsStorage.startSetupWizard(getName(), true)
     }
 
-    protected fun completeSetupWizard() {
+    protected open fun completeSetupWizard() {
         settingsStorage.completeSetupWizard(getName(), true)
     }
 

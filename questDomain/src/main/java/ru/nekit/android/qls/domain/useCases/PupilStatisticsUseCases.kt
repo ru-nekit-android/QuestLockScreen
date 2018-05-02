@@ -18,7 +18,7 @@ internal class InternalGetCurrentPupilStatisticsUseCase(private val repository: 
         ParameterlessSingleUseCase<PupilStatistics>(scheduler) {
 
     override fun build(): Single<PupilStatistics> =
-            pupil(repository) {
+            pupilFlatMap {
                 repository.getPupilStatisticsRepository().get(it)
             }
 
@@ -41,7 +41,7 @@ class UpdateCurrentPupilStatisticsUseCase(private val repository: IRepositoryHol
         CompletableUseCase<PupilStatistics>(scheduler) {
 
     override fun build(parameter: PupilStatistics): Completable =
-            pupilAsCompletable(repository) {
+            pupilFlatMapCompletable {
                 repository.getPupilStatisticsRepository().update(it, parameter)
             }.doOnComplete {
                 PupilStatisticsHolder.statistics = parameter

@@ -33,8 +33,11 @@ import ru.nekit.android.qls.quest.view.mediator.answer.IButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.content.EmptyQuestContentMediator
 import ru.nekit.android.qls.quest.view.mediator.content.IContentMediator
 import ru.nekit.android.qls.quest.view.mediator.title.ITitleMediator
-import ru.nekit.android.utils.*
+import ru.nekit.android.utils.AnimationUtils
+import ru.nekit.android.utils.Delay
+import ru.nekit.android.utils.KeyboardHost
 import ru.nekit.android.utils.KeyboardHost.hideKeyboard
+import ru.nekit.android.utils.ViewHolder
 import java.util.concurrent.TimeUnit
 
 //ver 1.2
@@ -73,10 +76,10 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         listenForQuestEvent {
             when (it) {
                 QUEST_ATTACH -> onQuestAttach(viewHolder.rootContainer)
-                QUEST_START -> questHasState(DELAYED_PLAY) {
+                QUEST_START -> questIsDelayed {
                     onQuestStart(it)
                 }
-                QUEST_PLAY -> questHasState(DELAYED_PLAY) {
+                QUEST_PLAY -> questIsDelayed {
                     onQuestPlay(it)
                 }
                 QUEST_REPLAY -> onQuestReplay()
@@ -210,10 +213,8 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         }
         updateVisibilityOfViews(false)
         if (viewHolder.defaultAnswerButton.visibility == VISIBLE)
-            autoDispose {
-                viewHolder.defaultAnswerButton.throttleClicks {
-                    answerFunction()
-                }
+            viewHolder.defaultAnswerButton.click {
+                answerFunction()
             }
     }
 
@@ -231,6 +232,9 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         contentMediator.onQuestAttach(viewHolder.contentContainer)
         answerMediator.onQuestAttach(viewHolder.alternativeAnswerContainer)
         viewHolder.view.addOnLayoutChangeListener(this)
+        questHasState(DELAYED_PLAY) {
+            updateVisibilityOfViews(!it)
+        }
     }
 
     override fun onQuestStart(delayedPlay: Boolean) {
@@ -358,22 +362,24 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         answerMediator.detachView()
     }
 
-    private fun requestFocus() = questHasStates(DELAYED_PLAY, PLAYED) {
-        val delayed = it[0]
-        val played = it[1]
-        viewHolder.apply {
-            if (delayed && !played)
-                hideKeyboard(defaultAnswerInput)
-            else {
-                if (alternativeAnswerWithButtonListIsPresent())
+    private fun requestFocus() = autoDispose {
+        questHasStates(DELAYED_PLAY, PLAYED) {
+            val delayed = it[0]
+            val played = it[1]
+            viewHolder.apply {
+                if (delayed && !played)
                     hideKeyboard(defaultAnswerInput)
-                if (contentMediator.answerInput == null) {
-                    if (defaultAnswerInput.visibility == VISIBLE)
-                        showKeyboard(defaultAnswerInput)
-                    else
+                else {
+                    if (alternativeAnswerWithButtonListIsPresent())
                         hideKeyboard(defaultAnswerInput)
-                } else if (contentMediator.answerInput?.visibility == VISIBLE) {
-                    showKeyboard(contentMediator.answerInput!!)
+                    if (contentMediator.answerInput == null) {
+                        if (defaultAnswerInput.visibility == VISIBLE)
+                            showKeyboard(defaultAnswerInput)
+                        else
+                            hideKeyboard(defaultAnswerInput)
+                    } else if (contentMediator.answerInput?.visibility == VISIBLE) {
+                        showKeyboard(contentMediator.answerInput!!)
+                    }
                 }
             }
         }

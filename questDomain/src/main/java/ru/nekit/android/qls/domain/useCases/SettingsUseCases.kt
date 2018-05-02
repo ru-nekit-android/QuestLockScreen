@@ -4,10 +4,10 @@ import ru.nekit.android.domain.interactor.singleUseCaseFromCallable
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.interactor.useCompletableUseCaseFromRunnable
 import ru.nekit.android.domain.interactor.useSingleUseCaseFromCallable
-import ru.nekit.android.qls.domain.providers.DependenciesProvider
+import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
 
-object SettingsUseCases : DependenciesProvider() {
+object SettingsUseCases : UseCaseSupport() {
 
     private val questSetupWizardSettingRepository: IQuestSetupWizardSettingRepository
         get() = repository.getQuestSetupWizardSettingRepository()

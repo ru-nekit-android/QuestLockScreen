@@ -66,9 +66,7 @@ open class BaseQuestTrainingProgramRuleEntity {
 class MemberCountQuestTrainingProgramRuleEntity(
         val memberCount: Int = 0
 ) :
-        BaseQuestTrainingProgramRuleEntity() {
-
-}
+        BaseQuestTrainingProgramRuleEntity()
 
 @Entity
 class TimeQuestTrainingProgramRuleEntity(

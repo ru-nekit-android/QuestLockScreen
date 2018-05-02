@@ -78,10 +78,12 @@ class ColoredVisualRepresentationQuestAdapter internal constructor(private val q
                 holder.container.addView(imageView)
             }
         }
-        holder.view.setBackgroundColor(item.second.secondaryColorModel.getRepresentation().getColor(questContext))
-        holder.view.tag = item.second.primaryColorModel.id
-        autoDispose {
-            holder.view.clicks().map { holder.view.tag }.subscribe({ answerPublisher.onNext(it) })
+        holder.apply {
+            view.setBackgroundColor(item.second.secondaryColorModel.getRepresentation().getColor(questContext))
+            view.tag = item.second.primaryColorModel.id
+            autoDispose {
+                view.clicks().map { view.tag }.subscribe({ answerPublisher.onNext(it) })
+            }
         }
     }
 

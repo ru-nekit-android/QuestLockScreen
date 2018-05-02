@@ -12,13 +12,13 @@ import ru.nekit.android.qls.R
 import ru.nekit.android.qls.R.string.*
 import ru.nekit.android.qls.data.representation.getRepresentation
 import ru.nekit.android.qls.domain.model.AnswerType
+import ru.nekit.android.qls.domain.model.QuestState
 import ru.nekit.android.qls.domain.model.quest.*
 import ru.nekit.android.qls.domain.model.resources.CoinVisualResourceCollection
 import ru.nekit.android.qls.domain.model.resources.ColorResourceCollection
 import ru.nekit.android.qls.domain.model.resources.DirectionResourceCollection
 import ru.nekit.android.qls.domain.model.resources.TrafficLightResourceCollection
 import ru.nekit.android.qls.domain.model.resources.common.IGroupWeightComparisonQuest
-import ru.nekit.android.qls.lockScreen.mediator.SoftKeyboardVisibilityChangeEvent
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_PLAY
 import ru.nekit.android.qls.quest.formatter.TimeFormatter
@@ -29,7 +29,7 @@ import ru.nekit.android.qls.shared.model.QuestionType
 import ru.nekit.android.utils.MathUtils
 import ru.nekit.android.utils.ViewHolder
 
-//ver 1.0
+//ver 1.1
 class TitleMediator : ITitleMediator {
 
     override lateinit var quest: Quest
@@ -230,43 +230,26 @@ class TitleMediator : ITitleMediator {
                 title = java.lang.String.format(getString(quest_text_camouflage_title),
                         textQuest.questionStringArray!![0].length)
             }
-            title = title.toLowerCase()
-            viewHolder.titleView.text = title
+            viewHolder.titleView.text = title.toLowerCase()
         }
     }
 
     override fun onCreate(questContext: QuestContext, quest: Quest) {
         super.onCreate(questContext, quest)
         viewHolder = QuestTitleViewHolder(questContext)
-        updateTitle()
-        /*autoDispose {
-            viewHolder.unlockKeyContainer.throttleClicks {
-                SettingsUseCases.showUnlockKeyHelpOnConsume {
-                    if (it) {
-                        UnlockKeyHelpWindowMediator.openWindow(questContext, HELP_ON_CONSUME)
-                    } else {
-                        ConsumeRewardUseCase(questContext.repository).use(Reward.UnlockKey()) {
-                            if (it) sendEvent(HIDE)
-                        }
-                    }
-                }
-            }
-        }
-        listenUnlockKeyCount {
-            viewHolder.unlockKeyCount.text = "$it"
-        }
-        viewHolder.unlockKeyContainer.visibility = GONE*/
         listenForQuestEvent {
             when (it) {
-                QUEST_PLAY -> {
-                    //viewHolder.unlockKeyContainer.visibility = GONE
-                    view.visibility = VISIBLE
-                }
+                QUEST_PLAY -> view.visibility = VISIBLE
             }
         }
-        listenForEvent(SoftKeyboardVisibilityChangeEvent::class.java) { event ->
-        }
         view.visibility = INVISIBLE
+        questHasState(QuestState.DELAYED_PLAY) {
+            view.visibility = if (it)
+                INVISIBLE
+            else
+                VISIBLE
+        }
+        updateTitle()
     }
 
     override fun onQuestAttach(rootContentContainer: ViewGroup) {
@@ -319,7 +302,6 @@ class TitleMediator : ITitleMediator {
     internal class QuestTitleViewHolder(context: Context) : ViewHolder(context, R.layout.layout_quest_title) {
 
         val titleView: TextView = view.findViewById(R.id.tv_title) as TextView
-        //val unlockKeyContainer: ViewGroup = view.findViewById(R.id.container_unlock_key)
-        //val unlockKeyCount: TextView = view.findViewById(R.id.tv_unlock_key_count)
+
     }
 }

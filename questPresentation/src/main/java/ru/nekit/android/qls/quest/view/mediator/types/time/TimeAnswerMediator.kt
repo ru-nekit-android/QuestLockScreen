@@ -36,6 +36,8 @@ open class TimeAnswerMediator : ListableAnswerMediator<Int, TimeAdapter>() {
     override fun onQuestAttach(rootContentContainer: ViewGroup) {
         super.onQuestAttach(rootContentContainer)
         updateListAdapter()
+        shuffleListData()
+        updateListAdapter()
     }
 
     private fun updateListAdapter() {

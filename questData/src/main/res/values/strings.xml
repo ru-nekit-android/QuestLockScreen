@@ -137,4 +137,8 @@
     <string name="reward_default_reach_rule_title" />
     <string name="reward_unlock_key_right_series_reach_rule_title">Нужно ответить %1$s подряд</string>
     <string name="reward_unlock_key_independence_reach_rule_title">Нужно ответить %1$s подряд</string>
+
+    <string name="sku_annual_subscription_title">ru.nekit.android.qls.annual_subscription</string>
+    <string name="sku_weekly_subscription_title">ru.nekit.android.qls.weekly_subscription</string>
+    <string name="sku_month_subscription_title">ru.nekit.android.qls.month_subscription</string>
 </resources>

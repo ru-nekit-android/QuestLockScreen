@@ -57,17 +57,16 @@ class BindParentFragment : QuestSetupWizardFragment() {
     override fun onSetupStart(view: View) {
         qrCodeView = view.findViewById(R.id.image_qr_code)
         generateQrCodeView = view.findViewById(R.id.tv_generate_qr_code)
-
         autoDispose {
             setupWizard.createBindCode().subscribe { it ->
                 qrCodeInput = it
             }
         }
-
         val qrSize = context!!.resources.getDimensionPixelSize(R.dimen.qr_code_size)
-        val qrLayoutParams = qrCodeView.layoutParams as RelativeLayout.LayoutParams
-        qrLayoutParams.width = qrSize
-        qrLayoutParams.height = qrSize
+        (qrCodeView.layoutParams as RelativeLayout.LayoutParams).apply {
+            width = qrSize
+            height = qrSize
+        }
         qrCodeView.requestLayout()
         generateQrCode()
         setNextButtonVisibility(false)

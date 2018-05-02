@@ -65,8 +65,8 @@ class PhoneContactsAdapterForModification(data: List<PhoneContact>,
 class PhoneContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     var actionButton: View = view.findViewById(R.id.btn_action)
-    var titleView: TextView = view.findViewById<View>(R.id.tv_title) as TextView
-    var informationView: TextView = view.findViewById<View>(R.id.tv_information) as TextView
+    var titleView: TextView = view.findViewById(R.id.tv_title)
+    var informationView: TextView = view.findViewById(R.id.tv_information)
 
 }
 

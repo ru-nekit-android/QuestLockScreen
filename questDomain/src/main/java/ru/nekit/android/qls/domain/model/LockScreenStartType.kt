@@ -2,8 +2,8 @@ package ru.nekit.android.qls.domain.model
 
 enum class LockScreenStartType {
 
-    SETUP_WIZARD,
-    SILENCE,
+    SETUP_WIZARD_IN_PROCESS,
+    LET_TRY_IT,
     EXPLICIT,
     ON_SCREEN_OFF,
     ON_BOOT_COMPLETE,

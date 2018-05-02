@@ -13,7 +13,7 @@ class Counter(sharedPreferences: SharedPreferences,
     override var value: Int
         get() = intStore.get(getValueName(name), startValue)
         set(value) {
-            intStore.put(getValueName(name), value)
+            intStore.set(getValueName(name), value)
         }
 
     override fun reset() {
