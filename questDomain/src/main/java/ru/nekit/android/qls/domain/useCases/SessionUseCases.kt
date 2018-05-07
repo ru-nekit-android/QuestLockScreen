@@ -9,7 +9,7 @@ import ru.nekit.android.qls.domain.repository.ISessionRepository
 object SessionUseCases : UseCaseSupport() {
 
     private val sessionRepository: ISessionRepository
-        get() = repository.getSessionRepository()
+        get() = repositoryHolder.getSessionRepository()
 
     fun checkSessionValidation(sessionType: SessionType) = buildSingleUseCaseFromCallable {
         val sessionTime = sessionRepository.get(getName(sessionType))

@@ -8,7 +8,7 @@ import ru.nekit.android.qls.domain.providers.UseCaseSupport
 object UnlockSecretUseCases : UseCaseSupport() {
 
     private val unlockRepository
-        get() = repository.getUnlockSecretRepository()
+        get() = repositoryHolder.getUnlockSecretRepository()
 
     fun unlockSecretIsSet() = buildSingleUseCaseFromCallable {
         !unlockRepository.get().equals("")

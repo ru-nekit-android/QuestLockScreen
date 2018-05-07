@@ -13,10 +13,12 @@ class StartSetupWizardFragment : QuestSetupWizardFragment() {
     }
 
     override fun onSetupStart(view: View) {
-        setNextButtonText(if (setupWizard.setupIsStart())
-            R.string.label_setup_wizard_continue
-        else
-            R.string.label_start_setup_wizard)
+        setupWizard.setupIsStart {
+            setNextButtonText(if (it)
+                R.string.label_setup_wizard_continue
+            else
+                R.string.label_start_setup_wizard)
+        }
     }
 
     companion object {

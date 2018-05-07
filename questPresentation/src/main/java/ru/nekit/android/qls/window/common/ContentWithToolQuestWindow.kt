@@ -32,9 +32,7 @@ class ContentWithToolQuestWindow private constructor(questContext: QuestContext,
         }
 
         fun setContent(@LayoutRes contentResId: Int): Builder {
-            if (contentResId > 0) {
-                contentHolder = ViewHolder(questContext, contentResId)
-            }
+            contentHolder = ViewHolder(questContext, contentResId)
             return this
         }
 

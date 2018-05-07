@@ -46,7 +46,7 @@ import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContent
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_PAUSE
 import ru.nekit.android.qls.quest.QuestContextEvent.QUEST_RESUME
-import ru.nekit.android.qls.quest.providers.IQuestContextProvider
+import ru.nekit.android.qls.quest.providers.IQuestContextSupport
 import ru.nekit.android.qls.window.common.QuestWindowEvent.CLOSED
 import ru.nekit.android.qls.window.common.QuestWindowEvent.OPEN
 import ru.nekit.android.utils.AnimationUtils.fadeAnimation
@@ -57,7 +57,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
 
-class LockScreenContentMediator(override var questContext: QuestContext) : IQuestContextProvider {
+class LockScreenContentMediator(override var questContext: QuestContext) : IQuestContextSupport {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
@@ -255,8 +255,8 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
             outAnimation.setAnimationListener(animationListener)
         }
 
-        internal fun switchToContent(lockScreenContentMediator: AbstractLockScreenContentMediator,
-                                     useAnimation: Boolean, useFadeAnimation: Boolean) {
+        internal fun AbstractLockScreenContentMediator.switchToContent(useAnimation: Boolean,
+                                                                       useFadeAnimation: Boolean) {
             val contentContainerHasChild = contentContainer.childCount != 0
             val titleContainerHasChild = titleContainer.childCount != 0
             inAnimation?.apply {
@@ -269,7 +269,7 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
                 titleContainer.inAnimation = this
                 contentContainer.inAnimation = this
             }
-            val contentViewHolder = lockScreenContentMediator.viewHolder
+            val contentViewHolder = viewHolder
             val titleContent = contentViewHolder.titleContentContainer
             if (titleContent != null) {
                 titleContainer.visibility = VISIBLE
@@ -383,7 +383,7 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
                     viewState.apply {
                         lockScreenContentMediator.apply {
                             attachView {
-                                switchToContent(this, useAnimation, useFadeAnimation)
+                                switchToContent(useAnimation, useFadeAnimation)
                             }
                         }
                     }

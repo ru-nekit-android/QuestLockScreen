@@ -30,11 +30,10 @@ class OverlayPermissionFragment : QuestSetupWizardFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE) {
             autoDispose {
-                QuestSetupWizard.QuestSetupWizardStep.OVERLAY_PERMISSION.stepIsComplete(setupWizard).filter {
-                    it
-                }.subscribe {
-                            updateView(true)
-                        }
+                QuestSetupWizard.QuestSetupWizardStep.OVERLAY_PERMISSION.stepIsComplete(setupWizard).subscribe { isComplete ->
+                    if (isComplete)
+                        showNextSetupWizardStep()
+                }
             }
         }
     }

@@ -20,16 +20,14 @@ class IntroductionContentMediator(override var questContext: QuestContext) :
     override var viewHolder: LockScreenIntroductionViewContentHolder = LockScreenIntroductionViewContentHolder(questContext)
 
     init {
-        autoDisposeList {
-            listOf(
-                    viewHolder.startButton.throttleClicks {
-                        TransitionChoreographUseCases.doNextTransition()
-                    },
-                    viewHolder.menuButton.throttleClicks {
-                        //MenuWindowMediator.openWindow(questContext)
-                    }
-            )
-        }
+        autoDisposeList(null,
+                viewHolder.startButton.throttleClicks {
+                    TransitionChoreographUseCases.doNextTransition()
+                },
+                viewHolder.menuButton.throttleClicks {
+                    //MenuWindowMediator.openWindow(questContext)
+                }
+        )
     }
 
     override fun deactivate() {
@@ -40,10 +38,10 @@ class IntroductionContentMediator(override var questContext: QuestContext) :
         viewHolder.content.removeAllViews()
     }
 
-    override fun attachView(body: () -> Unit) = autoDispose {
+    override fun attachView(callback: () -> Unit) = autoDispose {
         Completable.fromAction {
             viewHolder.titleView.text = questContext.getString(R.string.title_introduction)
-        }.subscribe(body)
+        }.subscribe(callback)
     }
 
     class LockScreenIntroductionViewContentHolder internal constructor(context: Context) :

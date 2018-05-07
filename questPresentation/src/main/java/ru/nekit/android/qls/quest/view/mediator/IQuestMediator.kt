@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.quest.Quest
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.providers.IQuestContextProvider
+import ru.nekit.android.qls.quest.providers.IQuestContextSupport
 
 //ver 1.0
-interface IQuestMediator : IQuestContextProvider {
+interface IQuestMediator : IQuestContextSupport {
 
     val view: View?
     var quest: Quest

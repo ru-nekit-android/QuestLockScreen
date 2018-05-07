@@ -5,11 +5,11 @@ import android.support.annotation.StyleRes
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import ru.nekit.android.qls.quest.QuestContext
-import ru.nekit.android.qls.quest.providers.IQuestContextProvider
+import ru.nekit.android.qls.quest.providers.IQuestContextSupport
 import ru.nekit.android.window.Window
 import ru.nekit.android.window.WindowContentViewHolder
 
-abstract class QuestWindowMediator(override var questContext: QuestContext) : IQuestContextProvider {
+abstract class QuestWindowMediator(override var questContext: QuestContext) : IQuestContextSupport {
 
     private lateinit var window: Window
     private lateinit var windowContentViewHolder: WindowContentViewHolder

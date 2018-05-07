@@ -3,6 +3,8 @@ package ru.nekit.android.qls.domain.useCases
 import io.reactivex.Completable
 import io.reactivex.Single
 import ru.nekit.android.domain.event.IEvent
+import ru.nekit.android.domain.interactor.buildCompletableUseCaseFromRunnable
+import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.LockScreenStartType
@@ -14,7 +16,10 @@ import ru.nekit.android.utils.doIfOrNever
 object LockScreenUseCases : UseCaseSupport() {
 
     private val lockScreenRepository
-        get() = repository.getLockScreenRepository()
+        get() = repositoryHolder.getLockScreenRepository()
+
+    private val questSetupWizardSettingRepository
+        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
 
     fun start(startType: LockScreenStartType, body: () -> Unit) =
             useCompletableUseCase({
@@ -28,34 +33,35 @@ object LockScreenUseCases : UseCaseSupport() {
             useCompletableUseCase({
                 QuestStatisticsAndHistoryUseCases.lastHistory().build().map { historyOpt ->
                     if (lockScreenRepository.switchOn && startType != SETUP_WIZARD_IN_PROCESS) {
-                        if (startType == ON_NOTIFICATION_CLICK || startType == EXPLICIT) true
+                        if (startType == ON_NOTIFICATION_CLICK || startType == PLAY_NOW) true
                         else
-                            if (repository.getQuestSetupWizardSettingRepository().skipAfterRightAnswer)
+                            if (questSetupWizardSettingRepository.skipAfterRightAnswer)
                                 if (historyOpt.isNotEmpty() &&
                                         historyOpt.nonNullData.answerType == AnswerType.RIGHT)
                                     timeProvider.getCurrentTime() - historyOpt.nonNullData.timeStamp >
-                                            repository.getQuestSetupWizardSettingRepository().timeForSkipAfterRightAnswer
+                                            questSetupWizardSettingRepository.timeoutToSkipAfterRightAnswer
                                 else true
                             else true
                     } else
                         false
                 }.flatMapCompletable {
                     saveStartType(startType).doIfOrNever { it }
+                }.doOnSubscribe {
+                    QuestTrainingProgramUseCases.createRemoteQuestTrainingProgram().use()
                 }
             }, body)
 
     fun switchOnIfNeed(startType: LockScreenStartType, body: (Boolean) -> Unit) = useSingleUseCaseFromCallable({
-        val isOn = startType == ON_NOTIFICATION_CLICK || startType == EXPLICIT
-        lockScreenRepository.switchOn = isOn
-        isOn
+        val isOn = startType == ON_NOTIFICATION_CLICK || startType == PLAY_NOW
+        if (isOn)
+            lockScreenRepository.switchOn = isOn
+        lockScreenRepository.switchOn
     }, body)
 
     fun switchOff(body: () -> Unit) = useCompletableUseCaseFromRunnable({
         lockScreenRepository.switchOn = false
         sendHideEvent()
     }, body)
-
-    fun hide() = hide {}
 
     fun hide(body: () -> Unit) {
         useCompletableUseCaseFromRunnable {
@@ -75,10 +81,16 @@ object LockScreenUseCases : UseCaseSupport() {
                 lockScreenRepository.incomeCallInProcess = screenProvider.screenIsOn()
             }, body)
 
-    fun startOutgoingCall(body: () -> Unit) =
-            useCompletableUseCaseFromRunnable({
-                lockScreenRepository.outgoingCallInProcess = true
-            }, body)
+    fun startOutgoingCall(body: () -> Unit) = useCompletableUseCase({
+        SetupWizardUseCases.callPhonePermissionIsGranted().flatMapCompletable {
+            if (it)
+                buildCompletableUseCaseFromRunnable {
+                    lockScreenRepository.outgoingCallInProcess = true
+                }
+            else
+                Completable.never()
+        }
+    }, body)
 
     fun stopIncomingCall(body: () -> Unit) =
             predicatedUseSingleUseCase({
@@ -92,7 +104,7 @@ object LockScreenUseCases : UseCaseSupport() {
             }, body)
 
     fun firstStartTimestamp(): Single<Optional<Long>> = buildSingleUseCase {
-        lockScreenRepository.firstStartTypeTimestamp(ON_NOTIFICATION_CLICK, EXPLICIT)
+        lockScreenRepository.firstStartTypeTimestamp(ON_NOTIFICATION_CLICK, PLAY_NOW)
     }
 
     fun stopOutgoingCall(body: () -> Unit) =
@@ -119,7 +131,7 @@ object LockScreenUseCases : UseCaseSupport() {
     fun updateLastStartType(): Completable =
             buildCompletableUseCase {
                 getLastStartType().flatMapCompletable { lastStartTypeOpt ->
-                    lockScreenRepository.updateLastStartType(EXPLICIT).doIfOrComplete {
+                    lockScreenRepository.replaceLastStartTypeWith(PLAY_NOW).doIfOrComplete {
                         lastStartTypeOpt.data == ON_NOTIFICATION_CLICK
                     }
                 }

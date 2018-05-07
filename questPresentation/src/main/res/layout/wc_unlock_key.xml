@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="ru.nekit.android.qls.window.UnlockKeyWindowMediator.UnlockKeyWindowContentViewHolder">
+
+    <RelativeLayout
+        android:id="@+id/container_title"
+        style="@style/Window.UnlockKey.TitleContainer"
+        android:layout_width="match_parent">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_title"
+            style="@style/Window.Title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@+id/btn_close"
+            android:layout_toStartOf="@+id/btn_close" />
+
+        <android.support.v7.widget.AppCompatImageButton
+            android:id="@+id/btn_close"
+            style="@style/CloseButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/container_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/container_title" />
+
+</RelativeLayout>

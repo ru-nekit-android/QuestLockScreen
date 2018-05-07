@@ -43,11 +43,11 @@
     <string name="label_ask_for_overlay_permission">Запросить</string>
     <string name="label_ask_for_call_phone_permission">Запросить</string>
     <string name="title_hello">Приветствие</string>
-    <string name="label_start_setup_wizard">Начать настройку (1.0)</string>
+    <string name="label_start_setup_wizard">Начать настройку</string>
     <string name="label_setup_wizard_continue">Продолжить настройку</string>
     <string name="title_ask_for_overlay_permission">Запросить разрешение на добавление поверх всех окон</string>
     <string name="title_setup_wizard_complete">Настройка закончена</string>
-    <string name="label_try_now">Попробовать</string>
+    <string name="label_play_now">Играть</string>
     <string name="label_setup_password">Установить пароль</string>
     <string name="label_unlock">Разблокировать</string>
     <string name="title_settings">Настройки</string>
@@ -84,7 +84,7 @@
     <string name="title_setup_pupil_create_avatar">Создайте аватар</string>
     <string name="label_set_random_avatar">Случайный аватар</string>
     <string name="book_title_name">Дневник\nуспеха</string>
-    <string name="notification_let_play">Давай занимайся</string>
+    <string name="notification_let_play">Давай играй</string>
     <string name="notification_let_try_to_play">Давай попробуй поиграть</string>
     <string name="silence_mode">Тихий режим</string>
     <string name="notification_setup_wizard">Настройка приложения</string>
@@ -123,7 +123,7 @@
     <string name="title_gifts">Подарки</string>
 
     <string name="admob_app_id">ca-app-pub-9028944105026522~9170175648</string>
-    <string name="admob_ad_id">ca-app-pub-9028944105026522/2601732014</string>
+    <string name="admob_ad_id">ca-app-pub-9028944105026522/9703114993</string>
 
     <string name="title_loading">Загрузка</string>
     <string name="ads_timeout_title">%1$s секунд осталось до пропуска</string>

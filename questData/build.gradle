@@ -33,7 +33,6 @@ dependencies {
 
     implementation deps.rx.android
     api deps.billing
-    //compile deps.rx.objectBox
 
     api project(':sharedData')
     api project(':questDomain')

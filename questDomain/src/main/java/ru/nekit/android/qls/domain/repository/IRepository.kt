@@ -36,6 +36,7 @@ interface IRepositoryHolder {
     fun getEmergencyPhoneRepository(): IEmergencyPhoneRepository
     fun getSKUDetailsRepository(): ISKUDetailsRepository
     fun getSKUPurchaseRepository(): ISKUPurchaseRepository
+    fun getQuestTrainingProgramDataSource(type: DataSourceType): IQuestTrainingProgramDataSource
 }
 
 interface IEmergencyPhoneRepository {
@@ -107,17 +108,23 @@ interface ICurrentPupilRepository {
 
 interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
 
-    val skipAfterRightAnswer: Boolean
-
-    val timeForSkipAfterRightAnswer: Long
+    //remote
+    var skipAfterRightAnswer: Boolean
+    //remote
+    var version: String
+    //remote
+    var timeoutToSkipAfterRightAnswer: Long
+    //remote
+    var maxGameSessionTime: Long
+    //remote
+    var adsSkipTimeout: Long
+    //remote
+    var useRemoteQTP: Boolean
 
     var showUnlockKeyHelpOnConsume: Boolean
 
-    val maxSessionTime: Long
-
     val delayedPlayDelay: Long
 
-    val adsSkipTimeout: Long
 }
 
 interface IRewardRepository {
@@ -177,9 +184,21 @@ interface IQuestRepository {
 
 }
 
+interface IQuestTrainingProgramDataSource {
+
+    fun create(sex: PupilSex, complexity: Complexity): Single<Optional<String>>
+
+}
+
+enum class DataSourceType {
+    LOCAL,
+    REMOTE;
+}
+
 interface IQuestTrainingProgramRepository {
 
     fun create(
+            data: String,
             sex: PupilSex,
             complexity: Complexity,
             forceUpdate: Boolean
@@ -195,6 +214,9 @@ interface IQuestTrainingProgramRepository {
             complexity: Complexity,
             index: Int
     ): Single<Optional<QuestTrainingProgramLevel>>
+
+    fun getVersion(sex: PupilSex,
+                   complexity: Complexity): Single<Float>
 
     fun getAllLevels(
             sex: PupilSex,
@@ -272,7 +294,7 @@ interface ILockScreenRepository {
 
     fun saveStartType(value: LockScreenStartType, timestamp: Long): Completable
 
-    fun updateLastStartType(value: LockScreenStartType): Completable
+    fun replaceLastStartTypeWith(value: LockScreenStartType): Completable
 
     fun firstStartTypeTimestamp(vararg values: LockScreenStartType): Single<Optional<Long>>
 

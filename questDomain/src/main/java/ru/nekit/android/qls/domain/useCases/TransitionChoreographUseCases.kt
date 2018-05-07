@@ -17,7 +17,7 @@ import ru.nekit.android.qls.domain.useCases.TransitionChoreographEvent.TRANSITIO
 object TransitionChoreographUseCases : UseCaseSupport() {
 
     private val transitionRepository: ITransitionChoreographRepository
-        get() = repository.getTransitionChoreographRepository()
+        get() = repositoryHolder.getTransitionChoreographRepository()
 
     private fun getCurrentTransition(): Transition? =
             transitionRepository.getTransition(CURRENT_TRANSITION)
@@ -122,7 +122,7 @@ object TransitionChoreographUseCases : UseCaseSupport() {
     }) { body(it.data) }
 
     fun goStartTransition() = useCompletableUseCase(schedulerProvider, {
-        SettingsUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
+        SetupWizardUseCases.questSeriesLength().build().flatMapCompletable { seriesLength ->
             QuestStatisticsAndHistoryUseCases.lastHistory().build().flatMapCompletable { historyOpt ->
                 Completable.fromRunnable {
                     transitionRepository.let {

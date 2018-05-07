@@ -13,10 +13,9 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
-import ru.nekit.android.qls.QuestLockScreenApplication
 import ru.nekit.android.qls.data.representation.getSkuId
 import ru.nekit.android.qls.data.representation.getSkuType
-import ru.nekit.android.qls.deviceAdminSupport.DeviceAdminComponent
+import ru.nekit.android.qls.dependences.DependenciesProvider
 import ru.nekit.android.qls.domain.model.PhoneContact
 import ru.nekit.android.qls.domain.model.SKU
 import ru.nekit.android.qls.domain.model.SKUPurchase
@@ -28,7 +27,7 @@ import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.ST
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.HAS_PERMISSION
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETTINGS_PARENT
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETUP_WIZARD_PARENT
-import ru.nekit.android.qls.setupWizard.billing.Billing
+import ru.nekit.android.qls.setupWizard.deviceAdminSupport.DeviceAdminComponent
 import ru.nekit.android.qls.setupWizard.view.QuestSetupWizardActivity
 import ru.nekit.android.qls.shared.model.Complexity
 import ru.nekit.android.qls.shared.model.Complexity.NORMAL
@@ -36,38 +35,31 @@ import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.qls.shared.model.PupilSex
 import ru.nekit.android.utils.PhoneUtils
 import ru.nekit.android.utils.SingletonHolder
+import ru.nekit.android.utils.doIfOrNever
 import ru.nekit.android.utils.toSingle
 
-class QuestSetupWizard private constructor(val application: QuestLockScreenApplication) :
-        BaseSetupWizard(application, application.getQuestSetupWizardSettingRepository()) {
+class QuestSetupWizard private constructor(private val dependenciesProvider: DependenciesProvider) :
+        BaseSetupWizard(dependenciesProvider) {
 
-    val timeProvider
-        get() = application.getTimeProvider()
+    val timeProvider get() = dependenciesProvider.getTimeProvider()
+    private val billing get() = dependenciesProvider.getBilling()
+    val phoneContacts get() = PhoneContactsUseCases.getPhoneContacts()
+    val deviceAdminComponent get() = ComponentName(dependenciesProvider, DeviceAdminComponent::class.java)
+    val pupil get() = PupilUseCases.getCurrentPupil()
 
-    private val billing: Billing
-        get() = application.getBilling()
-
-    val deviceAdminComponent: ComponentName
-        get() = ComponentName(context, DeviceAdminComponent::class.java)
-
-    val pupil: Single<Optional<Pupil>>
-        get() = PupilUseCases.getCurrentPupil()
-
-    val phoneContacts: Single<List<PhoneContact>>
-        get() = PhoneContactsUseCases.getPhoneContacts()
-
-    lateinit var activity: Activity
+    val version: String get() = dependenciesProvider.repositoryHolder.getQuestSetupWizardSettingRepository().version
 
     private fun getPurchasedSubscription(body: (SKUPurchase?) -> Unit) =
             SKUUseCases.purchasedSubscription().use { it -> body(it.data) }
 
-    fun initiateSKUPurchaseFlow(sku: SKU) = getPurchasedSubscription { oldSku ->
-        billing.initiatePurchaseFlow(activity, sku.getSkuId(application),
-                oldSku?.sku?.getSkuId(application), sku.skuType.getSkuType())
+    fun initiateSKUPurchaseFlow(activity: Activity, sku: SKU) = getPurchasedSubscription { oldSku ->
+        billing.initiatePurchaseFlow(activity, sku.getSkuId(dependenciesProvider),
+                oldSku?.sku?.getSkuId(dependenciesProvider), sku.skuType.getSkuType())
     }
 
     private fun overlayPermissionIsSet() =
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.M || Settings.canDrawOverlays(context)
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+                    Settings.canDrawOverlays(dependenciesProvider)
 
     private fun allPermissionsIsGranted(): Boolean = QuestSetupWizardStep.values().all {
         it.permissionIsSet(this)
@@ -79,21 +71,6 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
     fun removePhoneContact(value: PhoneContact): Completable =
             PhoneContactsUseCases.removePhoneContact(value)
 
-    fun start() {
-        context.startActivity(getStartIntent(true))
-    }
-
-    fun getStartIntent(newTask: Boolean): Intent =
-            Intent(context, QuestSetupWizardActivity::class.java).apply {
-                if (newTask) {
-                    flags = FLAG_ACTIVITY_NEW_TASK
-                } else {
-                    flags = FLAG_ACTIVITY_CLEAR_TOP
-                    flags = FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-                    flags = FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_NEW_TASK
-                }
-            }
-
     private fun unlockPasswordIsSet(): Single<Boolean> = UnlockSecretUseCases.unlockSecretIsSet()
 
     /*
@@ -103,12 +80,8 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
     }
     */
 
-    override fun setupIsComplete(): Boolean {
-        return super.setupIsComplete() && allPermissionsIsGranted()
-    }
-
     fun deviceAdminPermissionsIsActive(): Boolean =
-            (context.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager).isAdminActive(deviceAdminComponent)
+            (dependenciesProvider.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager).isAdminActive(deviceAdminComponent)
 
     fun setPupilName(name: String): Single<Boolean> =
             updatePupilParameter { it.name = name }
@@ -120,37 +93,37 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
             updatePupilParameter { it.avatar = avatar }
 
     fun setQTPComplexity(complexity: Complexity?): Single<Boolean> =
-            updatePupilParameter { it.complexity = complexity ?: NORMAL }
+            updatePupilParameter { it.complexity = complexity ?: NORMAL }.flatMap {
+                QuestTrainingProgramUseCases.createQuestTrainingProgram().doIfOrNever { it }
+            }
 
     private fun updatePupilParameter(body: (Pupil) -> Unit): Single<Boolean> =
             PupilUseCases.updatePupil(body)
 
     override fun calculateNextStep(): Single<ISetupWizardStep> =
-            Flowable.fromIterable(QuestSetupWizardStep.values().toList()).concatMap { step ->
-                if (setupIsComplete()) {
-                    val flags = step.flags
-                    if (flags and HAS_PERMISSION != 0 && flags and SETUP_WIZARD_PARENT != 0)
-                        step.stepIsComplete(this).map { Optional(if (it) null else step) }.toFlowable()
-                    else
-                        Flowable.just(Optional())
-
-                } else
-                    if (currentStep == null)
-                        Flowable.just(Optional(step))
-                    else
-                        if (step.flags and SETUP_WIZARD_PARENT != 0)
+            SetupWizardUseCases.setupIsComplete().buildAsync().flatMapPublisher { isComplete ->
+                Flowable.fromIterable(QuestSetupWizardStep.values().toList()).concatMap { step ->
+                    if (isComplete) {
+                        val flags = step.flags
+                        if (flags and HAS_PERMISSION != 0 && flags and SETUP_WIZARD_PARENT != 0)
                             step.stepIsComplete(this).map { Optional(if (it) null else step) }.toFlowable()
                         else
                             Flowable.just(Optional())
+                    } else
+                        if (currentStep == null)
+                            Flowable.just(Optional(step))
+                        else
+                            if (step.flags and SETUP_WIZARD_PARENT != 0)
+                                step.stepIsComplete(this).map { Optional(if (it) null else step) }.toFlowable()
+                            else
+                                Flowable.just(Optional())
+                }
             }.filter { it.isNotEmpty() }.map { it.nonNullData }.first(SETTINGS).cast(ISetupWizardStep::class.java)
-
-    override fun getName(): String = NAME
 
     override fun needLogin(step: ISetupWizardStep): Single<Boolean> =
             if (step.needLogin())
                 SessionUseCases.checkSessionValidation(SessionType.SETUP_WIZARD).map { !it }
             else false.toSingle()
-
 
     fun commitCurrentSetupStep(value: ISetupWizardStep) {
         if (value == SETTINGS) {
@@ -162,9 +135,22 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
         currentStep = value
     }
 
+    override fun setupIsStart(body: (Boolean) -> Unit) =
+            SetupWizardUseCases.setupIsStart(body)
+
+    override fun setupIsComplete(body: (Boolean) -> Unit) =
+            SetupWizardUseCases.setupIsComplete {
+                body(it && allPermissionsIsGranted())
+            }
+
     override fun completeSetupWizard() {
-        super.completeSetupWizard()
-        LockScreen.startForSetupWizard(application)
+        SetupWizardUseCases.completeSetupWizard()
+        LockScreen.startForSetupWizard(dependenciesProvider)
+    }
+
+    override fun startSetupWizard() {
+        SetupWizardUseCases.startSetupWizard()
+        LockScreen.startForSetupWizard(dependenciesProvider)
     }
 
     fun setUnlockSecret(value: String): Completable = UnlockSecretUseCases.setUnlockSecret(value)
@@ -172,15 +158,11 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
     fun checkUnlockSecret(password: String, body: (Boolean) -> Unit): Unit =
             UnlockSecretUseCases.checkUnlockSecret(password, body)
 
-    fun switchOff() = LockScreen.switchOff(context)
-
     fun phoneIsAvailable(): Boolean {
-        return PhoneUtils.phoneIsAvailable(context)
+        return PhoneUtils.phoneIsAvailable(dependenciesProvider)
     }
 
-    fun lockScreenIsActive(): Boolean {
-        return LockScreen.isActive(context)
-    }
+    fun lockScreenIsSwitchedOn(body: (Boolean) -> Unit) = LockScreen.isSwitchedOn(body)
 
     fun createBindCode(): Single<String> =
             pupil.flatMap {
@@ -192,6 +174,8 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
             }
 
     fun createPupilAndSetAsCurrent(): Single<Boolean> = PupilUseCases.createPupilAndSetAsCurrent()
+
+    fun stop() = LockScreen.stop(dependenciesProvider)
 
     /*
     fun setDeviceAdminRemovable(visibility: Boolean) {
@@ -315,9 +299,21 @@ class QuestSetupWizard private constructor(val application: QuestLockScreenAppli
 
     }
 
-    companion object : SingletonHolder<QuestSetupWizard, QuestLockScreenApplication>(::QuestSetupWizard) {
+    companion object : SingletonHolder<QuestSetupWizard, DependenciesProvider>(::QuestSetupWizard) {
 
-        private const val NAME = "questSetupWizard"
+        fun start(context: Context) = context.startActivity(getStartIntent(context, true))
+
+        fun getStartIntent(context: Context, newTask: Boolean): Intent =
+                Intent(context, QuestSetupWizardActivity::class.java).apply {
+                    if (newTask) {
+                        flags = FLAG_ACTIVITY_NEW_TASK
+                    } else {
+                        flags = FLAG_ACTIVITY_CLEAR_TOP
+                        flags = FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+                        flags = FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_NEW_TASK
+                    }
+                }
 
     }
+
 }

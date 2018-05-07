@@ -11,9 +11,9 @@ import com.andrognito.patternlockview.utils.PatternLockUtils
 import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
+import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardStep.UNLOCK_SECRET
 import ru.nekit.android.qls.setupWizard.ISetupWizardStep
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.SETUP_UNLOCK_SECRET
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.KeyboardHost
@@ -98,7 +98,7 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
-            step = QuestSetupWizard.QuestSetupWizardStep.valueOf(savedInstanceState.getString(CURRENT_STEP))
+            step = BaseSetupWizardStep.valueOf(savedInstanceState.getString(CURRENT_STEP))
         }
         super.onViewStateRestored(savedInstanceState)
     }

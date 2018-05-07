@@ -36,9 +36,7 @@ class SetupQTPComplexityFragment : QuestSetupWizardFragment() {
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int {
-        return R.layout.sw_setup_qtp_complexity
-    }
+    override fun getLayoutId() = R.layout.sw_setup_qtp_complexity
 
     private fun update(choiced: Boolean) {
         setNextButtonVisibility(choiced)

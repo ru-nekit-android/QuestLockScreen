@@ -1,12 +1,12 @@
 package ru.nekit.android.qls.quest.providers
 
-import ru.nekit.android.domain.provider.IEventListenerProvider
+import ru.nekit.android.domain.support.IEventListenerSupport
 import ru.nekit.android.qls.window.AnswerWindowType.RIGHT
 import ru.nekit.android.qls.window.AnswerWindowType.WRONG
 import ru.nekit.android.qls.window.common.QuestWindowEvent
 import ru.nekit.android.qls.window.common.QuestWindowEvent.*
 
-interface IQuestWindowProvider : IEventListenerProvider {
+interface IQuestWindowProvider : IEventListenerSupport {
 
     fun onWrongAnswerWindowOpen(body: () -> Unit) =
             listenForEvent(QuestWindowEvent::class.java) {

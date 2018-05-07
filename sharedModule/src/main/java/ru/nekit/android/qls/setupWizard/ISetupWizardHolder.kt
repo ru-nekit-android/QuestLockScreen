@@ -9,7 +9,6 @@ internal interface ISetupWizardHolder {
 
     val setupWizard: BaseSetupWizard
 
-
     fun getNextButton(): Button
 
     fun getAltButton(): Button

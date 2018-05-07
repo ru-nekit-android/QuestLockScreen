@@ -9,10 +9,8 @@ import android.text.TextUtils
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import ru.nekit.android.qls.shared.model.Pupil
-import ru.nekit.android.qls.shared.repository.ISetupWizardSettingsRepository
 
-abstract class BaseSetupWizard(protected val context: Context,
-                               private val settingsStorage: ISetupWizardSettingsRepository) {
+abstract class BaseSetupWizard(protected val context: Context) {
 
     private val stepStack: MutableList<ISetupWizardStep>
 
@@ -43,29 +41,19 @@ abstract class BaseSetupWizard(protected val context: Context,
             }
         }
 
-    abstract fun getName(): String
-
     private fun internetIsConnected(): Boolean {
         return true
     }
 
     protected abstract fun calculateNextStep(): Single<ISetupWizardStep>
 
-    fun setupIsStart(): Boolean {
-        return settingsStorage.setupWizardIsStart(getName())
-    }
+    abstract fun setupIsStart(body: (Boolean) -> Unit)
 
-    open fun setupIsComplete(): Boolean {
-        return settingsStorage.setupWizardIsComplete(getName())
-    }
+    abstract fun setupIsComplete(body: (Boolean) -> Unit)
 
-    protected fun startSetupWizard() {
-        settingsStorage.startSetupWizard(getName(), true)
-    }
+    abstract fun startSetupWizard()
 
-    protected open fun completeSetupWizard() {
-        settingsStorage.completeSetupWizard(getName(), true)
-    }
+    abstract fun completeSetupWizard()
 
     protected fun createPupilFromBindCode(bindCode: String): Pupil {
         val values = TextUtils.split(bindCode, ":")
@@ -74,34 +62,22 @@ abstract class BaseSetupWizard(protected val context: Context,
 
     abstract fun needLogin(step: ISetupWizardStep): Single<Boolean>
 
-    private fun permissionIsGranted(permission: String): Boolean {
-        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
-                ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
-    }
+    private fun permissionIsGranted(permission: String): Boolean = Build.VERSION.SDK_INT < Build.VERSION_CODES.M ||
+            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
-    fun permissionIsGranted(permissions: Array<String>): Boolean {
-        var result = true
-        for (permission in permissions) {
-            result = result && permissionIsGranted(permission)
-            if (!result) {
-                break
-            }
-        }
-        return result
-    }
+    fun permissionIsGranted(permissions: Array<String>): Boolean =
+            permissions.map { permissionIsGranted(it) }.all { it }
 
-    fun callPhonePermissionIsGranted(): Boolean {
-        return permissionIsGranted(Manifest.permission.CALL_PHONE)
-    }
+    fun callPhonePermissionIsGranted(): Boolean =
+            permissionIsGranted(Manifest.permission.CALL_PHONE)
 
-    fun readContactsPermissionIsGranted(): Boolean {
-        return permissionIsGranted(Manifest.permission.READ_CONTACTS)
-    }
+    fun readContactsPermissionIsGranted(): Boolean =
+            permissionIsGranted(Manifest.permission.READ_CONTACTS)
 
     companion object {
 
-        val UNLOCK_SECRET_MIN_SIZE = 4
-        val BIND_CODE_PATTERN = "QLS:%s:%s"
+        const val UNLOCK_SECRET_MIN_SIZE = 4
+        const val BIND_CODE_PATTERN = "QLS:%s:%s"
     }
 
 }

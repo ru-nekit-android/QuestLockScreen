@@ -2,11 +2,11 @@ package ru.nekit.android.qls.data.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.google.gson.stream.JsonReader
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.Property
@@ -45,10 +45,10 @@ import ru.nekit.android.qls.domain.repository.*
 import ru.nekit.android.qls.domain.repository.IPupilRepository.PupilIsNotExist
 import ru.nekit.android.qls.shared.model.*
 import ru.nekit.android.qls.shared.model.QuestType.*
+import ru.nekit.android.questData.R
 import ru.nekit.android.utils.toSingle
 import java.io.BufferedReader
 import java.io.IOException
-import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
 
@@ -645,27 +645,102 @@ open class SessionRepository(sharedPreferences: SharedPreferences) : ISessionRep
 
 }
 
-abstract class QuestSetupWizardSettingRepository(sharedPreferences: SharedPreferences) : SetupWizardBaseSettingsRepository(sharedPreferences),
+class QuestSetupWizardSettingRepository(private val resources: Resources,
+                                        sharedPreferences: SharedPreferences) :
+        SetupWizardBaseSettingsRepository(sharedPreferences),
         IQuestSetupWizardSettingRepository {
 
-    override val skipAfterRightAnswer: Boolean = CONST.SKIP_AFTER_RIGHT_ANSWER
-    override val timeForSkipAfterRightAnswer: Long = CONST.TIME_FOR_SKIP_AFTER_RIGHT_ANSWER
+    override var skipAfterRightAnswer: Boolean
+        get() = booleanStore.get(SKIP_AFTER_RIGHT_ANSWER)
+        set(value) = booleanStore.set(SKIP_AFTER_RIGHT_ANSWER, value)
+
+    override var useRemoteQTP: Boolean
+        get() = booleanStore.get(USE_REMOTE_QTP)
+        set(value) = booleanStore.set(USE_REMOTE_QTP, value)
+
+    override var version: String
+        get() = stringStore.get(VERSION)
+        set(value) = stringStore.set(VERSION, value)
+
+    override var timeoutToSkipAfterRightAnswer: Long
+        get() = longStore.get(TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER)
+        set(value) = longStore.set(TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER, value)
 
     override var showUnlockKeyHelpOnConsume: Boolean
         get() = booleanStore.get(UNLOCK_KEY_HELP_ON_CONSUME, CONST.UNLOCK_KEY_HELP_ON_CONSUME)
         set(value) = booleanStore.set(UNLOCK_KEY_HELP_ON_CONSUME, value)
 
-    override val maxSessionTime: Long
-        get() = CONST.MAX_SESSION_TIME
+    override var maxGameSessionTime: Long
+        get() = longStore.get(MAX_GAME_SESSION_TIME)
+        set(value) = longStore.set(MAX_GAME_SESSION_TIME, value)
 
-    override val adsSkipTimeout: Long
-        get() = CONST.ADS_SKIP_TIMEOUT
+    override var adsSkipTimeout: Long
+        get() = longStore.get(ADS_SKIP_TIMEOUT)
+        set(value) = longStore.set(ADS_SKIP_TIMEOUT, value)
+
+    override val delayedPlayDelay: Long
+        get() = resources.getInteger(R.integer.quest_delayed_start_animation_duration).toLong()
+
+    override val name: String = "questSetupWizard"
 
     companion object {
 
-        private const val UNLOCK_KEY_HELP_ON_CONSUME = "unlockKeyHelpOnConsume"
+        const val UNLOCK_KEY_HELP_ON_CONSUME = "unlockKeyHelpOnConsume"
+        const val SKIP_AFTER_RIGHT_ANSWER = "skipAfterRightAnswer"
+        const val TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER = "timeoutToSkipAfterRightAnswer"
+        const val VERSION = "version"
+        const val MAX_GAME_SESSION_TIME = "maxGameSessionTime"
+        const val ADS_SKIP_TIMEOUT = "adsSkipTimeout"
+        const val USE_REMOTE_QTP = "useRemoteQTP"
 
     }
+}
+
+class LocalQuestTrainingProgramDataSource(private val context: Context) : IQuestTrainingProgramDataSource {
+
+    companion object {
+        internal const val QTP_FOLDER_NAME = "questTrainingProgramResources"
+        internal const val QTP_FILE_EXT = "json"
+        private const val QTP_FILE_BASE_NAME = "qtp"
+        private const val QTP_FILE_NAME_SEPARATOR = "_"
+    }
+
+    private fun getTrainingProgramResourcePath(sex: PupilSex, complexity: Complexity): String {
+        val resourceNameBuilder = StringBuilder(QTP_FILE_BASE_NAME)
+        resourceNameBuilder.append(QTP_FILE_NAME_SEPARATOR)
+        resourceNameBuilder.append(sex.name.toLowerCase())
+        resourceNameBuilder.append(QTP_FILE_NAME_SEPARATOR)
+        resourceNameBuilder.append(complexity.name.toLowerCase())
+        return resourceNameBuilder.toString()
+    }
+
+    override fun create(sex: PupilSex, complexity: Complexity): Single<Optional<String>> =
+            Single.using(
+                    {
+                        createReader(sex, complexity)
+                    },
+                    { reader ->
+                        Single.fromCallable {
+                            val result = StringBuilder()
+                            var line: String?
+                            do {
+                                line = reader.readLine()
+                                if (line == null)
+                                    break
+                                else
+                                    result.append(line)
+                            } while (true)
+                            Optional(result.toString())
+                        }
+                    },
+                    { it.close() })
+
+    private fun createReader(sex: PupilSex, complexity: Complexity): BufferedReader =
+            BufferedReader(InputStreamReader(context.assets.open(QTP_FOLDER_NAME +
+                    "/" +
+                    getTrainingProgramResourcePath(sex, complexity) +
+                    "." +
+                    QTP_FILE_EXT)))
 }
 
 class QuestTrainingProgramRepository(private val context: Context,
@@ -686,6 +761,9 @@ class QuestTrainingProgramRepository(private val context: Context,
                         sex.asParameter()!!).equal(QuestTrainingProgramEntity_.complexity,
                         complexity.asParameter()!!).build().findUnique())
             }
+
+    override fun getVersion(sex: PupilSex, complexity: Complexity): Single<Float> =
+            getEntity(sex, complexity).map { it.nonNullData.version }
 
     override fun removeAll() {
         super.removeAll()
@@ -733,37 +811,29 @@ class QuestTrainingProgramRepository(private val context: Context,
             questTrainingProgramLevelRepository.getRule(it.nonNullData.id, level.index, questType, questionType)
     }
 
-    override fun create(sex: PupilSex, complexity: Complexity, forceUpdate: Boolean): Single<Boolean> {
+    override fun create(data: String,
+                        sex: PupilSex,
+                        complexity: Complexity,
+                        forceUpdate: Boolean): Single<Boolean> {
         val json = createJson()
-        val jsonReader = createJsonReader(sex, complexity)
-        val jo = createJsonObject(jsonReader)
+        val jsonObject = createJsonObject(data)
         return getEntity(sex, complexity).flatMap {
-            doFill(sex, complexity, it.data, jo, forceUpdate).flatMap { qtpEntity ->
+            doFill(sex, complexity, it.data, jsonObject, forceUpdate).flatMap { qtpEntity ->
                 if (qtpEntity.isNotEmpty())
-                    questPriorityRuleRepository.doFill(qtpEntity.nonNullData, json, jo).flatMap {
-                        questTrainingProgramLevelRepository.doFill(qtpEntity.nonNullData, json, jo)
+                    questPriorityRuleRepository.doFill(qtpEntity.nonNullData, json, jsonObject).flatMap {
+                        questTrainingProgramLevelRepository.doFill(qtpEntity.nonNullData, json, jsonObject)
                     }
                 else
                     false.toSingle()
             }
-        }.doOnEvent { _, _ -> jsonReader.close() }
+        }
     }
+
+
+    private fun createJsonObject(jsonString: String): JsonObject =
+            JsonParser().parse(jsonString).asJsonObject
 
     private fun createJson(): Gson = GsonBuilder().create()
-
-    private fun createJsonReader(sex: PupilSex, complexity: Complexity): JsonReader {
-        val qtpStream: InputStream = context.assets.open(QTP_FOLDER_NAME +
-                "/" +
-                getTrainingProgramResourcePath(sex, complexity) +
-                "." +
-                QTP_FILE_EXT)
-        val inputStreamReader = InputStreamReader(qtpStream)
-        return JsonReader(inputStreamReader)
-    }
-
-    private fun createJsonObject(jsonReader: JsonReader): JsonObject {
-        return JsonParser().parse(jsonReader).asJsonObject
-    }
 
     private fun doFill(sex: PupilSex,
                        complexity: Complexity,
@@ -817,10 +887,6 @@ class QuestTrainingProgramRepository(private val context: Context,
     }
 
     companion object {
-        internal const val QTP_FOLDER_NAME = "questTrainingProgramResources"
-        internal const val QTP_FILE_EXT = "json"
-        private const val QTP_FILE_BASE_NAME = "qtp"
-        private const val QTP_FILE_NAME_SEPARATOR = "_"
 
         const val REWARD_BY_DEFAULT = 10
         const val ENABLED = "enabled"
@@ -849,15 +915,6 @@ class QuestTrainingProgramRepository(private val context: Context,
         const val RULES = "quests"
         const val START_PRIORITY = "startPriority"
         const val WRONG_ANSWER_PRIORITY = "wrongAnswerPriority"
-
-        internal fun getTrainingProgramResourcePath(sex: PupilSex, complexity: Complexity): String {
-            val resourceNameBuilder = StringBuilder(QTP_FILE_BASE_NAME)
-            resourceNameBuilder.append(QTP_FILE_NAME_SEPARATOR)
-            resourceNameBuilder.append(sex.name.toLowerCase())
-            resourceNameBuilder.append(QTP_FILE_NAME_SEPARATOR)
-            resourceNameBuilder.append(complexity.name.toLowerCase())
-            return resourceNameBuilder.toString()
-        }
 
     }
 }
@@ -1403,19 +1460,19 @@ class LockScreenRepository(sharedPreferences: SharedPreferences, boxStore: BoxSt
         it.put(value)
     }.andThen(stringStore.set(START_TYPE, LockScreenStartTypeConverter().convertToDatabaseValue(value.lockScreenStartType)))
 
-    override fun updateLastStartType(value: LockScreenStartType): Completable =
+    override fun replaceLastStartTypeWith(value: LockScreenStartType): Completable =
             boxSingleUsingWithCallable { it.all.last() }.flatMapCompletable {
                 saveStartType(LockScreenStartTypeEntity(it.id, it.timestamp, value))
             }
 
     override fun firstStartTypeTimestamp(vararg values: LockScreenStartType): Single<Optional<Long>> =
             boxSingleUsingWithCallable {
-                var q: QueryBuilder<LockScreenStartTypeEntity>? =
+                var queryBuilder: QueryBuilder<LockScreenStartTypeEntity>? =
                         it.query().equal(LockScreenStartTypeEntity_.lockScreenStartType, values[0].asParameter())
                 for (i in 1 until values.size) {
-                    q = q!!.or().equal(LockScreenStartTypeEntity_.lockScreenStartType, values[i].asParameter())
+                    queryBuilder = queryBuilder?.or()?.equal(LockScreenStartTypeEntity_.lockScreenStartType, values[i].asParameter())
                 }
-                val first = q!!.build().findFirst()
+                val first = queryBuilder?.build()?.findFirst()
                 Optional(first?.timestamp)
             }
 
@@ -1537,11 +1594,7 @@ object CONST {
     internal const val SHOW_ADVERT_AFTER_N_RIGHT_ANSWER = 1
     internal const val INTRODUCTION_IS_PRESENTED_BY_DEFAULT = false
     internal const val ADVERT_IS_PRESENTED_BY_DEFAULT = true
-    internal const val SKIP_AFTER_RIGHT_ANSWER = false
-    internal const val TIME_FOR_SKIP_AFTER_RIGHT_ANSWER: Long = 60 * 1000
     internal const val UNLOCK_KEY_HELP_ON_CONSUME: Boolean = true
-    internal const val MAX_SESSION_TIME: Long = 3 * 60 * 1000
-    internal const val ADS_SKIP_TIMEOUT: Long = 10000
 
 }
 

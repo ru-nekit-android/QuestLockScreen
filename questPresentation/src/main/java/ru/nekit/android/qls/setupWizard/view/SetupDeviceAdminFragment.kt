@@ -25,7 +25,7 @@ class SetupDeviceAdminFragment : QuestSetupWizardFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE_FOR_ADMIN_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                update(true)
+                showNextSetupWizardStep()
             }
         }
     }
@@ -46,13 +46,12 @@ class SetupDeviceAdminFragment : QuestSetupWizardFragment() {
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int {
-        return R.layout.sw_setup_admin
-    }
+    override fun getLayoutId() = R.layout.sw_setup_admin
+
 
     companion object {
 
-        private val REQUEST_CODE_FOR_ADMIN_REQUEST = 1
+        private const val REQUEST_CODE_FOR_ADMIN_REQUEST = 1
 
         val instance: SetupDeviceAdminFragment
             get() = SetupDeviceAdminFragment()

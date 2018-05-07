@@ -10,7 +10,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.Subject
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.SKU
-import ru.nekit.android.qls.setupWizard.view.AccessInfoViewModel
+import ru.nekit.android.qls.setupWizard.view.viewModel.SubscriptionViewItem
 import ru.nekit.android.utils.IAutoDispose
 import ru.nekit.android.utils.throttleClicks
 
@@ -19,7 +19,7 @@ class SubscriptionsAdapter(private val actionListener: Subject<SKU>) :
         RecyclerView.Adapter<SubscriptionsViewHolder>(), IAutoDispose {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
-    var data: List<AccessInfoViewModel.SubscriptionViewItem>? = null
+    var data: List<SubscriptionViewItem>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionsViewHolder {
         return SubscriptionsViewHolder(LayoutInflater.from(parent.context)

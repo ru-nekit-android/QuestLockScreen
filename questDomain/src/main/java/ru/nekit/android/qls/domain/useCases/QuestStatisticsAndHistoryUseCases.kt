@@ -85,7 +85,7 @@ class FetchFirstResultableHistoryByCriteriaListUseCase(private val repository: I
 object QuestStatisticsAndHistoryUseCases : UseCaseSupport() {
 
     private val questHistoryRepository
-        get() = repository.getQuestHistoryRepository()
+        get() = repositoryHolder.getQuestHistoryRepository()
 
     internal fun lastHistory() = singleUseCase(schedulerProvider) {
         pupilFlatMap {
@@ -103,7 +103,7 @@ object QuestStatisticsAndHistoryUseCases : UseCaseSupport() {
 
     private fun getHistoryByStatisticsPeriodType(parameter: StatisticsPeriodType) = buildSingleUseCase(schedulerProvider) {
         pupilFlatMap {
-            repository.getQuestHistoryRepository().getHistoryByPeriod(it,
+            repositoryHolder.getQuestHistoryRepository().getHistoryByPeriod(it,
                     timeProvider.getTimestampBy(parameter))
         }
     }
@@ -192,7 +192,7 @@ object QuestStatisticsAndHistoryUseCases : UseCaseSupport() {
     fun getPreviousHistoryWithBestSessionTime(questAndQuestionType: QuestAndQuestionType, body: (Optional<QuestHistory>) -> Unit) =
             useSingleUseCase<Optional<QuestHistory>>(schedulerProvider, {
                 pupilFlatMap {
-                    repository.getQuestHistoryRepository()
+                    repositoryHolder.getQuestHistoryRepository()
                             .getPreviousHistoryItemWithBestSessionTime(it, questAndQuestionType)
                 }
             }, body)

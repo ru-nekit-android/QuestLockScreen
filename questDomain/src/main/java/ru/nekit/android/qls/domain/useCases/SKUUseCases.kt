@@ -11,6 +11,7 @@ import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.model.SKUType.PRESENT
 import ru.nekit.android.qls.domain.model.SKUType.SUBSCRIPTION
+import ru.nekit.android.qls.domain.providers.IBilling
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.ISKURepository
 import ru.nekit.android.qls.domain.useCases.SKUUseCases.get
@@ -21,10 +22,10 @@ object SKUUseCases : UseCaseSupport() {
     lateinit var billing: IBilling
 
     private val skuDetailsRepository
-        get() = repository.getSKUDetailsRepository()
+        get() = repositoryHolder.getSKUDetailsRepository()
 
     internal val skuPurchaseRepository
-        get() = repository.getSKUPurchaseRepository()
+        get() = repositoryHolder.getSKUPurchaseRepository()
 
     private fun List<ISKUHolder>.notify(flowable: FlowableProcessor<List<SKU>>, skuType: SKUType) =
             map { it.sku }.filter { it.skuType == skuType }.let {
@@ -224,27 +225,6 @@ object AccessUseCases : UseCaseSupport() {
     }
 }
 
-enum class AccessType {
-
-    TRIAL,
-    PREMIUM,
-    EXPIRED
-
-}
-
-data class AccessInfo(val trial: TrialAccessInfo?, val premium: PremiumAccessInfo?)
-
-data class TrialAccessInfo(val startTimestamp: Long?,
-                           val stopTimestamp: Long?,
-                           val periodTime: PeriodTime)
-
-data class PremiumAccessInfo(val skuDetails: SKUDetails,
-                             val skuPurchase: SKUPurchase,
-                             val startTimestamp: Long,
-                             val stopTimestamp: Long,
-                             val periodTime: PeriodTime
-)
-
 private object SKUPublisherHolder {
 
     fun createPublisher() = BehaviorProcessor.create<List<SKU>>().toSerialized()
@@ -255,25 +235,4 @@ private object SKUPublisherHolder {
     val subscriptionDetails: FlowableProcessor<List<SKU>> = createPublisher()
     val presentDetails: FlowableProcessor<List<SKU>> = createPublisher()
 
-}
-
-interface IBilling {
-
-    fun start()
-
-    fun destroy()
-
-    fun querySKUPurchases()
-
-    fun querySKUDetails()
-
-}
-
-enum class PeriodTime {
-
-    P1W,
-    P1M,
-    P3M,
-    P6M,
-    P1Y;
 }

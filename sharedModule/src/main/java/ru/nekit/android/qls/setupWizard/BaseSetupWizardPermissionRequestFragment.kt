@@ -44,7 +44,7 @@ abstract class BaseSetupWizardPermissionRequestFragment : BaseSetupWizardFragmen
                 permissionWasGranted = permissionWasGranted && value == PackageManager.PERMISSION_GRANTED
             }
             onPermissionResult(permissionWasGranted)
-            update(permissionWasGranted)
+            showNextSetupWizardStep()
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }

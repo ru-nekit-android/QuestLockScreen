@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<defaultsMap>
+    <entry>
+        <key>skipAfterRightAnswer</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>version</key>
+        <value>46</value>
+    </entry>
+    <entry>
+        <key>timeForSkipAfterRightAnswer</key>
+        <value>60000</value>
+    </entry>
+    <entry>
+        <key>maxGameSessionTime</key>
+        <value>180000</value>
+    </entry>
+    <entry>
+        <key>adsSkipTimeout</key>
+        <value>10000</value>
+    </entry>
+    <entry>
+        <key>useRemoteQTP</key>
+        <value>true</value>
+    </entry>
+</defaultsMap>

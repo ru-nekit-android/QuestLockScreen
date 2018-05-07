@@ -6,9 +6,10 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import io.reactivex.Single
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.domain.useCases.SettingsUseCases
+import ru.nekit.android.qls.domain.useCases.SetupWizardUseCases
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.*
 import ru.nekit.android.utils.Delay
@@ -19,8 +20,9 @@ class SettingsFragment : QuestSetupWizardFragment() {
 
     override var unconditionedNextAction: Boolean = true
 
+    private lateinit var titleView: TextView
     private lateinit var saveQuestSeriesLengthButton: Button
-    private lateinit var showBindParentButton: Button
+    //private lateinit var showBindParentButton: Button
     private lateinit var voiceRecorderButton: Button
     private lateinit var subscribesButton: Button
     private lateinit var phoneContactsButton: Button
@@ -28,37 +30,43 @@ class SettingsFragment : QuestSetupWizardFragment() {
 
     override fun onSetupStart(view: View) {
         saveQuestSeriesLengthButton = view.findViewById(R.id.btn_quest_series_length_save)
-        showBindParentButton = view.findViewById(R.id.btn_bind_parent_control)
+        //showBindParentButton = view.findViewById(R.id.btn_bind_parent_control)
         subscribesButton = view.findViewById(R.id.btn_subscribes)
         voiceRecorderButton = view.findViewById(R.id.btn_voice_record)
         phoneContactsButton = view.findViewById(R.id.btn_phone_contacts)
         phoneContactsButton.visibility = if (setupWizard.phoneIsAvailable()) VISIBLE else GONE
         questSeriesLengthInput = view.findViewById(R.id.input_quest_series_length)
-        SettingsUseCases.getQuestSeriesLength { value ->
+        titleView = view.findViewById(R.id.tv_title)
+        SetupWizardUseCases.getQuestSeriesLength { value ->
             questSeriesLengthInput.setText(value.toString())
         }
-        setNextButtonText(R.string.label_try_now)
+        setNextButtonText(R.string.label_play_now)
         setAltButtonText(R.string.label_stop_lock)
-        autoDisposeList {
-            listOf(
-                    saveQuestSeriesLengthButton.throttleClicks {
-                        SettingsUseCases.setQuestSeriesLength(Integer.valueOf(questSeriesLengthInput.text.toString()))
-                    },
-                    showBindParentButton.throttleClicks {
-                        showSetupWizardStep(BIND_PARENT_CONTROL)
-                    },
-                    subscribesButton.throttleClicks {
-                        showSetupWizardStep(SUBSCRIBES)
-                    },
-                    voiceRecorderButton.throttleClicks {
-                        showSetupWizardStep(VOICE_RECORD)
-                    },
-                    phoneContactsButton.throttleClicks {
-                        showSetupWizardStep(SETUP_PHONE_CONTACTS)
-                    }
-            )
+        autoDisposeList(
+                saveQuestSeriesLengthButton.throttleClicks {
+                    SetupWizardUseCases.setQuestSeriesLength(Integer.valueOf(questSeriesLengthInput.text.toString()))
+                },
+                /*showBindParentButton.throttleClicks {
+                    showSetupWizardStep(BIND_PARENT_CONTROL)
+                },*/
+                subscribesButton.throttleClicks {
+                    showSetupWizardStep(SUBSCRIBES)
+                },
+                voiceRecorderButton.throttleClicks {
+                    showSetupWizardStep(VOICE_RECORD)
+                },
+                phoneContactsButton.throttleClicks {
+                    showSetupWizardStep(SETUP_PHONE_CONTACTS)
+                }
+        )
+        setupWizard.lockScreenIsSwitchedOn {
+            setAltButtonVisibility(it)
         }
-        setAltButtonVisibility(setupWizard.lockScreenIsActive())
+        updateTitle()
+    }
+
+    private fun updateTitle() {
+        titleView.text = getString(R.string.title_settings)
     }
 
     override fun onDestroy() {
@@ -67,7 +75,7 @@ class SettingsFragment : QuestSetupWizardFragment() {
     }
 
     override fun nextAction(): Single<Boolean> = Single.fromCallable {
-        LockScreen.show(context!!)
+        LockScreen.play(context!!)
         false
     }
 
@@ -75,8 +83,10 @@ class SettingsFragment : QuestSetupWizardFragment() {
     override fun getLayoutId(): Int = R.layout.sw_settings
 
     override fun altAction() {
-        setupWizard.switchOff()
-        setAltButtonVisibility(setupWizard.lockScreenIsActive())
+        setupWizard.stop()
+        setupWizard.lockScreenIsSwitchedOn {
+            setAltButtonVisibility(it)
+        }
     }
 
     companion object {

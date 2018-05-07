@@ -24,7 +24,7 @@ import com.android.billingclient.api.Purchase.PurchasesResult
 import ru.nekit.android.qls.data.representation.SKURepresentation
 import ru.nekit.android.qls.data.representation.toSKUDetails
 import ru.nekit.android.qls.data.representation.toSKUPurchase
-import ru.nekit.android.qls.domain.useCases.IBilling
+import ru.nekit.android.qls.domain.providers.IBilling
 import ru.nekit.android.qls.domain.useCases.SKUUseCases
 import java.io.IOException
 import java.util.*

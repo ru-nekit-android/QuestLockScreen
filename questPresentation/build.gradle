@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
 
@@ -17,7 +17,7 @@ android {
     }
 
     defaultConfig {
-        applicationId 'ru.nekit.android.qls.parentcontrol'
+        applicationId ids.application
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
         versionCode versions.appCode
@@ -65,15 +65,19 @@ dependencies {
     implementation deps.patternLockView
     implementation deps.maskableLayout
     implementation deps.firebase.ads
-    //implementation deps.billing
+    implementation deps.firebase.crash
+    implementation deps.firebase.remoteConfig
+    implementation deps.firebase.firestore
     implementation deps.support.constraintLayout
     implementation deps.flexbox
 
-
     api project(':sharedModule')
     api project(':questData')
+
 }
 
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.google.gms.google-services'

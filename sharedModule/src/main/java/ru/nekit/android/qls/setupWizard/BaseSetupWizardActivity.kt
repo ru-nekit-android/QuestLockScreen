@@ -8,12 +8,12 @@ import android.widget.Button
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import ru.nekit.android.domain.provider.IEventListenerProvider
+import ru.nekit.android.domain.support.IEventListenerSupport
 import ru.nekit.android.shared.R
 import ru.nekit.android.utils.throttleClicks
 
 abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
-        IEventListenerProvider {
+        IEventListenerSupport {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
@@ -38,20 +38,18 @@ abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
         fragmentContainer = findViewById(R.id.container_fragment)
         nextButton = findViewById(R.id.btn_next)
         altButton = findViewById(R.id.btn_alt)
-        autoDisposeList {
-            listOf(
-                    nextButton.throttleClicks {
-                        autoDispose {
-                            nextAction().subscribe { it ->
-                                if (it) showNextSetupWizardStep()
-                            }
+        autoDisposeList(
+                nextButton.throttleClicks {
+                    autoDispose {
+                        nextAction().subscribe { it ->
+                            if (it) showNextSetupWizardStep()
                         }
-                    },
-                    altButton.throttleClicks {
-                        altAction()
                     }
-            )
-        }
+                },
+                altButton.throttleClicks {
+                    altAction()
+                }
+        )
         showNextSetupWizardStep()
     }
 

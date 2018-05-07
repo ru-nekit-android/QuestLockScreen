@@ -1,7 +1,7 @@
 package ru.nekit.android.qls.domain.providers
 
+import ru.nekit.android.qls.domain.model.PeriodTime
 import ru.nekit.android.qls.domain.model.StatisticsPeriodType
-import ru.nekit.android.qls.domain.useCases.PeriodTime
 
 interface ITimeProvider {
 

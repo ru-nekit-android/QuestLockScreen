@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ru.nekit.android.qls.setupWizard.view.PhoneContactsFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        style="@style/SetupWizard.Title"
+        android:layout_height="wrap_content"
+        android:text="@string/title_allow_contacts" />
+
+    <RelativeLayout
+        android:id="@+id/container_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_phone_contacts"
+            style="@style/PhoneContact.Modification.ContactList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</LinearLayout>

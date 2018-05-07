@@ -55,7 +55,7 @@ class SetupPupilAvatarFragment : QuestSetupWizardFragment(), View.OnLayoutChange
         prevButtonList = ArrayList()
         nextButtonList = ArrayList()
         setNextButtonText(R.string.label_create)
-        val contentContainer = view.findViewById<View>(R.id.container_content) as ViewGroup
+        val contentContainer = view.findViewById(R.id.container_content) as ViewGroup
         val avatarParts = avatarParts
         val length = avatarParts.size
         pupilPartVariantCurrentPosition = IntArray(length)
@@ -120,11 +120,6 @@ class SetupPupilAvatarFragment : QuestSetupWizardFragment(), View.OnLayoutChange
     override fun nextAction(): Single<Boolean> =
             setupWizard.setPupilAvatar(PupilAvatarConverter.toString(avatarParts,
                     pupilPartVariantCurrentPosition))
-
-
-    private fun update(choiced: Boolean) {
-        setNextButtonVisibility(choiced)
-    }
 
     override fun onDestroyView() {
         view!!.removeOnLayoutChangeListener(this)

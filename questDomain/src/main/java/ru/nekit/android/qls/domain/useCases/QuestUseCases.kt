@@ -3,7 +3,6 @@ package ru.nekit.android.qls.domain.useCases
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import io.reactivex.Single.just
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function3
 import io.reactivex.processors.BehaviorProcessor
@@ -23,7 +22,7 @@ import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
-import ru.nekit.android.qls.shared.model.QuestType.*
+import ru.nekit.android.qls.shared.model.QuestType
 import ru.nekit.android.utils.asSingleIf
 import ru.nekit.android.utils.doIfOrComplete
 import ru.nekit.android.utils.doIfOrNever
@@ -103,18 +102,157 @@ class StartAndPossiblePlayQuestUseCase(private val repository: IRepositoryHolder
 
 object QuestUseCases : UseCaseSupport() {
 
+    private val questStateRepository
+        get() = repositoryHolder.getQuestStateRepository()
+
+    private val questRepository
+        get() = repositoryHolder.getQuestRepository()
+
     fun onScreenOnUseCase(body: (Boolean) -> Unit) = useSingleUseCase(schedulerProvider, {
         Single.zip(TransitionChoreographUseCases.currentTransition().build().map { it.nonNullData },
-                QuestHasStateUseCase(repository).build(DELAYED_PLAY),
-                QuestHasStateUseCase(repository).build(WAS_STOPPED),
+                QuestHasStateUseCase(repositoryHolder).build(DELAYED_PLAY),
+                QuestHasStateUseCase(repositoryHolder).build(WAS_STOPPED),
                 Function3<Transition, Boolean, Boolean, Boolean> { transition, delayed, wasStopped ->
                     transition == Transition.QUEST && (!delayed || wasStopped)
                 }
         ).flatMap {
-            PlayQuestUseCase(repository, timeProvider, screenProvider).build()
+            PlayQuestUseCase(repositoryHolder, timeProvider, screenProvider).build()
                     .doIfOrNever { it }
         }
     }, body)
+
+    fun generateQuest() = buildSingleUseCase {
+        pupilFlatMap { pupil ->
+            questStateRepository.clear()
+                    .andThen(questRepository.hasSavedQuest(pupil))
+                    .flatMap { hasSavedQuest ->
+                        if (hasSavedQuest) {
+                            questRepository.restoreQuest(pupil)
+                                    .flatMap { restoredQuestOpt ->
+                                        var restoredQuest: Quest? = restoredQuestOpt.data
+                                        if (restoredQuest != null) {
+                                            GetQuestTrainingProgramRuleByQuestAndQuestionType(repositoryHolder)
+                                                    .build(QuestAndQuestionType(restoredQuest.questType,
+                                                            restoredQuest.questionType)).map { rule ->
+                                                        if (rule.isEmpty())
+                                                            restoredQuest = null
+                                                        Optional(restoredQuest)
+                                                    }.flatMap { result ->
+                                                        questStateRepository.add(WAS_RESTORED).asSingleIf(result) { result.isNotEmpty() }
+                                                    }
+                                        } else Single.just(Optional(null))
+                                    }
+                        } else Single.just(Optional(null))
+                    }.flatMap { it ->
+                        if (it.isEmpty()) {
+                            QuestTrainingProgramUseCases.getAppropriateQuestAndQuestionType(
+                                    AppropriateQuestParameter(AppropriateType.BY_RANDOM_CHANCE,
+                                            1,
+                                            2,
+                                            true))
+                                    .build()
+                                    .flatMap { questAndQuestionType ->
+                                        GetQuestTrainingProgramRuleByQuestAndQuestionType(repositoryHolder)
+                                                .build(questAndQuestionType)
+                                                .map { it.nonNullData }
+                                                .map { rule ->
+                                                    val questType = questAndQuestionType.questType
+                                                    val questionType = questAndQuestionType.questionType
+                                                    val questResourceRepository = repositoryHolder.getQuestResourceRepository()
+                                                    val quest: Quest = when (questType) {
+
+                                                        QuestType.CHOICE ->
+
+                                                            ChoiceQuestCreator(
+                                                                    rule as ChoiceQuestTrainingProgramRule,
+                                                                    questResourceRepository
+                                                            ).create(questionType)
+
+                                                        QuestType.MISMATCH ->
+
+                                                            MismatchQuestCreator(
+                                                                    rule as ChoiceQuestTrainingProgramRule,
+                                                                    questResourceRepository
+                                                            ).create(questionType)
+
+                                                        QuestType.COLORS ->
+
+                                                            ColoredVisualRepresentationQuestCreator(
+                                                                    rule as MemberCountQuestTrainingRule,
+                                                                    questResourceRepository
+                                                            ).create(questionType)
+
+                                                        QuestType.COINS ->
+
+                                                            CoinsQuestCreator(
+                                                                    rule as MemberCountQuestTrainingRule
+                                                            ).create(questionType)
+
+                                                        QuestType.DIRECTION ->
+
+                                                            DirectionQuestCreator().create(questionType)
+
+                                                        QuestType.TRAFFIC_LIGHT ->
+
+                                                            TrafficLightQuestCreator().create(questionType)
+
+                                                        QuestType.CURRENT_SEASON ->
+
+                                                            CurrentSeasonQuestCreator(
+                                                                    questResourceRepository
+                                                            ).create(questionType)
+
+                                                        QuestType.FRUIT_ARITHMETIC ->
+
+                                                            FruitArithmeticQuestCreator(
+                                                                    rule as FruitArithmeticQuestTrainingProgramRule,
+                                                                    questResourceRepository
+                                                            ).create(questionType)
+
+                                                        QuestType.TIME ->
+
+                                                            TimeQuestCreator(
+                                                                    rule as TimeQuestTrainingProgramRule
+                                                            ).create(questionType).let {
+                                                                TimeQuest(it)
+                                                            }
+
+                                                        QuestType.CURRENT_TIME ->
+
+                                                            CurrentTimeQuestCreator(
+                                                                    rule as TimeQuestTrainingProgramRule
+                                                            ).create(questionType).let {
+                                                                CurrentTimeQuest(it)
+                                                            }
+
+                                                        QuestType.SIMPLE_EXAMPLE -> TODO()
+                                                        QuestType.TEXT_CAMOUFLAGE -> TODO()
+                                                        QuestType.METRICS -> TODO()
+                                                        QuestType.PERIMETER -> TODO()
+                                                    }
+                                                    quest.questType = questType
+                                                    quest.questionType = questionType
+                                                    quest
+                                                }.flatMap { quest ->
+                                                    questRepository.save(pupil, quest).toSingleDefault(quest)
+                                                }
+                                    }
+                        } else Single.just(it.data)
+                    }.flatMap { resultQuest ->
+                        QuestHasDelayedPlayUseCase(repositoryHolder).build(
+                                resultQuest.questType + resultQuest.questionType
+                        ).flatMap { delayed ->
+                            questStateRepository.add(DELAYED_PLAY).doIfOrComplete { delayed }.andThen(
+                                    Single.fromCallable {
+                                        resultQuest.also {
+                                            QuestHolder.quest = it
+                                        }
+                                    }
+                            )
+                        }
+                    }
+        }
+    }
 
 }
 
@@ -197,147 +335,9 @@ class ListenSessionTimeUseCase(private val repository: IRepositoryHolder,
         ParameterlessFlowableUseCase<Pair<Long, Long>>(scheduler) {
 
     override fun build(): Flowable<Pair<Long, Long>> = SessionTimer.publisher.map {
-        it to repository.getQuestSetupWizardSettingRepository().maxSessionTime
+        it to repository.getQuestSetupWizardSettingRepository().maxGameSessionTime
     }
 
-}
-
-class GenerateQuestUseCase(private val repository: IRepositoryHolder,
-                           scheduler: ISchedulerProvider? = null) :
-        ParameterlessSingleUseCase<Quest>(scheduler) {
-
-    private val questStateRepository = repository.getQuestStateRepository()
-
-    override fun build(): Single<Quest> =
-            pupilFlatMap { pupil ->
-                questStateRepository.clear()
-                        .andThen(repository.getQuestRepository().hasSavedQuest(pupil))
-                        .flatMap { hasSavedQuest ->
-                            if (hasSavedQuest) {
-                                repository.getQuestRepository().restoreQuest(pupil)
-                                        .flatMap { restoredQuestOpt ->
-                                            var restoredQuest: Quest? = restoredQuestOpt.data
-                                            if (restoredQuest != null) {
-                                                GetQuestTrainingProgramRuleByQuestAndQuestionType(repository)
-                                                        .build(QuestAndQuestionType(restoredQuest.questType,
-                                                                restoredQuest.questionType)).map { rule ->
-                                                            if (rule.isEmpty())
-                                                                restoredQuest = null
-                                                            Optional(restoredQuest)
-                                                        }.flatMap { result ->
-                                                            questStateRepository.add(WAS_RESTORED).asSingleIf(result) { result.isNotEmpty() }
-                                                        }
-                                            } else just(Optional(null))
-                                        }
-                            } else just(Optional(null))
-                        }.flatMap { it ->
-                            if (it.isEmpty()) {
-                                GetAppropriateQuestAndQuestionType(repository)
-                                        .build(AppropriateQuestParameter(AppropriateType.BY_RANDOM_CHANCE,
-                                                1,
-                                                2,
-                                                true))
-                                        .flatMap { questAndQuestionType ->
-                                            GetQuestTrainingProgramRuleByQuestAndQuestionType(repository)
-                                                    .build(questAndQuestionType)
-                                                    .map { it.nonNullData }
-                                                    .map { rule ->
-                                                        val questType = questAndQuestionType.questType
-                                                        val questionType = questAndQuestionType.questionType
-                                                        val questResourceRepository = repository.getQuestResourceRepository()
-                                                        val quest: Quest = when (questType) {
-
-                                                            CHOICE ->
-
-                                                                ChoiceQuestCreator(
-                                                                        rule as ChoiceQuestTrainingProgramRule,
-                                                                        questResourceRepository
-                                                                ).create(questionType)
-
-                                                            MISMATCH ->
-
-                                                                MismatchQuestCreator(
-                                                                        rule as ChoiceQuestTrainingProgramRule,
-                                                                        questResourceRepository
-                                                                ).create(questionType)
-
-                                                            COLORS ->
-
-                                                                ColoredVisualRepresentationQuestCreator(
-                                                                        rule as MemberCountQuestTrainingRule,
-                                                                        questResourceRepository
-                                                                ).create(questionType)
-
-                                                            COINS ->
-
-                                                                CoinsQuestCreator(
-                                                                        rule as MemberCountQuestTrainingRule
-                                                                ).create(questionType)
-
-                                                            DIRECTION ->
-
-                                                                DirectionQuestCreator().create(questionType)
-
-                                                            TRAFFIC_LIGHT ->
-
-                                                                TrafficLightQuestCreator().create(questionType)
-
-                                                            CURRENT_SEASON ->
-
-                                                                CurrentSeasonQuestCreator(
-                                                                        questResourceRepository
-                                                                ).create(questionType)
-
-                                                            FRUIT_ARITHMETIC ->
-
-                                                                FruitArithmeticQuestCreator(
-                                                                        rule as FruitArithmeticQuestTrainingProgramRule,
-                                                                        questResourceRepository
-                                                                ).create(questionType)
-
-                                                            TIME ->
-
-                                                                TimeQuestCreator(
-                                                                        rule as TimeQuestTrainingProgramRule
-                                                                ).create(questionType).let {
-                                                                    TimeQuest(it)
-                                                                }
-
-                                                            CURRENT_TIME ->
-
-                                                                CurrentTimeQuestCreator(
-                                                                        rule as TimeQuestTrainingProgramRule
-                                                                ).create(questionType).let {
-                                                                    CurrentTimeQuest(it)
-                                                                }
-
-                                                            SIMPLE_EXAMPLE -> TODO()
-                                                            TEXT_CAMOUFLAGE -> TODO()
-                                                            METRICS -> TODO()
-                                                            PERIMETER -> TODO()
-                                                        }
-                                                        quest.questType = questType
-                                                        quest.questionType = questionType
-                                                        quest
-                                                    }.flatMap { quest ->
-                                                        repository.getQuestRepository().save(pupil, quest).toSingleDefault(quest)
-                                                    }
-                                        }
-                            } else just(it.data)
-                        }.flatMap { resultQuest ->
-                            QuestHasDelayedPlayUseCase(repository).build(
-                                    resultQuest.questType + resultQuest.questionType
-                            ).flatMap { delayed ->
-                                questStateRepository.add(DELAYED_PLAY).doIfOrComplete { delayed }.andThen(
-                                        Single.fromCallable {
-                                            resultQuest.also {
-                                                QuestHolder.quest = it
-                                            }
-                                        }
-                                )
-                            }
-                        }
-            }
 }
 
 class ListenCurrentQuestUseCase(scheduler: ISchedulerProvider? = null) :
@@ -381,7 +381,7 @@ internal object QuestHolder {
 object SessionLimiter {
 
     internal fun timeLimiter(repository: IQuestSetupWizardSettingRepository, time: Long) =
-            Math.min(repository.maxSessionTime, time)
+            Math.min(repository.maxGameSessionTime, time)
 
 }
 

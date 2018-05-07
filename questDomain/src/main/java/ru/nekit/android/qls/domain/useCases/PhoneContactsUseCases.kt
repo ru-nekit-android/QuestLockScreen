@@ -13,12 +13,12 @@ import ru.nekit.android.qls.shared.model.Pupil
 object PhoneContactsUseCases : UseCaseSupport() {
 
     private val phoneContactRepository
-        get() = repository.getPhoneContactRepository()
+        get() = repositoryHolder.getPhoneContactRepository()
 
     private fun getPhoneContactsForPupil(pupil: Pupil): Single<List<PhoneContact>> =
             phoneContactRepository.getAll(pupil).map { list ->
                 ArrayList<PhoneContact>().also {
-                    it.addAll(repository.getEmergencyPhoneRepository().getPhoneContacts())
+                    it.addAll(repositoryHolder.getEmergencyPhoneRepository().getPhoneContacts())
                     it.addAll(list)
                 }
             }

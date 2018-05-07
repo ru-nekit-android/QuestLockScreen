@@ -18,7 +18,7 @@ object PupilUseCases : UseCaseSupport() {
     lateinit var uuidProvider: IUUIDProvider
 
     private val pupilRepository: IPupilRepository
-        get() = repository.getPupilRepository()
+        get() = repositoryHolder.getPupilRepository()
 
     fun createPupilAndSetAsCurrent() = buildSingleUseCase {
         getCurrentPupil().flatMap {
@@ -26,7 +26,7 @@ object PupilUseCases : UseCaseSupport() {
                 val pupil = Pupil(uuidProvider.generateUuid())
                 pupilRepository.create(pupil)
                         .andThen(pupilRepository.setCurrentPupil(pupil))
-                        .andThen(repository.getPupilStatisticsRepository().create(pupil))
+                        .andThen(repositoryHolder.getPupilStatisticsRepository().create(pupil))
             } else {
                 false.toSingle()
             }
@@ -36,7 +36,7 @@ object PupilUseCases : UseCaseSupport() {
     private fun currentPupilUseCase() = singleUseCase {
         Single.just(Optional(PupilHolder.pupil)).flatMap {
             if (it.isEmpty())
-                repository.getPupilRepository().getCurrentPupil().doOnSuccess {
+                repositoryHolder.getPupilRepository().getCurrentPupil().doOnSuccess {
                     PupilHolder.pupil = it.data
                 }
             else
@@ -54,7 +54,7 @@ object PupilUseCases : UseCaseSupport() {
         getCurrentPupil().flatMap {
             if (it.isNotEmpty()) {
                 val pupil = it.nonNullData
-                repository.getPupilRepository().update(pupil.also {
+                repositoryHolder.getPupilRepository().update(pupil.also {
                     body(pupil)
                 }).toSingleDefault(true)
             } else {

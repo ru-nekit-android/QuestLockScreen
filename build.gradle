@@ -11,8 +11,14 @@ project.ext {
 
 buildscript {
 
+    ext.ids = [
+            'application': 'ru.nekit.android.qls.parentcontrol'
+    ]
+
     ext.versions = [
-            'appCode'         : 44,
+            'appCode'         : 49,
+            'firebase'        : '11.8.0',
+            'googleServices'  : '3.2.1',
             'appName'         : '1.32',
             'gradle'          : '3.0.1',
             'buildTools'      : '27.0.3',
@@ -28,7 +34,6 @@ buildscript {
     ]
 
     ext.deps = [
-
             'kotlin'         : [
                     'stdlib': [
                             'common': "org.jetbrains.kotlin:kotlin-stdlib-common:${versions.kotlin}",
@@ -54,7 +59,12 @@ buildscript {
             'circularReveal' : 'io.github.ozodrukh:CircularReveal:2.0.1@aar',
             'gson'           : 'com.google.code.gson:gson:2.8.2',
             'firebase'       : [
-                    'ads': 'com.google.firebase:firebase-ads:11.4.2'
+                    'ads'         : "com.google.firebase:firebase-ads:${versions.firebase}",
+                    //old approach
+                    'crash'       : "com.google.firebase:firebase-crash:${versions.firebase}",
+                    'auth'        : "com.google.firebase:firebase-auth:${versions.firebase}",
+                    'firestore'    : "com.google.firebase:firebase-firestore:${versions.firebase}",
+                    'remoteConfig': "com.google.firebase:firebase-config:${versions.firebase}"
             ],
             'billing'        : "com.android.billingclient:billing:1.0",
             'rx'             : [
@@ -88,6 +98,7 @@ buildscript {
         classpath "com.android.tools.build:gradle:${versions.gradle}"
         classpath "io.objectbox:objectbox-gradle-plugin:${versions.objectbox}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+        classpath 'com.google.gms:google-services:3.1.1'
     }
 
 
@@ -95,6 +106,7 @@ buildscript {
 
 allprojects {
     repositories {
+        mavenLocal()
         jcenter()
         google()
         maven { url "http://objectbox.net/beta-repo/" }

@@ -1,9 +1,9 @@
 package ru.nekit.android.qls.lockScreen.mediator.common
 
 import io.reactivex.disposables.CompositeDisposable
-import ru.nekit.android.qls.quest.providers.IQuestContextProvider
+import ru.nekit.android.qls.quest.providers.IQuestContextSupport
 
-abstract class AbstractLockScreenContentMediator : IQuestContextProvider {
+abstract class AbstractLockScreenContentMediator : IQuestContextSupport {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
 
@@ -13,6 +13,6 @@ abstract class AbstractLockScreenContentMediator : IQuestContextProvider {
 
     abstract fun detachView()
 
-    abstract fun attachView(body: () -> Unit)
+    abstract fun attachView(callback: () -> Unit)
 
 }

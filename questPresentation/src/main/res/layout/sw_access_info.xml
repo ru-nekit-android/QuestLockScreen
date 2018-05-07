@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ru.nekit.android.qls.setupWizard.view.SubscriptionsFragment">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/tv_title"
+        style="@style/SetupWizard.Title"
+        android:layout_height="wrap_content"
+        android:text="@string/title_subscriptions" />
+
+    <LinearLayout
+        android:id="@id/container_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_subscription_info_description"
+            style="@style/AccessInfo.Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/tv_subscription_expired_time"
+            style="@style/AccessInfo.ExpiredTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_subscriptions"
+            style="@style/Subscriptions.List"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never" />
+
+    </RelativeLayout>
+
+</LinearLayout>

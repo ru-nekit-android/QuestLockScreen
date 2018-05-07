@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Window.UnlockKey.HelpOnConsume.ContentContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/checker_show_no_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/container_tool"
+        android:text="@string/label_show_no_more" />
+
+    <RelativeLayout
+        android:id="@+id/container_tool"
+        style="@style/ToolButtonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/green"
+        android:gravity="center_vertical">
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_cancel"
+            style="@style/ToolContainer.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_cancel" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_consume_unlock_key"
+            style="@style/ToolContainer.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/label_consume" />
+    </RelativeLayout>
+
+</RelativeLayout>

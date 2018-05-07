@@ -1,7 +1,7 @@
 package ru.nekit.android.qls.quest.view
 
-import io.reactivex.Single
-import ru.nekit.android.qls.domain.useCases.GenerateQuestUseCase
+import io.reactivex.disposables.Disposable
+import ru.nekit.android.qls.domain.useCases.QuestUseCases
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.view.mediator.answer.ButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.content.EmptyQuestContentMediator
@@ -32,8 +32,8 @@ class QuestVisualBuilder {
 
     companion object {
 
-        fun build(questContext: QuestContext): Single<QuestMediatorFacade> =
-                GenerateQuestUseCase(questContext.repository).build().map { quest ->
+        fun build(questContext: QuestContext, body: (QuestMediatorFacade) -> Unit): Disposable =
+                QuestUseCases.generateQuest().map { quest ->
                     val questMediatorFacade = when (quest.questType) {
 
                         COINS ->
@@ -148,6 +148,8 @@ class QuestVisualBuilder {
                     }
                     questMediatorFacade.onCreate(questContext, quest)
                     questMediatorFacade
+                }.subscribe { it ->
+                    body(it)
                 }
     }
 }
