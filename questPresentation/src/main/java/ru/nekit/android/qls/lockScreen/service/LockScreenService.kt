@@ -47,7 +47,7 @@ class LockScreenService : Service() {
         get() = dependenciesProvider.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
     private val contentIntentLockScreenSwitchOn: PendingIntent
         get() = getService(dependenciesProvider, 0,
-                LockScreen.getStartIntent(dependenciesProvider, ON_NOTIFICATION_CLICK),
+                LockScreen.getInstance().getStartIntent(ON_NOTIFICATION_CLICK),
                 FLAG_UPDATE_CURRENT)
     private val contentIntentForSetupWizard: PendingIntent
         get() = getActivity(dependenciesProvider, 0,
@@ -161,7 +161,7 @@ class LockScreenService : Service() {
                             sendBroadcast(Intent(ACTION_CLOSE_SYSTEM_DIALOGS))
                             QuestContext(dependenciesProvider, R.style.MainTheme).apply {
                                 questContext = this
-                                dependenciesProvider.createAndInjectDependencies(this)
+                                dependenciesProvider.injectDependencies(this)
                                 eventListener.listen(this, LockScreenUseCases.LockScreenHideEvent::class.java) {
                                     hideLockScreen()
                                 }
@@ -195,7 +195,7 @@ class LockScreenService : Service() {
         notificationManager.cancelAll()
         stopForeground(true)
         eventListener.stopListen(this)
-        LockScreen.startOnDestroy(this)
+        LockScreen.getInstance().startOnDestroy()
         stopSelf(startId)
     }
 
@@ -241,8 +241,8 @@ class LockScreenService : Service() {
                     .setWhen(TimeUtils.currentTime)
 
     override fun onTaskRemoved(intent: Intent) {
-        LockScreen.hide {
-            LockScreen.startOnDestroy(this)
+        LockScreen.getInstance().hide {
+            LockScreen.getInstance().startOnDestroy()
         }
     }
 

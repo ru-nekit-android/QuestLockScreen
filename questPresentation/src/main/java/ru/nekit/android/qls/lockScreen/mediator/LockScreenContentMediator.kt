@@ -73,7 +73,7 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
 
         override fun onAnimationEnd(animation: Animator) {
             animation.removeAllListeners()
-            LockScreen.hide()
+            LockScreen.getInstance().hide()
         }
 
         override fun onAnimationCancel(animation: Animator) {

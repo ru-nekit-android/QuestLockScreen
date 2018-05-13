@@ -194,7 +194,7 @@ object QuestTrainingProgramUseCases : UseCaseSupport() {
             createLocalQuestTrainingProgram(true)
 
     fun createRemoteQuestTrainingProgram() =
-            createQuestTrainingProgramWithDataSource(REMOTE, true)
+            createQuestTrainingProgramWithDataSource(REMOTE, false)
 
     fun createQuestTrainingProgram(): Single<Boolean> = createLocalQuestTrainingProgram().buildAsync().doOnSubscribe {
         createRemoteQuestTrainingProgram().use()
@@ -213,7 +213,7 @@ object QuestTrainingProgramUseCases : UseCaseSupport() {
     }, body)
 
     fun getAppropriateQuestAndQuestionType(parameter: AppropriateQuestParameter) = singleUseCase {
-        Single.zip(QuestTrainingProgramUseCases.getCurrentQuestTrainingProgramRules(),
+        Single.zip(getCurrentQuestTrainingProgramRules(),
                 GetCurrentQuestTrainingProgramAllPriorityRule(repositoryHolder).build(),
                 GetAllStatisticsReportsUseCase(repositoryHolder).build(),
                 GetLastHistoryByLimitUseCase(repositoryHolder).build(

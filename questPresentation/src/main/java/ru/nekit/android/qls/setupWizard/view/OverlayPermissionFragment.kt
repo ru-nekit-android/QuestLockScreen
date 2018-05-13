@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi
 import android.view.View
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 
 class OverlayPermissionFragment : QuestSetupWizardFragment() {
 
@@ -43,11 +44,9 @@ class OverlayPermissionFragment : QuestSetupWizardFragment() {
         setAltButtonVisibility(!overlayIsEnabled)
     }
 
-    companion object {
+    companion object : ParameterlessSingletonHolder<OverlayPermissionFragment>(::OverlayPermissionFragment) {
 
         private const val REQUEST_CODE = 1
 
-        val instance: OverlayPermissionFragment
-            get() = OverlayPermissionFragment()
     }
 }

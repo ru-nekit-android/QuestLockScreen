@@ -57,46 +57,51 @@ class PupilRepository(private val repository: IRepositoryHolder, boxStore: BoxSt
 
     override fun createBox(): Box<PupilEntity> = initBox()
 
+    private val currentPupilRepository
+        get() = repository.getCurrentPupilRepository()
+
     override fun getCurrentPupil(): Single<Optional<Pupil>> =
-            repository.getCurrentPupilRepository().getCurrentUuid().flatMap {
+            currentPupilRepository.getCurrentUuid().flatMap {
                 read(it.nonNullData)
             }
 
     override fun setCurrentPupil(pupil: Pupil): Completable =
-            repository.getCurrentPupilRepository().setCurrentUuid(pupil.uuid)
+            currentPupilRepository.setCurrentUuid(pupil.uuid)
 
     override fun dropCurrentPupil(): Completable =
-            repository.getCurrentPupilRepository().removeCurrentUuid()
+            currentPupilRepository.removeCurrentUuid()
 
     override fun create(value: Pupil): Completable =
             boxCompletableUsingFromRunnable {
                 it.put(Mapper.to(value))
             }
 
+    /*fun getCurrentEntity(): Single<Long> = getCurrentPupil().map { it.nonNullData }.flatMap {
+        getEntityId(it)
+    }*/
+
+    private fun getEntity(pupil: Pupil): Single<Optional<PupilEntity>> =
+            getEntityByUuid(pupil.uuid)
+
     fun getEntityId(pupil: Pupil): Single<Long> =
             getEntity(pupil).map { it.data?.id ?: -1 }
 
-    fun getCurrentEntity(): Single<Long> = getCurrentPupil().map { it.nonNullData }.flatMap {
-        getEntityId(it)
-    }
-
-    private fun getEntity(pupil: Pupil): Single<Optional<PupilEntity>> =
-            boxSingleUsingWithCallable {
-                Optional(it.query().equal(PupilEntity_.uuid, pupil.uuid).build().findUnique())
+    override fun read(value: String): Single<Optional<Pupil>> =
+            getEntityByUuid(value).map { entityOpt ->
+                Optional(entityOpt.data?.let {
+                    from(entityOpt.nonNullData)
+                })
             }
 
-    override fun read(value: String): Single<Optional<Pupil>> =
-            readInternal(value).map { o -> Optional(o.data?.let { from(o.nonNullData) }) }
-
-    private fun readInternal(value: String): Single<Optional<PupilEntity>> =
+    private fun getEntityByUuid(uuid: String): Single<Optional<PupilEntity>> =
             boxSingleUsingWithCallable {
-                Optional(it.queryByUuid(value).findFirst())
+                Optional(it.queryByUuid(uuid).findUnique())
             }
 
     @Throws(PupilIsNotExist::class)
     override fun update(value: Pupil) =
             boxCompletableUsing { box ->
-                readInternal(value.uuid).flatMapCompletable { pupilEntity ->
+                getEntityByUuid(value.uuid).flatMapCompletable { pupilEntity ->
                     if (pupilEntity.isEmpty()) {
                         Completable.error(PupilIsNotExist())
                     } else
@@ -117,7 +122,8 @@ class PupilRepository(private val repository: IRepositoryHolder, boxStore: BoxSt
                 it.queryByUuid(value.uuid).remove()
             }
 
-    private fun Box<PupilEntity>.queryByUuid(uuid: String): Query<PupilEntity> = queryBy(PupilEntity_.uuid, uuid)
+    private fun Box<PupilEntity>.queryByUuid(uuid: String): Query<PupilEntity> =
+            queryBy(PupilEntity_.uuid, uuid)
 
     companion object Mapper : IEntityMapper<PupilEntity, Pupil> {
         override fun from(value: PupilEntity): Pupil {
@@ -638,10 +644,14 @@ open class SessionRepository(sharedPreferences: SharedPreferences) : ISessionRep
 
     private val store: StringKeyLongValueStore = StringKeyLongValueStore(sharedPreferences)
 
-    override fun get(sessionName: String): Long = store.get(sessionName)
+    override fun get(session: SessionType): Long = store.get(getName(session))
 
-    override fun set(sessionName: String, time: Long) =
-            store.set(sessionName, time)
+    override fun set(session: SessionType, time: Long) =
+            store.set(getName(session), time)
+
+    companion object {
+        fun getName(sessionType: SessionType) = String.format("session.%s", sessionType.name)
+    }
 
 }
 
@@ -658,10 +668,6 @@ class QuestSetupWizardSettingRepository(private val resources: Resources,
         get() = booleanStore.get(USE_REMOTE_QTP)
         set(value) = booleanStore.set(USE_REMOTE_QTP, value)
 
-    override var version: String
-        get() = stringStore.get(VERSION)
-        set(value) = stringStore.set(VERSION, value)
-
     override var timeoutToSkipAfterRightAnswer: Long
         get() = longStore.get(TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER)
         set(value) = longStore.set(TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER, value)
@@ -669,6 +675,10 @@ class QuestSetupWizardSettingRepository(private val resources: Resources,
     override var showUnlockKeyHelpOnConsume: Boolean
         get() = booleanStore.get(UNLOCK_KEY_HELP_ON_CONSUME, CONST.UNLOCK_KEY_HELP_ON_CONSUME)
         set(value) = booleanStore.set(UNLOCK_KEY_HELP_ON_CONSUME, value)
+
+    override var useQTPComplexity: Boolean
+        get() = booleanStore.get(USE_QTP_COMPLEXITY)
+        set(value) = booleanStore.set(USE_QTP_COMPLEXITY, value)
 
     override var maxGameSessionTime: Long
         get() = longStore.get(MAX_GAME_SESSION_TIME)
@@ -688,10 +698,10 @@ class QuestSetupWizardSettingRepository(private val resources: Resources,
         const val UNLOCK_KEY_HELP_ON_CONSUME = "unlockKeyHelpOnConsume"
         const val SKIP_AFTER_RIGHT_ANSWER = "skipAfterRightAnswer"
         const val TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER = "timeoutToSkipAfterRightAnswer"
-        const val VERSION = "version"
         const val MAX_GAME_SESSION_TIME = "maxGameSessionTime"
         const val ADS_SKIP_TIMEOUT = "adsSkipTimeout"
         const val USE_REMOTE_QTP = "useRemoteQTP"
+        const val USE_QTP_COMPLEXITY = "useQTPComplexity"
 
     }
 }

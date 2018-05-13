@@ -3,7 +3,6 @@ package ru.nekit.android.qls.setupWizard.view
 import android.os.Bundle
 import android.support.annotation.LayoutRes
 import android.view.View
-import android.widget.TextView
 import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.PatternLockView.PatternViewMode.WRONG
 import com.andrognito.patternlockview.listener.PatternLockViewListener
@@ -17,6 +16,7 @@ import ru.nekit.android.qls.setupWizard.ISetupWizardStep
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.SETUP_UNLOCK_SECRET
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.KeyboardHost
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 import ru.nekit.android.utils.Vibrate
 
 class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener {
@@ -26,7 +26,6 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
     private lateinit var pattern: List<PatternLockView.Dot>
 
     override fun onStarted() {
-
     }
 
     override fun onProgress(pattern: List<PatternLockView.Dot>) {
@@ -76,14 +75,15 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
             isTactileFeedbackEnabled = true
             isInputEnabled = true
         }
-        val titleView = view.findViewById<TextView>(R.id.tv_title)
         if (step == SETUP_UNLOCK_SECRET) {
             titleView.text = getString(R.string.title_setup_unlock_secret)
             setNextButtonText(R.string.label_set_unlock_secret)
             setAltButtonText(R.string.label_reset_unlock_secret)
+            descriptionView.visibility = View.VISIBLE
         } else if (step == UNLOCK_SECRET) {
             setToolContainerVisibility(false)
             titleView.text = getString(R.string.title_enter_unlock_secret)
+            descriptionView.visibility = View.GONE
         }
         setAltButtonVisibility(false)
         update(false)
@@ -112,9 +112,7 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
             setupWizard.setUnlockSecret(PatternLockUtils.patternToMD5(patternLockView, pattern)).toSingleDefault(true)
 
     @LayoutRes
-    override fun getLayoutId(): Int {
-        return R.layout.sw_unlock_secret
-    }
+    override fun getLayoutId() = R.layout.sw_unlock_secret
 
     private fun update(unlockSecretIsSet: Boolean) {
         setNextButtonVisibility(unlockSecretIsSet)
@@ -131,14 +129,14 @@ class UnlockSecretFragment : QuestSetupWizardFragment(), PatternLockViewListener
         setNextButtonVisibility(false)
     }
 
-    companion object {
+    fun setStep(step: ISetupWizardStep) {
+        getInstance().step = step
+    }
+
+    companion object : ParameterlessSingletonHolder<UnlockSecretFragment>(::UnlockSecretFragment) {
 
         const val CURRENT_STEP = "current_step"
 
-        fun getInstance(step: ISetupWizardStep): UnlockSecretFragment {
-            val fragment = UnlockSecretFragment()
-            fragment.step = step
-            return fragment
-        }
+
     }
 }

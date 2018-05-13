@@ -36,7 +36,7 @@ class FruitArithmeticAnswerMediator : ButtonListAnswerMediator() {
                               layoutParams: LinearLayout.LayoutParams, isFirst: Boolean, isLast: Boolean): View {
         val button = LayoutInflater.from(questContext).inflate(R.layout.button_fruit_arithmetic, null)
         button.setBackgroundResource(R.drawable.background_button_green)
-        val margin = questContext.resources.getDimensionPixelSize(R.dimen.big_gap) / 4
+        val margin = questContext.resources.getDimensionPixelSize(R.dimen.double_gap) / 4
         layoutParams.setMargins(if (isFirst) 0 else margin, margin, if (isLast) 0 else margin, margin)
         return button
     }

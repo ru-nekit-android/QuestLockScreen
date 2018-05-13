@@ -4,7 +4,7 @@
     style="@style/SetupWizard.PupilName"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.nekit.android.qls.setupWizard.view.SetupPupilNameFragment">
+    tools:context="ru.nekit.android.qls.setupWizard.view.SetupPupilNameAndSexFragment">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_title"
@@ -16,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_title"
-        android:gravity="center_vertical"
         android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
@@ -32,6 +31,28 @@
                 android:inputType="textPersonName" />
 
         </android.support.design.widget.TextInputLayout>
+
+        <RadioGroup
+            android:id="@+id/pupil_sex_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/pupil_sex_boy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pupil_sex_boy_title" />
+
+            <android.support.v7.widget.AppCompatRadioButton
+                android:id="@+id/pupil_sex_girl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pupil_sex_girl_title" />
+
+        </RadioGroup>
 
     </LinearLayout>
 

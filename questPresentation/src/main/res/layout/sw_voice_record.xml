@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatTextView
-            style="@style/Title.h2.Padding"
+            style="@style/Title.Padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_setup_voice_message_for_right_answer" />
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/big_gap"
+                android:padding="@dimen/double_gap"
                 app:srcCompat="@drawable/right_answer" />
 
             <RelativeLayout
@@ -68,7 +68,7 @@
         </LinearLayout>
 
         <android.support.v7.widget.AppCompatTextView
-            style="@style/Title.h2.Padding"
+            style="@style/Title.Padding"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/title_setup_voice_message_for_wrong_answer" />
@@ -84,7 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:padding="@dimen/big_gap"
+                android:padding="@dimen/double_gap"
                 app:srcCompat="@drawable/wrong_answer" />
 
             <RelativeLayout

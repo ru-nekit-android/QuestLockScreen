@@ -27,13 +27,15 @@ class QuestSetupWizardActivity : BaseSetupWizardActivity() {
         setupWizard.commitCurrentSetupStep(step)
         replaceFragment(
                 when (step) {
-                    START -> StartSetupWizardFragment.instance
-                    OVERLAY_PERMISSION -> OverlayPermissionFragment.instance
+                    START -> StartSetupWizardFragment.getInstance()
+                    OVERLAY_PERMISSION -> OverlayPermissionFragment.getInstance()
                     SETUP_UNLOCK_SECRET, UNLOCK_SECRET, CHANGE_UNLOCK_SECRET ->
-                        UnlockSecretFragment.getInstance(step)
+                        UnlockSecretFragment.getInstance().also {
+                            it.setStep(step)
+                        }
                     DEVICE_ADMIN -> SetupDeviceAdminFragment.instance
-                    PUPIL_NAME -> SetupPupilNameFragment.instance
-                    PUPIL_SEX -> SetupPupilSexFragment.instance
+                    PUPIL_NAME_AND_SEX -> SetupPupilNameAndSexFragment.instance
+                    //PUPIL_SEX -> SetupPupilSexFragment.instance
                     QTP_COMPLEXITY -> SetupQTPComplexityFragment.instance
                     PUPIL_AVATAR -> SetupPupilAvatarFragment.instance
                     CALL_PHONE_AND_READ_CONTACTS_PERMISSION ->

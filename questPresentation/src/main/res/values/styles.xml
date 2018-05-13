@@ -169,8 +169,8 @@
     </style>
 
     <style name="LockScreen.QuestView.TitleContainer">
-        <item name="android:paddingLeft">@dimen/big_gap</item>
-        <item name="android:paddingRight">@dimen/big_gap</item>
+        <item name="android:paddingLeft">@dimen/double_gap</item>
+        <item name="android:paddingRight">@dimen/double_gap</item>
         <item name="android:paddingBottom">@dimen/normal_gap</item>
         <item name="android:paddingTop">@dimen/normal_gap</item>
         <item name="android:background">@color/green</item>
@@ -219,7 +219,7 @@
         <item name="android:background">@color/green</item>
     </style>
 
-    <style name="RightAnswer" />
+    <style name="RightAnswer"/>
 
     <style name="RightAnswer.ContentContainer.Simple" />
 
@@ -246,7 +246,7 @@
         <item name="android:textSize">18sp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -268,9 +268,9 @@
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left</item>
-        <item name="android:layout_marginTop">@dimen/big_gap</item>
-        <item name="android:layout_marginLeft">@dimen/big_gap</item>
-        <item name="android:layout_marginRight">@dimen/big_gap</item>
+        <item name="android:layout_marginTop">@dimen/double_gap</item>
+        <item name="android:layout_marginLeft">@dimen/double_gap</item>
+        <item name="android:layout_marginRight">@dimen/double_gap</item>
         <item name="android:background">@drawable/background_message_green</item>
     </style>
 
@@ -300,16 +300,16 @@
         <item name="android:gravity">center</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
     </style>
 
     <style name="WrongAnswer.Text" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:gravity">left</item>
-        <item name="android:layout_marginTop">@dimen/big_gap</item>
-        <item name="android:layout_marginLeft">@dimen/big_gap</item>
-        <item name="android:layout_marginRight">@dimen/big_gap</item>
+        <item name="android:layout_marginTop">@dimen/double_gap</item>
+        <item name="android:layout_marginLeft">@dimen/double_gap</item>
+        <item name="android:layout_marginRight">@dimen/double_gap</item>
         <item name="android:background">@drawable/background_message_red</item>
     </style>
 
@@ -349,7 +349,7 @@
     </style>
 
     <style name="Quest.ContentContainer">
-        <item name="android:layout_margin">@dimen/big_gap</item>
+        <item name="android:layout_margin">@dimen/double_gap</item>
     </style>
 
     <style name="Quest.AnswerInputContainer">
@@ -371,9 +371,9 @@
     </style>
 
     <style name="Quest.AlternativeAnswerContainer">
-        <item name="android:layout_marginLeft">@dimen/big_gap</item>
-        <item name="android:layout_marginRight">@dimen/big_gap</item>
-        <item name="android:layout_marginBottom">@dimen/big_gap</item>
+        <item name="android:layout_marginLeft">@dimen/double_gap</item>
+        <item name="android:layout_marginRight">@dimen/double_gap</item>
+        <item name="android:layout_marginBottom">@dimen/double_gap</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
     </style>
@@ -453,9 +453,9 @@
 
     <style name="Window.Menu.TitleContainer" parent="TitleContainer">
         <item name="android:background">@color/green</item>
-        <item name="android:paddingLeft">@dimen/big_gap</item>
+        <item name="android:paddingLeft">@dimen/double_gap</item>
         <item name="android:paddingTop">@dimen/normal_gap</item>
-        <item name="android:paddingRight">@dimen/big_gap</item>
+        <item name="android:paddingRight">@dimen/double_gap</item>
         <item name="android:paddingBottom">@dimen/normal_gap</item>
     </style>
 
@@ -554,9 +554,9 @@
 
     <style name="Window.UnlockKey.TitleContainer" parent="TitleContainer">
         <item name="android:background">@color/green</item>
-        <item name="android:paddingLeft">@dimen/big_gap</item>
+        <item name="android:paddingLeft">@dimen/double_gap</item>
         <item name="android:paddingTop">@dimen/normal_gap</item>
-        <item name="android:paddingRight">@dimen/big_gap</item>
+        <item name="android:paddingRight">@dimen/double_gap</item>
         <item name="android:paddingBottom">@dimen/normal_gap</item>
     </style>
 
@@ -586,8 +586,8 @@
         <item name="cardCornerRadius">@dimen/base_corner_radius</item>
         <item name="cardElevation">0dp</item>
         <item name="cardUseCompatPadding">false</item>
-        <item name="android:layout_marginRight">@dimen/big_gap</item>
-        <item name="android:layout_marginLeft">@dimen/big_gap</item>
+        <item name="android:layout_marginRight">@dimen/double_gap</item>
+        <item name="android:layout_marginLeft">@dimen/double_gap</item>
         <item name="android:padding">@dimen/normal_gap</item>
     </style>
 
@@ -620,7 +620,7 @@
     <style name="Quest.Time.Content" />
 
     <style name="Quest.Time.Content.Background">
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
     </style>
 
     <style name="Quest.Choice" />
@@ -635,7 +635,7 @@
     <style name="Quest.Choice.Content" />
 
     <style name="Quest.Choice.Content.Background">
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
     </style>
 
     <style name="Quest.Perimeter">
@@ -738,13 +738,13 @@
 
     <style name="AccessInfo" />
 
-    <style name="AccessInfo.Title" parent="Title.h1.Padding">
+    <style name="AccessInfo.Title" parent="Title.Padding">
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="AccessInfo.ExpiredTime" parent="Title.h2">
+    <style name="AccessInfo.ExpiredTime" parent="Title">
         <item name="android:fontFamily">@font/roboto_light</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
@@ -761,13 +761,13 @@
     </style>
 
     <style name="Subscriptions.ContentContainer">
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
         <item name="android:gravity">right</item>
     </style>
 
     <style name="Subscriptions.Button" />
 
-    <style name="Subscriptions.Title" parent="Title.h2">
+    <style name="Subscriptions.Title" parent="Title">
         <item name="android:textColor">@color/black</item>
     </style>
 
@@ -856,7 +856,7 @@
     </style>
 
     <style name="PhoneContact.Modification.ContentContainer">
-        <item name="android:padding">@dimen/big_gap</item>
+        <item name="android:padding">@dimen/double_gap</item>
     </style>
 
     <style name="PhoneContact.Modification.ActionButton">

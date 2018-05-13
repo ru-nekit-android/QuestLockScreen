@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tv_title"
-        android:padding="@dimen/big_gap"
+        android:padding="@dimen/double_gap"
         app:srcCompat="@drawable/wrong_answer" />
 
     <android.support.v7.widget.AppCompatTextView

@@ -46,8 +46,8 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
     val phoneContacts get() = PhoneContactsUseCases.getPhoneContacts()
     val deviceAdminComponent get() = ComponentName(dependenciesProvider, DeviceAdminComponent::class.java)
     val pupil get() = PupilUseCases.getCurrentPupil()
-
-    val version: String get() = dependenciesProvider.repositoryHolder.getQuestSetupWizardSettingRepository().version
+    val questSetupWizardRepository
+        get() = dependenciesProvider.repositoryHolder.getQuestSetupWizardSettingRepository()
 
     private fun getPurchasedSubscription(body: (SKUPurchase?) -> Unit) =
             SKUUseCases.purchasedSubscription().use { it -> body(it.data) }
@@ -83,8 +83,8 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
     fun deviceAdminPermissionsIsActive(): Boolean =
             (dependenciesProvider.getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager).isAdminActive(deviceAdminComponent)
 
-    fun setPupilName(name: String): Single<Boolean> =
-            updatePupilParameter { it.name = name }
+    /*fun setPupilName(name: String): Single<Boolean> =
+            updatePupilParameter { it.name = name }*/
 
     fun setPupilSex(sex: PupilSex): Single<Boolean> =
             updatePupilParameter { it.sex = sex }
@@ -101,7 +101,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
             PupilUseCases.updatePupil(body)
 
     override fun calculateNextStep(): Single<ISetupWizardStep> =
-            SetupWizardUseCases.setupIsComplete().buildAsync().flatMapPublisher { isComplete ->
+            SetupWizardUseCases.setupIsComplete().build().flatMapPublisher { isComplete ->
                 Flowable.fromIterable(QuestSetupWizardStep.values().toList()).concatMap { step ->
                     if (isComplete) {
                         val flags = step.flags
@@ -145,12 +145,12 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
 
     override fun completeSetupWizard() {
         SetupWizardUseCases.completeSetupWizard()
-        LockScreen.startForSetupWizard(dependenciesProvider)
+        LockScreen.getInstance().startForSetupWizard()
     }
 
     override fun startSetupWizard() {
         SetupWizardUseCases.startSetupWizard()
-        LockScreen.startForSetupWizard(dependenciesProvider)
+        LockScreen.getInstance().startForSetupWizard()
     }
 
     fun setUnlockSecret(value: String): Completable = UnlockSecretUseCases.setUnlockSecret(value)
@@ -162,7 +162,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
         return PhoneUtils.phoneIsAvailable(dependenciesProvider)
     }
 
-    fun lockScreenIsSwitchedOn(body: (Boolean) -> Unit) = LockScreen.isSwitchedOn(body)
+    fun lockScreenIsSwitchedOn(body: (Boolean) -> Unit) = LockScreen.getInstance().isSwitchedOn(body)
 
     fun createBindCode(): Single<String> =
             pupil.flatMap {
@@ -173,9 +173,10 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
                 )
             }
 
-    fun createPupilAndSetAsCurrent(): Single<Boolean> = PupilUseCases.createPupilAndSetAsCurrent()
+    fun createPupil(pupilName: String, pupilSex: PupilSex): Single<Boolean> =
+            PupilUseCases.createPupil(pupilName, pupilSex)
 
-    fun stop() = LockScreen.stop(dependenciesProvider)
+    fun pause() = LockScreen.getInstance().pause()
 
     /*
     fun setDeviceAdminRemovable(visibility: Boolean) {
@@ -229,24 +230,28 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
                 else true
             }
         },
-        PUPIL_NAME(SETUP_WIZARD_PARENT) {
+        PUPIL_NAME_AND_SEX(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
                 return setupWizard.pupil.map {
                     it.isNotEmpty() && it.nonNullData.name?.isNotEmpty() != null
                 }
             }
         },
-        PUPIL_SEX(SETUP_WIZARD_PARENT) {
+        /*PUPIL_SEX(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
                 return setupWizard.pupil.map {
                     it.data?.sex != null
                 }
             }
-        },
+        },*/
         QTP_COMPLEXITY(SETUP_WIZARD_PARENT) {
-            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
-                return setupWizard.pupil.map { it.data?.complexity != null }
-            }
+            override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> =
+                    setupWizard.pupil.map {
+                        if (setupWizard.questSetupWizardRepository.useQTPComplexity)
+                            it.data?.complexity != null
+                        else
+                            true
+                    }
         },
         PUPIL_AVATAR(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
@@ -313,7 +318,6 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
                         flags = FLAG_ACTIVITY_CLEAR_TASK or FLAG_ACTIVITY_NEW_TASK
                     }
                 }
-
     }
 
 }

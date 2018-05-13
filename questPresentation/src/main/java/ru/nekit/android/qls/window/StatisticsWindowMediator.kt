@@ -41,16 +41,18 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
                 windowContent = it
                 val margin = questContext.resources.getDimensionPixelOffset(R.dimen.normal_gap)
                 values().forEach { step ->
-                    AppCompatImageButton(questContext).apply {
-                        tag = step
-                        setImageResource(icons[step]!![1])
-                        LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f).apply {
-                            setMargins(margin, margin, margin, margin)
-                            layoutParams = this
-                        }
-                        windowContent.buttonContainer.addView(this)
-                        click {
-                            setStep(step)
+                    if (step.enabled) {
+                        AppCompatImageButton(questContext).apply {
+                            tag = step
+                            setImageResource(icons[step]!![1])
+                            LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f).apply {
+                                setMargins(margin, margin, margin, margin)
+                                layoutParams = this
+                            }
+                            windowContent.buttonContainer.addView(this)
+                            click {
+                                setStep(step)
+                            }
                         }
                     }
                 }
@@ -151,12 +153,10 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
         currentStep = null
     }
 
-    enum class Step {
-
-        STATISTICS,
-        REWARDS,
-        GIFTS;
-
+    enum class Step(val enabled: Boolean) {
+        STATISTICS(true),
+        REWARDS(false),
+        GIFTS(false);
     }
 
     internal class StatisticsWindowContentViewHolder(context: Context) : WindowContentViewHolder(context, R.layout.wc_menu) {

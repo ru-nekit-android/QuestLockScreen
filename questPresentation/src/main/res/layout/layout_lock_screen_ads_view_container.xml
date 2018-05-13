@@ -63,8 +63,8 @@
                 <at.grabner.circleprogress.CircleProgressView
                     android:id="@+id/loading_indicator"
                     style="@style/AdsTimeoutProgress"
-                    android:layout_marginLeft="@dimen/big_gap"
-                    android:layout_marginRight="@dimen/big_gap" />
+                    android:layout_marginLeft="@dimen/double_gap"
+                    android:layout_marginRight="@dimen/double_gap" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/tv_loading_indicator"

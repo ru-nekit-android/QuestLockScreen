@@ -31,6 +31,7 @@ import ru.nekit.android.qls.domain.model.StatisticsPeriodType
 import ru.nekit.android.qls.domain.providers.*
 import ru.nekit.android.qls.domain.repository.*
 import ru.nekit.android.qls.domain.useCases.*
+import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.billing.Billing
 import ru.nekit.android.qls.setupWizard.remote.RemoteConfig
@@ -67,7 +68,7 @@ open class DependenciesProvider : Application() {
     private lateinit var mSetupWizard: QuestSetupWizard
     private lateinit var mBilling: Billing
     private lateinit var mLogger: ILogger
-    private lateinit var remoteConfig: RemoteConfig
+    private lateinit var mRemoteConfig: RemoteConfig
     private lateinit var mLocalQuestTrainingProgramSource: IQuestTrainingProgramDataSource
     private lateinit var mRemoteQuestTrainingProgramSource: IQuestTrainingProgramDataSource
 
@@ -147,7 +148,7 @@ open class DependenciesProvider : Application() {
         mSetupWizard = QuestSetupWizard.getInstance(this)
         mBilling = Billing(this)
         mLogger = Logger()
-        remoteConfig = createAndInjectDependencies(RemoteConfig.getInstance())
+        mRemoteConfig = RemoteConfig.getInstance()
         mLocalQuestTrainingProgramSource = LocalQuestTrainingProgramDataSource(this)
         mRemoteQuestTrainingProgramSource = RemoteQuestTrainingProgramDataSource()
     }
@@ -171,6 +172,8 @@ open class DependenciesProvider : Application() {
         injectDependenciesForUseCase(PremiumAccessUseCases)
         injectDependenciesForUseCase(SKUUseCases)
         injectDependenciesForUseCase(QuestTrainingProgramUseCases)
+        injectDependencies(mRemoteConfig)
+        injectDependencies(LockScreen.getInstance())
     }
 
     fun getTimeProvider() = object : ITimeProvider {
@@ -224,7 +227,7 @@ open class DependenciesProvider : Application() {
     fun getBilling(): Billing = mBilling
 
     private fun injectDependenciesForUseCase(value: IUseCaseSupport): IUseCaseSupport {
-        createAndInjectDependencies(value)
+        injectDependencies(value)
         value.apply {
             logger = mLogger
             when (value) {
@@ -246,7 +249,7 @@ open class DependenciesProvider : Application() {
 
     }
 
-    fun <T : IDependenciesHolder> createAndInjectDependencies(value: T): T {
+    fun <T : IDependenciesHolder> injectDependencies(value: T): T {
         value.apply {
             repositoryHolder = this@DependenciesProvider.repositoryHolder
             schedulerProvider = defaultSchedulerProvider
@@ -254,8 +257,12 @@ open class DependenciesProvider : Application() {
             eventSender = getEventSender()
             eventListener = getEventListener()
             screenProvider = getScreenProvider()
+            if(this is ContextDependenciesHolder) context = this@DependenciesProvider
         }
+
         return value
     }
+
+    fun getRemoteConfig() = mRemoteConfig
 
 }

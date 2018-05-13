@@ -10,6 +10,6 @@ class BootCompletedReceiver : BroadcastReceiver() {
 
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     override fun onReceive(context: Context, intent: Intent) {
-        LockScreen.startOnBootComplete(context)
+        LockScreen.getInstance().startOnBootComplete()
     }
 }

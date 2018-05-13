@@ -16,7 +16,7 @@ buildscript {
     ]
 
     ext.versions = [
-            'appCode'         : 49,
+            'appCode'         : 50,
             'firebase'        : '11.8.0',
             'googleServices'  : '3.2.1',
             'appName'         : '1.32',

@@ -10,7 +10,9 @@ import ru.nekit.android.qls.domain.providers.IUUIDProvider
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
 import ru.nekit.android.qls.domain.repository.IPupilRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
+import ru.nekit.android.qls.shared.model.Complexity
 import ru.nekit.android.qls.shared.model.Pupil
+import ru.nekit.android.qls.shared.model.PupilSex
 import ru.nekit.android.utils.toSingle
 
 object PupilUseCases : UseCaseSupport() {
@@ -20,23 +22,31 @@ object PupilUseCases : UseCaseSupport() {
     private val pupilRepository: IPupilRepository
         get() = repositoryHolder.getPupilRepository()
 
-    fun createPupilAndSetAsCurrent() = buildSingleUseCase {
+    private val questSetupWizardRepository
+        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
+
+    fun createPupil(pupilName: String, pupilSex: PupilSex) = buildSingleUseCase {
         getCurrentPupil().flatMap {
-            if (it.isEmpty()) {
-                val pupil = Pupil(uuidProvider.generateUuid())
-                pupilRepository.create(pupil)
-                        .andThen(pupilRepository.setCurrentPupil(pupil))
-                        .andThen(repositoryHolder.getPupilStatisticsRepository().create(pupil))
-            } else {
+            if (it.isEmpty())
+                Pupil(uuidProvider.generateUuid(),
+                        pupilName,
+                        pupilSex,
+                        if (!questSetupWizardRepository.useQTPComplexity)
+                            Complexity.NORMAL else null
+                ).let { pupil ->
+                    pupilRepository.create(pupil)
+                            .andThen(pupilRepository.setCurrentPupil(pupil))
+                            .andThen(repositoryHolder.getPupilStatisticsRepository().create(pupil))
+                }
+            else
                 false.toSingle()
-            }
         }
     }
 
     private fun currentPupilUseCase() = singleUseCase {
         Single.just(Optional(PupilHolder.pupil)).flatMap {
             if (it.isEmpty())
-                repositoryHolder.getPupilRepository().getCurrentPupil().doOnSuccess {
+                pupilRepository.getCurrentPupil().doOnSuccess {
                     PupilHolder.pupil = it.data
                 }
             else
@@ -44,7 +54,7 @@ object PupilUseCases : UseCaseSupport() {
         }
     }
 
-    fun useCurrentPupil(body: (Pupil) -> Unit) = currentPupilUseCase().use { it ->
+    fun useCurrentPupil(body: (Pupil) -> Unit) = currentPupilUseCase().use {
         body(it.nonNullData)
     }
 
@@ -54,7 +64,7 @@ object PupilUseCases : UseCaseSupport() {
         getCurrentPupil().flatMap {
             if (it.isNotEmpty()) {
                 val pupil = it.nonNullData
-                repositoryHolder.getPupilRepository().update(pupil.also {
+                pupilRepository.update(pupil.also {
                     body(pupil)
                 }).toSingleDefault(true)
             } else {

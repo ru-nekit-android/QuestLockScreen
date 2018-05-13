@@ -6,7 +6,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.useCases.SetupWizardUseCases
@@ -20,7 +19,6 @@ class SettingsFragment : QuestSetupWizardFragment() {
 
     override var unconditionedNextAction: Boolean = true
 
-    private lateinit var titleView: TextView
     private lateinit var saveQuestSeriesLengthButton: Button
     //private lateinit var showBindParentButton: Button
     private lateinit var voiceRecorderButton: Button
@@ -36,7 +34,6 @@ class SettingsFragment : QuestSetupWizardFragment() {
         phoneContactsButton = view.findViewById(R.id.btn_phone_contacts)
         phoneContactsButton.visibility = if (setupWizard.phoneIsAvailable()) VISIBLE else GONE
         questSeriesLengthInput = view.findViewById(R.id.input_quest_series_length)
-        titleView = view.findViewById(R.id.tv_title)
         SetupWizardUseCases.getQuestSeriesLength { value ->
             questSeriesLengthInput.setText(value.toString())
         }
@@ -75,7 +72,7 @@ class SettingsFragment : QuestSetupWizardFragment() {
     }
 
     override fun nextAction(): Single<Boolean> = Single.fromCallable {
-        LockScreen.play(context!!)
+        LockScreen.getInstance().play()
         false
     }
 
@@ -83,7 +80,7 @@ class SettingsFragment : QuestSetupWizardFragment() {
     override fun getLayoutId(): Int = R.layout.sw_settings
 
     override fun altAction() {
-        setupWizard.stop()
+        setupWizard.pause()
         setupWizard.lockScreenIsSwitchedOn {
             setAltButtonVisibility(it)
         }

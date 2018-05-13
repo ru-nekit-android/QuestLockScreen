@@ -1,6 +1,6 @@
 <resources>
     <dimen name="status_bar_height">25dp</dimen>
-    <dimen name="big_gap">16dp</dimen>
+    <dimen name="double_gap">16dp</dimen>
     <dimen name="base_corner_radius">8dp</dimen>
     <dimen name="big_corner_radius">24dp</dimen>
     <dimen name="normal_gap">8dp</dimen>

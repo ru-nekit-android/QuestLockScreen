@@ -137,9 +137,8 @@ object LockScreenUseCases : UseCaseSupport() {
                 }
             }
 
-    private fun sendHideEvent() {
-        eventSender.send(LockScreenHideEvent)
-    }
+    private fun sendHideEvent() = eventSender.send(LockScreenHideEvent)
+
 
     object LockScreenHideEvent : IEvent {
 

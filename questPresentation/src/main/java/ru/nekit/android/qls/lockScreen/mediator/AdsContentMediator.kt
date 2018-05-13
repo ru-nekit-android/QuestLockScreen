@@ -87,7 +87,7 @@ class AdsContentMediator(override var questContext: QuestContext) :
                     }
 
                     override fun onAdLeftApplication() {
-                        LockScreen.hide()
+                        LockScreen.getInstance().hide()
                     }
 
                     override fun onAdOpened() {

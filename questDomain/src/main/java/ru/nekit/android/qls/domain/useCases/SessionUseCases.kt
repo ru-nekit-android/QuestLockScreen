@@ -12,13 +12,13 @@ object SessionUseCases : UseCaseSupport() {
         get() = repositoryHolder.getSessionRepository()
 
     fun checkSessionValidation(sessionType: SessionType) = buildSingleUseCaseFromCallable {
-        val sessionTime = sessionRepository.get(getName(sessionType))
+        val sessionTime = sessionRepository.get(sessionType)
         sessionTime != 0L &&
                 (timeProvider.getCurrentTime() - sessionTime) <= sessionType.expiredTime
     }
 
     private fun startSession(session: SessionType) = buildCompletableUseCaseFromRunnable {
-        sessionRepository.set(getName(session), timeProvider.getCurrentTime())
+        sessionRepository.set(session, timeProvider.getCurrentTime())
     }
 
     fun startAllSessions() = buildCompletableUseCase {
@@ -28,7 +28,4 @@ object SessionUseCases : UseCaseSupport() {
                 }
         )
     }
-
-    fun getName(sessionType: SessionType) = String.format("session.%s", sessionType.name)
-
 }

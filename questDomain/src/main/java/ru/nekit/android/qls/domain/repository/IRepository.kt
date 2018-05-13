@@ -111,8 +111,6 @@ interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
     //remote
     var skipAfterRightAnswer: Boolean
     //remote
-    var version: String
-    //remote
     var timeoutToSkipAfterRightAnswer: Long
     //remote
     var maxGameSessionTime: Long
@@ -120,6 +118,8 @@ interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
     var adsSkipTimeout: Long
     //remote
     var useRemoteQTP: Boolean
+    //remote
+    var useQTPComplexity: Boolean
 
     var showUnlockKeyHelpOnConsume: Boolean
 
@@ -162,9 +162,9 @@ interface IPhoneContactRepository {
 
 interface ISessionRepository {
 
-    fun get(sessionName: String): Long
+    fun get(session: SessionType): Long
 
-    fun set(sessionName: String, time: Long)
+    fun set(session: SessionType, time: Long)
 
 }
 

@@ -22,6 +22,7 @@ class QuestLockScreenApplication : DependenciesProvider() {
             boxStore.boxFor(SKUPurchaseEntity::class.java).removeAll()
             repositoryHolder.getRewardRepository().clear()
         }
+        getRemoteConfig().fetchConfig()
     }
 
     override fun attachBaseContext(base: Context) {

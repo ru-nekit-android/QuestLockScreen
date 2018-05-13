@@ -7,7 +7,9 @@ import io.reactivex.Single
 import ru.nekit.android.domain.interactor.*
 
 interface IUseCaseSupport : IDependenciesHolder {
+
     var logger: ILogger
+
 }
 
 open class UseCaseSupport : DependenciesHolder(), IUseCaseSupport {
@@ -56,7 +58,8 @@ open class UseCaseSupport : DependenciesHolder(), IUseCaseSupport {
     protected fun buildCompletableUseCase(body: () -> Completable): Completable =
             buildCompletableUseCase(schedulerProvider, body)
 
-    protected fun <T> Observable<T>.applySchedulers(): Observable<T> = applySchedulers(schedulerProvider)
+    protected fun <T> Observable<T>.applySchedulers(): Observable<T> =
+            applySchedulers(schedulerProvider)
 
     protected fun <T> Flowable<T>.applySchedulers(): Flowable<T> =
             applySchedulers(schedulerProvider)

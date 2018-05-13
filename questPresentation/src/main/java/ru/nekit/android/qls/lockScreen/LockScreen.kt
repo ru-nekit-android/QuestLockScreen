@@ -1,15 +1,16 @@
 package ru.nekit.android.qls.lockScreen
 
-import android.content.Context
 import android.content.Intent
 import android.support.v4.content.ContextCompat
+import ru.nekit.android.qls.dependences.ContextDependenciesHolder
 import ru.nekit.android.qls.domain.model.LockScreenStartType
 import ru.nekit.android.qls.domain.model.LockScreenStartType.*
 import ru.nekit.android.qls.domain.useCases.LockScreenUseCases
 import ru.nekit.android.qls.domain.useCases.SetupWizardUseCases
 import ru.nekit.android.qls.lockScreen.service.LockScreenService
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 
-object LockScreen {
+class LockScreen private constructor() : ContextDependenciesHolder() {
 
     /*
     checkStatus
@@ -17,31 +18,31 @@ object LockScreen {
     play
     */
 
-    private fun startIfOn(context: Context, startType: LockScreenStartType) =
+    private fun startIfOn(startType: LockScreenStartType) =
             LockScreenUseCases.isSwitchedOn {
-                if (it) start(context, startType)
+                if (it) start(startType)
             }
 
-    private fun start(context: Context, startType: LockScreenStartType) =
+    private fun start(startType: LockScreenStartType) =
             LockScreenUseCases.start(startType) {
-                ContextCompat.startForegroundService(context, getStartIntent(context, startType))
+                ContextCompat.startForegroundService(context, getStartIntent(startType))
             }
 
-    fun startForSetupWizard(context: Context) {
+    fun startForSetupWizard() {
         LockScreenUseCases.isSwitchedOn { isOn ->
             if (isOn)
-                start(context, LET_PLAY)
+                start(LET_PLAY)
             else
                 SetupWizardUseCases.setupIsComplete { isComplete ->
                     if (isComplete)
-                        start(context, LET_TRY_TO_PLAY)
+                        start(LET_TRY_TO_PLAY)
                     else
-                        start(context, SETUP_WIZARD_IN_PROCESS)
+                        start(SETUP_WIZARD_IN_PROCESS)
                 }
         }
     }
 
-    private fun switchOff(context: Context, body: () -> Unit) =
+    private fun switchOff(body: () -> Unit) =
             LockScreenUseCases.switchOff {
                 context.stopService(Intent(context, LockScreenService::class.java))
                 body()
@@ -49,27 +50,29 @@ object LockScreen {
 
     fun isSwitchedOn(body: (Boolean) -> Unit) = LockScreenUseCases.isSwitchedOn(body)
 
-    fun play(context: Context) = start(context, PLAY_NOW)
+    fun play() = start(PLAY_NOW)
 
-    fun stop(context: Context) = switchOff(context) {
-        start(context, LET_TRY_TO_PLAY)
+    fun pause() = switchOff {
+        start(LET_TRY_TO_PLAY)
     }
 
     fun hide() = LockScreenUseCases.hide {}
 
     fun hide(body: () -> Unit) = LockScreenUseCases.hide(body)
 
-    fun getStartIntent(context: Context, startType: LockScreenStartType): Intent =
+    fun getStartIntent(startType: LockScreenStartType): Intent =
             Intent(context, LockScreenService::class.java).apply {
                 putExtra(LockScreenStartType.NAME, startType.ordinal)
             }
 
-    fun startOnBootComplete(context: Context) {
-        start(context, ON_BOOT_COMPLETE)
+    fun startOnBootComplete() {
+        start(ON_BOOT_COMPLETE)
     }
 
-    fun startOnDestroy(context: Context) {
-        startIfOn(context, ON_DESTROY)
+    fun startOnDestroy() {
+        startIfOn(ON_DESTROY)
     }
+
+    companion object : ParameterlessSingletonHolder<LockScreen>(::LockScreen)
 
 }

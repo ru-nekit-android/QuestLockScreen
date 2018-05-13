@@ -7,9 +7,30 @@
 
     <!--Setup Wizard-->
 
-    <style name="Title" parent="TextAppearance" />
+    <style name="Title" parent="Base.TextAppearance.AppCompat.Headline">
+        <item name="android:fontFamily">@font/roboto_light</item>
+    </style>
 
-    <style name="Title.h1">
+    <style name="Title.Padding">
+        <item name="android:paddingBottom">@dimen/normal_gap</item>
+        <item name="android:paddingTop">@dimen/normal_gap</item>
+        <item name="android:paddingLeft">@dimen/double_gap</item>
+        <item name="android:paddingRight">@dimen/double_gap</item>
+    </style>
+
+    <style name="Text" parent="Base.TextAppearance.AppCompat.Body1">
+        <item name="android:fontFamily">@font/roboto_light</item>
+        <item name="android:background">@color/red_light</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="Text.Padding">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
+        <item name="android:padding">@dimen/normal_gap</item>
+    </style>
+
+
+    <!--<style name="Title.h1">
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/white</item>
     </style>
@@ -36,18 +57,21 @@
         <item name="android:paddingTop">@dimen/small_gap</item>
         <item name="android:paddingLeft">@dimen/small_gap</item>
         <item name="android:paddingRight">@dimen/small_gap</item>
-    </style>
+    </style>-->
 
     <style name="SetupWizard" />
 
-    <style name="SetupWizard.Title" parent="Title.h1.Padding">
+    <style name="SetupWizard.Title" parent="Title.Padding">
         <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/white</item>
         <item name="android:background">@color/green</item>
     </style>
 
-    <style name="SetupWizard.Description" parent="Title.h2.Padding">
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
+    <style name="SetupWizard.Description" parent="Text.Padding">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
     </style>
 
     <style name="SetupWizard.ContentContainer" />

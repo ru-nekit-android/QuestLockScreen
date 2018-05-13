@@ -44,10 +44,13 @@ abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         super.onCreateView(inflater, container, savedInstanceState)
-        return inflater.inflate(getLayoutId(), container, false).apply {
-            setDefaultSettingsForTools()
-            onSetupStart(this)
-        }
+        return inflater.inflate(getLayoutId(), container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setDefaultSettingsForTools()
+        onSetupStart(view)
     }
 
     protected fun showSetupWizardStep(step: ISetupWizardStep, vararg params: Any) {
