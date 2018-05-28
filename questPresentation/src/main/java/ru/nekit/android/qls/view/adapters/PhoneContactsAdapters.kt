@@ -9,19 +9,21 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.Subject
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.PhoneContact
 import ru.nekit.android.utils.IAutoDispose
 import ru.nekit.android.utils.throttleClicks
 
-//ver 1.0
+//ver 1.1
 abstract class PhoneContactsAdapter(private val data: List<PhoneContact>,
                                     @LayoutRes
                                     private val listItemLayoutId: Int,
-                                    private val phoneContactListener: PhoneContactListener) :
+                                    private val phoneContactListener: Subject<Int>) :
         RecyclerView.Adapter<PhoneContactViewHolder>(), IAutoDispose {
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhoneContactViewHolder {
         return PhoneContactViewHolder(LayoutInflater.from(parent.context)
@@ -37,7 +39,9 @@ abstract class PhoneContactsAdapter(private val data: List<PhoneContact>,
                     this@PhoneContactsAdapter is PhoneContactsAdapterForModification
             if (!isEmergency) {
                 autoDispose {
-                    actionButton.throttleClicks { phoneContactListener.onAction(holder.adapterPosition) }
+                    actionButton.throttleClicks {
+                        phoneContactListener.onNext(holder.adapterPosition)
+                    }
                 }
             }
             actionButton.visibility = if (isEmergency) GONE else VISIBLE
@@ -54,12 +58,12 @@ abstract class PhoneContactsAdapter(private val data: List<PhoneContact>,
 }
 
 class PhoneContactsAdapterForReading(data: List<PhoneContact>,
-                                     phoneContactListener: PhoneContactListener) : PhoneContactsAdapter(data,
+                                     phoneContactListener: Subject<Int>) : PhoneContactsAdapter(data,
         R.layout.ill_phone_contact_for_reading, phoneContactListener)
 
 
 class PhoneContactsAdapterForModification(data: List<PhoneContact>,
-                                          phoneContactListener: PhoneContactListener) : PhoneContactsAdapter(data,
+                                          phoneContactListener: Subject<Int>) : PhoneContactsAdapter(data,
         R.layout.ill_phone_contact_for_modification, phoneContactListener)
 
 class PhoneContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -68,8 +72,4 @@ class PhoneContactViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var titleView: TextView = view.findViewById(R.id.tv_title)
     var informationView: TextView = view.findViewById(R.id.tv_information)
 
-}
-
-interface PhoneContactListener {
-    fun onAction(position: Int)
 }

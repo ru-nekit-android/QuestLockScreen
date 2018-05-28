@@ -20,13 +20,14 @@ import ru.nekit.android.qls.window.common.QuestWindowMediator
 import ru.nekit.android.utils.AnimationUtils
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.responsiveClicks
 import ru.nekit.android.window.WindowContentViewHolder
 import java.util.*
 
 class StatisticsWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext) {
 
-    override fun getName(): String = "statistics"
+    override val name: String = "statistics"
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -50,8 +51,10 @@ class StatisticsWindowMediator private constructor(questContext: QuestContext) :
                                 layoutParams = this
                             }
                             windowContent.buttonContainer.addView(this)
-                            click {
-                                setStep(step)
+                            autoDispose {
+                                responsiveClicks {
+                                    setStep(step)
+                                }
                             }
                         }
                     }

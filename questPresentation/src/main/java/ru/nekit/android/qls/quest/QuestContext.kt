@@ -49,7 +49,7 @@ class QuestContext constructor(
 
     override var disposableMap: MutableMap<String, CompositeDisposable> = HashMap()
     val questResourceRepository: QuestResourceRepository = QuestResourceRepository(this)
-    val questDelayedPlayAnimationDuration: Long = dependenciesProvider.repositoryHolder.getQuestSetupWizardSettingRepository().delayedPlayDelay
+    val questDelayedPlayAnimationDuration: Long = dependenciesProvider.repositoryHolder.getSettingsRepository().delayedPlayDelay
     val answerCallback = PublishSubject.create<Any>().toSerialized()
 
     private val screenOnBroadcastReceiver = object : BroadcastReceiver() {

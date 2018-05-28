@@ -24,4 +24,6 @@ internal interface ISetupWizardHolder {
     fun nextAction(): Single<Boolean>
 
     fun altAction()
+
+    fun setTitle(titleId: Int)
 }

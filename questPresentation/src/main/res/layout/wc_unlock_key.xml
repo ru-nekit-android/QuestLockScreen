@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:showIn="ru.nekit.android.qls.window.UnlockKeyWindowMediator.UnlockKeyWindowContentViewHolder">
+    tools:showIn="ru.nekit.android.qls.window.UnlockKeyHelpWindowMediator.UnlockKeyWindowContentViewHolder">
 
     <RelativeLayout
         android:id="@+id/container_title"

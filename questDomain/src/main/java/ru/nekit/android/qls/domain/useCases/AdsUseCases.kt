@@ -13,7 +13,7 @@ object AdsUseCases : UseCaseSupport() {
     fun listenAdsSkipTimer(body: (Long, Long) -> Unit): Disposable = buildFlowableUseCase(schedulerProvider, {
         AdsTimer.publisher.map {
             it / AdsTimer.TIME_RESOLUTION to
-                    repositoryHolder.getQuestSetupWizardSettingRepository().adsSkipTimeout / AdsTimer.TIME_RESOLUTION
+                    repositoryHolder.getSettingsRepository().adsSkipTimeout / AdsTimer.TIME_RESOLUTION
         }
     }).doOnSubscribe {
         AdsTimer.start()

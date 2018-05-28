@@ -1,11 +1,11 @@
 package ru.nekit.android.qls.domain.useCases
 
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Function4
 import ru.nekit.android.domain.executor.ISchedulerProvider
 import ru.nekit.android.domain.interactor.ParameterlessSingleUseCase
 import ru.nekit.android.domain.interactor.SingleUseCase
-import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.domain.model.*
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
@@ -144,7 +144,6 @@ data class AppropriateQuestParameter(val appropriateType: AppropriateType,
                                      val wrongAnswerCountForSkip: Int,
                                      val highestPriorityForUnplayedQuests: Boolean)
 
-
 enum class AppropriateType {
     BY_CHANCE,
     BY_RANDOM_CHANCE
@@ -161,17 +160,32 @@ object QuestTrainingProgramUseCases : UseCaseSupport() {
     private val pupilStatisticsRepository
         get() = repositoryHolder.getPupilStatisticsRepository()
 
+    private val settingsRepository
+        get() = repositoryHolder.getSettingsRepository()
+
     private fun createQuestTrainingProgramWithDataSource(type: DataSourceType,
                                                          force: Boolean) = singleUseCase {
-        if (type != REMOTE ||
-                repositoryHolder.getQuestSetupWizardSettingRepository().useRemoteQTP) {
+        if (type != REMOTE || settingsRepository.useRemoteQTP) {
             pupilFlatMap {
-                val sex = it.sex!!
-                val complexity = it.complexity!!
-                repositoryHolder.getQuestTrainingProgramDataSource(type).create(sex, complexity).flatMap { dataOpt ->
+                var sex = it.sex
+                var complexity = it.complexity
+                var qtpGroup: String? = null
+                if (type == REMOTE) {
+                    if (settingsRepository.useSingleQTP) {
+                        sex = null
+                        complexity = null
+                    } else {
+                        if (!settingsRepository.useQTPComplexity)
+                            complexity = null
+                        if (!settingsRepository.useSexForQTP)
+                            sex = null
+                    }
+                    qtpGroup = settingsRepository.QTPGroup
+                }
+                repositoryHolder.getQuestTrainingProgramDataSource(type).create(sex, complexity, qtpGroup).flatMap { dataOpt ->
                     if (dataOpt.isNotEmpty())
-                        questTrainingProgramRepository.create(dataOpt.nonNullData, sex,
-                                complexity,
+                        questTrainingProgramRepository.create(dataOpt.nonNullData, sex!!,
+                                complexity!!,
                                 force).doOnEvent { result, _ ->
                             if (result) {
                                 //do work on qtp update
@@ -196,8 +210,9 @@ object QuestTrainingProgramUseCases : UseCaseSupport() {
     fun createRemoteQuestTrainingProgram() =
             createQuestTrainingProgramWithDataSource(REMOTE, false)
 
-    fun createQuestTrainingProgram(): Single<Boolean> = createLocalQuestTrainingProgram().buildAsync().doOnSubscribe {
-        createRemoteQuestTrainingProgram().use()
+    fun createQuestTrainingProgram() = useSingleUseCase {
+        Single.zip(createLocalQuestTrainingProgram().build(),
+                createRemoteQuestTrainingProgram().build(), BiFunction<Boolean, Boolean, Unit> { _, _ -> })
     }
 
     private fun getCurrentQuestTrainingProgramRules() = buildSingleUseCase {

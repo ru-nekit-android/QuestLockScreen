@@ -13,13 +13,13 @@ abstract class BaseSetupWizardPermissionRequestFragment : BaseSetupWizardFragmen
     protected abstract val permissionList: Array<String>
 
     override fun onSetupStart(view: View) {
-        setAltButtonText(R.string.label_ask_for_permission)
+        altButtonText(R.string.label_ask_for_permission)
         update(false)
     }
 
     private fun update(granted: Boolean) {
-        setNextButtonVisibility(granted)
-        setAltButtonVisibility(!granted)
+        nextButtonVisibility(granted)
+        altButtonVisibility(!granted)
     }
 
     protected fun requestPermission() {
@@ -44,7 +44,7 @@ abstract class BaseSetupWizardPermissionRequestFragment : BaseSetupWizardFragmen
                 permissionWasGranted = permissionWasGranted && value == PackageManager.PERMISSION_GRANTED
             }
             onPermissionResult(permissionWasGranted)
-            showNextSetupWizardStep()
+            goNext()
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }

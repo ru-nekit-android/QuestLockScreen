@@ -8,4 +8,5 @@
     <integer name="vibration_delay">100</integer>
     <integer name="answer_delay">1000</integer>
     <integer name="click_delay">50</integer>
+    <integer name="throttle_delay">1000</integer>
 </resources>

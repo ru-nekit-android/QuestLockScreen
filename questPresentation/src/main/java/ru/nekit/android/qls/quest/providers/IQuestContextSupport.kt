@@ -1,7 +1,6 @@
 package ru.nekit.android.qls.quest.providers
 
 import android.support.annotation.StringRes
-import android.view.View
 import ru.nekit.android.domain.event.IEventListener
 import ru.nekit.android.domain.event.IEventSender
 import ru.nekit.android.domain.event.KeyboardAction
@@ -14,9 +13,6 @@ import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.quest.QuestContextEvent
 import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.qls.window.common.QuestWindowEvent
-import ru.nekit.android.utils.Delay
-import ru.nekit.android.utils.Vibrate
-import ru.nekit.android.utils.throttleClicks
 
 interface IQuestContextSupport : IEventListenerSupport, IEventSenderSupport {
 
@@ -102,14 +98,6 @@ interface IQuestContextSupport : IEventListenerSupport, IEventSenderSupport {
 
     fun getString(@StringRes stringResId: Int): String = questContext.getString(stringResId)
 
-    fun View.responsiveClick(body: () -> Unit) = click {
-        Vibrate.make(questContext, Delay.CLICK.get(questContext))
-        body()
-    }
-
-    fun View.click(body: () -> Unit) = autoDispose {
-        throttleClicks(body)
-    }
-
     fun statistics(body: (List<Statistics>) -> Unit) = questContext.statistics(body)
+
 }

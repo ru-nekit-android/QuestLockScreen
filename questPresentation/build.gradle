@@ -20,8 +20,8 @@ android {
         applicationId ids.application
         minSdkVersion versions.minSdk
         targetSdkVersion versions.targetSdk
-        versionCode versions.appCode
-        versionName versions.appName
+        versionCode versions.appVersionCode
+        versionName versions.appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
@@ -56,6 +56,10 @@ android {
         checkReleaseBuilds false
         abortOnError false
     }
+
+    /*dataBinding {
+        enabled = true
+    }*/
 }
 
 dependencies {

@@ -44,7 +44,7 @@ import ru.nekit.android.qls.window.common.QuestWindowEvent.*
 import ru.nekit.android.utils.AnimationUtils.fadeAnimation
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.ViewHolder
-import ru.nekit.android.utils.throttleClicks
+import ru.nekit.android.utils.responsiveClicks
 import ru.nekit.android.window.Window
 
 //ver 1.3
@@ -58,20 +58,20 @@ class LockScreenQuestContentMediator(override var questContext: QuestContext) :
     init {
         viewHolder = LockScreenQuestViewHolder(questContext).apply {
             autoDisposeList(
-                    menuButton.throttleClicks {
+                    menuButton.responsiveClicks {
                         hideKeyboard {
                             MenuWindowMediator.openWindow(questContext)
                         }
                     },
-                    statisticsContainer.throttleClicks {
+                    statisticsContainer.responsiveClicks {
                         hideKeyboard {
                             StatisticsWindowMediator.openWindow(questContext)
                         }
                     },
-                    delayedPlayContainer.throttleClicks {
+                    delayedPlayContainer.responsiveClicks {
                         questContext.playQuest()
                     },
-                    unlockKeyContainer.throttleClicks {
+                    unlockKeyContainer.responsiveClicks {
                         getUnlockKeyCount { unlockKeyCount ->
                             SetupWizardUseCases.showHelpOnUnlockKeyConsume {
                                 if (it) {

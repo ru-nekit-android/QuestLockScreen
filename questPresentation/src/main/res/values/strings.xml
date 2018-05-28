@@ -2,25 +2,47 @@
 <resources>
     <string name="app_name">Маленький гений</string>
 
-    
     <!--start setup wizard-->
-    <string name="title_start_setup_wizard">Приветствие</string>
-    <string name="text_start_setup_wizard">\???\</string>
+
+    <string name="title_setup_wizard_start">Приветствие</string>
+    <string name="text_setup_wizard_start">Приветствие</string>
+    <string name="label_setup_wizard_start">Начать настройку</string>
+    <string name="label_setup_wizard_continue">Продолжить настройку</string>
 
     <string name="title_setup_unlock_secret">Установите пароль</string>
     <string name="text_setup_unlock_secret">Установите пароль</string>
 
-    <string name="title_setup_wizard_admin_request">Запросить права администратора</string>
-    <string name="text_setup_wizard_admin_request">Запросить права администратора</string>
+    <string name="title_device_admin_request">Запросить права администратора</string>
+    <string name="text_device_admin_request">Запросить права администратора</string>
+    <string name="text_device_admin_request_explanation">Запросить права администратора</string>
+    <string name="description_device_admin_component">Администратор "Маленький гений"</string>
+    <string name="label_device_admin_component">Администратор "Маленький гений"</string>
 
-    <!--end setup wizard-->
+    <string name="title_overlay_permission_request">Запросить разрешение на добавление поверх всех окон</string>
+    <string name="text_overlay_permission_request">Запросить разрешение на добавление поверх всех окон</string>
+    <string name="label_overlay_permission_request">Запросить</string>
+
+    <string name="title_call_phone_permission_request">Запрос на доступ к контактам и возможность совершать телефонные вызовы</string>
+    <string name="text_call_phone_permission_request">Запрос на доступ к контактам и возможность совершать телефонные вызовы</string>
+
+    <string name="title_pupil_name_and_sex">Выберите имя и пол ученика</string>
+    <string name="text_pupil_name_and_sex">Выберите имя и пол ученика</string>
+    <string name="error_pupil_name_should_be_entered">Имя должно быть введено</string>
+
+    <string name="title_pupil_avatar">Создайте аватар</string>
+
+    <string name="title_qtp_complexity">Выберите сложность</string>
+    <string name="text_qtp_complexity">Выберите сложность</string>
+
+    <string name="title_setup_wizard_settings">Настройки</string>
+
+    <!--admob-->
+
+    <string name="admob_app_id">ca-app-pub-9028944105026522~9170175648</string>
+    <string name="admob_ad_id">ca-app-pub-9028944105026522/9703114993</string>
 
 
-
-
-
-
-
+    <string name="label_pause">Пауза</string>
 
 
     <string name="explicit_start">Включить</string>
@@ -44,8 +66,8 @@
     <string name="title_registration">Регистрация</string>
     <string name="label_registration">Регистрация</string>
     <string name="label_pupil_set_name">Выберите имя ученика</string>
-    <string name="title_pupil_set_name">Выберите имя ученика</string>
-    <string name="title_pupil_set_qtp_complexity">Выберите сложность</string>
+
+
     <string name="title_setup_pupil_sex">Выберите пол ученика</string>
     <string name="pupil_name_title">Имя ученика</string>
     <string name="pupil_sex_title">Пол</string>
@@ -62,18 +84,14 @@
     <string name="title_unlock_secret">Разблокировка</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="label_show_no_more">Больше не показывать</string>
-    <string name="label_ask_for_overlay_permission">Запросить</string>
+
     <string name="label_ask_for_call_phone_permission">Запросить</string>
 
-    <string name="label_start_setup_wizard">Начать настройку</string>
-    <string name="label_setup_wizard_continue">Продолжить настройку</string>
-    <string name="title_ask_for_overlay_permission">Запросить разрешение на добавление поверх всех окон</string>
     <string name="title_setup_wizard_complete">Настройка закончена</string>
     <string name="label_play_now">Играть</string>
     <string name="label_setup_password">Установить пароль</string>
     <string name="label_unlock">Разблокировать</string>
-    <string name="title_settings">Настройки</string>
-    <string name="title_ask_for_call_phone_permission">Запрос на доступ к контактам и возможность совершать телефонные вызовы</string>
+
     <string name="title_allow_contacts">Разрешеннные контакты для исходящих звонков</string>
     <string name="title_subscriptions">Подписки</string>
     <string name="title_phone">Телефон</string>
@@ -102,8 +120,6 @@
     <string name="title_bind_parent_control">Привязать родителя</string>
     <string name="label_cancel">Отмена</string>
     <string name="text_generate_qr_code">Генерация…</string>
-    <string name="error_pupil_name_should_be_entered">Имя должно быть введено</string>
-    <string name="title_setup_pupil_create_avatar">Создайте аватар</string>
     <string name="label_set_random_avatar">Случайный аватар</string>
     <string name="book_title_name">Дневник\nуспеха</string>
     <string name="notification_let_play">Давай играй</string>
@@ -113,7 +129,7 @@
     <string name="title_notification_setup_wizard">Мастер настройки</string>
     <string name="title_delayed_start">Нажмите для начала решения задачи</string>
     <string name="title_or">или</string>
-    <string name="title_use_unlock_key">Воспользуйтесь ключиком для проска задачи</string>
+    <string name="title_use_unlock_key">Воспользуйтесь ключиком для пропуска задачи</string>
     <string name="color_default">По умолчанию</string>
     <string name="right_answer_timer_formatter">mm:ss.SSS</string>
     <string name="maximum">максимальное</string>
@@ -124,12 +140,9 @@
     <string name="title_advert_loading">Загрузка рекламы</string>
     <string name="title_new_level">Новый уровень</string>
     <string name="title_introduction">Приветствие</string>
-    <string name="device_description">Администратор "Маленький гений"</string>
-    <string name="device_admin_label">Администратор "Маленький гений"</string>
     <string name="label_device_admin">Запросить права администратора</string>
     <string name="label_play_one_more_time">Еще раз</string>
 
-    <string name="text_device_admin_request_explanation">Click on Activate button to protect your application from uninstalling!</string>
     <string name="label_voice_record">Запись голоса</string>
     <string name="label_start_quest">Приступить</string>
     <string name="title_pupil_statistics">Статистика ученика</string>
@@ -144,8 +157,6 @@
     <string name="title_unlock_key_help_on_zero_count">Нет ключей</string>
     <string name="title_gifts">Подарки</string>
 
-    <string name="admob_app_id">ca-app-pub-9028944105026522~9170175648</string>
-    <string name="admob_ad_id">ca-app-pub-9028944105026522/9703114993</string>
 
     <string name="title_loading">Загрузка</string>
     <string name="ads_timeout_title">%1$s секунд осталось до пропуска</string>

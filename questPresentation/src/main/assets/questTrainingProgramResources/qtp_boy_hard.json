@@ -1,9 +1,19 @@
 {
-  "version": 1.28,
+  "version": 1.333,
   "name": "example",
   "description": "example",
   "sex": "BOY",
   "complexity": "HARD",
+  "priorityRules": [
+    {
+      "questType": "TRAFFIC_LIGHT",
+      "questionTypes": [
+        "ALL"
+      ],
+      "startPriority": 1,
+      "wrongAnswerPriority": 1
+    }
+  ],
   "levels": [
     {
       "delayedPlay": true,
@@ -12,7 +22,6 @@
       "pointsWeight": 10000,
       "pointsMultiplier": 1.0,
       "quests": [
-        //МОНЕТЫ
         {
           "questType": "монеты",
           "memberCount": 6,
@@ -23,12 +32,10 @@
           "enabled": true,
           "reward": 10
         },
-        //СВЕТОФОР
         {
           "questType": "светофор",
           "enabled": true
         },
-        //ВРЕМЯ
         {
           "questType": "время",
           "reward": 10,
@@ -39,7 +46,6 @@
           "memberCount": 4,
           "accuracy": 10
         },
-        //ВРЕМЯ
         {
           "questType": "время",
           "reward": 10,
@@ -50,27 +56,23 @@
           "memberCount": 4,
           "accuracy": 10
         },
-        //ТЕКУЩЕЕ_ВРЕМЯ
         {
           "questType": "текущее_время",
           "reward": 10,
           "enabled": true,
           "memberCount": 4
         },
-        //ТЕКУЩЕЕ_СЕЗОН
         {
           "questType": "текущий_сезон",
           "reward": 10,
           "enabled": true
         },
-        //ЦВЕТА
         {
           "questType": "цвета",
           "reward": 10,
           "enabled": true,
           "memberCount": 4
         },
-        //ВЫБОР
         {
           "questType": "выбор",
           "reward": 10,
@@ -81,18 +83,17 @@
           ],
           "enabled": true
         },
-        //ЛИШНИЙ
         {
           "questType": "лишний",
           "reward": 10,
           "types": [
             "seasons",
             "berry",
-            "pomum"
+            "pomum",
+            "coins"
           ],
           "enabled": true
         },
-        //ФРУКТЫ
         {
           "questType": "фрукты",
           "questionTypes": [
@@ -112,7 +113,6 @@
           ],
           "enabled": true
         },
-        //ФРУКТЫ
         {
           "questType": "фрукты",
           "questionTypes": [
@@ -122,11 +122,29 @@
           "memberCount": 20,
           "enabled": true
         },
-        //НАПРАВЛЕНИЕ
         {
           "questType": "направление",
           "reward": 10,
           "enabled": true
+        }
+      ]
+    },
+    {
+      "delayedPlay": true,
+      "name": "name_level_1",
+      "description": "Прокачай героя",
+      "pointsWeight": 10000,
+      "pointsMultiplier": 1.0,
+      "quests": [
+        {
+          "questType": "монеты",
+          "memberCount": 6,
+          "questionTypes": [
+            "unknown_member",
+            "solution"
+          ],
+          "enabled": true,
+          "reward": 10
         }
       ]
     }

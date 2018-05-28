@@ -13,6 +13,8 @@ import com.andrognito.patternlockview.PatternLockView
 import com.andrognito.patternlockview.listener.PatternLockViewListener
 import com.andrognito.patternlockview.utils.PatternLockUtils
 import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
+import io.reactivex.subjects.Subject
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.PhoneContact
 import ru.nekit.android.qls.domain.useCases.PhoneContactsUseCases
@@ -21,7 +23,6 @@ import ru.nekit.android.qls.lockScreen.mediator.LockScreenContentMediatorAction
 import ru.nekit.android.qls.lockScreen.service.OutgoingCallAction
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.qls.setupWizard.BaseSetupWizard
-import ru.nekit.android.qls.view.adapters.PhoneContactListener
 import ru.nekit.android.qls.view.adapters.PhoneContactsAdapterForReading
 import ru.nekit.android.qls.window.MenuWindowMediator.Step.*
 import ru.nekit.android.qls.window.common.QuestWindowMediator
@@ -31,16 +32,16 @@ import java.util.*
 
 class MenuWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext),
-        PhoneContactListener,
         PatternLockViewListener {
 
-    override fun getName(): String = "menu"
+    override val name: String = "menu"
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
     private lateinit var title: String
     private lateinit var windowContent: MenuWindowContentViewHolder
     private lateinit var phoneContacts: List<PhoneContact>
+    private lateinit var actionListener: Subject<Int>
 
     override val windowStyleId: Int = R.style.Window_Menu
 
@@ -61,8 +62,10 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
                             layoutParams = this
                         }
                         windowContent.buttonContainer.addView(this)
-                        click {
-                            setStep(step)
+                        autoDispose {
+                            responsiveClicks {
+                                setStep(step)
+                            }
                         }
                         if (step == PHONE)
                             visibility = if (phoneIsAvailable) VISIBLE else GONE
@@ -102,10 +105,17 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
             when (step) {
                 PHONE -> {
                     titleResId = R.string.title_phone
+                    actionListener = PublishSubject.create<Int>().toSerialized()
+                    autoDispose {
+                        actionListener.subscribe { position ->
+                            sendEvent(OutgoingCallAction(phoneContacts[position].contactId))
+                            closeWindow(RevealPoint.POSITION_BOTTOM_CENTER)
+                        }
+                    }
                     currentContentHolder = PhoneViewHolder(questContext)
                     (currentContentHolder as PhoneViewHolder).let { phoneViewHolder ->
                         val phoneContactsAdapter = PhoneContactsAdapterForReading(phoneContacts,
-                                this)
+                                actionListener)
                         val linearLayoutManager = LinearLayoutManager(questContext)
                         phoneViewHolder.contactsListView.adapter = phoneContactsAdapter
                         phoneViewHolder.contactsListView.layoutManager = linearLayoutManager
@@ -152,11 +162,6 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
     }
 
     private fun getPhoneContacts(): Single<List<PhoneContact>> = PhoneContactsUseCases.getPhoneContacts()
-
-    override fun onAction(position: Int) {
-        sendEvent(OutgoingCallAction(phoneContacts[position].contactId))
-        closeWindow(RevealPoint.POSITION_BOTTOM_CENTER)
-    }
 
     override fun onStarted() {
 
@@ -216,7 +221,7 @@ class MenuWindowMediator private constructor(questContext: QuestContext) :
     }
 
     internal class UnlockViewHolder(context: Context) : ViewHolder(context, R.layout.wsc_unlock) {
-        var patterLockView: PatternLockView = view.findViewById(R.id.unlock_secret_view) as PatternLockView
+        var patterLockView: PatternLockView = view.findViewById(R.id.unlock_view) as PatternLockView
     }
 
     companion object {

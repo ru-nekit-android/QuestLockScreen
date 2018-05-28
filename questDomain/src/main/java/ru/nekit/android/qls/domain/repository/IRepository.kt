@@ -18,7 +18,7 @@ interface IRepositoryHolder {
 
     fun getPupilRepository(): IPupilRepository
     fun getCurrentPupilRepository(): ICurrentPupilRepository
-    fun getQuestSetupWizardSettingRepository(): IQuestSetupWizardSettingRepository
+    fun getSettingsRepository(): ISettingsRepository
     fun getRewardRepository(): IRewardRepository
     fun getUnlockSecretRepository(): IUnlockSecretRepository
     fun getPhoneContactRepository(): IPhoneContactRepository
@@ -106,7 +106,7 @@ interface ICurrentPupilRepository {
 
 }
 
-interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
+interface ISettingsRepository : ISetupWizardSettingsRepository {
 
     //remote
     var skipAfterRightAnswer: Boolean
@@ -120,6 +120,12 @@ interface IQuestSetupWizardSettingRepository : ISetupWizardSettingsRepository {
     var useRemoteQTP: Boolean
     //remote
     var useQTPComplexity: Boolean
+    //remote
+    var useSexForQTP: Boolean
+    //remote
+    var useSingleQTP: Boolean
+    //remote
+    var QTPGroup: String
 
     var showUnlockKeyHelpOnConsume: Boolean
 
@@ -186,7 +192,7 @@ interface IQuestRepository {
 
 interface IQuestTrainingProgramDataSource {
 
-    fun create(sex: PupilSex, complexity: Complexity): Single<Optional<String>>
+    fun create(sex: PupilSex?, complexity: Complexity?, qtpGroup: String?): Single<Optional<String>>
 
 }
 

@@ -27,24 +27,24 @@ class QuestSetupWizardActivity : BaseSetupWizardActivity() {
         setupWizard.commitCurrentSetupStep(step)
         replaceFragment(
                 when (step) {
-                    START -> StartSetupWizardFragment.getInstance()
+                    START -> StartFragment.getInstance()
                     OVERLAY_PERMISSION -> OverlayPermissionFragment.getInstance()
-                    SETUP_UNLOCK_SECRET, UNLOCK_SECRET, CHANGE_UNLOCK_SECRET ->
+                    SET_UNLOCK_SECRET, UNLOCK_SECRET, CHANGE_UNLOCK_SECRET ->
                         UnlockSecretFragment.getInstance().also {
-                            it.setStep(step)
+                            it.step = step
                         }
-                    DEVICE_ADMIN -> SetupDeviceAdminFragment.instance
-                    PUPIL_NAME_AND_SEX -> SetupPupilNameAndSexFragment.instance
-                    //PUPIL_SEX -> SetupPupilSexFragment.instance
-                    QTP_COMPLEXITY -> SetupQTPComplexityFragment.instance
-                    PUPIL_AVATAR -> SetupPupilAvatarFragment.instance
+                    DEVICE_ADMIN -> DeviceAdminFragment.getInstance()
+                    PUPIL_NAME_AND_SEX -> PupilNameAndSexFragment.getInstance()
+                    QTP_COMPLEXITY -> QTPComplexityFragment.getInstance()
+                    PUPIL_AVATAR -> PupilAvatarFragment.getInstance()
                     CALL_PHONE_AND_READ_CONTACTS_PERMISSION ->
-                        CallPhoneAndReadContactsPermissionFragment.instance
-                    SETUP_PHONE_CONTACTS -> PhoneContactsFragment.instance
-                    BIND_PARENT_CONTROL -> BindParentFragment.instance
-                    VOICE_RECORD -> VoiceRecordFragment.instance
-                    SUBSCRIBES -> SubscriptionsFragment.instance
-                    SETTINGS -> SettingsFragment.instance
+                        CallPhoneAndReadContactsPermissionFragment.getInstance()
+                    SETUP_PHONE_CONTACTS -> PhoneContactsFragment.getInstance()
+                    VOICE_RECORD -> VoiceRecordFragment.getInstance()
+                    SUBSCRIBES -> SubscriptionsFragment.getInstance()
+                    SETTINGS -> SettingsFragment.getInstance()
+                //PUPIL_SEX -> SetupPupilSexFragment.instance
+                //BIND_PARENT_CONTROL -> BindParentFragment.instance
                     else -> TODO()
                 }
         )

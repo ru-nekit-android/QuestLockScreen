@@ -11,6 +11,7 @@ import android.provider.Settings
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
+import io.reactivex.disposables.Disposable
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.domain.model.Optional
 import ru.nekit.android.qls.data.representation.getSkuId
@@ -27,15 +28,13 @@ import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.ST
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.HAS_PERMISSION
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETTINGS_PARENT
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.StepFlag.SETUP_WIZARD_PARENT
-import ru.nekit.android.qls.setupWizard.deviceAdminSupport.DeviceAdminComponent
+import ru.nekit.android.qls.setupWizard.deviceAdmin.DeviceAdminComponent
 import ru.nekit.android.qls.setupWizard.view.QuestSetupWizardActivity
 import ru.nekit.android.qls.shared.model.Complexity
-import ru.nekit.android.qls.shared.model.Complexity.NORMAL
 import ru.nekit.android.qls.shared.model.Pupil
 import ru.nekit.android.qls.shared.model.PupilSex
 import ru.nekit.android.utils.PhoneUtils
 import ru.nekit.android.utils.SingletonHolder
-import ru.nekit.android.utils.doIfOrNever
 import ru.nekit.android.utils.toSingle
 
 class QuestSetupWizard private constructor(private val dependenciesProvider: DependenciesProvider) :
@@ -46,8 +45,8 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
     val phoneContacts get() = PhoneContactsUseCases.getPhoneContacts()
     val deviceAdminComponent get() = ComponentName(dependenciesProvider, DeviceAdminComponent::class.java)
     val pupil get() = PupilUseCases.getCurrentPupil()
-    val questSetupWizardRepository
-        get() = dependenciesProvider.repositoryHolder.getQuestSetupWizardSettingRepository()
+    private val questSetupWizardRepository
+        get() = dependenciesProvider.repositoryHolder.getSettingsRepository()
 
     private fun getPurchasedSubscription(body: (SKUPurchase?) -> Unit) =
             SKUUseCases.purchasedSubscription().use { it -> body(it.data) }
@@ -93,9 +92,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
             updatePupilParameter { it.avatar = avatar }
 
     fun setQTPComplexity(complexity: Complexity?): Single<Boolean> =
-            updatePupilParameter { it.complexity = complexity ?: NORMAL }.flatMap {
-                QuestTrainingProgramUseCases.createQuestTrainingProgram().doIfOrNever { it }
-            }
+            updatePupilParameter { it.complexity = complexity }
 
     private fun updatePupilParameter(body: (Pupil) -> Unit): Single<Boolean> =
             PupilUseCases.updatePupil(body)
@@ -146,6 +143,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
     override fun completeSetupWizard() {
         SetupWizardUseCases.completeSetupWizard()
         LockScreen.getInstance().startForSetupWizard()
+        QuestTrainingProgramUseCases.createQuestTrainingProgram()
     }
 
     override fun startSetupWizard() {
@@ -189,10 +187,19 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
     }
     */
 
+    fun deviceAdminIsSet(body: (Boolean) -> Unit): Disposable =
+            stepIsComplete(QuestSetupWizard.QuestSetupWizardStep.DEVICE_ADMIN, body)
+
+    fun stepIsComplete(step: QuestSetupWizardStep, body: (Boolean) -> Unit): Disposable =
+            step.stepIsComplete(this).subscribe(body)
+
+    private val useQTPComplexity: Boolean
+        get() = !questSetupWizardRepository.useSingleQTP && questSetupWizardRepository.useQTPComplexity
+
     enum class QuestSetupWizardStep(val flags: Int) : ISetupWizardStep {
 
         START(SETUP_WIZARD_PARENT),
-        SETUP_UNLOCK_SECRET(SETUP_WIZARD_PARENT) {
+        SET_UNLOCK_SECRET(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
                 return setupWizard.unlockPasswordIsSet()
             }
@@ -236,6 +243,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
                     it.isNotEmpty() && it.nonNullData.name?.isNotEmpty() != null
                 }
             }
+
         },
         /*PUPIL_SEX(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> {
@@ -247,7 +255,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
         QTP_COMPLEXITY(SETUP_WIZARD_PARENT) {
             override fun stepIsComplete(setupWizard: QuestSetupWizard): Single<Boolean> =
                     setupWizard.pupil.map {
-                        if (setupWizard.questSetupWizardRepository.useQTPComplexity)
+                        if (setupWizard.useQTPComplexity)
                             it.data?.complexity != null
                         else
                             true
@@ -280,7 +288,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
             }
         };
 
-        override fun needLogin() = !(this == SETUP_UNLOCK_SECRET || this == START)
+        override fun needLogin() = !(this == SET_UNLOCK_SECRET || this == START)
 
         override fun needInternetConnection(): Boolean {
             return this == BIND_PARENT_CONTROL
@@ -293,6 +301,7 @@ class QuestSetupWizard private constructor(private val dependenciesProvider: Dep
                     true).toSingle()
 
         open fun permissionIsSet(setupWizard: QuestSetupWizard): Boolean = true
+
     }
 
     internal object StepFlag {

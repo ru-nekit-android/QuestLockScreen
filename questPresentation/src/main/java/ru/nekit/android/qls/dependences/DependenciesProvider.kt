@@ -34,8 +34,8 @@ import ru.nekit.android.qls.domain.useCases.*
 import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.billing.Billing
-import ru.nekit.android.qls.setupWizard.remote.RemoteConfig
 import ru.nekit.android.qls.setupWizard.remote.RemoteQuestTrainingProgramDataSource
+import ru.nekit.android.qls.setupWizard.remote.SettingsRemoteDataSource
 import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.TimeUtils
 import java.util.*
@@ -57,7 +57,7 @@ open class DependenciesProvider : Application() {
     private lateinit var mQuestResourceRepository: IQuestResourceRepository
     private lateinit var mLockScreenRepository: ILockScreenRepository
     private lateinit var mTransitionChoreographRepository: ITransitionChoreographRepository
-    private lateinit var mQuestSetupWizardSettingRepository: IQuestSetupWizardSettingRepository
+    private lateinit var mSettingsRepository: ISettingsRepository
     private lateinit var mQuestStore: QuestStore
     private lateinit var mQuestHistoryRepository: IQuestHistoryRepository
     private lateinit var mQuestRepository: IQuestRepository
@@ -68,7 +68,7 @@ open class DependenciesProvider : Application() {
     private lateinit var mSetupWizard: QuestSetupWizard
     private lateinit var mBilling: Billing
     private lateinit var mLogger: ILogger
-    private lateinit var mRemoteConfig: RemoteConfig
+    private lateinit var mRemoteSettings: SettingsRemoteDataSource
     private lateinit var mLocalQuestTrainingProgramSource: IQuestTrainingProgramDataSource
     private lateinit var mRemoteQuestTrainingProgramSource: IQuestTrainingProgramDataSource
 
@@ -110,7 +110,7 @@ open class DependenciesProvider : Application() {
         override fun getSKUPurchaseRepository(): ISKUPurchaseRepository = mSKUPurchaseRepository
         override fun getQuestResourceRepository() = mQuestResourceRepository
         override fun getQuestRepository(): IQuestRepository = mQuestRepository
-        override fun getQuestSetupWizardSettingRepository(): IQuestSetupWizardSettingRepository = mQuestSetupWizardSettingRepository
+        override fun getSettingsRepository(): ISettingsRepository = mSettingsRepository
         override fun getQuestTrainingProgramDataSource(type: DataSourceType): IQuestTrainingProgramDataSource =
                 when (type) {
                     DataSourceType.LOCAL -> mLocalQuestTrainingProgramSource
@@ -135,7 +135,7 @@ open class DependenciesProvider : Application() {
             override val advertCounter: ICounter = Counter(getSharedPreferences(), "advert")
             override val questSeriesCounter: ICounter = Counter(getSharedPreferences(), "questSeries")
         }
-        mQuestSetupWizardSettingRepository = QuestSetupWizardSettingRepository(resources, getSharedPreferences())
+        mSettingsRepository = SettingsRepository(resources, getSharedPreferences("settings"))
         mLockScreenRepository = LockScreenRepository(getSharedPreferences(), boxStore)
         mQuestHistoryRepository = QuestHistoryRepository(repositoryHolder, boxStore)
         mQuestStore = QuestStore(getSharedPreferences())
@@ -148,7 +148,7 @@ open class DependenciesProvider : Application() {
         mSetupWizard = QuestSetupWizard.getInstance(this)
         mBilling = Billing(this)
         mLogger = Logger()
-        mRemoteConfig = RemoteConfig.getInstance()
+        mRemoteSettings = SettingsRemoteDataSource.getInstance()
         mLocalQuestTrainingProgramSource = LocalQuestTrainingProgramDataSource(this)
         mRemoteQuestTrainingProgramSource = RemoteQuestTrainingProgramDataSource()
     }
@@ -172,7 +172,8 @@ open class DependenciesProvider : Application() {
         injectDependenciesForUseCase(PremiumAccessUseCases)
         injectDependenciesForUseCase(SKUUseCases)
         injectDependenciesForUseCase(QuestTrainingProgramUseCases)
-        injectDependencies(mRemoteConfig)
+        injectDependencies(mRemoteSettings)
+        injectDependencies(getRemoteSettings())
         injectDependencies(LockScreen.getInstance())
     }
 
@@ -257,12 +258,11 @@ open class DependenciesProvider : Application() {
             eventSender = getEventSender()
             eventListener = getEventListener()
             screenProvider = getScreenProvider()
-            if(this is ContextDependenciesHolder) context = this@DependenciesProvider
+            if (this is ContextDependenciesHolder) context = this@DependenciesProvider
         }
 
         return value
     }
 
-    fun getRemoteConfig() = mRemoteConfig
-
+    fun getRemoteSettings() = mRemoteSettings
 }

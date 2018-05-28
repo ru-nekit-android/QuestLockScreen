@@ -4,22 +4,23 @@ import android.support.annotation.LayoutRes
 import android.view.View
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.R.string.label_setup_wizard_continue
-import ru.nekit.android.qls.R.string.label_start_setup_wizard
+import ru.nekit.android.qls.R.string.label_setup_wizard_start
 import ru.nekit.android.utils.ParameterlessSingletonHolder
 
-class StartSetupWizardFragment : QuestSetupWizardFragment() {
+class StartFragment : QuestSetupWizardFragment() {
 
     @LayoutRes
-    override fun getLayoutId() = R.layout.sw_setup_start
+    override fun getLayoutId() = R.layout.sw_start
 
     override fun onSetupStart(view: View) {
+        title = R.string.title_setup_wizard_start
         setupWizard.setupIsStart {
-            setNextButtonText(if (it)
+            nextButtonText(if (it)
                 label_setup_wizard_continue
             else
-                label_start_setup_wizard)
+                label_setup_wizard_start)
         }
     }
 
-    companion object : ParameterlessSingletonHolder<StartSetupWizardFragment>(::StartSetupWizardFragment)
+    companion object : ParameterlessSingletonHolder<StartFragment>(::StartFragment)
 }

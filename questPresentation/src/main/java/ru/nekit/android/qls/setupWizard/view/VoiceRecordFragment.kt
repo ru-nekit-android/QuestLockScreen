@@ -3,14 +3,14 @@ package ru.nekit.android.qls.setupWizard.view
 import android.Manifest
 import android.view.View
 import android.widget.ImageButton
+import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.domain.model.AnswerType
 import ru.nekit.android.qls.domain.model.AnswerType.RIGHT
 import ru.nekit.android.qls.domain.model.AnswerType.WRONG
 import ru.nekit.android.qls.setupWizard.BaseSetupWizardPermissionRequestFragment
-import ru.nekit.android.qls.setupWizard.QuestSetupWizard
 import ru.nekit.android.qls.setupWizard.VoiceCenter
-
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 
 class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnClickListener {
 
@@ -26,19 +26,20 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
         get() = PERMISSIONS
 
     override fun onSetupStart(view: View) {
-        setNextButtonText(R.string.label_ok)
-        setAltButtonVisibility(false)
+        title = R.string.title_setup_voice_message
+        nextButtonText(R.string.label_ok)
+        altButtonVisibility(false)
         if (!setupWizard.permissionIsGranted(PERMISSIONS)) {
             requestPermission()
         } else {
-            init(view)
+            init()
         }
     }
 
-    private fun init(view: View) {
+    private fun init() {
         if (voiceCenter == null)
             voiceCenter = VoiceCenter()
-        view.let {
+        view?.let {
             rightAnswerVoiceRecordButton = (it.findViewById(R.id.btn_record_voice_for_right_answer) as ImageButton).also {
                 it.setOnClickListener(this)
             }
@@ -61,10 +62,14 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
 
     override fun onPermissionResult(grantResults: Boolean) {
         if (!grantResults)
-            showSetupWizardStep(QuestSetupWizard.QuestSetupWizardStep.SETTINGS)
+            goBack()
         else
-            init(view!!)
+            init()
     }
+
+    override fun nextAction(): Single<Boolean> = backAction()
+
+    override fun goNext() {}
 
     override fun onClick(view: View) {
         voiceCenter?.stopRecording()
@@ -91,13 +96,12 @@ class VoiceRecordFragment : BaseSetupWizardPermissionRequestFragment(), View.OnC
         }
     }
 
-    companion object {
+    companion object : ParameterlessSingletonHolder<VoiceRecordFragment>(::VoiceRecordFragment) {
 
-        private val PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        private val PERMISSIONS = arrayOf(Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         private val BUTTON_ICONS = intArrayOf(R.drawable.ic_voice_24dp, R.drawable.ic_stop_48dp)
 
-        val instance: VoiceRecordFragment
-            get() = VoiceRecordFragment()
     }
 }

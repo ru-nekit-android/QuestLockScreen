@@ -2,16 +2,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/SetupWizard.AdminRequest"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="ru.nekit.android.qls.setupWizard.view.VoiceRecordFragment">
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/tv_title"
-        style="@style/SetupWizard.Title"
-        android:layout_height="wrap_content"
-        android:text="@string/title_setup_voice_message" />
+    style="@style/SetupWizard.ContentContainer"
+    tools:context="ru.nekit.android.qls.setupWizard.view.VoiceRecordFragment"
+    tools:ignore="NestedWeights">
 
     <LinearLayout
         android:layout_width="match_parent"

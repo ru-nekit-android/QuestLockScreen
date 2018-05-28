@@ -5,18 +5,19 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import ru.nekit.android.domain.event.IEvent
 import ru.nekit.android.qls.BuildConfig
 import ru.nekit.android.qls.R
-import ru.nekit.android.qls.data.repository.QuestSetupWizardSettingRepository
+import ru.nekit.android.qls.data.repository.SettingsRepository
 import ru.nekit.android.qls.domain.providers.DependenciesHolder
-import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
+import ru.nekit.android.qls.domain.repository.ISettingsRepository
 import ru.nekit.android.utils.ParameterlessSingletonHolder
 
-class RemoteConfig : DependenciesHolder() {
+class SettingsRemoteDataSource : DependenciesHolder() {
 
     private var firebaseRemoteConfig: FirebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
-    private val questSetupWizardRepository: IQuestSetupWizardSettingRepository
-        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
 
-    companion object : ParameterlessSingletonHolder<RemoteConfig>(::RemoteConfig)
+    private val settingsRepository: ISettingsRepository
+        get() = repositoryHolder.getSettingsRepository()
+
+    companion object : ParameterlessSingletonHolder<SettingsRemoteDataSource>(::SettingsRemoteDataSource)
 
     fun fetchConfig() {
         val configSettings = FirebaseRemoteConfigSettings.Builder()
@@ -30,19 +31,25 @@ class RemoteConfig : DependenciesHolder() {
                     firebaseRemoteConfig.apply {
                         activateFetched()
                         eventSender.send(RemoteConfigFetchCompleteEvent)
-                        questSetupWizardRepository.apply {
+                        settingsRepository.apply {
                             skipAfterRightAnswer =
-                                    getBoolean(QuestSetupWizardSettingRepository.SKIP_AFTER_RIGHT_ANSWER)
+                                    getBoolean(SettingsRepository.SKIP_AFTER_RIGHT_ANSWER)
                             timeoutToSkipAfterRightAnswer =
-                                    getLong(QuestSetupWizardSettingRepository.TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER)
+                                    getLong(SettingsRepository.TIME_OUT_TO_SKIP_AFTER_RIGHT_ANSWER)
                             maxGameSessionTime =
-                                    getLong(QuestSetupWizardSettingRepository.MAX_GAME_SESSION_TIME)
+                                    getLong(SettingsRepository.MAX_GAME_SESSION_TIME)
                             adsSkipTimeout =
-                                    getLong(QuestSetupWizardSettingRepository.ADS_SKIP_TIMEOUT)
+                                    getLong(SettingsRepository.ADS_SKIP_TIMEOUT)
                             useRemoteQTP =
-                                    getBoolean(QuestSetupWizardSettingRepository.USE_REMOTE_QTP)
+                                    getBoolean(SettingsRepository.USE_REMOTE_QTP)
                             useQTPComplexity =
-                                    getBoolean(QuestSetupWizardSettingRepository.USE_QTP_COMPLEXITY)
+                                    getBoolean(SettingsRepository.USE_QTP_COMPLEXITY)
+                            useSexForQTP =
+                                    getBoolean(SettingsRepository.USE_SEX_FOR_QTP)
+                            useSingleQTP =
+                                    getBoolean(SettingsRepository.USE_SINGLE_QTP)
+                            QTPGroup =
+                                    getString(SettingsRepository.QTP_GROUP)
                         }
                     }
                 } else {

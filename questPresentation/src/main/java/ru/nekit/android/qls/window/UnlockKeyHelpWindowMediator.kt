@@ -24,13 +24,14 @@ import ru.nekit.android.qls.window.UnlockKeyHelpWindowMediator.Step.HELP_ON_ZERO
 import ru.nekit.android.qls.window.common.QuestWindowMediator
 import ru.nekit.android.utils.RevealPoint
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.responsiveClicks
 import ru.nekit.android.utils.throttleClicks
 import ru.nekit.android.window.WindowContentViewHolder
 
 class UnlockKeyHelpWindowMediator private constructor(questContext: QuestContext) :
         QuestWindowMediator(questContext) {
 
-    override fun getName(): String = "unlockKeyHelper"
+    override val name: String = "unlockKeyHelper"
 
     private var currentStep: Step? = null
     private var currentContentHolder: ViewHolder? = null
@@ -66,8 +67,10 @@ class UnlockKeyHelpWindowMediator private constructor(questContext: QuestContext
                 HELP_ON_ZERO_COUNT -> {
                     titleResID = title_unlock_key_help_on_zero_count
                     currentContentHolder = HelpOnZeroCountViewHolder(questContext).also { viewHolder ->
-                        viewHolder.okButton.responsiveClick {
-                            closeWindow(RevealPoint.POSITION_BOTTOM_CENTER)
+                        autoDispose {
+                            viewHolder.okButton.responsiveClicks {
+                                closeWindow(RevealPoint.POSITION_BOTTOM_CENTER)
+                            }
                         }
                         questContext.getRemainingAmountForReaching {
                             viewHolder.textView.text = ArrayList<String>().apply {
@@ -140,10 +143,6 @@ class UnlockKeyHelpWindowMediator private constructor(questContext: QuestContext
         HELP_ON_ZERO_COUNT,
         HELP_ON_CONSUME;
 
-        companion object {
-
-            fun getByOrdinal(ordinal: Int): Step = values()[ordinal]
-        }
     }
 
     internal class UnlockKeyWindowContentViewHolder(context: Context) : WindowContentViewHolder(context, wc_unlock_key) {

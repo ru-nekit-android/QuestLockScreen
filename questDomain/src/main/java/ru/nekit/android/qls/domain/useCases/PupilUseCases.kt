@@ -23,7 +23,7 @@ object PupilUseCases : UseCaseSupport() {
         get() = repositoryHolder.getPupilRepository()
 
     private val questSetupWizardRepository
-        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
+        get() = repositoryHolder.getSettingsRepository()
 
     fun createPupil(pupilName: String, pupilSex: PupilSex) = buildSingleUseCase {
         getCurrentPupil().flatMap {

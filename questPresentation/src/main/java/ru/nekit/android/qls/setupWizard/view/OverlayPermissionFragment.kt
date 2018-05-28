@@ -13,19 +13,19 @@ import ru.nekit.android.utils.ParameterlessSingletonHolder
 
 class OverlayPermissionFragment : QuestSetupWizardFragment() {
 
-    override fun onSetupStart(view: View) {
-        setAltButtonText(R.string.label_ask_for_overlay_permission)
-        updateView(false)
-    }
-
     @LayoutRes
     override fun getLayoutId(): Int = R.layout.sw_overlay_permission
 
+    override fun onSetupStart(view: View) {
+        title = R.string.title_overlay_permission_request
+        altButtonText(R.string.label_overlay_permission_request)
+        updateView(false)
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun altAction() {
-        val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:" + context!!.packageName))
-        startActivityForResult(intent, REQUEST_CODE)
+        startActivityForResult(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:" + context!!.packageName)), REQUEST_CODE)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -33,20 +33,18 @@ class OverlayPermissionFragment : QuestSetupWizardFragment() {
             autoDispose {
                 QuestSetupWizard.QuestSetupWizardStep.OVERLAY_PERMISSION.stepIsComplete(setupWizard).subscribe { isComplete ->
                     if (isComplete)
-                        showNextSetupWizardStep()
+                        goNext()
                 }
             }
         }
     }
 
     private fun updateView(overlayIsEnabled: Boolean) {
-        setNextButtonVisibility(overlayIsEnabled)
-        setAltButtonVisibility(!overlayIsEnabled)
+        nextButtonVisibility(overlayIsEnabled)
+        altButtonVisibility(!overlayIsEnabled)
     }
 
     companion object : ParameterlessSingletonHolder<OverlayPermissionFragment>(::OverlayPermissionFragment) {
-
         private const val REQUEST_CODE = 1
-
     }
 }

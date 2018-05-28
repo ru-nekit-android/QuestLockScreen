@@ -12,15 +12,19 @@ import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContent
 import ru.nekit.android.qls.lockScreen.mediator.common.ILockScreenContentViewHolder
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.responsiveClicks
 
 class LevelUpContentMediator(override var questContext: QuestContext) :
         AbstractLockScreenContentMediator() {
 
-    override var viewHolder: LockScreenLevelUpViewContentHolder = LockScreenLevelUpViewContentHolder(questContext)
+    override var viewHolder: LockScreenLevelUpViewContentHolder =
+            LockScreenLevelUpViewContentHolder(questContext)
 
     init {
-        viewHolder.okButton.click {
-            TransitionChoreographUseCases.doNextTransition()
+        autoDispose {
+            viewHolder.okButton.responsiveClicks {
+                TransitionChoreographUseCases.doNextTransition()
+            }
         }
     }
 

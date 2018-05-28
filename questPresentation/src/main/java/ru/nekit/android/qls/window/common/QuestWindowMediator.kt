@@ -26,7 +26,7 @@ abstract class QuestWindowMediator(override var questContext: QuestContext) : IQ
             createWindowContent().subscribe { it ->
                 windowContentViewHolder = it
                 QuestWindow(questContext,
-                        getName(),
+                        name,
                         windowContentViewHolder,
                         windowStyleId).also {
                     window = it
@@ -40,7 +40,7 @@ abstract class QuestWindowMediator(override var questContext: QuestContext) : IQ
         }
     }
 
-    abstract fun getName(): String
+    abstract val name: String
 
     @CallSuper
     protected open fun destroy() {

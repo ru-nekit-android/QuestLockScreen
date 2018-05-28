@@ -541,17 +541,6 @@ class QuestRepository(repository: IRepositoryHolder,
                             quest.questionType, questString))
                 }
             }
-
-    /*
-    fun getLastId(pupilFlatMap: Pupil): Single<Optional<Long?>> =
-            boxSingleUsingWithCallable {
-                val query = it.query().build()
-                val lastList = query.find(query.count() - 1, 1)
-                Optional(if (lastList.size > 0) {
-                    lastList.last().id
-                } else null)
-            }
-            */
 }
 
 class PhoneContactRepository(repository: IRepositoryHolder, boxStore: BoxStore) :
@@ -655,10 +644,10 @@ open class SessionRepository(sharedPreferences: SharedPreferences) : ISessionRep
 
 }
 
-class QuestSetupWizardSettingRepository(private val resources: Resources,
-                                        sharedPreferences: SharedPreferences) :
+class SettingsRepository(private val resources: Resources,
+                         sharedPreferences: SharedPreferences) :
         SetupWizardBaseSettingsRepository(sharedPreferences),
-        IQuestSetupWizardSettingRepository {
+        ISettingsRepository {
 
     override var skipAfterRightAnswer: Boolean
         get() = booleanStore.get(SKIP_AFTER_RIGHT_ANSWER)
@@ -679,6 +668,18 @@ class QuestSetupWizardSettingRepository(private val resources: Resources,
     override var useQTPComplexity: Boolean
         get() = booleanStore.get(USE_QTP_COMPLEXITY)
         set(value) = booleanStore.set(USE_QTP_COMPLEXITY, value)
+
+    override var useSexForQTP: Boolean
+        get() = booleanStore.get(USE_SEX_FOR_QTP)
+        set(value) = booleanStore.set(USE_SEX_FOR_QTP, value)
+
+    override var useSingleQTP: Boolean
+        get() = booleanStore.get(USE_SINGLE_QTP)
+        set(value) = booleanStore.set(USE_SINGLE_QTP, value)
+
+    override var QTPGroup: String
+        get() = stringStore.get(QTP_GROUP)
+        set(value) = stringStore.set(QTP_GROUP, value)
 
     override var maxGameSessionTime: Long
         get() = longStore.get(MAX_GAME_SESSION_TIME)
@@ -702,6 +703,9 @@ class QuestSetupWizardSettingRepository(private val resources: Resources,
         const val ADS_SKIP_TIMEOUT = "adsSkipTimeout"
         const val USE_REMOTE_QTP = "useRemoteQTP"
         const val USE_QTP_COMPLEXITY = "useQTPComplexity"
+        const val USE_SEX_FOR_QTP = "useSexForQTP"
+        const val USE_SINGLE_QTP = "useSingleQTP"
+        const val QTP_GROUP = "QTPGroup"
 
     }
 }
@@ -724,10 +728,10 @@ class LocalQuestTrainingProgramDataSource(private val context: Context) : IQuest
         return resourceNameBuilder.toString()
     }
 
-    override fun create(sex: PupilSex, complexity: Complexity): Single<Optional<String>> =
+    override fun create(sex: PupilSex?, complexity: Complexity?, qtpGroup: String?): Single<Optional<String>> =
             Single.using(
                     {
-                        createReader(sex, complexity)
+                        createReader(sex!!, complexity!!)
                     },
                     { reader ->
                         Single.fromCallable {

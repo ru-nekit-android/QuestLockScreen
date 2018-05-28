@@ -4,14 +4,14 @@ import io.reactivex.Single
 import ru.nekit.android.domain.interactor.use
 import ru.nekit.android.qls.domain.providers.IPhoneProvider
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
-import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
+import ru.nekit.android.qls.domain.repository.ISettingsRepository
 
 object SetupWizardUseCases : UseCaseSupport() {
 
     lateinit var phoneProvider: IPhoneProvider
 
     private val questSetupWizardSettingsRepository
-        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
+        get() = repositoryHolder.getSettingsRepository()
 
     fun setupIsComplete(body: (Boolean) -> Unit) = setupIsComplete().use(body)
 
@@ -35,11 +35,11 @@ object SetupWizardUseCases : UseCaseSupport() {
         phoneProvider.callPhonePermissionIsGranted()
     }
 
-    private val questSetupWizardSettingRepository: IQuestSetupWizardSettingRepository
-        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
+    private val settingsRepository: ISettingsRepository
+        get() = repositoryHolder.getSettingsRepository()
 
     fun setQuestSeriesLength(lengthValue: Int) = useCompletableUseCaseFromRunnable {
-        questSetupWizardSettingRepository.setQuestSeriesLength(lengthValue)
+        settingsRepository.setQuestSeriesLength(lengthValue)
         repositoryHolder.getTransitionChoreographRepository().questSeriesCounter.apply {
             startValue = lengthValue
             //reset only if value of counter is greater or equal than new length value
@@ -51,15 +51,15 @@ object SetupWizardUseCases : UseCaseSupport() {
     fun getQuestSeriesLength(body: (Int) -> Unit) = questSeriesLength().use(body)
 
     internal fun questSeriesLength() = singleUseCaseFromCallable {
-        questSetupWizardSettingRepository.getQuestSeriesLength()
+        settingsRepository.getQuestSeriesLength()
     }
 
     fun showHelpOnUnlockKeyConsume(body: (Boolean) -> Unit) = useSingleUseCaseFromCallable({
-        questSetupWizardSettingRepository.showUnlockKeyHelpOnConsume
+        settingsRepository.showUnlockKeyHelpOnConsume
     }, body)
 
     fun setShowHelpOnUnlockKeyConsume(value: Boolean) = useCompletableUseCaseFromRunnable {
-        questSetupWizardSettingRepository.showUnlockKeyHelpOnConsume = value
+        settingsRepository.showUnlockKeyHelpOnConsume = value
     }
 
 }

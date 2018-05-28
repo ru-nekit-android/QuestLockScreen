@@ -2,11 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/SetupWizard.ContentContainer"
-    tools:context="ru.nekit.android.qls.setupWizard.view.CallPhoneAndReadContactsPermissionFragment">
+    tools:context="ru.nekit.android.qls.setupWizard.view.DeviceAdminFragment">
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_description"
         style="@style/SetupWizard.Description"
-        android:text="@string/text_call_phone_permission_request" />
+        android:text="@string/text_device_admin_request" />
 
 </LinearLayout>

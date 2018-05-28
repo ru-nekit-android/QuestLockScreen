@@ -19,7 +19,7 @@ object LockScreenUseCases : UseCaseSupport() {
         get() = repositoryHolder.getLockScreenRepository()
 
     private val questSetupWizardSettingRepository
-        get() = repositoryHolder.getQuestSetupWizardSettingRepository()
+        get() = repositoryHolder.getSettingsRepository()
 
     fun start(startType: LockScreenStartType, body: () -> Unit) =
             useCompletableUseCase({
@@ -46,7 +46,7 @@ object LockScreenUseCases : UseCaseSupport() {
                         false
                 }.flatMapCompletable {
                     saveStartType(startType).doIfOrNever { it }
-                }.doOnSubscribe {
+                }.doOnComplete {
                     QuestTrainingProgramUseCases.createRemoteQuestTrainingProgram().use()
                 }
             }, body)
@@ -138,7 +138,6 @@ object LockScreenUseCases : UseCaseSupport() {
             }
 
     private fun sendHideEvent() = eventSender.send(LockScreenHideEvent)
-
 
     object LockScreenHideEvent : IEvent {
 

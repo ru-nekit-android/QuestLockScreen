@@ -53,6 +53,7 @@ import ru.nekit.android.utils.AnimationUtils.fadeAnimation
 import ru.nekit.android.utils.Delay.SHORT
 import ru.nekit.android.utils.ScreenHost
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.responsiveClicks
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.HashMap
@@ -109,8 +110,10 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
 
                     override fun onAnimationRepeat(animation: Animation) {}
                 }).apply {
-            contentContainer.responsiveClick {
-                hideKeyboard()
+            autoDispose {
+                contentContainer.responsiveClicks {
+                    hideKeyboard()
+                }
             }
         }
         statusBarViewHolder = StatusBarViewHolder(questContext, windowManager)
@@ -371,11 +374,11 @@ class LockScreenContentMediator(override var questContext: QuestContext) : IQues
                         lastYPosition = position[1]
                         containerLayout.setMargins(0, if (position[1] < statusBarHeight) statusBarHeight else 0, 0, 0)
                         container.layoutParams = containerLayout
-                        val screenRect = ScreenHost.getScreenSize(questContext)
-                        val isOpened = screenRect.y - viewState.rect.bottom > 200
-                        titleContainer.visibility = if (isOpened) GONE else VISIBLE
-                        titleContainer.parent.requestLayout()
                     }
+                    val screenRect = ScreenHost.getScreenSize(questContext)
+                    val isOpened = screenRect.y - viewState.rect.bottom > 200
+                    titleContainer.visibility = if (isOpened) GONE else VISIBLE
+                    titleContainer.parent.requestLayout()
                 }
                 is LockScreenViewViewState.FadeOutViewState ->
                     container.animate().setListener(viewState.listener).withLayer().alpha(0f).start()

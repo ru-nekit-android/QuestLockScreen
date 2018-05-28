@@ -1,6 +1,5 @@
 package ru.nekit.android.utils
 
-
 import android.animation.*
 import android.content.Context
 import android.support.annotation.ColorInt
@@ -114,7 +113,8 @@ enum class Delay(@IntegerRes private val resourceId: Int) {
     KEYBOARD(keyboard_delay),
     VIBRATION(vibration_delay),
     ANSWER(answer_delay),
-    CLICK(vibration_delay);
+    CLICK(click_delay),
+    THROTTLE(throttle_delay);
 
     fun get(context: Context) = context.resources.getInteger(resourceId).toLong()
 }

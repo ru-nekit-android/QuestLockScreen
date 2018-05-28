@@ -13,6 +13,7 @@ import ru.nekit.android.qls.lockScreen.LockScreen
 import ru.nekit.android.qls.setupWizard.QuestSetupWizard.QuestSetupWizardStep.*
 import ru.nekit.android.utils.Delay
 import ru.nekit.android.utils.KeyboardHost
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 import ru.nekit.android.utils.throttleClicks
 
 class SettingsFragment : QuestSetupWizardFragment() {
@@ -20,15 +21,14 @@ class SettingsFragment : QuestSetupWizardFragment() {
     override var unconditionedNextAction: Boolean = true
 
     private lateinit var saveQuestSeriesLengthButton: Button
-    //private lateinit var showBindParentButton: Button
     private lateinit var voiceRecorderButton: Button
     private lateinit var subscribesButton: Button
     private lateinit var phoneContactsButton: Button
     private lateinit var questSeriesLengthInput: EditText
 
     override fun onSetupStart(view: View) {
+        title = R.string.title_setup_wizard_settings
         saveQuestSeriesLengthButton = view.findViewById(R.id.btn_quest_series_length_save)
-        //showBindParentButton = view.findViewById(R.id.btn_bind_parent_control)
         subscribesButton = view.findViewById(R.id.btn_subscribes)
         voiceRecorderButton = view.findViewById(R.id.btn_voice_record)
         phoneContactsButton = view.findViewById(R.id.btn_phone_contacts)
@@ -37,15 +37,12 @@ class SettingsFragment : QuestSetupWizardFragment() {
         SetupWizardUseCases.getQuestSeriesLength { value ->
             questSeriesLengthInput.setText(value.toString())
         }
-        setNextButtonText(R.string.label_play_now)
-        setAltButtonText(R.string.label_stop_lock)
+        nextButtonText(R.string.label_play_now)
+        altButtonText(R.string.label_pause)
         autoDisposeList(
                 saveQuestSeriesLengthButton.throttleClicks {
                     SetupWizardUseCases.setQuestSeriesLength(Integer.valueOf(questSeriesLengthInput.text.toString()))
                 },
-                /*showBindParentButton.throttleClicks {
-                    showSetupWizardStep(BIND_PARENT_CONTROL)
-                },*/
                 subscribesButton.throttleClicks {
                     showSetupWizardStep(SUBSCRIBES)
                 },
@@ -57,18 +54,13 @@ class SettingsFragment : QuestSetupWizardFragment() {
                 }
         )
         setupWizard.lockScreenIsSwitchedOn {
-            setAltButtonVisibility(it)
+            altButtonVisibility(it)
         }
-        updateTitle()
     }
 
-    private fun updateTitle() {
-        titleView.text = getString(R.string.title_settings)
-    }
-
-    override fun onDestroy() {
+    override fun onStop() {
         KeyboardHost.hideKeyboard(context!!, questSeriesLengthInput, Delay.KEYBOARD.get(context!!))
-        super.onDestroy()
+        super.onStop()
     }
 
     override fun nextAction(): Single<Boolean> = Single.fromCallable {
@@ -77,18 +69,14 @@ class SettingsFragment : QuestSetupWizardFragment() {
     }
 
     @LayoutRes
-    override fun getLayoutId(): Int = R.layout.sw_settings
+    override fun getLayoutId() = R.layout.sw_settings
 
     override fun altAction() {
         setupWizard.pause()
         setupWizard.lockScreenIsSwitchedOn {
-            setAltButtonVisibility(it)
+            altButtonVisibility(it)
         }
     }
 
-    companion object {
-
-        val instance: SettingsFragment
-            get() = SettingsFragment()
-    }
+    companion object : ParameterlessSingletonHolder<SettingsFragment>(::SettingsFragment)
 }

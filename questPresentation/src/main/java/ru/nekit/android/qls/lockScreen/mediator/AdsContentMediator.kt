@@ -23,6 +23,7 @@ import ru.nekit.android.qls.lockScreen.mediator.common.AbstractLockScreenContent
 import ru.nekit.android.qls.lockScreen.mediator.common.ILockScreenContentViewHolder
 import ru.nekit.android.qls.quest.QuestContext
 import ru.nekit.android.utils.ViewHolder
+import ru.nekit.android.utils.responsiveClicks
 
 class AdsContentMediator(override var questContext: QuestContext) :
         AbstractLockScreenContentMediator() {
@@ -36,8 +37,11 @@ class AdsContentMediator(override var questContext: QuestContext) :
 
     init {
         viewHolder = LockScreenAdsViewContentHolder(questContext)
-        viewHolder.okButton.click {
-            TransitionChoreographUseCases.doNextTransition()
+        autoDispose {
+            viewHolder.okButton.responsiveClicks {
+                interstitialAd.adListener = null
+                TransitionChoreographUseCases.doNextTransition()
+            }
         }
         autoDispose(ADS_EVENT_NAME) {
             listenAdsSkipTimer { current, max ->

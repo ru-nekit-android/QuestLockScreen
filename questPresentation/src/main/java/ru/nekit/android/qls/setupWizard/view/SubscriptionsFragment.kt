@@ -9,10 +9,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
+import io.reactivex.Single
 import ru.nekit.android.qls.R
 import ru.nekit.android.qls.setupWizard.view.viewModel.AccessInfoViewModel
 import ru.nekit.android.qls.setupWizard.view.viewModel.SubscriptionViewItem
 import ru.nekit.android.qls.view.adapters.SubscriptionsAdapter
+import ru.nekit.android.utils.ParameterlessSingletonHolder
 
 class SubscriptionsFragment : QuestSetupWizardFragment() {
 
@@ -26,6 +28,7 @@ class SubscriptionsFragment : QuestSetupWizardFragment() {
 
     override fun onSetupStart(view: View) {
         viewModel = AccessInfoViewModel(setupWizard, activity!!)
+        title = R.string.title_subscriptions
         subscriptionsListView = view.findViewById(R.id.list_subscriptions)
         subscriptionTitleView = view.findViewById(R.id.tv_subscription_info_description)
         subscriptionExpiredTimeView = view.findViewById(R.id.tv_subscription_expired_time)
@@ -40,8 +43,7 @@ class SubscriptionsFragment : QuestSetupWizardFragment() {
             titleContainer.setBackgroundColor(ContextCompat.getColor(context!!,
                     info.backgroundColor))
         }
-        setAltButtonText(R.string.label_back)
-        setNextButtonVisibility(false)
+        nextButtonText(R.string.label_ok)
     }
 
     private fun setAvailableSubscriptions(list: List<SubscriptionViewItem>) {
@@ -57,12 +59,10 @@ class SubscriptionsFragment : QuestSetupWizardFragment() {
         super.onDestroy()
     }
 
+    override fun nextAction(): Single<Boolean> = backAction()
+
     @LayoutRes
-    override fun getLayoutId(): Int = R.layout.sw_access_info
+    override fun getLayoutId(): Int = R.layout.sw_subscriptions
 
-    companion object {
-
-        val instance: SubscriptionsFragment
-            get() = SubscriptionsFragment()
-    }
+    companion object : ParameterlessSingletonHolder<SubscriptionsFragment>(::SubscriptionsFragment)
 }

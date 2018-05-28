@@ -18,10 +18,22 @@
     </entry>
     <entry>
         <key>useRemoteQTP</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>useQTPComplexity</key>
-        <value>true</value>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>useSexForQTP</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>useSingleQTP</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>QTPGroup</key>
+        <value>default</value>
     </entry>
 </defaultsMap>

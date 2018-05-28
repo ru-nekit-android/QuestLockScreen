@@ -20,8 +20,8 @@ import ru.nekit.android.qls.domain.model.quest.TimeQuest
 import ru.nekit.android.qls.domain.providers.IScreenProvider
 import ru.nekit.android.qls.domain.providers.ITimeProvider
 import ru.nekit.android.qls.domain.providers.UseCaseSupport
-import ru.nekit.android.qls.domain.repository.IQuestSetupWizardSettingRepository
 import ru.nekit.android.qls.domain.repository.IRepositoryHolder
+import ru.nekit.android.qls.domain.repository.ISettingsRepository
 import ru.nekit.android.qls.shared.model.QuestType
 import ru.nekit.android.utils.asSingleIf
 import ru.nekit.android.utils.doIfOrComplete
@@ -299,8 +299,8 @@ private class StartSessionTimerWithDelayUseCase(
         ParameterlessCompletableUseCase(scheduler) {
 
     override fun build(): Completable = Completable.timer(
-            repository.getQuestSetupWizardSettingRepository().delayedPlayDelay, TimeUnit.MILLISECONDS).andThen {
-        SessionTimer.start(repository.getQuestSetupWizardSettingRepository(), timeProvider)
+            repository.getSettingsRepository().delayedPlayDelay, TimeUnit.MILLISECONDS).andThen {
+        SessionTimer.start(repository.getSettingsRepository(), timeProvider)
     }
 
 }
@@ -311,7 +311,7 @@ private class StartSessionTimerUseCase(private val repository: IRepositoryHolder
         ParameterlessCompletableUseCase(scheduler) {
 
     override fun build(): Completable = Completable.fromRunnable {
-        SessionTimer.start(repository.getQuestSetupWizardSettingRepository(), timeProvider)
+        SessionTimer.start(repository.getSettingsRepository(), timeProvider)
     }
 }
 
@@ -335,7 +335,7 @@ class ListenSessionTimeUseCase(private val repository: IRepositoryHolder,
         ParameterlessFlowableUseCase<Pair<Long, Long>>(scheduler) {
 
     override fun build(): Flowable<Pair<Long, Long>> = SessionTimer.publisher.map {
-        it to repository.getQuestSetupWizardSettingRepository().maxGameSessionTime
+        it to repository.getSettingsRepository().maxGameSessionTime
     }
 
 }
@@ -380,7 +380,7 @@ internal object QuestHolder {
 
 object SessionLimiter {
 
-    internal fun timeLimiter(repository: IQuestSetupWizardSettingRepository, time: Long) =
+    internal fun timeLimiter(repository: ISettingsRepository, time: Long) =
             Math.min(repository.maxGameSessionTime, time)
 
 }
@@ -389,7 +389,7 @@ internal object SessionTimer {
 
     private const val TIME_RESOLUTION = 1000L
 
-    fun start(repository: IQuestSetupWizardSettingRepository, timeProvider: ITimeProvider, scheduler: ISchedulerProvider? = null) {
+    fun start(repository: ISettingsRepository, timeProvider: ITimeProvider, scheduler: ISchedulerProvider? = null) {
         stop()
         disposable = timer.compose(applySchedulersFlowable(scheduler)).map { it.value() * TIME_RESOLUTION }.subscribe {
             publisher.onNext(SessionLimiter.timeLimiter(repository, it))
@@ -399,7 +399,7 @@ internal object SessionTimer {
 
     private var startSessionTime: Long = 0
 
-    fun getTime(repository: IQuestSetupWizardSettingRepository, currentTime: Long) = SessionLimiter.timeLimiter(repository, currentTime - startSessionTime)
+    fun getTime(repository: ISettingsRepository, currentTime: Long) = SessionLimiter.timeLimiter(repository, currentTime - startSessionTime)
 
     fun stop() {
         disposable?.dispose()

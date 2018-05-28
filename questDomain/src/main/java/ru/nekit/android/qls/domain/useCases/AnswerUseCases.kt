@@ -41,7 +41,7 @@ private class UpdateStatisticsReportOnRightAnswerUseCase(private val repository:
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, startTypeOptional ->
                         val startType = startTypeOptional.nonNullData
-                        val sessionTime: Long = SessionTimer.getTime(repository.getQuestSetupWizardSettingRepository(), parameter.currentTime)
+                        val sessionTime: Long = SessionTimer.getTime(repository.getSettingsRepository(), parameter.currentTime)
                         var rightAnswerSeriesLengthUpdated = false
                         var recordType = 0
                         with(report) {
@@ -110,7 +110,7 @@ private class UpdateStatisticsReportOnWrongAnswerUseCase(private val repository:
                             Optional<LockScreenStartType>,
                             Pair<QuestStatisticsReport, QuestHistory>> { report, lockScreenStartTypeOptional ->
                         val sessionTime: Long = SessionTimer.getTime(
-                                repository.getQuestSetupWizardSettingRepository(),
+                                repository.getSettingsRepository(),
                                 parameter.currentTime)
                         val lockScreenStartType = lockScreenStartTypeOptional.nonNullData
                         with(report) {

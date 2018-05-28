@@ -1,16 +1,18 @@
 package ru.nekit.android.qls.setupWizard
 
 import android.os.Bundle
+import android.support.annotation.StringRes
 import android.support.v4.app.FragmentActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import ru.nekit.android.domain.support.IEventListenerSupport
 import ru.nekit.android.shared.R
-import ru.nekit.android.utils.throttleClicks
+import ru.nekit.android.utils.responsiveClicks
 
 abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
         IEventListenerSupport {
@@ -21,6 +23,7 @@ abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
         get() = supportFragmentManager.findFragmentByTag(FRAGMENT_NAME) as BaseSetupWizardFragment
 
     private lateinit var toolContainer: ViewGroup
+    private lateinit var titleView: TextView
     private lateinit var nextButton: Button
     private lateinit var altButton: Button
     private lateinit var fragmentContainer: ViewGroup
@@ -35,22 +38,28 @@ abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_setup_wizard)
         toolContainer = findViewById(R.id.container_tool)
+        titleView = findViewById(R.id.tv_title)
         fragmentContainer = findViewById(R.id.container_fragment)
         nextButton = findViewById(R.id.btn_next)
         altButton = findViewById(R.id.btn_alt)
         autoDisposeList(
-                nextButton.throttleClicks {
-                    autoDispose {
-                        nextAction().subscribe { it ->
-                            if (it) showNextSetupWizardStep()
-                        }
-                    }
+                nextButton.responsiveClicks().switchMapSingle { nextAction() }.subscribe { it ->
+                    if (it) showNextSetupWizardStep()
                 },
-                altButton.throttleClicks {
+                altButton.responsiveClicks {
                     altAction()
                 }
         )
         showNextSetupWizardStep()
+    }
+
+    private fun setTitle(value: String) {
+        super.setTitle(title)
+        titleView.text = value
+    }
+
+    override fun setTitle(@StringRes titleId: Int) {
+        setTitle(getString(titleId))
     }
 
     override fun showNextSetupWizardStep() {
@@ -95,8 +104,10 @@ abstract class BaseSetupWizardActivity : FragmentActivity(), ISetupWizardHolder,
         if (fragment.addToBackStack) {
             fragmentTransaction.addToBackStack(null)
         }
-        fragmentTransaction.replace(R.id.container_fragment, fragment, FRAGMENT_NAME)
-        fragmentTransaction.commit()
+        if (!fragment.isAdded) {
+            fragmentTransaction.replace(R.id.container_fragment, fragment, FRAGMENT_NAME)
+            fragmentTransaction.commit()
+        }
         //Animation fadeOutAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_out_short);
         //Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.fade_in_short);
         //fadeInAnimation.setStartTime(700);

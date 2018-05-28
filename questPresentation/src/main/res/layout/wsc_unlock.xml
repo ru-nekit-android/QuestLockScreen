@@ -5,8 +5,9 @@
     android:layout_height="match_parent">
 
     <com.andrognito.patternlockview.PatternLockView
-        android:id="@+id/unlock_secret_view"
-        style="@style/UnlockSecretView"
+        android:id="@+id/unlock_view"
+        style="@style/Window.Menu.Unlock.UnlockSecretView"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

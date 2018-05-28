@@ -33,11 +33,8 @@ import ru.nekit.android.qls.quest.view.mediator.answer.IButtonListAnswerMediator
 import ru.nekit.android.qls.quest.view.mediator.content.EmptyQuestContentMediator
 import ru.nekit.android.qls.quest.view.mediator.content.IContentMediator
 import ru.nekit.android.qls.quest.view.mediator.title.ITitleMediator
-import ru.nekit.android.utils.AnimationUtils
-import ru.nekit.android.utils.Delay
-import ru.nekit.android.utils.KeyboardHost
+import ru.nekit.android.utils.*
 import ru.nekit.android.utils.KeyboardHost.hideKeyboard
-import ru.nekit.android.utils.ViewHolder
 import java.util.concurrent.TimeUnit
 
 //ver 1.2
@@ -213,8 +210,10 @@ class QuestMediatorFacade internal constructor(override var questContext: QuestC
         }
         updateVisibilityOfViews(false)
         if (viewHolder.defaultAnswerButton.visibility == VISIBLE)
-            viewHolder.defaultAnswerButton.click {
-                answerFunction()
+            autoDispose {
+                viewHolder.defaultAnswerButton.responsiveClicks {
+                    answerFunction()
+                }
             }
     }
 

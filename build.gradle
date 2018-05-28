@@ -16,10 +16,10 @@ buildscript {
     ]
 
     ext.versions = [
-            'appCode'         : 50,
+            'appVersionCode'  : 52,
+            'appVersionName'  : '1.32',
             'firebase'        : '11.8.0',
             'googleServices'  : '3.2.1',
-            'appName'         : '1.32',
             'gradle'          : '3.0.1',
             'buildTools'      : '27.0.3',
             'compileSdk'      : 26,
@@ -63,7 +63,7 @@ buildscript {
                     //old approach
                     'crash'       : "com.google.firebase:firebase-crash:${versions.firebase}",
                     'auth'        : "com.google.firebase:firebase-auth:${versions.firebase}",
-                    'firestore'    : "com.google.firebase:firebase-firestore:${versions.firebase}",
+                    'firestore'   : "com.google.firebase:firebase-firestore:${versions.firebase}",
                     'remoteConfig': "com.google.firebase:firebase-config:${versions.firebase}"
             ],
             'billing'        : "com.android.billingclient:billing:1.0",

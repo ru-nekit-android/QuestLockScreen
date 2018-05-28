@@ -74,35 +74,29 @@
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="SetupWizard.ContentContainer" />
-
-    <style name="SetupWizard.PupilName">
-
+    <style name="SetupWizard.ContentContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="SetupWizard.PupilSex">
+    <style name="SetupWizard.PupilNameAndSex" />
 
+    <style name="SetupWizard.PupilNameAndSex.Container">
+        <item name="android:layout_margin">@dimen/normal_gap</item>
     </style>
-
-    <style name="SetupWizard.AdminRequest">
-
-    </style>
-
-    <style name="SetupWizard.QTPComplexity" />
 
     <style name="ToolContainer">
         <item name="android:background">@color/green</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
     </style>
 
     <style name="ToolButtonContainer" />
 
-    <style name="ToolContainer.Button" parent="Button.Borderless">
-        <item name="android:textSize">18sp</item>
-        <item name="android:textAppearance">@style/TextAppearance</item>
+    <style name="ToolContainer.Button" parent="Button.Green">
         <item name="android:textColor">@color/white</item>
-        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="ShowNoMore" parent="ToolContainer.Button">
@@ -113,33 +107,26 @@
     </style>
 
     <style name="Button" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/black</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="backgroundTint">#ffd6d7d7</item>
-        <item name="textAllCaps">false</item>
+        <item name="android:textAppearance">@style/Base.TextAppearance.AppCompat.Button</item>
+        <item name="android:fontFamily">@font/roboto_light</item>
     </style>
 
-    <style name="Button.Red">
-        <item name="backgroundTint">@color/red</item>
-        <item name="android:textColor">@color/white</item>
+    <style name="Button.White">
+        <item name="backgroundTint">@color/white</item>
     </style>
 
-    <style name="Button.Borderless" parent="Widget.AppCompat.Button.Borderless">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textAllCaps">false</item>
-        <item name="textAllCaps">false</item>
-        <item name="fontFamily">roboto</item>
+    <style name="Button.Green">
+        <item name="backgroundTint">@color/green_dark</item>
     </style>
 
     <style name="NextButton" parent="ToolContainer.Button">
-        <item name="android:gravity">right|center_vertical</item>
-        <item name="android:drawableRight">@drawable/ic_chevron_right_white_24dp</item>
+        <item name="android:gravity">center</item>
+        <!--<item name="android:drawableRight">@drawable/ic_chevron_right_white_24dp</item>-->
     </style>
 
     <style name="AltButton" parent="ToolContainer.Button">
-        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:gravity">center</item>
     </style>
 
     <style name="Window">
@@ -148,6 +135,5 @@
         <item name="dimAmount">0</item>
         <item name="animationDuration">400</item>
     </style>
-
 
 </resources>

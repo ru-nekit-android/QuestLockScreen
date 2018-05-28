@@ -69,8 +69,8 @@ class BindParentFragment : QuestSetupWizardFragment() {
         }
         qrCodeView.requestLayout()
         generateQrCode()
-        setNextButtonVisibility(false)
-        setAltButtonText(R.string.cancel)
+        nextButtonVisibility(false)
+        altButtonText(R.string.cancel)
     }
 
     @Throws(WriterException::class)

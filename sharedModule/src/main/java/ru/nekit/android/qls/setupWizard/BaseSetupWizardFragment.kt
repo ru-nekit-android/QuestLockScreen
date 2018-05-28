@@ -7,8 +7,7 @@ import android.support.annotation.StringRes
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.Button
 import io.reactivex.Single
@@ -57,61 +56,68 @@ abstract class BaseSetupWizardFragment : Fragment(), IAutoDispose {
         setupWizardHolder.showSetupWizardStep(step, *params)
     }
 
-    protected fun showNextSetupWizardStep() {
+    protected open fun goNext() {
         setupWizardHolder.showNextSetupWizardStep()
     }
+
+    open var title: Int
+        get() = 0
+        set(value) = setupWizardHolder.setTitle(value)
 
     open val addToBackStack: Boolean = false
 
     private fun setDefaultSettingsForTools() {
-        setNextButtonText(R.string.label_next)
-        setNextButtonVisibility(true)
-        setAltButtonVisibility(false)
-        setToolContainerVisibility(true)
+        nextButtonText(R.string.label_next)
+        nextButtonVisibility(true)
+        altButtonVisibility(false)
+        toolContainerVisibility(true)
     }
 
     open var unconditionedNextAction: Boolean = false
 
-    protected fun setToolContainerVisibility(visibility: Boolean) {
-        toolContainer.visibility = if (visibility) VISIBLE else INVISIBLE
+    protected fun toolContainerVisibility(visibility: Boolean) {
+        toolContainer.visibility = if (visibility) VISIBLE else GONE
     }
 
-    protected fun setNextButtonVisibility(visibility: Boolean) {
+    protected fun nextButtonVisibility(visibility: Boolean) {
         nextButton.visibility = if (visibility) VISIBLE else INVISIBLE
     }
 
-    protected fun setAltButtonVisibility(visibility: Boolean) {
+    protected fun altButtonVisibility(visibility: Boolean) {
         altButton.visibility = if (visibility) VISIBLE else INVISIBLE
     }
 
-    protected fun setNextButtonText(@StringRes textResId: Int) {
+    protected fun nextButtonText(@StringRes textResId: Int) {
         var textResIdLocal = textResId
         if (textResId == 0) {
             textResIdLocal = R.string.label_next
         }
-        setNextButtonText(getString(textResIdLocal))
+        nextButtonText(getString(textResIdLocal))
     }
 
-    protected fun setNextButtonText(text: String) {
+    protected fun nextButtonText(text: String) {
         nextButton.text = text
     }
 
-    protected fun setAltButtonText(@StringRes textResId: Int) {
-        setAltButtonVisibility(true)
+    protected fun altButtonText(@StringRes textResId: Int) {
+        altButtonVisibility(true)
         altButton.text = getString(textResId)
     }
 
-    open fun nextAction(): Single<Boolean> {
-        return true.toSingle()
-    }
+    open fun nextAction() = true.toSingle()
 
     open fun altAction() {
         if (addToBackStack) {
-            back()
+            goBack()
         }
     }
 
-    protected fun back() = activity?.supportFragmentManager?.popBackStack()
+    protected fun goBack() = activity?.supportFragmentManager?.popBackStack()
+
+    protected fun backAction(): Single<Boolean> = Single.fromCallable {
+        goBack()
+        false
+    }
 
     @CallSuper
     override fun onDestroy() {

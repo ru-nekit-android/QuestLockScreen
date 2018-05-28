@@ -10,9 +10,6 @@ abstract class QuestSetupWizardFragment : BaseSetupWizardFragment() {
     override val setupWizard: QuestSetupWizard
         get() = super.setupWizard as QuestSetupWizard
 
-    val titleView
-        get() = view?.findViewById(R.id.tv_title) as TextView
-
     val descriptionView
         get() = view?.findViewById(R.id.tv_description) as TextView
 
