@@ -22,7 +22,7 @@
     </entry>
     <entry>
         <key>useQTPComplexity</key>
-        <value>false</value>
+        <value>true</value>
     </entry>
     <entry>
         <key>useSexForQTP</key>
